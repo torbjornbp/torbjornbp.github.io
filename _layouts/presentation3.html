@@ -1,0 +1,19 @@
+---
+layout: default
+---
+
+{%-include back_link.html-%}
+
+<p class="post-meta">
+    <time datetime="{{ page.date }}">{{ page.date | date: site.theme_config.date_format }}</time>
+  </p>
+
+<script src="{{ site.baseurl }}/assets/js/remark-latest.min.js" type="text/javascript"></script>
+<body>
+  <textarea id="source">
+{{ page.content }}
+  </textarea>
+  <script>
+    var slideshow = remark.create({});
+  </script>
+</body>
