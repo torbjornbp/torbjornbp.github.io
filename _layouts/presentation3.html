@@ -1,19 +1,21 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: "en" }}">
+  {%- include head.html -%}
+  <body a="{{ site.theme_config.appearance | default: "auto" }}">
+    <main class="page-content" aria-label="Content">
+      <textarea id="source">
+      {{ page.content }}
+      </textarea>
+    </main>
 
-{%-include back_link.html-%}
+    {%-if site.goat_counter and jekyll.environment == "production"-%}
+      {%-include goat_counter.html-%}
+    {%-endif-%}
 
-<p class="post-meta">
-    <time datetime="{{ page.date }}">{{ page.date | date: site.theme_config.date_format }}</time>
-  </p>
-
-<script src="{{ site.baseurl }}/assets/js/remark-latest.min.js" type="text/javascript"></script>
-<body>
-  <textarea id="source">
-{{ page.content }}
-  </textarea>
-  <script>
-    var slideshow = remark.create({});
-  </script>
-</body>
+    {% if page.custom_js %}
+      {% for js_file in page.custom_js %}
+        <script type="text/javascript" src="{{ site.baseurl }}/assets/js/{{ js_file }}.js"></script>
+      {% endfor %}
+    {% endif %}
+  </body>
+</html>
