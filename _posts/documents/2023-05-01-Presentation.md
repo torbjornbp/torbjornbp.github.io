@@ -1,5 +1,5 @@
 ---
-layout: presentation3
+layout: presentation
 category: documents
 title: CDC Presentation
 ---
