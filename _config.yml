@@ -30,7 +30,7 @@ twitter_username: jekyllrb
 github_username:  jekyll
 
 # Build settings
-remotetheme: no-style-please
+remote_theme: no-style-please
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
