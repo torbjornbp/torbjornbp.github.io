@@ -1,6 +1,5 @@
 ---
 title: Risoprint "Utsikten"
-date: 2020-12-01T00:00:00+08:00
 category: bits
 layout: post
 ---
