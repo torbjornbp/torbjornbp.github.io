@@ -1,0 +1,37 @@
+# For documentation on this file, see:
+# https://github.com/riggraz/no-style-please#customize-the-menu
+
+entries:
+  - title: about me
+    entries:
+      - title: moving image archivist at the national library of norway
+
+  - title: cv
+    entries:
+      - title: test
+
+  - title: documents
+    post_list:
+      category: documents
+      limit: 5
+      show_more: true
+      show_more_text: see archive...
+      show_more_url: archive-documents.html
+
+  - title: bits and pieces
+    post_list:
+      category: bits
+      limit: 5
+      show_more: true
+      show_more_text: see archive...
+      show_more_url: bits-archives.html
+  
+  - title: another list
+    entries:
+      - title: with subitems
+        entries:
+          - title: with subsubitems
+          - title: example page
+            url: about
+  - title: rss
+    url: feed.xml
