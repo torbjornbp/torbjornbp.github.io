@@ -29,7 +29,7 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 
 
 # Build settings
-remote_theme: "no-style-please"
+remote_theme: no-style-please
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
