@@ -2,7 +2,7 @@
 layout: post
 title:  "Welcome to Jekyll!"
 date:   2023-05-04 23:53:08 +0200
-categories: jekyll update
+category: documents
 youtubeId: z3oW7tHMGXk
 ---
 
