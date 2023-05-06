@@ -1,7 +1,7 @@
 ---
 layout: presentation2
 category: documents
-title: CDC Presentation
+title: test presentation
 ---
 
 <pre>{% include presentations/presentation.md %}</pre>
