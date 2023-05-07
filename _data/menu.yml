@@ -34,12 +34,13 @@ entries:
       show_more_text: see archive...
       show_more_url: archive-documents.html
   
-  - title: another list
-    entries:
-      - title: with subitems
-        entries:
-          - title: with subsubitems
-          - title: example page
-            url: about
+ # - title: another list
+ #   entries:
+ #     - title: with subitems
+ #       entries:
+ #         - title: with subsubitems
+ #         - title: example page
+ #           url: about
+ 
   - title: rss
     url: feed.xml
