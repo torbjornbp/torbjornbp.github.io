@@ -1,6 +1,6 @@
 ---
 layout: presentation2
-category: documents
+category: test
 title: test presentation
 ---
 
