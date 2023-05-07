@@ -85,8 +85,9 @@ code {
 div.highlighter-rouge code {
   display: block;
   overflow-x: auto;
-  white-space: pre-wrap;
+  white-space: pre;
   padding: 1rem;
+  font-size: 11px;
 }
 
 blockquote {
