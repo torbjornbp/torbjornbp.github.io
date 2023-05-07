@@ -32,7 +32,7 @@ entries:
       limit: 5
       show_more: true
       show_more_text: see archive...
-      show_more_url: archive-documents.html
+      show_more_url: archive-test.html
   
  # - title: another list
  #   entries:
@@ -41,6 +41,6 @@ entries:
  #         - title: with subsubitems
  #         - title: example page
  #           url: about
- 
+
   - title: rss
     url: feed.xml
