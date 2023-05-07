@@ -27,7 +27,7 @@ Keynote presentation converted to markdown:
 
 ---
 {: data-content="Mavis migration mapping"}
-![1](/assets/img/cdc25042023/1.png)
+![1](/assets/img/cdc25042023/1.png){:.ioda}
 
 ---
 
@@ -176,7 +176,7 @@ This information is crucial! Provides context to your scans: Eg. Did the scanned
 ---
 {: data-content="Mavis location of preservation metadata"}
 
-![2](/assets/img/cdc25042023/mavispres.png)
+![2](/assets/img/cdc25042023/mavispres.png){:.ioda}
 
 ---
 # Principles moving forward

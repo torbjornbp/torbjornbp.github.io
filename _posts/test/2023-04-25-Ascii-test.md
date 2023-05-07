@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Ascii diagram test"
-category: documents
+category: test
 ---
 
 ```
