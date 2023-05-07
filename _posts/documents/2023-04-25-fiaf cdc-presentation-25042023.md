@@ -1,10 +1,12 @@
 ---
 layout: post
-title: "FIAF CDC Presentation 25.04.2023"
+title: "FIAF CDC Preservation/Restoration Documentation Task Force presentation 25.04.2023"
 category: documents
 ---
 
-Keynote presentation converted to markdown:
+Presentation about current/future(?) practices of documentating preservation processes at the moving image archive of the National Library of Norway. Examples based on film scanner/post-processing processes, but future aims are general and can be applied to other processes as well.
+
+Keynote typed out to markdown.
 
 ---
 
