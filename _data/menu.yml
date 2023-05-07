@@ -26,6 +26,14 @@ entries:
       show_more_text: see archive...
       show_more_url: bits-archives.html
 
+  - title: personal projects
+    post_list:
+      category: personal
+      limit: 5
+      show_more: true
+      show_more_text: see archive...
+      show_more_url: bits-archives.html
+
   - title: test pages
     post_list:
       category: test
