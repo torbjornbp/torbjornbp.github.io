@@ -29,7 +29,34 @@ Keynote slides typed out to markdown with some additions.
 
 ---
 {: data-content="Mavis migration mapping"}
-![1](/assets/img/cdc25042023/1.png){:.ioda}
+
+```
+      MAVIS                               COLLECTIONS
+                                          FIAF MANUAL
+┌───────────────┐                      ┌───────────────┐
+│     TITLE     ├─────────────────────▶│ WORK/VARIANT  │░
+│               ├░─ ─ ─ ─ ─            │               │░
+└───────┬───────┘░         │           └───────┬───────┘░
+ ░░░░░░░│░░░░░░░░░                      ░░░░░░░│░░░░░░░░░
+        │                  │                   │
+        │                              ┌───────┴───────┐
+        │                  └ ─ ─ ─ ─ ─▶│ MANIFESTATION │░
+        │                  ┌ ─ ─ ─ ─ ─▶│               │░
+        │                              └───────┬───────┘░
+        │                  │            ░░░░░░░│░░░░░░░░░
+        │                                      │
+┌───────┴───────┐          │           ┌───────┴───────┐
+│   COMPONENT   ├░─ ─ ─ ─ ─            │     ITEM      │░
+│               ├──────────┬──────────▶│               │░
+└───────┬───────┘░         │           └───────┬───────┘░
+ ░░░░░░░│░░░░░░░░░         │            ░░░░░░░│░░░░░░░░░
+        │                  │                   │
+┌───────┴───────┐          │           ┌───────┴───────┐
+│    Carrier    │░         └──────────▶│   ITEM-PART   │░
+│               ├─────────────────────▶│               │░
+└───────────────┘░                     └───────────────┘░
+ ░░░░░░░░░░░░░░░░░                      ░░░░░░░░░░░░░░░░░
+```
 
 ---
 
@@ -178,7 +205,40 @@ This information is crucial! Provides context to your scans: Eg. Did the scanned
 ---
 {: data-content="Mavis location of preservation metadata"}
 
-![2](/assets/img/cdc25042023/mavispres.png){:.ioda}
+```
+  Preservation
+     report
+        │
+        │
+        ▼
+┌───────────────┐
+│     TITLE     │░
+│               │░                  *Notes on all levels*
+└───────┬───────┘░
+ ░░░░░░░│░░░░░░░░░
+        │
+        │
+        │
+        ├──────────────────────────────────────┐
+        │              Technical               │
+        │ ┌────────────metadata ─────────────┐ │
+        │ ▼                                  ▼ │
+┌───────┴───────┐                      ┌───────┴───────┐
+│   COMPONENT   │░      Copying        │   COMPONENT   │░
+│  (Original)   ├───────history───────▶│    (Copy)     │░
+└───────┬───────┘░                     └───────┬───────┘░
+ ░░░░░░░│░░░░░░░░░                      ░░░░░░░│░░░░░░░░░
+        │                                      │
+┌───────┴───────┐                      ┌───────┴───────┐
+│    Carrier    │░      Copying        │    Carrier    │░
+│   (Copied)    ├───────history───────▶│    (Copy)     │░
+└───────────────┘░                     └───────────────┘░
+ ░░░░░░░▲░░░░░░░░░                      ░░░░░░░▲░░░░░░░░░
+        │                                      │
+        │                                      │
+   Treatments                               Scanner
+   /conditions                            parameters
+```
 
 ---
 # Principles moving forward
@@ -271,4 +331,49 @@ This information is crucial! Provides context to your scans: Eg. Did the scanned
 ---
 {: data-content="Concept mockup of preservation metadata locations"}
 
-![concept](/assets/img/cdc25042023/concept.png){:.ioda}
+```
+                        ┌───────────────┐
+                        │ Work/variant  │░
+                        │               │░
+                        └───────┬───────┘░
+                         ░░░░░░░│░░░░░░░░░
+                                │
+                                ├──────────────────────────────────────────────────┐
+                                │                                                  │
+                        ┌───────┴───────┐                                  ┌───────┴───────┐
+                        │ Manifestation │░                                 │ Manifestation │◀──────── Preservation
+                        │  (Original)   │░                                 │(preservation) │◀───────┐    report
+                        └───────────────┘░                                 └───────┬───────┘░       │
+                         ░░░░░░░│░░░░░░░░░                                  ░░░░░░░│░░░░░░░░░       │
+                                │                                                  │                │
+                                │                                                  │                │
+                                │                                                  │                │
+                        ┌───────┴───────┐                                  ┌───────┴───────┐        │
+                        │     ITEM      │░                                 │     ITEM      │░       │
+                        │  (Original)   │░                                 │    (Copy)     │░       │
+                        └───────────────┘░                                 └───────┬───────┘░       │
+                         ░░░░░░░│░░░░░░░░░                                  ░░░░░░░│░░░░░░░░░       │
+                                │                                                  │                │
+                                │                                                  │                │
+                                │                                                  │                │
+                        ┌───────┴───────┐        ┌───────────────┐         ┌───────┴───────┐        │
+                        │   ITEM-PART   │░       │Scanning event │         │   ITEM-PART   │░       │
+                        │  (original)   │◀───────┤ w/parameters  ├────────▶│     (DPX)     │░       │
+                        └───────────────┘░       └───────────────┘         └───────────────┘░       │
+                         ░░░░░░░▲░░▲░░░░░░               ▲                  ░░░░░░░▲░░░░░░░░░       │
+                                │  │                     │                         │                │
+                                │  └─────────────────────┤                         │                │
+                                │                        │                         │                │
+┌───────────────┐       ┌───────┴───────┐                │                         │                │
+│Reference media│       │Condition/treat│                │                         │                │
+│               ├──────▶│     ment      │                │                         │                │
+└───────────────┘       └───────────────┘                │                         │                │
+                                ▲                        │                         │                │
+                                │                        │                         │                │
+                                │                        │                         │                │
+                                │                        │                         │                │
+                        ┌───────┴───────┐        ┌───────┴───────┐                 │                │
+                        │Condition/prepa│        │ Preservation  │                 │                │
+                        │    ration     │◀───────┤ order/project ├─────────────────┴────────────────┘
+                        └───────────────┘        └───────────────┘
+```
