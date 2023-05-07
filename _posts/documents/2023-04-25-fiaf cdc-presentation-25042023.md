@@ -25,13 +25,15 @@ Keynote presentation converted to markdown:
 <br>	
 - Ongoing migration to Axiell Collections (deadline 2024)
 
-![1](/assets/img/cdc25042023/1.png){:.ioda}
+---
+{: data-content="Mavis migration mapping"}
+![1](/assets/img/cdc25042023/1.png)
 
 ---
 
 # Mavis
 
-- Windows client, oracle database, interface based on a window per record, with multiple tabs dividing information
+Windows client, oracle database, interface based on a window per record, with multiple tabs dividing information
 
 ![2](/assets/img/cdc25042023/2.png)
 
@@ -42,6 +44,9 @@ Keynote presentation converted to markdown:
 - **Preservation processes tend follow predefined steps with predefined roles responsible**
 
 - **Film archivist:** Selection of materials, decisions on project scope etc. -> Creation of “Smartsheet” preservation order
+
+---
+{: data-content="scanner/post-processing workflow sketch"}
 
 ![3](/assets/img/cdc25042023/3.png)
 
@@ -61,6 +66,8 @@ Keynote presentation converted to markdown:
 - Redundant bookkeeping/metadata creation (eg. the same things are documented in both mavis/smartsheet)
 - Yet another system to deal with…
 
+---
+{: data-content="Smartsheet dashboard"}
 ![4](/assets/img/cdc25042023/4.png)
 
 ---
@@ -80,6 +87,9 @@ Keynote presentation converted to markdown:
 **Cons:**
 - "Deep" placement of metadata in datamodel
 - No media reference support
+
+---
+{: data-content="Mavis carrier with conditions"}
 
 ![mavis conditions](/assets/img/cdc25042023/condition.png)
 
@@ -103,6 +113,9 @@ Keynote presentation converted to markdown:
 - Digital lab technicians use smartsheet (+ additional smartsheets), but does not use Mavis…
 	- Anything not defined by system integration not documented -> Decisions and tools used by lab technicians not documented systematically!
 - Lack of resources for maintenance/updates -> Current integrations strict and inflexible 
+
+---
+{: data-content="Mavis digital carrier w/ scanner parameters"}
 
 ![mavis digital carrier](/assets/img/cdc25042023/digcarrier.png)
 
@@ -160,7 +173,10 @@ This information is crucial! Provides context to your scans: Eg. Did the scanned
 - Not preservation metadata per se, but generated/enriched as part of the preservation process. 
 - Automatically entered for new digital records
 
-![mavis preservation](/assets/img/cdc25042023/mavispres.png){:.ioda}
+---
+{: data-content="Mavis location of preservation metadata"}
+
+![2](/assets/img/cdc25042023/mavispres.png)
 
 ---
 # Principles moving forward
@@ -197,6 +213,9 @@ This information is crucial! Provides context to your scans: Eg. Did the scanned
 - All records can have related reference materials in Collections
 	- No need for controlled fields for everything. Files can be attached to records - Extracted file header information, scanner parameters, mediainfo, mediatrace reports etc.)
 	- Media files as metadata (media reference files are “worth a thousand words”)
+
+---
+{: data-content="Example media reference image of deteriorated ntirate reel"}
 
 ![mediareference](/assets/img/cdc25042023/mediareference.jpg)
 
@@ -246,5 +265,8 @@ This information is crucial! Provides context to your scans: Eg. Did the scanned
 - Any metadata entered through the workflows end up at the correct fields in the CMS (eg. A new condition is added)
 - You create metadata just by going through the workflow steps
 - Order history and relations can document the reason for/what initiated some metadata to be created. Eg. You could relate all treatments to a workflow assessment/treatment step, which again is related to an order for example)
+
+---
+{: data-content="Concept mockup of preservation metadata locations"}
 
 ![concept](/assets/img/cdc25042023/concept.png){:.ioda}

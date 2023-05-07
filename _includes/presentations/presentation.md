@@ -1,5 +1,5 @@
 
-# MAVIS - “Merged Audio-Visual Information System” 
+### MAVIS - “Merged Audio-Visual Information System” 
 
 **CMS: Mavis 1996 -> 2024**
 - **Central system for all AV-materials** (still images, sound recordings and moving images +++)
@@ -20,7 +20,7 @@
 
 ---
 
-# Mavis
+### Mavis
 
 - Windows client, oracle database, interface based on a window per record, with multiple tabs dividing information
 
@@ -28,7 +28,7 @@
 
 ---
 
-# Scanning/post-processing workflow 
+### Scanning/post-processing workflow 
 
 - **Preservation processes tend follow predefined steps with predefined roles responsible**
 
@@ -38,8 +38,7 @@
 
 ---
 
-# Smartsheet
-### Workflow/processing
+### Smartsheet - workflow/processing
 
 **Pros:** 
 - Easy to use
@@ -56,7 +55,7 @@
 
 ---
 
-# Film preparation
+### Film preparation
 
 - **Preparers:** Condition reporting -> Manually documented in Mavis
 - **Preparers:** Treatment -> Manually documented in Mavis
@@ -76,7 +75,7 @@
 
 ---
 
-# Scanning/post-processing
+### Scanning/post-processing
 
 **Digital lab technicians:** Scanning
 - **Mavis integrated application** -> automatic creation of new Mavis records (DPX/WAVs) with copying history, tech metadata, equipment used, scanner parameters, URNs. Harvests all relevant data.
@@ -99,7 +98,7 @@
 
 ---
 
-# Importance of documenting scanner paramenters
+### Importance of documenting scanner paramenters
 
 Document parameter choices influencing your resulting files!
 
@@ -120,7 +119,7 @@ This information is crucial! Provides context to your scans: Eg. Did the scanned
 
 ---
 
-## Preservation reporting
+### Preservation reporting
 
 **Film archivist:** quality control acceptance -> Manually entered preservation report in Mavis
 - Overarching description of entire project + previous steps of note + achievement of goals
@@ -136,7 +135,7 @@ This information is crucial! Provides context to your scans: Eg. Did the scanned
 
 ---
 
-# Current preservation metadata core building blocks
+### Current preservation metadata core building blocks
 
 **Preservation report** -> Text field at title level
 
@@ -154,7 +153,7 @@ This information is crucial! Provides context to your scans: Eg. Did the scanned
 ![mavis preservation](/assets/img/cdc25042023/mavispres.png){:.ioda}
 
 ---
-# Principles moving forward
+### Principles moving forward
 
 **Keep pros/limit cons**
 
@@ -175,7 +174,7 @@ This information is crucial! Provides context to your scans: Eg. Did the scanned
 
 ---
 
-# 1. CMS as metadata master
+### 1. CMS as metadata master
 
 **Requirements:** Standardised metadata, easier system integrations/modern APIs, configurable system
 - Achieved through implementation of Axiell Collections
@@ -193,7 +192,7 @@ This information is crucial! Provides context to your scans: Eg. Did the scanned
 
 
 ---
-# 2. Extended use of workflow tools
+### 2. Extended use of workflow tools
 
 **Requirement:** Workflow process tool should be able to read/write to Axiell Collections.
 - Hopefully achieved through implementation of Axiell Flow (or other tool)
@@ -212,7 +211,7 @@ This information is crucial! Provides context to your scans: Eg. Did the scanned
 
 ---
 
-# 3. More detailed documentation
+### 3. More detailed documentation
 **Requirement:** Configuration of fields missing from Mavis, more flexible CMS data model
 - Achieved through implementation of Axiell Collections
 
@@ -227,7 +226,7 @@ This information is crucial! Provides context to your scans: Eg. Did the scanned
 
 ---
 
-# Future concept?
+### Future concept?
 
 - Workflow orders (with its instructions, type etc.) recorded as records in an orders database
 - The steps of the workflow are automatically created as events/treatments of the material, as the step is performed (eg. an “assessment/preparation for scanning” step)
