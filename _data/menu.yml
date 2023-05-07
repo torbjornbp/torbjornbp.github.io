@@ -10,7 +10,7 @@ entries:
     entries:
       - title: test
 
-  - title: documents
+  - title: moving image archiving
     post_list:
       category: documents
       limit: 5
@@ -18,17 +18,9 @@ entries:
       show_more_text: see archive...
       show_more_url: archive-documents.html
 
-  - title: bits and pieces
+  - title: personal bits and pieces
     post_list:
       category: bits
-      limit: 5
-      show_more: true
-      show_more_text: see archive...
-      show_more_url: bits-archives.html
-
-  - title: personal projects
-    post_list:
-      category: personal
       limit: 5
       show_more: true
       show_more_text: see archive...

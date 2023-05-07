@@ -1,5 +1,5 @@
 ---
 layout: archive
-title: Documents
 which_category: documents
+title: All posts of category Moving image archiving
 ---
