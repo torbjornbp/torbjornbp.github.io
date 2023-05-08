@@ -2,10 +2,6 @@
 # https://github.com/riggraz/no-style-please#customize-the-menu
 
 entries:
-  - title: about me
-    entries:
-      - title: moving image archivist at the national library of norway. 
-
   - title: moving image archiving
     post_list:
       category: documents
