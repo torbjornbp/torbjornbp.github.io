@@ -4,7 +4,7 @@ category: draft
 layout: post
 ---
 
-Last spring I set out to digitse my grandparents' dia slides, as we were getting sub-par results using a cheap slide scanner. I opted for DIY solution using my camera and a macro lens. 
+Last spring I set out to come up with a way to digitse my grandparents' dia slides. I opted for DIY solution using my camera and a macro lens. 
 
 ---
 
@@ -40,5 +40,7 @@ Workflow:
 ---
 
 Example gallery:
+
+
 
 
