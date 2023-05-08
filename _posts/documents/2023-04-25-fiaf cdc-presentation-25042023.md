@@ -18,7 +18,7 @@ Keynote slides typed out to markdown with some additions.
 	- Analog and digital material
 
 <br>
-- **Old!** 
+- **Ancient system!** 
 	- Complicated system integrations (to maintain/to create) - no modern APIs
 	- Not particularly user friendly
 	- Non-standard data model
@@ -85,7 +85,7 @@ Windows client, oracle database, interface based on a window per record, with mu
 ### Workflow/processing
 
 **Pros:** 
-- Easy to use
+- Ease-of-use
 - Web interface
 - Nice overview of projects/available resources
 
