@@ -8,7 +8,7 @@ Digitising autonomous colours poses a range of challenges ("chromatic callier-ef
 
 In my case, the available equipment is the DFT Scanity (and the MWA Nova Spinner). My educated guesses and typical workflow is based around my knowledge of this scanner's behaviour. Due to the aforementioned scanner sensor sensitivity, I know that some autonomous colours will not be captured in a representative manner. 
 
-In this particular use case I had a tinted feature film, with several tints I knew the Scanity would have trouble capturing. The usual workflow here would be to scan the nitrate print and do grading, while having the nitrate close by for reference. However, a challenge here was that the material would be scanned, and post-processed much later. Remembering how it looked is not an option!
+In this particular use case I had a tinted feature film, with several tints I knew the Scanity would have trouble capturing. The usual workflow here would be to scan the nitrate print and do grading, while having the nitrate close by for reference. However, a challenge here was that the material would be scanned, and post-processed much later (if at all). Remembering how it looked is not an option, and writing down something like "cyan" is not precise enough.
 
 The film in question is also a six reel feature film, with a multitude of different tints, so grading would most likely take a while. 
 
@@ -93,7 +93,11 @@ An interesting note here is that the "Green 1" tint was not captured entirely ac
 | Acquamarine/Cyan | ![](/assets/img/reference-images/scanity-cyan-1.png) | ![](/assets/img/reference-images/spinner-cyan-1.png) | ![](/assets/img/reference-images/ref-cyan-1.png) |
 | Black/white | ![](/assets/img/reference-images/scanity-bw-1.png) | ![](/assets/img/reference-images/spinner-bw-1.png) | ![](/assets/img/reference-images/ref-bw-1.png) |
 
-As a side note regarding the grading of tinted film, I've never managed to decide on which approach give the best results in the most effective manner: 1. grading the scans as colour film or 1. desaturating the scans and creating the colours from scratch. Considering how the Scanity actually captured some of these colours, getting to a good end-result might require going for the second approach. If I were to go for the second approach an option would be to scan the film using the monochrome HDR mode of the Scanity, to capture a wider density range. I guess this is something that could be explored further in a different text.
+As a side note at the very end of this document. I've never managed to decide on which grading approach give the best results in the most effective manner: 1. grading the scans as colour film or 1. desaturating the scans and creating the colours from scratch. Considering how the Scanity actually captured some of these colours, getting to a good end-result might require going for the second approach. 
+
+If I were to go for the second approach an option would be to scan the film using the monochrome HDR mode of the Scanity, to capture a wider density range. 
+
+Scanning the film in colour is still worth it though, as it at least captures that there were colours in the film (even though they are not rendered correctly in the scan).
 
 This text is based on various tests and work I did in 2022.
 
