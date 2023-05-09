@@ -79,7 +79,7 @@ There were many different tints in the film in question:
 - Red 2 (fiery red leaning to orange in mid/highs)
 - Coral (pinkish orange)
 - Aquamarine/cyan
-- Black and white-ish. It is fairly warm/brown, most likely due to base discolouration. Really hard to see with no clear film side by side. Could possibly be toned?
+- Black and white-ish. It is fairly warm/brown, most likely due to base discolouration(?). Really hard to see with no clear film side by side.
 
 Both the Scanity and Spinner struggles to capture these applied colours. However, they do not struggle with the same tints in the same manner. 
 
