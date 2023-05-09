@@ -15,7 +15,7 @@ The film in question is also a six reel feature film, with a multitude of differ
 I decided instead to find a way to create good reference photos of all the tints from all the reels, during my preparation inspection of the reels. My goal was to create reference photos that were good enough to be used for reference in the grading process, so that I would not have to retrieve the nitrate materials from the vault again.
  
 ## Creating reference images
-After some thinking I landed on an approach that was easy to set up and did not require for me to get any equipment I did not already have available.
+After some thinking I landed on an approach that was easy to set up, and that did not require any equipment I did not already have available.
 
 Equipment needed:
 - Light box (Kaiser slimite plano LED)
@@ -24,9 +24,9 @@ Equipment needed:
 - Friction arm/tripod
 - A trusted monitor
 
-First of all you need a reliable light source. High CRI and known colour temperature is a plus. I’ve been using a Kaiser slimite plano table, which is easily obtained, affordable and supposed to be 95CRI. You get what you pay for, and I’ve noticed that mine has slight variations in luminance, and the given colour temperature (while consistent) is only in the ballpark of the given 5000K. Mine seems to be around 5300K. 
+First of all you need a reliable light source. High CRI and known colour temperature is a plus. I’ve been using a Kaiser slimite plano table, which is easily obtained, affordable and supposed to be 95CRI. You get what you pay for though. My Kaiser has a slight flicker and the given colour temperature (while consistent) is only in the ballpark of the given 5000K. Mine seems to be around 5300K. 
  
-For the camera, I reckon you can use anything you have available that can be set to manual settings. I’ve used a macro lens on a Panasonic G9. I used aperture priority, with spot metering set on the white light source (not the film), to compensate for the slight variations in luminance from the Kaiser light box. If you do metering on the actual film strip, you will get unwanted variations. 
+Camera-wise, I reckon you can use anything you have available that can be set to manual settings. I’ve used a macro lens on a Panasonic G9. I used aperture priority, with spot metering set on the white light source (not the film), to compensate for the slight variations in luminance from the Kaiser light box. If you do metering on the actual film strip, you will get unwanted variations. With a non-flickering light source I would have used fully manual settings.
 
 Use a remote shutter, or delay on the shutter, to keep the shots sharp (even though that's not really a prerequisite for judging colour here).
  
@@ -44,9 +44,13 @@ I also applied a simple and consistent contrast change to my photos, to compensa
 ## Results
 Working like this produced good results, with reference images that very accurately reproduced the colours of the film as I saw them on the light box. 
 
-There are some limitations here of course: I am using a diffuse light source which can result in colour shifts. Projected contrast is also left to my guesswork. However, without a collimated light source I will have to accept these limitations. I still assume the reference image represent the colours much more accurately than our scanners capture them. Another point here is that you can document the colours *in relation* to each other. The colours might be 100% accurate, but you can know document that yellow 1 has redder midtones/shadows than yellow 2 for example. As long as you are aware of the limitations of what you are doing, I think this is a valid approach to documenting film colours - at least in the short term for grading help.
+There are some limitations here of course: I am using a diffuse light source which can result in colour shifts. Projected contrast is also left to my guesswork. However, without a collimated light source I will have to accept these limitations. I still assume the reference image represent the colours much more accurately than our scanners capture them. 
 
-For assessment controls of film material you could work like this to produce photo documentation very easily. For the film in question I took around 100 reference images like this.
+Another point here is that you can document the colours *in relation* to each other. Eg. Tint X is greener than Tint Y. The colours might not be 100% accurate, but you are able to document that yellow 1 has redder midtones/shadows than yellow 2 for example. As long as you are aware of the limitations of what you are doing, I think this is a valid approach to documenting film colours - at least in the short term for grading help.
+
+For assessment controls of film material you could also work like this to produce photo documentation very easily. For example of documentation of damages to the film. 
+
+For the film in question I took around 100 reference images like this.
 
 ---
 {: data-content="typical reference image"}
