@@ -59,7 +59,7 @@ For the film in question I took around 100 reference images like this.
 
 ---
 
-I would do some changes to my approach, if I were to do this for other film material:
+If I were to do this for other film material more routinely, I would do some changes to my approach:
 - I would use the camera tethered to a computer, so that I could use remotely trigger the shutter, adjust focus better and do reviews of the images' "representativeness" more effectively.
 - I would use a friction arm to hold the camera, so that the camera would be less obstructive in my working space.
 - Device a practical collimated light source for better colour and contrast capture (overhead projectors are not viable in cramped conditions).
@@ -81,7 +81,7 @@ There were many different tints in the film in question:
 - Aquamarine/cyan
 - Black and white-ish. It is fairly warm/brown, most likely due to base discolouration. Really hard to see with no clear film side by side. Could possibly be toned?
 
-The Scanity struggles to accurately capture several of these applied colours. The Spinner fares slightly better with of the tints (perhaps due to its bayer sensor?). However, I would not use our Spinner for preservation scans of 35mm, as we have one of the simpler model.
+Both the Scanity and Spinner struggles to capture these applied colours. However, they do not struggle with the same tints in the same manner. 
 
 An interesting note here is that the "Green 1" tint was not captured entirely accurately by my camera setup. The actual colour is somewhere in between what the Scanity captured and the reference image.
 
