@@ -12,7 +12,7 @@ In this particular use case I had a tinted feature film, with several tints I kn
 
 The film in question is also a six reel feature film, with a multitude of different tints, so grading would most likely take a while. 
 
-I decided instead to find a way to create good reference photos of all the tints from all the reels, during my preparation inspection of the reels. My goal was to create reference photos that were good enough to be used for reference in the grading process, so that I would not have to retrieve the nitrate materials from the vault again.
+I decided to see if I could find a way to create good reference photos of all the tints from all the reels, during my preparation inspection of the reels. My goal was to create reference photos that were good enough to be used for reference in the grading process, so that I would not have to retrieve the nitrate materials from the vault again.
  
 ## Creating reference images
 After some thinking I landed on an approach that was easy to set up, and that did not require any equipment I did not already have available.
@@ -66,7 +66,7 @@ If I were to do this for other film material more routinely, I would do some cha
 
 ## Scan/reference image comparisons
 
-Using these reference images it is easy to do an informal comparison with scans made on our Scanity and Spinner scanners. It is very easy to highlight the scanners' sensor sensitivity blindspots with such a comparison. The scans were made with neutral RGB balance in the scanner lights.
+Using these reference images it is easy to do an informal comparison with scans made on our Scanity and Spinner scanners. It quickly highlights the scanners' sensor sensitivity blindspots with such a comparison. The scans were made with neutral RGB balance in the scanner lights.
  
 The problem tints I tend to be on the lookout for are any yellows with reds in them, pinks and light blues. They can do crazy shifts on some scanners. Some pale blues are completely invisible to the Scanity…
 
