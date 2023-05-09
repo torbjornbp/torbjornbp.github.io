@@ -53,6 +53,8 @@ For assessment controls of film material you could work like this to produce pho
 
 ![](/assets/img/reference-images/reference.jpg)
 
+---
+
 I would do some changes to my approach, if I were to do this for other film material:
 - I would use the camera tethered to a computer, so that I could use remotely trigger the shutter, adjust focus better and do reviews of the images' "representativeness" more effectively.
 - I would use a friction arm to hold the camera, so that the camera would be less obstructive in my working space.
