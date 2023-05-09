@@ -72,7 +72,7 @@ If I were to do this for other film material more routinely, I would do some cha
 
 ## Scan/reference image comparisons
 
-Using these reference images it is easy to do an informal comparison with scans made on our Scanity and Spinner scanners. It quickly highlights the scanners' sensor sensitivity blindspots with such a comparison. The scans were made with neutral RGB balance in the scanner lights.
+Using these reference images it is easy to do an informal comparison with scans made on our Scanity and Spinner scanners. Such a comparison quickly highlights the scanners' sensor sensitivity blindspots. The scans were made with neutral RGB balance in the scanner lights.
  
 The problem tints I tend to be on the lookout for are any yellows with reds in them, pinks and light blues. They can do crazy shifts on some scanners. Some pale blues are completely invisible to the Scanity…
 
