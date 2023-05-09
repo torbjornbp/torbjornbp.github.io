@@ -19,16 +19,18 @@ After some thinking I landed on an approach that was easy to set up, and that di
 
 Equipment needed:
 - Light box (Kaiser slimite plano LED)
-- Camera with manual settings
+- Camera with manual settings (Panasonic G9)
 - Macro lens/macro ring (Laowa 50mm f/2.8 2X Ultra Macro APO)
 - Friction arm/tripod
 - A trusted monitor
 
 First of all you need a reliable light source. High CRI and known colour temperature is a plus. I’ve been using a Kaiser slimite plano table, which is easily obtained, affordable and supposed to be 95CRI. You get what you pay for though. My Kaiser has a slight flicker and the given colour temperature (while consistent) is only in the ballpark of the given 5000K. Mine seems to be around 5300K. 
  
-Camera-wise, I reckon you can use anything you have available that can be set to manual settings. I’ve used a macro lens on a Panasonic G9. I used aperture priority, with spot metering set on the white light source (not the film), to compensate for the slight variations in luminance from the Kaiser light box. If you do metering on the actual film strip, you will get unwanted variations. With a non-flickering light source I would have used fully manual settings.
+Camera-wise, I reckon you can use anything you have available that can be set to manual settings. I used a macro lens on a Panasonic G9 camera. 
 
-Use a remote shutter, or delay on the shutter, to keep the shots sharp (even though that's not really a prerequisite for judging colour here).
+For settings I used aperture priority, and as low ISO as I could, while still getting sharp images. With a non-flickering light source I would have used fully manual settings. However, to compensate for the slight variations in luminance from the Kaiser light box, I ended up using spot metering set on the white light source (not the film). If you do metering on the actual film strip, you will get unwanted variations. 
+
+Use remote shutter or delay on the shutter, to keep the shots sharp (even though that's not really a prerequisite for judging colour here).
  
 Review the results on a monitor you trust, until you know how close you will get to the source. I reviewed the photos on the calibrated monitor of my Macbook pro m1, set to rec709 colorspace. 
 
@@ -44,9 +46,13 @@ I also applied a simple and consistent contrast change to my photos, to compensa
 ## Results
 Working like this produced good results, with reference images that very accurately reproduced the colours of the film as I saw them on the light box. 
 
-There are some limitations here of course: I am using a diffuse light source which can result in colour shifts. Projected contrast is also left to my guesswork. However, without a collimated light source I will have to accept these limitations. I still assume the reference image represent the colours much more accurately than our scanners capture them. 
+There are some limitations here of course and probably a lot of pitfalls I'm not even aware of. For example I am using a diffuse light source which can result in colour shifts. Projected contrast is also left to my guesswork. 
 
-Another point here is that you can document the colours *in relation* to each other. Eg. Tint X is greener than Tint Y. The colours might not be 100% accurate, but you are able to document that yellow 1 has redder midtones/shadows than yellow 2 for example. As long as you are aware of the limitations of what you are doing, I think this is a valid approach to documenting film colours - at least in the short term for grading help.
+However, without a collimated light source I will just have to accept these limitations. I still assume the reference image represent the colours much more accurately than our scanners capture them. 
+
+Another point here is that you can document the colours *in relation* to each other. Eg. Tint X is greener than Tint Y. The colours might not be 100% accurate, but you are able to document that yellow 1 has redder midtones/shadows than yellow 2 for example. 
+
+As long as you are aware of the limitations of what you are doing, I think this is a valid approach to documenting film colours - at least in the short term for grading help.
 
 For assessment controls of film material you could also work like this to produce photo documentation very easily. For example of documentation of damages to the film. 
 
