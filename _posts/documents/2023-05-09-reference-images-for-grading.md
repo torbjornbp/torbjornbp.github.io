@@ -28,7 +28,7 @@ First of all you need a reliable light source. High CRI and known colour tempera
  
 Camera-wise, I reckon you can use anything you have available that can be set to manual settings. I used a macro lens on a Panasonic G9 camera. 
 
-For settings I used aperture priority, and as low ISO as I could, while still getting sharp images. With a non-flickering light source I would have used fully manual settings. However, to compensate for the slight variations in luminance from the Kaiser light box, I ended up using spot metering set on the white light source (not the film). If you do metering on the actual film strip, you will get unwanted variations. 
+For settings I used aperture priority, the lowest ISO that still allowed me to capture  sharp images. With a non-flickering light source I would have used fully manual settings. However, to compensate for the slight variations in luminance from the Kaiser light box, I ended up using spot metering set on the white light source (not the film). If you do metering on the actual film strip, you will get unwanted variations. 
 
 Use remote shutter or delay on the shutter, to keep the shots sharp (even though that's not really a prerequisite for judging colour here).
  
