@@ -4,9 +4,9 @@ layout: post
 title: Creating reference images for grading tinted film
 ---
 
-Digitising autonomous colours poses a range of challenges ("chromatic callier-effect"[^1], sensor wavelengths not suitable for autonomous colours[^2], etc.). There is no perfect solution or equipment to overcome these challenges. Every institution has to come up with a solution based on educated guesses and the equipment available - Settle on something pragmatic and document what you do!
+Digitising autonomous colours poses a range of challenges ("chromatic callier-effect"[^1], scanner sensitivity wavelengths not suitable for autonomous colours[^2], etc.). There is no perfect solution or equipment to overcome these challenges though. Every institution has to come up with a solution based on educated guesses and the equipment available - Settle on something pragmatic and document what you do!
 
-In my case, the available equipment is the DFT Scanity (and the MWA Nova Spinner). My educated guesses and typical workflow is based around my knowledge of this scanner's behaviour. Due to the aforementioned scanner sensor sensitivity, I know that some autonomous colours will not be captured in a representative manner. 
+In my case, the available equipment is the DFT Scanity (and the MWA Nova Spinner). My educated guesses and typical workflow is based around my knowledge of this scanner's behaviour. Due to the aforementioned scanner sensor sensitivity issues, I know that some autonomous colours will not be captured in a representative manner. 
 
 In this particular use case I had a tinted feature film, with several tints I knew the Scanity would have trouble capturing. The usual workflow here would be to scan the nitrate print and do grading, while having the nitrate close by for reference. However, a challenge here was that the material would be scanned, and post-processed much later (if at all). Remembering how it looked is not an option, and writing down something like "cyan" is not precise enough.
 
