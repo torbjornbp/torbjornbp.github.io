@@ -103,11 +103,17 @@ An interesting note here is that the "Green 1" tint was not captured entirely ac
 | Acquamarine/Cyan | ![](/assets/img/reference-images/scanity-cyan-1.png) | ![](/assets/img/reference-images/spinner-cyan-1.png) | ![](/assets/img/reference-images/ref-cyan-1.png) |
 | Black/white | ![](/assets/img/reference-images/scanity-bw-1.png) | ![](/assets/img/reference-images/spinner-bw-1.png) | ![](/assets/img/reference-images/ref-bw-1.png) |
 
-As a side note at the very end of this document. I've never managed to decide on which grading approach give the best results in the most effective manner: 1. grading the scans as colour film or 1. desaturating the scans and creating the colours from scratch. Considering how the Scanity actually captured some of these colours, getting to a good end-result might require going for the second approach. 
+## Grading?
+With the reference images made, how do we grade it? It's a different topic, but I've never managed to decide on which grading approach give the best results and is the most practical: 
 
-If I were to go for the second approach an option would be to scan the film using the monochrome HDR mode of the Scanity, to capture a wider density range. 
+1. Grading the scans as colour film 
+2. Desaturating the scans and creating the colours from scratch.
 
-Scanning the film in colour is still worth it though, as it at least captures that there were colours in the film (even though they are not rendered correctly in the scan).
+Considering how the Scanity actually captured some of these colours, getting to a good end-result might require going for the second approach. 
+
+If the second approach is the most practical in most cases, an option would be to scan the film using the monochrome HDR mode of the Scanity. That would allow me to capture a wider density range, but all colours would have to be recreated completely from scratch.
+
+Even though the colours don't look right, I believe scanning the film in colour still has some merit. It helps document the fact that there were colours (although rendered incorrectly) in the film, something a monochrome scan would not. That is of course unless you are dealing with one of the colours your scanner is completely blind to that is...
 
 This text is based on various tests and work I did in 2022.
 
