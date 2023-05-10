@@ -23,7 +23,7 @@ author: Torbjørn Pedersen
 email: 
 description: Moving image archivist at the National library of Norway  # >- this means to ignore newlines until "baseurl:"
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "torbjorn.no" # the base hostname & protocol for your site, e.g. http://example.com
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
 
 permalink: /:slug.html
 
