@@ -52,6 +52,13 @@ However, without a collimated light source I will just have to accept these limi
 
 Another point here is that you can document the colours *in relation* to each other. Eg. Tint X is greener than Tint Y. The colours might not be 100% accurate, but you are able to document that yellow 1 has redder midtones/shadows than yellow 2 for example. 
 
+---
+{: data-content="two different yellows"}
+
+![](/assets/img/reference-images/reference2.jpg)
+
+---
+
 As long as you are aware of the limitations of what you are doing, I think this is a valid approach to documenting film colours - at least in the short term for grading help.
 
 For assessment controls of film material you could also work like this to produce photo documentation very easily. For example of documentation of damages to the film. 
