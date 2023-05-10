@@ -59,7 +59,7 @@ Another point here is that you can document the colours *in relation* to each ot
 
 ---
 
-As long as you are aware of the limitations of what you are doing, I think this is a valid approach to documenting film colours - at least in the short term for grading help.
+As long as you are aware of the limitations of what you are doing, I think this is a valid approach for documenting film colours - at least in the short term for grading help.
 
 For assessment controls of film material you could also work like this to produce photo documentation very easily. For example of documentation of damages to the film. 
 
@@ -107,7 +107,7 @@ An interesting note here is that the "Green 1" tint was not captured entirely ac
 | Red 1 | ![](/assets/img/reference-images/scanity-red-1.png) | ![](/assets/img/reference-images/spinner-red-1.png) | ![](/assets/img/reference-images/ref-red-1.png) |
 | Red 2 | ![](/assets/img/reference-images/scanity-red-2.png) | ![](/assets/img/reference-images/spinner-red-2.png) | ![](/assets/img/reference-images/ref-red-2.png) |
 | Coral | ![](/assets/img/reference-images/scanity-coral-1.png) | ![](/assets/img/reference-images/spinner-coral-1.png) | ![](/assets/img/reference-images/ref-coral-1.png) |
-| Acquamarine/Cyan | ![](/assets/img/reference-images/scanity-cyan-1.png) | ![](/assets/img/reference-images/spinner-cyan-1.png) | ![](/assets/img/reference-images/ref-cyan-1.png) |
+| Aquamarine/Cyan | ![](/assets/img/reference-images/scanity-cyan-1.png) | ![](/assets/img/reference-images/spinner-cyan-1.png) | ![](/assets/img/reference-images/ref-cyan-1.png) |
 | Black/white | ![](/assets/img/reference-images/scanity-bw-1.png) | ![](/assets/img/reference-images/spinner-bw-1.png) | ![](/assets/img/reference-images/ref-bw-1.png) |
 
 ## Grading?
@@ -116,7 +116,7 @@ With the reference images made, how do we grade it? It's a different topic, but 
 1. Grading the scans as colour film 
 2. Desaturating the scans and creating the colours from scratch.
 
-Considering how the Scanity captured some of these colours, getting to a good end-result might require going for the second approach. 
+Considering how the Scanity captured some of these tints, getting to a good end-result might require going for the second approach. 
 
 If the second approach is the most practical in most cases, an option would be to scan such films using the monochrome HDR mode of the Scanity. That would allow me to capture a wider density range, but all colours would have to be recreated from scratch.
 
