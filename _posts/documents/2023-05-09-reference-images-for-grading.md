@@ -109,11 +109,11 @@ With the reference images made, how do we grade it? It's a different topic, but 
 1. Grading the scans as colour film 
 2. Desaturating the scans and creating the colours from scratch.
 
-Considering how the Scanity actually captured some of these colours, getting to a good end-result might require going for the second approach. 
+Considering how the Scanity captured some of these colours, getting to a good end-result might require going for the second approach. 
 
-If the second approach is the most practical in most cases, an option would be to scan the film using the monochrome HDR mode of the Scanity. That would allow me to capture a wider density range, but all colours would have to be recreated completely from scratch.
+If the second approach is the most practical in most cases, an option would be to scan such films using the monochrome HDR mode of the Scanity. That would allow me to capture a wider density range, but all colours would have to be recreated from scratch.
 
-Even though the colours don't look right, I believe scanning the film in colour still has some merit. It helps document the fact that there were colours (although rendered incorrectly) in the film, something a monochrome scan would not. As long as you are dealing with colours your scanner can see, that is...
+Even though the colours don't look right, I believe scanning the film in colour still has merit. It lets you document the fact that there were colours (although rendered incorrectly) in the film, something a monochrome scan would not. As long as you are dealing with colours your scanner can see, that is...
 
 This text is based on various tests and work I did in 2022.
 
