@@ -122,6 +122,3 @@ This text is based on various tests and work I did in 2022.
 
 [^1]: Fluckiger et al. (2018). *Investigation of Film Material–Scanner Interaction.* Fluckiger. (n.d.). Investigation of film material–scanner interaction. Retrieved March 9, 2023, from [https://barbaraflueckiger.files.wordpress.com/2018/03/flueckigeretal_investigationfilmmaterialscannerinteraction_2018_v_1-1c.pdf](https://barbaraflueckiger.files.wordpress.com/2018/03/flueckigeretal_investigationfilmmaterialscannerinteraction_2018_v_1-1c.pdf)
 [^2]: Trumpy, Giorgio & Flueckiger, Barbara. (2018). *Chromatic Callier Effect and its Repercussions on the Digitization of Early Film Colors.* Journal of Imaging Science and Technology. 63. [10.2352/J.ImagingSci.Technol.2019.63.1.010506](https://www.researchgate.net/publication/327937633_Chromatic_Callier_Effect_and_its_Repercussions_on_the_Digitization_of_Early_Film_Colors).
-
-
-
