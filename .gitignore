@@ -7,5 +7,4 @@ _site/
 _site
 vendor
 Gemfile.lock
-posts/test/
-_site/ignored-posts/
+_posts/ignored-posts/
