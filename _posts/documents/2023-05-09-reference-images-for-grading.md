@@ -15,7 +15,7 @@ The film in question is also a six reel feature film, with a multitude of differ
 I decided to see if I could find a way to create good reference photos of all the tints from all the reels, during my preparation inspection of the reels. My goal was to create reference photos that were good enough to be used for reference in the grading process, so that I would not have to retrieve the nitrate materials from the vault again.
  
 ## Creating reference images
-After some thinking I landed on an approach that was easy to set up, and that did not require any equipment I did not already have available.
+After some thinking I landed on an approach that was 1. easy to set up, and 2. did not require any equipment I did not already have available.
 
 Equipment needed:
 - Light box (Kaiser slimite plano LED)
@@ -30,11 +30,11 @@ Camera-wise, I reckon you can use anything you have available that can be set to
 
 For settings I used aperture priority, the lowest ISO that still allowed me to capture  sharp images. With a non-flickering light source I would have used fully manual settings. However, to compensate for the slight variations in luminance from the Kaiser light box, I ended up using spot metering set on the white light source (not the film). If you do metering on the actual film strip, you will get unwanted variations. 
 
-Use remote shutter or delay on the shutter, to keep the shots sharp (even though that's not really a prerequisite for judging colour here).
+Use remote shutter or delay on the shutter, to keep the shots sharp (even though that's not really a prerequisite for judging colour).
  
 Review the results on a monitor you trust, until you know how close you will get to the source. I reviewed the photos on the calibrated monitor of my Macbook pro m1, set to rec709 colorspace. 
 
-I also applied a simple and consistent contrast change to my photos, to compensate to some degree for the diffuse light source. Before using the photos applied a white point adjustment to D65, for grading in Rec709. You need to pay some attention to colour spaces here!
+I also applied a simple and consistent contrast change to my photos, to compensate to some degree for the diffuse light source. Before using the photos I applied a white point adjustment to D65, for grading in Rec709. You need to pay some attention to colour spaces here!
 
 ---
 {: data-content="camera and tripod setup"}
@@ -46,11 +46,11 @@ I also applied a simple and consistent contrast change to my photos, to compensa
 ## Results
 Working like this produced good results, with reference images that very accurately reproduced the colours of the film as I saw them on the light box. 
 
-There are some limitations here of course and probably a lot of pitfalls I'm not even aware of. For example I am using a diffuse light source which can result in colour shifts. Projected contrast is also left to my guesswork. 
+There are some limitations here of course and probably a lot of pitfalls I'm not even aware of. For example I am using a diffuse light source which can result in colour shifts. Projected contrast is also left to guesswork. 
 
 However, without a collimated light source I will just have to accept these limitations. I still assume the reference image represent the colours much more accurately than our scanners capture them. 
 
-Another point here is that you can document the colours *in relation* to each other. Eg. Tint X is greener than Tint Y. The colours might not be 100% accurate, but you are able to document that yellow 1 has redder midtones/shadows than yellow 2 for example. 
+Another thing to note here is that, while the colours might not be 100% accurate, this enables you to document the colours *in relation* to each other. Eg. "tint X" is greener than "tint Y".  Documenting that yellow 1 has redder midtones/shadows than yellow 2 for example is valuable information. 
 
 ---
 {: data-content="two different yellows"}
@@ -73,15 +73,15 @@ For the film in question I took around 100 reference images like this.
 ---
 
 If I were to do this for other film material more routinely, I would do some changes to my approach:
-- I would use the camera tethered to a computer, so that I could use remotely trigger the shutter, adjust focus better and do reviews of the images' "representativeness" more effectively.
+- I would use the camera tethered to a computer, so that I could use remotely trigger the shutter, adjust focus better, do reviews of the images' "representativeness" more effectively, as well as apply contrast/white point adjustments for further use automatically.
 - I would use a friction arm to hold the camera, so that the camera would be less obstructive in my working space.
-- Device a practical collimated light source for better colour and contrast capture (overhead projectors are not viable in cramped conditions).
+- Device a practical collimated light source for better colour and contrast capture (overhead projectors are not viable in cramped conditions). 
 
 ## Scan/reference image comparisons
 
-Using these reference images it is easy to do an informal comparison with scans made on our Scanity and Spinner scanners. Such a comparison quickly highlights the scanners' sensor sensitivity blindspots. The scans were made with neutral RGB balance in the scanner lights.
+Using these reference images it is easy to do an informal comparison with scans made on our Scanity and Spinner scanners. Such a comparison quickly highlights the scanners' sensor sensitivity blindspots. The scans were made with neutral RGB balance in the scanner lights. The three sample sets have different contrast of course, but that is not what we are evaluating here.
  
-The problem tints I tend to be on the lookout for are any yellows with reds in them, pinks and light blues. They can do crazy shifts on some scanners. Some pale blues are completely invisible to the Scanity…
+The problem tints I tend to be on the lookout for are: any yellows with reds in them; pinks; and light blues. They can do crazy shifts on some scanners. Some pale blues and lavender tones are completely invisible to the Scanity…
 
 There were many different tints in the film in question:
 - Green 1 used for title and one other shot
