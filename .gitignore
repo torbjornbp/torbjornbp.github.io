@@ -8,3 +8,4 @@ _site
 vendor
 Gemfile.lock
 posts/test/
+_site/ignored-posts/
