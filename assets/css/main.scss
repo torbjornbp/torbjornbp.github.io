@@ -2,3 +2,83 @@
 ---
 
 @import "no-style-please";
+
+// -- No style please invert -- //
+@mixin dark-appearance {
+  .embed-container, { 
+    filter: invert(1);
+
+    &.ioda { filter: invert(0); }
+  }
+}
+
+// -- Core CSS -- //
+
+body {
+  font-family: "Berkeley Mono";
+  font-size: 14px;
+  line-height: 1.2;
+  font-variant-ligatures: common-ligatures;
+  -webkit-font-feature-settings: "liga";
+}
+
+h1, h2, h3, h4, h5, h6 { text-transform: uppercase; }
+
+.w {
+  max-width: 800px;
+}
+
+div.highlighter-rouge code {
+  white-space: pre;
+  font-size: 11px;
+  font-variant-ligatures: none;
+}
+
+blockquote {
+  margin: 0 auto;
+}
+
+// -- Remark -- //
+
+.remark-slide-scaler {
+  box-shadow: 0 0 0 0;
+}
+
+.remark-container {
+  background: white;
+  margin: 0 auto;
+  max-width: 800px;
+}
+
+.remark-code, .remark-inline-code {
+  word-break: break-all;
+  word-wrap: break-word;
+
+}
+
+// --Youtube video embed plugin -- //
+
+.embed-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.embed-container iframe, .embed-container object, .embed-container embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+// -- Berkeley Mono font -- //
+
+@font-face {
+  font-family: 'Berkeley Mono';
+  src: url('fonts/BerkeleyMono-Regular.woff2');
+  font-weight: 400;
+  font-style: normal;
+}
