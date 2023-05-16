@@ -5,11 +5,24 @@
 
 // -- No style please invert -- //
 @mixin dark-appearance {
+  filter: invert(1);
+  img {
+    filter: invert(1);
+
+    &.ioda { filter: invert(0); }
+  }
   .embed-container, { 
     filter: invert(1);
 
     &.ioda { filter: invert(0); }
   }
+}
+
+body[a="dark"] { @include dark-appearance; }
+
+
+@media (prefers-color-scheme: dark) {
+  body[a="auto"] { @include dark-appearance; }
 }
 
 // -- Core CSS -- //
