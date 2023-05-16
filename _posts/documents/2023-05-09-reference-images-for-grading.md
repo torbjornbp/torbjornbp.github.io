@@ -13,6 +13,8 @@ In this particular use case I had a tinted feature film, with several tints I kn
 The film in question is also a six reel feature film, with a multitude of different tints, so grading would most likely take a while. 
 
 I decided to see if I could find a way to create good reference photos of all the tints from all the reels, during my preparation inspection of the reels. My goal was to create reference photos that were good enough to be used for reference in the grading process, so that I would not have to retrieve the nitrate materials from the vault again.
+
+---
  
 ## Creating reference images
 After some thinking I landed on an approach that was 1. easy to set up, and 2. did not require any equipment I did not already have available.
@@ -37,7 +39,7 @@ Review the results on a monitor you trust, until you know how close you will get
 I also applied a simple and consistent contrast change to my photos, to compensate to some degree for the diffuse light source. Before using the photos I applied a white point adjustment to D65, for grading in Rec709. You need to pay some attention to colour spaces here!
 
 ---
-{: data-content="camera and tripod setup"}
+{: data-content="CAMERA AND TRIPOD SETUP"}
 
 ![](/assets/img/reference-images/tripod.jpg)
 
@@ -53,7 +55,7 @@ However, without a collimated light source I will just have to accept these limi
 Another thing to note here is that, while the colours might not be 100% accurate, this enables you to document the colours *in relation* to each other. Eg. "tint X" is greener than "tint Y".  Documenting that yellow 1 has redder midtones/shadows than yellow 2 for example is valuable information. 
 
 ---
-{: data-content="two different yellows"}
+{: data-content="TWO DIFFERENT YELLOWS"}
 
 ![](/assets/img/reference-images/reference2.jpg)
 
@@ -66,7 +68,7 @@ For assessment controls of film material you could also work like this to produc
 For the film in question I took around 100 reference images like this.
 
 ---
-{: data-content="typical reference image"}
+{: data-content="TYPICAL REFERENCE IMAGE"}
 
 ![](/assets/img/reference-images/reference.jpg)
 
@@ -122,10 +124,10 @@ If the second approach is the most practical in most cases, an option would be t
 
 Even though the colours don't look right, I believe scanning the film in colour still has merit. It lets you document the fact that there were colours (although rendered incorrectly) in the film, something a monochrome scan would not. As long as you are dealing with colours your scanner can see, that is...
 
-This text is based on various tests and work I did in 2022.
+*This text is based on various tests and work I did in 2022.*
 
 ---
-{: data-content="footnotes"}
+{: data-content="FOOTNOTES"}
 
 [^1]: Fluckiger et al. (2018). *Investigation of Film Material–Scanner Interaction.* Fluckiger. (n.d.). Investigation of film material–scanner interaction. Retrieved March 9, 2023, from [https://barbaraflueckiger.files.wordpress.com/2018/03/flueckigeretal_investigationfilmmaterialscannerinteraction_2018_v_1-1c.pdf](https://barbaraflueckiger.files.wordpress.com/2018/03/flueckigeretal_investigationfilmmaterialscannerinteraction_2018_v_1-1c.pdf)
 [^2]: Trumpy, Giorgio & Flueckiger, Barbara. (2018). *Chromatic Callier Effect and its Repercussions on the Digitization of Early Film Colors.* Journal of Imaging Science and Technology. 63. [10.2352/J.ImagingSci.Technol.2019.63.1.010506](https://www.researchgate.net/publication/327937633_Chromatic_Callier_Effect_and_its_Repercussions_on_the_Digitization_of_Early_Film_Colors).
