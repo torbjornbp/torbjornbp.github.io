@@ -4,7 +4,7 @@ title: "Preservation metadata at the NLN"
 category: documents
 ---
 
-Presentation for FIAF CDC Preservation/Restoration Documentation Task Force about current and future(?) practices of documentating preservation processes at the moving image archive of the National Library of Norway. Examples based on film scanner/post-processing processes, but future aims are general and can be applied to other processes as well.
+Presentation for FIAF CDC Preservation/Restoration Documentation Task Force about current and future(?) practices of documenting preservation processes at the moving image archive of the National Library of Norway. Examples based on film scanner/post-processing processes, but future aims are general and can be applied to other processes as well.
 
 Keynote slides typed out to markdown with some additions.
 
@@ -13,7 +13,7 @@ Keynote slides typed out to markdown with some additions.
 # MAVIS - “Merged Audio-Visual Information System” 
 
 **CMS: Mavis 1996 -> 2024**
-- **Central system for all AV-materials** (still images, sound recordings and moving images +++)
+- **Central system for all AV-materials** (still images, sound recordings, moving images, etc.)
 	- Not just a catalog: names, acquisitions, conditions, treatments, loans, locations, etc. 
 	- Analog and digital material
 
