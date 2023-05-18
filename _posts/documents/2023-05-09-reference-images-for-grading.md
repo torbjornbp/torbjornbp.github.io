@@ -4,7 +4,7 @@ layout: post
 title: Creating reference images for grading tinted film
 ---
 
-Digitising autonomous colours poses a range of challenges ("chromatic callier-effect"[^1], autonumous colours falling outside scanner spectral sensitivities[^2], etc.). There is no perfect solution or equipment to overcome these challenges though. Every institution has to come up with a solution based on educated guesses and the equipment available - Settle on something pragmatic and document what you do!
+Digitising autonomous colours poses a range of challenges ("chromatic callier-effect"[^1], autonomous colours falling outside scanner spectral sensitivities[^2], etc.). There is no perfect solution or equipment to overcome these challenges though. Every institution has to come up with a solution based on educated guesses and the equipment available - Settle on something pragmatic and document what you do!
 
 In my case, the available equipment is the DFT Scanity (and the MWA Nova Spinner). My educated guesses and typical workflow is based around my knowledge of this scanner's behaviour. Due to the aforementioned scanner sensor sensitivity issues, I know that some autonomous colours will not be captured in a representative manner. 
 
@@ -34,9 +34,9 @@ For settings I used aperture priority, the lowest ISO that still allowed me to c
 
 Use remote shutter or delay on the shutter, to keep the shots sharp (even though that's not really a prerequisite for judging colour).
  
-Review the results on a monitor you trust, until you know how close you will get to the source. I reviewed the photos on the calibrated monitor of my Macbook pro m1, set to rec709 colorspace. 
+Review the results on a monitor you trust, until you know how close you will get to the source. I reviewed the photos on the calibrated monitor of my MacBook pro m1, set to rec709 colourspace. 
 
-I also applied a simple and consistent contrast change to my photos, to compensate to some degree for the diffuse light source. Before using the photos I applied a white point adjustment to D65, for grading in Rec709. You need to pay some attention to colour spaces here!
+I also applied a simple and consistent contrast change to my photos, to compensate to some degree for the diffuse light source. Before using the photos I applied a white point adjustment to D65, for grading in rec709. You need to pay some attention to colour spaces here!
 
 ---
 {: data-content="CAMERA AND TRIPOD SETUP"}
@@ -52,7 +52,7 @@ There are some limitations here of course and probably a lot of pitfalls I'm not
 
 However, without a collimated light source I will just have to accept these limitations. I still assume the reference image represent the colours much more accurately than our scanners capture them. 
 
-Another thing to note here is that, while the colours might not be 100% accurate, this enables you to document the colours *in relation* to each other. Eg. "tint X" is greener than "tint Y".  Documenting that yellow 1 has redder midtones/shadows than yellow 2 for example is valuable information. 
+Another thing to note here is that, while the colours might not be 100% accurate, this enables you to document the colours *in relation* to each other. Eg. "tint X" is greener than "tint Y".  Documenting that yellow 1 has redder mid-tones/shadows than yellow 2 for example is valuable information. 
 
 ---
 {: data-content="TWO DIFFERENT YELLOWS"}
