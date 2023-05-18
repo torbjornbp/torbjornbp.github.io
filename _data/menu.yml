@@ -2,29 +2,21 @@
 # https://github.com/riggraz/no-style-please#customize-the-menu
 
 entries:
-  - title: moving image archiving
+  - title: Moving image archiving
     post_list:
       category: documents
       limit: 5
       show_more: true
-      show_more_text: see archive...
+      show_more_text: See archive...
       show_more_url: archive-documents.html
 
-  - title: personal bits and pieces
+  - title: Personal bits and pieces
     post_list:
       category: bits
       limit: 5
       show_more: true
-      show_more_text: see archive...
-      show_more_url: bits-archives.html
-
- # - title: test pages
- #   post_list:
- #     category: test
- #     limit: 5
- #     show_more: true
- #     show_more_text: see archive...
- #     show_more_url: archive-test.html
+      show_more_text: See archive...
+      show_more_url: archive-bits.html
   
  # - title: another list
  #   entries:
@@ -34,5 +26,8 @@ entries:
  #         - title: example page
  #           url: about
 
-  - title: rss
+  - title: Linkedin
+    url: https://www.linkedin.com/in/torbjørn-pedersen-57617b227/
+
+  - title: RSS
     url: feed.xml
