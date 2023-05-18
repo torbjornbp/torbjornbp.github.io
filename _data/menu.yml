@@ -5,7 +5,7 @@ entries:
   - title: Moving image archiving
     post_list:
       category: documents
-      limit: 5
+      limit: 10
       show_more: true
       show_more_text: See archive...
       show_more_url: archive-documents.html
