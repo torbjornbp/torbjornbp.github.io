@@ -4,6 +4,7 @@
 @import "no-style-please";
 
 // -- No style please invert -- //
+
 @mixin dark-appearance {
   filter: invert(1);
   img {
@@ -36,6 +37,11 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 { text-transform: uppercase; }
+
+ul { 
+  margin: 0.4rem 0;
+  list-style-type: disclosure-closed;
+}
 
 .w {
   max-width: 800px;
