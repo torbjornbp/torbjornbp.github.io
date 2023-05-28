@@ -8,6 +8,8 @@ Presentation for FIAF CDC Preservation/Restoration Documentation Task Force abou
 
 ---
 
-<iframe width="100%" height="450" src="/assets/pdf/CDC-Presentation-25042023.pdf">
+[link to PDF](/assets/pdf/CDC-Presentation-25042023.pdf)
+
+<iframe width="100%" height="450" src="/assets/pdf/CDC-Presentation-25042023.pdf#fitW"></iframe>
 
 ---
