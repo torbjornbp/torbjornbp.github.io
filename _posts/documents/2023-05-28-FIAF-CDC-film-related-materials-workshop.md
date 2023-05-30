@@ -8,5 +8,9 @@ Presentation held at the FIAF CDC Workshop ["So Much More Than Non-Film: Catalog
 
 [Link to PDF](/assets/pdf/CDC-Workshop-25052023.pdf)
 
+<video width="100%" controls>
+  <source src="assets/mov/cdc25052023/CDC-Workshop-25052023.m4v" type="video/mp4">
+</video>
+
 ---
 
