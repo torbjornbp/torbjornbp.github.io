@@ -9,7 +9,7 @@ Over the last year or so, I've been dabbling with various scripts to manipulate 
 One of the applications I was trying to run was the [Deep-doLCE](https://www.researchgate.net/publication/358888176_Deep-doLCE_A_deep_learning_approach_for_the_color_reconstruction_of_digitized_lenticular_film) tool. It's a a tool that can be used to recreate the colours of a [Kodacolor](https://filmcolors.org/timeline-entry/1240/) film (I hope to write more about this at some point). It uses a trained AI model to detect the *lenticules* on the image frames, before performing its magic. A breath of fresh air considering all the bogus colourised black and white clips you'll see floating around these days...
 
 ---
-{: data-content="Kodacolor film colourised by Deep-doLCE (merged luma/chroma output)"}
+{: data-content="Kodacolor film colourised by Deep-doLCE"}
 
 <img src="/assets/mov/ocr-script/kodacolor2.mov" width="100%" />
 
