@@ -11,7 +11,7 @@ One of the applications I was trying to run was the [Deep-doLCE](https://www.res
 ---
 {: data-content="Kodacolor film colourised by Deep-doLCE (merged luma/chroma output)"}
 
-<img src="/assets/img/ocr-script/kodacolor.mp4" width="100%" />
+<img src="/assets/mov/ocr-script/kodacolor2.mov" width="100%" />
 
 ---
 
@@ -34,7 +34,7 @@ After a few days of forcing GPT to write code and testing, several variables whe
 ---
 {: data-content="Demo"}
 
-<img src="/assets/img/ocr-script/demo.mp4" width="100%" />
+<img src="/assets/mov/ocr-script/demo.mov" width="100%" />
 
 ---
 
