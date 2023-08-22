@@ -29,7 +29,12 @@ This spring I had the chance to put all of this to the test. An inquiry on the A
 
 After a few days of forcing GPT to write code and testing, several variables where added and functionality was fleshed out. The code checks every frame in a specified interval for text elements (every 20th frame for example). If it detects text in a frame, it performs OCR on the frame in question using the Tesseract OCR engine. The text is then output with timecodes in both a functional SRT file, as well as a JSON file with some additional metadata. Detection language can be specified, a character blacklist can be configured for improved results and a preview of the video with text detection can be toggled on off. The code is also commented.
 
+---
+{: data-content="Demo"}
+
 <img src="/assets/img/ocr-script/demo.mp4" width="100%" />
+
+---
 
 Mind you: I am barely able to write any Python code myself! 
 
