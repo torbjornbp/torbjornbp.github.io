@@ -32,7 +32,6 @@ After a few days of forcing GPT to write code and testing, several variables whe
 *Mind you: I am barely able to write any Python code myself!*
 
 ---
-{: data-content="Demo"}
 
 <img src="/assets/mov/ocr-script/demo.mov" width="100%" />
 
@@ -41,3 +40,27 @@ After a few days of forcing GPT to write code and testing, several variables whe
 All of this was done by querying GPT over and over. Queries such as "can this code be simplified?", "are there redundant sections in the code?", "suggest performance tweaks" or "give me x alternatives to solving problem y?" actually allow you to produce code without knowing how to write code. The comments in the code as it stands and most of the readme on github was actually written by GPT as well.
 
 The script can be found here: [https://github.com/torbjornbp/video-ocr2srt](https://github.com/torbjornbp/video-ocr2srt)
+
+---
+{: data-content="JSON sample (Nordic letters look a bit odd)"}
+
+```
+[
+    {
+        "filename": "testvideo.mp4",
+        "date_processed": "2023-08-22-20-26",
+        "ocr_language": "dan",
+        "analysis_frame_interval": 20,
+        "character_blacklist": "@^\u00a8#$\u00ab|{}_\u0131[]\u00b0<>\u00bb%=+\u00b4`\u00a7*"
+    },
+    {
+        "frame_number": 1320,
+        "timecode_ms": 54958.33333333333,
+        "text_detection_confidence": 0.9985535667492793,
+        "ocr_text": "Ved en \u00f8de Indsk\u00e6ring\n\naf Floridakysten. En ny\nDag gryer.\n\n",
+        "ocr_confidence": 93.0909090909091
+    }
+```
+
+---
+
