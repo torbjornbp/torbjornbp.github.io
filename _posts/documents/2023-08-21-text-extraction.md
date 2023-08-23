@@ -6,7 +6,7 @@ title: "Video OCR: Coding in Python (with the help of AI)"
 
 Over the last year or so, I've been dabbling with various scripts to manipulate video, metadata etc. I've been running a wide range of experiments, amongst others grading film scans using Python and Jupyter notebooks (with massive help from [Paul Duchesne](paulduchesne.github.io)) and trying use the [IFIscripts](https://github.com/kieranjol/IFIscripts) for digital preservation of the scans of grandparent's Super8 home movies. I've been a light user of FFmpeg for years, but I think finally realised how powerful these tools can be, and how low the bar for starting to use them actually is. 
 
-One of the applications I was trying to run was the [Deep-doLCE](https://www.researchgate.net/publication/358888176_Deep-doLCE_A_deep_learning_approach_for_the_color_reconstruction_of_digitized_lenticular_film) tool. It's a a tool that can be used to recreate the colours of a [Kodacolor](https://filmcolors.org/timeline-entry/1240/) film (I hope to write more about this at some point). It uses a trained AI model to detect the *lenticules* on the image frames, before performing its magic. A breath of fresh air considering all the bogus colourised black and white clips you'll see floating around these days...
+One of the applications I was trying to run was the [Deep-doLCE](https://www.researchgate.net/publication/358888176_Deep-doLCE_A_deep_learning_approach_for_the_color_reconstruction_of_digitized_lenticular_film) tool. It's a a tool that can be used to recreate the colours of a [Kodacolor](https://filmcolors.org/timeline-entry/1240/) film, which I hope to write more about at some point. It uses a trained AI model to detect the *lenticules* on the image frames, before performing its magic. A breath of fresh air considering all the bogus colourised black and white clips you'll see floating around these days...
 
 ---
 {: data-content="Kodacolor film colourised by Deep-doLCE"}
@@ -26,22 +26,18 @@ As a python novice I ended up feeding code snippets and error messages into thes
 
 This works remarkably well, even though you have to be patient and often rephrase the same questions again and again to get somewhere. It's a great learning tool, after a while I've started to get a better idea of when the bot feeds me faulty solutions. I'm sure my friends/involuntary tech-support were glad to be pestered less with Python related questions as well.
 
-## OCR processing intertitles
-This spring I had the chance to put all of this to the test. An inquiry on the AMIA-L mailing list peaked my interest. I set out to create a small script that would OCR intertitles in silent film and output them in some manner along with timecodes. A friend of mine helped set up a skeleton of code using openCV and the EAST text detection model to detect whether a video frame contained text. From here on I started tweaking it by feeding chat-GPT with questions and demands for code change suggestions. 
-
-After a few days of forcing GPT to write code and testing, several variables where added and functionality was fleshed out. The code checks every frame in a specified interval for text elements (every 20th frame for example). If it detects text in a frame, it performs OCR on the frame in question using the Tesseract OCR engine. The text is then output with timecodes in both a functional SRT file, as well as a JSON file with some additional metadata. Detection language can be specified, a character blacklist can be configured for improved results and a preview of the video with text detection can be toggled on off. The code is also commented.
-
-*Mind you: I am barely able to write any Python code myself!*
-
 ---
 
 <img src="/assets/mov/ocr-script/demo.mov" width="100%" />
 
 ---
 
-All of this was done by querying GPT over and over. Queries such as "can this code be simplified?", "are there redundant sections in the code?", "suggest performance tweaks" or "give me x alternatives to solving problem y?" actually allow you to produce code without knowing how to write code. The comments in the code as it stands and most of the readme on github was actually written by GPT as well.
+## OCR processing intertitles
+This spring I had the chance to put all of this to the test. An inquiry on the AMIA-L mailing list peaked my interest. I set out to create a small script that would OCR intertitles in silent film and output them in some manner along with timecodes. A friend of mine helped set up a skeleton of code using openCV and the EAST text detection model to detect whether a video frame contained text. From here on I started tweaking it by feeding chat-GPT with questions and demands for code change suggestions. 
 
-The script can be found here: [https://github.com/torbjornbp/video-ocr2srt](https://github.com/torbjornbp/video-ocr2srt)
+After a few days of forcing GPT to write code and testing, several variables where added and functionality was fleshed out. The code checks every frame in a specified interval for text elements (every 20th frame for example). If it detects text in a frame, it performs OCR on the frame in question using the Tesseract OCR engine. The text is then output with timecodes in both a functional SRT file, as well as a JSON file with some additional metadata. Detection language can be specified, a character blacklist can be configured for improved results and a preview of the video with text detection can be toggled on off. The code is also commented.
+
+*Mind you: I am barely able to write any Python code myself!*
 
 ---
 {: data-content="JSON sample"}
@@ -62,7 +58,21 @@ The script can be found here: [https://github.com/torbjornbp/video-ocr2srt](http
         "ocr_text": "Ved en \u00f8de Indsk\u00e6ring\n\naf Floridakysten. En ny\nDag gryer.\n\n",
         "ocr_confidence": 93.0909090909091
     }
+]
 ```
 
 ---
 
+All of this was done by querying GPT over and over. I fed it all of the code or parts of the code depending on what I wanted to tweak. Queries such as "can this code be simplified?", "suggest performance tweaks", "give me x alternatives to solving problem y?" and "are there redundant sections in the code?" actually allow you to produce and refine code with very limited knowledge about code. Working on the script I managed to implement many different variations of the code, evaluating both different text detection and OCR methods etc. All of the comments in the code as it stands and most of the readme on github was actually written by GPT as well. 
+
+Looking back at it, I'm amazed at what I managed to achieve with my limited experience, regardless of whether the script has a fairly limited scope of use. 
+
+The script can be found here: [https://github.com/torbjornbp/video-ocr2srt](https://github.com/torbjornbp/video-ocr2srt)
+
+---
+{: data-content="Functional SRT"}
+
+![](/assets/img/ocr-script/srtscreenshot.png)
+
+
+---
