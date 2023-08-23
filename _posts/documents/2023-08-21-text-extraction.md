@@ -37,7 +37,7 @@ This spring I had the chance to put all this to the test. An inquiry on the AMIA
 
 After a few days of forcing GPT to write code and testing, several variables where added and functionality was expanded out. In the end the functions like this: it analyses every frame in a specified interval for text elements (every 20th frame for example). If text is detected in a frame, it performs OCR on the frame in question using the Tesseract OCR engine. The text is then output with timecodes in both a functional SRT file and a JSON file with additional metadata. OCR language can be specified, a character blacklist can be configured for improved results and a preview of the video with text detection can be toggled on off. The code is also commented.
 
-*Mind you: I am barely able to write any Python code myself!*
+*Keep in mind, I am barely able to write any Python code myself!*
 
 ---
 {: data-content="JSON sample"}
