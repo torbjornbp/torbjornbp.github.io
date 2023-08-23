@@ -11,7 +11,9 @@ One of the applications I was trying to run was the [Deep-doLCE](https://www.res
 ---
 {: data-content="Kodacolor film colourised by Deep-doLCE"}
 
-<img src="/assets/mov/ocr-script/kodacolor2.mov" width="100%" />
+<video width="100%" autoplay loop>
+	<source src="/assets/mov/ocr-script/kodacolor.webm" type="video/webm">
+</video>
 
 ---
 
@@ -28,7 +30,10 @@ This works remarkably well, even though you have to be patient and often rephras
 
 ---
 
-<img src="/assets/mov/ocr-script/demo.mov" width="100%" />
+<video width="100%" autoplay loop>
+	<source  src="/assets/mov/ocr-script/demo.webm" type="video/webm">
+</video>
+
 
 ---
 
