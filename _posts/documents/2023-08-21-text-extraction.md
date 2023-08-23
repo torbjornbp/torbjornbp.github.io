@@ -11,8 +11,8 @@ One of the applications I was trying to run was the [Deep-doLCE](https://www.res
 ---
 {: data-content="KODACOLOR FILM PROCESSED BY DEEP-DOLCE"}
 
-<video width="100%" autoplay loop>
-	<source src="/assets/mov/ocr-script/kodacolor.webm" type="video/webm" codecs="vp8">
+<video width="100%" autoplay loop playsinline>
+	<source src="/assets/mov/ocr-script/kodacolor.webm" type="video/webm">
 	Your browser does not support the video format/codec.
 </video>
 
@@ -31,8 +31,8 @@ This works remarkably well, even though you have to be patient and often rephras
 
 ---
 
-<video width="100%" autoplay loop>
-	<source  src="/assets/mov/ocr-script/demo.webm" type="video/webm" codecs="vp8">
+<video width="100%" autoplay loop playsinline>
+	<source  src="/assets/mov/ocr-script/demo.webm" type="video/webm">
 	Your browser does not support the video format/codec.
 </video>
 
