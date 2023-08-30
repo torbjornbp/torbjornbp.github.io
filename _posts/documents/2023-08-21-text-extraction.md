@@ -14,7 +14,7 @@ One of the applications I was trying to run was the [Deep-doLCE](https://www.res
 <video width="100%" autoplay muted loop playsinline>
 	<source src="/assets/mov/ocr-script/kodacolor.webm" type="video/webm">
 	<source src="/assets/mov/ocr-script/kodacolor.mp4" type="video/mp4">
-	Your browser does not support the video format/codec.
+	<p>Your browser does not support the video format/codec.</p>
 </video>
 
 ---
@@ -35,7 +35,7 @@ This works remarkably well, even though you have to be patient and often rephras
 <video width="100%" autoplay muted loop playsinline>
 	<source  src="/assets/mov/ocr-script/demo.webm" type="video/webm">
 	<source  src="/assets/mov/ocr-script/demo.mp4" type="video/mp4">
-	Your browser does not support the video format/codec.
+	<p>Your browser does not support the video format/codec.</p>
 </video>
 
 
@@ -72,7 +72,7 @@ After a few days of forcing GPT to write code and testing, several variables whe
 
 ---
 
-All of this was done by querying GPT over and over. I fed it all of the code or parts of the code depending on what I wanted to tweak. Queries such as "can this code be simplified?", "suggest performance tweaks", "give me x alternatives to solving problem y?" and "are there redundant sections in the code?" actually allow you to produce and refine code with very limited knowledge about code. Working on the script I managed to implement many different variations of the code, evaluating both different text detection and OCR methods etc. All of the comments in the code as it stands and most of the readme on github was actually written by GPT as well. 
+All of this was done by querying GPT over and over. I fed it all of the code or parts of the code depending on what I wanted to tweak. Queries such as "can this code be simplified?", "suggest performance tweaks", "give me x alternatives to solving problem y?" and "are there redundant sections in the code?" actually allow you to produce and refine code with very limited knowledge about code. GPT will make a ton of errors, it will write redundant code, it will leave unused code snippets in your code, but you can easily fix it by asking a parallel GPT instance to look over it. Working on the script I managed to implement many different variations of the code, evaluating both different text detection and OCR methods etc. All of the comments in the code as it stands and most of the readme on github was actually written by GPT as well. 
 
 Looking back at it, I'm amazed at what I managed to achieve with my limited experience, regardless of whether the script has a fairly limited scope of use. 
 
