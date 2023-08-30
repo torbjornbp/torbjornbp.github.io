@@ -24,7 +24,7 @@ While I've always liked to think of myself as tech savvy, I've sadly never learn
 
 In this same time period there was suddenly a lot of hype surrounding various AI tools. Chatbots etc. suddenly became widely available and of course I had to try them out (along with everyone else). Playing around with the GPT chatbots for example was tremendously fun, but I struggled to find any practical use of them in the day to day.
 
-Working with these chatbots, the accurate *description* of a problem can be enough to solve it. This is in theory though, in practice, the chatbots tend to give you odd, inaccurate or, straight up false, answers to a lot of questions. The challenge seems to be to make the *correct* queries about things included in the models' training dataset - you need to only ask it about it things it "knows". Python code seems to be one of these things though!
+Working with these chatbots, the accurate *description* of a problem can be enough to solve it. This is in theory though, in practice, the chatbots tend to give you odd, inaccurate or, straight up false, answers to a lot of questions. The challenge seems to be to make the right *queries*, that is: to only ask about things included in the models' training dataset. While the training dataset is a problematic black box of unknowns, it appears Python code was included there!
 
 As a Python novice I ended up feeding code snippets and error messages into these bots (primarily GPT-3.5 and 4). They seem to grasp Python fairly well, and can point out where errors stem from etc. I even fed the bots answers and solutions from Stackoverflow, so that the bots could dumb it down for me. 
 
