@@ -14,9 +14,7 @@ It is a danger that is not actually driven by the technology, but rather by the 
 
 For certain people almost every manual task is brushed off as something that "AI can solve in the future", with a complete disregard for whether such a solution is even remotely feasible. 
 
-
-## Organisational brain drain
-The result is the same every time, resources are moved away from functions/areas of expertise that has been deemed ready for AI replacement. At the same time no concrete steps to actually come up with these AI replacements are made. It is assumed this will happen by itself out there in the wider world. The result is a loss in expertise within your organisation, while the technological replacement never arrives.
+The result is the same every time, resources are moved away from functions/areas of expertise that has been deemed ready for AI replacement by the powers that be. At the same time no concrete steps to actually come up with these AI replacements are made. It is assumed this will happen by itself out there in the wider world. The result is a loss in expertise within your organisation, while the technological replacement never arrives.
 
 Such attitudes are deeply damaging to any type of organisation. Perhaps especially so though, to institutions with narrow fields of expertise and small groups of experts, such as specialised cultural heritage institutions. You can rarely afford to lose anyone. My point is that these views needs to be challenged and fought whenever they are encountered.
 
