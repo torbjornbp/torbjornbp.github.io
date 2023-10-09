@@ -8,9 +8,9 @@ There is a lot of "cool" things happening in the AI/ML field, but as other, more
 
 Ludicrous [power](https://www.bloomberg.com/news/articles/2023-03-09/how-much-energy-do-ai-and-chatgpt-use-no-one-knows-for-sure) and [water](https://arxiv.org/pdf/2304.03271.pdf) usage (I wonder how many liters of water I wasted, in the creation of my little [OCR script](https://torbjorn.no/text-extraction.html), the reproduction and ossification of the status quo through existing [data biases](https://www.nytimes.com/2021/03/15/technology/artificial-intelligence-google-bias.html) reflecting power structures etc; the list goes on. In short, there's a lot of bad things currently happening and lot of  bad things that probably will happen related to this technology.
 
-Let's ignore the danger of impending climate doom for a second though, as well as, dangers caused by the application of these technologies. I want to highlight a lesser but very immediate and present danger instead - the danger of cavalier technological solutionism and misconception.
+Let's ignore the danger of impending climate doom for a second though, as well as other dangers caused by the *application* of these technologies. I want to highlight a lesser but very immediate and present danger instead - the danger of cavalier technological solutionism and misconception.
 
-It is a danger that is not actually driven by the technology, but rather by the *hype* of possible fantastic futures. This hype is damaging in itself, as it leads people in power male destructive and shortsighted decisions based on fictions and hopes. 
+It is a danger that is not actually driven by the technology, but rather by the *hype* of possible fantastic futures. This hype is damaging in itself, as it leads people in power make destructive and shortsighted decisions based on fictions and hopes. 
 
 For certain people almost every manual task is brushed off as something that "AI can solve in the future", with a complete disregard for whether such a solution is even remotely feasible. 
 
