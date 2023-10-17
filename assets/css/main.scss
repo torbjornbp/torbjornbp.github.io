@@ -35,7 +35,9 @@ body[a="dark"] { @include dark-appearance; }
 
 body {
   font-family: "Berkeley Mono";
-  font-size: 15px;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
   line-height: 1.1;
   font-variant-ligatures: common-ligatures;
   -webkit-font-feature-settings: "liga";
@@ -118,4 +120,33 @@ table {
   src: url('fonts/BerkeleyMono-Regular.woff2');
   font-weight: 400;
   font-style: normal;
+}
+
+/* Formatting for PDF exports/printing */
+@media print {
+  body {
+  font-size: 12px;
+  }
+  table, pre, code, blockquote {
+    page-break-inside: avoid;
+  }
+  div.footnotes {
+    break-before: page;
+  }
+  pre {
+    word-wrap: break-word;
+  }
+  body {
+    padding: 1cm; 
+  }
+  /* Prevent page-breaks right after a heading */ 
+  h1, h2, h3, h4, h5, h6 {
+  break-inside: avoid;
+  }
+  h1::after, h2::after, h3::after, h4::after, h5::after, h6::after {
+    content: "";
+    display: block;
+    margin-bottom: -4rem;
+    height: 4rem;
+    }
 }
