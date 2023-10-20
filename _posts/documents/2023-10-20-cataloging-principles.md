@@ -287,7 +287,7 @@ Of equal, or perhaps more, importance is knowing the limitations of what you are
 
 In our example of orphaned carriers, we do not achieve content descriptions. We only achieve descriptions at the bottom-level of a 4-level hierarchy. Content descriptions are complicated, but also expected of many of our end users. Good content descriptions should still be the end goal for most of our material. 
 
-We have only eased the first, tiny step in description but the descriptive work is not done! It is a stepping stone for further enrichment. Losing track of this will lead to disaster.
+We have only eased the first, tiny step in description but the descriptive work is not done! It is a stepping stone for further enrichment. There is no such thing as free metadata magically appearing out of nowhere, it has to be created somehow. Like with everything else in this world, you get what you pay for. Losing track of this will lead to disaster.
 
 We can accomplish more by not mixing unrelated processes together, but we are still interested in all the processes. I think it's about having multiple thoughts in your head at the same time.
 
