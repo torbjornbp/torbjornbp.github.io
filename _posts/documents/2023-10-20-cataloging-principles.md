@@ -60,10 +60,10 @@ Mavis (primarily[^2]) operates with a three-level hierarchy of filmographic desc
 │               ├──────────┬──────────▶│               │░
 └───────┬───────┘░         │           └───────┬───────┘░
  ░░░░░░░│1░░░░░░░░         │            ░░░░░░░│░░░░░░░░░
-        │                  └──────────▶        │
-        │1..n                                  │
-┌───────┴───────┐                      ┌───────┴───────┐
-│    CARRIER    │░                     │    CARRIER    │░
+        │                  │                   │
+        │1..n              │                   │
+┌───────┴───────┐          │           ┌───────┴───────┐
+│    CARRIER    │░         └──────────▶│    CARRIER    │░
 │               ├─────────────────────▶│               │░
 └───────────────┘░                     └───────────────┘░
  ░░░░░░░░░░░░░░░░░                      ░░░░░░░░░░░░░░░░░
@@ -162,7 +162,7 @@ I'm very fond of the carrier as a concept. It refers to something specific in Ma
 
 *Content*, on the other hand, is an abstract concept, and thus open to (much more) interpretation. The higher-level cataloging entities used to describe content and other more abstract concepts (works, expressions, manifestations, etc), are thus often subject to change. Content identification is fleeting.
 
-In theory, a carrier could be described in multiple different hierarchies in parallel. A carrier such as a film reel, could for example be described both as filmographic content (FIAFcore hierarchy) *and* as an archival object in an archival database (modelled after ISAD(G) hierarchy). I have aired this idea a few times and believe this is something to work for in the longterm, but let's not get carried away completely!
+In theory, a carrier could be described in multiple different hierarchies in parallel. A carrier such as a film reel, could for example be described both as filmographic content (FIAFcore hierarchy) *and* as an archival object in an archival database (ISAD(G) hierarchy). I have aired this idea a few times and believe this is something to work for in the longterm, but let's not get carried away completely!
 
 ```
 "CONTENT HIERARCHY"               "ARCHIVAL HIERARCHY"
