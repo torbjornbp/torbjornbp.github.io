@@ -9,13 +9,13 @@ I have typed out various specific cataloging procedures, I have pushed for certa
 This post is an attempt to start spelling out some possible overarching principles about cataloging. Perhaps some ideas make little sense outside of my organization due to organizational specifics, but I think at least some of these principles could be of use elsewhere. I will try to illustrate the point of these principles using a practical challenge from the cataloging of our filmographic collection.
 
 ## Content description
-Cataloging, at its core, is the act of describing something - *what is it?* - to enable some sort of use of the metadata. I won't go into detail about the many possible uses of metadata, but I like the aims proposed in FRBR for example: to **find**, **identify**, **select**, and **obtain**.
+Cataloging, at its core, is the act of describing something - *what is it?* - to enable some sort of use of the metadata. I won't go into detail about the many possible uses of metadata, but the aims proposed in FRBR for example, is a good starting point: to **find**, **identify**, **select**, and **obtain**.
 
 However, there are many systems of description to choose from. The metadata models typically used for filmographic description are models with a *content* focus. These standards typically come from the library world. 
 
 It seems almost too obvious to need clarification, but by *content* I refer to the information contained in the material media. The experienced sound and images, the narrative, what was in front of the camera. It is film as icon and index. It is film primarily as message, less importantly as media. Film as cultural object, not as material culture. It is a focus on film in the abstract sense, as opposed to looking at film as tangible objects. 
 
-The reason I bring this up is that this is one, of many, ways of looking at film[^1]. Your cataloging is influenced by the various *frameworks* you work within.
+The reason I bring this up is that this is one way, of many, to look at film[^1]. Your cataloging is influenced by the various *frameworks* you work within.
 >Principle: Identify the frameworks you are working within and have clarity about what you want to achieve.
 
 ## Descriptive frameworks
@@ -32,13 +32,13 @@ You do not only operate within a descriptive framework, you also operate within 
 
 Creating records in Mavis has been synonymous with filmographic cataloging. It is a large and advanced system holding all our audiovisual metadata (recorded sound, photographies, moving images, +++). However, it does not offer a good way of describing objects without also describing their content. It is a product of a content focused descriptive framework. It is also a product of its time (it's old).
 
-Mavis operates with a three-level hierarchy of filmographic description using the entities *title*, *component* and *carrier*[^2]. It is a non-standard data model, but not that different from more modern metadata models (e.g., FRBR/LRM, EN15907, [FIAFcore](https://fiafcore.org)). 
+Mavis operates with a three-level hierarchy of description using the entities *title*, *component* and *carrier*[^2]. It is a non-standard data model, but not that different from more modern metadata models (e.g., FRBR/LRM, EN15907, [FIAFcore](https://fiafcore.org)). 
 
-Compared to LRM/FIAFcore:
+Compared to FRBR/LRM/FIAFcore:
 
 - The **title** entity tends to hold data on film works and *expressions/variants*. 
 - The **component** describes a *logical whole* of **carriers** (e.g., a film copy consisting of multiple reels/carriers). Comparable to the *item*. 
-- The **carrier** describes the tangible object (e.g., an individual film reel). Matching the carrier in FIAFcore (no equivalent in LRM, unless you start modelling some weird item-to-item relations.[^11]
+- The **carrier** describes the tangible object (e.g., an individual film reel). Matching the carrier in FIAFcore (no equivalent in FRBR/LRM, unless you start modelling some wonky item-to-item relations.[^11]
 
 ```
       MAVIS                                FIAFCORE
@@ -83,14 +83,14 @@ As a result:
 
 - It is **impractical** to create a component record without having first identified its exact carrier composition or attaching it to a title record. 
 
-For these reasons, we have very rarely created records for carriers that we could not identify the content of. As it is difficult to get unidentified material into Mavis, such material has usually been described in various lists and Excel spreadsheets. I should not have to say it, but Excel spreadsheets are not a good long-term solution for managing something for posterity.
+For these reasons, we have tried to avoid creating records for carriers that we could not identify the content of. As it is difficult to get unidentified material into Mavis, such material has usually been described in various lists and Excel spreadsheets. I should not have to say it, but Excel spreadsheets are not a good long-term solution for managing something for posterity.
 
 ## "Cataloging" vs. "description"
 I've been banging my head against these challenges for years. How on earth can we get more of our collection catalogued, without getting a huge influx of resources? A quirk of our institution(?) is that we have no dedicated moving image cataloguers. It is one of many hats our archivists wear, while the usual feeling is that it is one of the areas where we accomplish too little. Still, you have the resources you have, and need to make the best of it[^3].
 
-A sudden decision to close an old vault and move thousands of uncatalogued film reels forced us to try and come up with a solution. A result of that process was that I became more aware of these intellectual and technical frameworks we were working within. 
+A sudden decision to close an old vault and move thousands of uncatalogued film reels forced us to try and come up with a solution. A result of that process was that I became more aware of the intellectual and technical frameworks we were working within. 
 
-An important realization was that "cataloging" is loaded terminology within our organization. Due to the mentioned technical limitations, and us having content focused descriptive goals, what we call cataloging is actually a very specific thing: a defined minimum of description. If something did not meet that minimum, it was not cataloging. One of the requirements was content identification. In most cases that would mean creating and/or relating an object to a title record. Another way of putting it is that "cataloging" is understood as what you do in a "catalog". 
+An important realization was that "cataloging" is loaded terminology within our organization (perhaps everywhere?). Due to the mentioned technical limitations, and us having content focused descriptive goals, what we call cataloging is actually a very specific thing: a defined minimum of description. If something did not meet that minimum, it was not cataloging. One of the requirements was content identification. In most cases that would mean creating and/or relating an object to a title record. Another way of putting it is that "cataloging" is understood as what you do in a "catalog". 
 
 In one way, this is just semantics, but to make things simpler, I talk less about "cataloging" and instead use terms like "description" or "metadata creation". It allows me to sidestep unnecessary confusion stemming from terminology within the organization. 
 
@@ -166,7 +166,7 @@ I'm very fond of the carrier as a concept. It refers to something specific in Ma
 
 *Content*, on the other hand, is an abstract concept, and thus open to (much more) interpretation. The higher-level cataloging entities used to describe content and other more abstract concepts (works, expressions, manifestations, etc), are thus often subject to change. Content identification is fleeting.
 
-In theory, a carrier could be described in multiple different hierarchies in parallel. A carrier such as a film reel, could for example be described both as filmographic content (FIAFcore hierarchy) *and* as an archival object in an archival database (ISAD(G) hierarchy). I have aired this idea a few times and believe this is something to work for in the longterm, but let's not get carried away completely!
+In theory, a carrier could be described in multiple different hierarchies in parallel. A carrier such as a film reel, could for example be described both as filmographic content (FIAFcore hierarchy) *and* as an archival object in an archival database (ISAD(G) hierarchy). I have aired this idea a few times and believe this is something to work for in the long-term, but let's not get carried away completely!
 
 ```
 "CONTENT HIERARCHY"               "ARCHIVAL HIERARCHY"
