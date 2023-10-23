@@ -304,7 +304,7 @@ I believe we can accomplish more by not mixing unrelated processes together, but
 
 [^1]: Personally, I'm more of a Kittlerian fundamentalist. Matter and technology are not only a precondition for the content, it *is* the content. I don't think it makes much sense to talk of one without the other. 
 
-[^2]: The Mavis metadata model is quite a bit more complex than this, but these three entities sit at its core. Out of curiosity, I made an attempt to type out a more complete Mavis-data model in mermaid below. It is still incomplete and has some flaws, but at least it illustrates the model's complexity quite well:
+[^2]: The Mavis metadata model is quite a bit more complex than this, but these three entities sit at its core. Out of curiosity, I made an attempt to type out a more complete Mavis-data model in mermaid below. It is done by memory and is still incomplete, but at least it illustrates the model's complexity quite well:
   
 	[![](https://mermaid.ink/img/pako:eNqVlU1zgyAQhv-KwznJaGsa9dxrT711nHGobhJaAQvYiY3-91LBmA-SGk58PO_uwu6we5TzAlCCUgbimeCNwDRlqaoZWXNBM0VUCV7H53O-98wi8bZYZrCrBEhJOEuZp4cEQUC6yAoLlfF1ZggXfersusqct0aUc1pxBkxZwWF9zDrCkbChbupgYWDOLZ9qL_Hun8hGfapGqG3n81arsNA3FYPGrM48jR6qhrBNtiVScdEc_FSNFVhbE3FnsmX9_gH5cAe7crzaDe40yzfAiwsKyLkoshK_Q2kF_XzAy1Jrde2Zx2svnnyonpG8psT5V00k6bdua4_Jf9weoTdemGE6FCXeuEvSjTgicYNnRdZ68D0G288NZ7YnhGXNCFiDAJZDRrHSScZDkg4HV_xPFtoCvtvfeXqnKvtL36mx5X2n6rQU7hQ7Mj9FimaIgqCYFPqn3_-ZSpHaAoUUJXpaYPGZ6g7QaQ7Xir82LEeJEjXMUF0V2qztDChZ41Lq3QqzN87pAEFB9MfyYjpJ31B6BCV7tENJ4IeLh4cwjqNoGUZRGM5Qg5I4WAR-vHwKHqPI17NVN0M_vc1g4dux0rAfrOLuF-ajWSg?type=png)](https://mermaid.live/edit#pako:eNqVlU1zgyAQhv-KwznJaGsa9dxrT711nHGobhJaAQvYiY3-91LBmA-SGk58PO_uwu6we5TzAlCCUgbimeCNwDRlqaoZWXNBM0VUCV7H53O-98wi8bZYZrCrBEhJOEuZp4cEQUC6yAoLlfF1ZggXfersusqct0aUc1pxBkxZwWF9zDrCkbChbupgYWDOLZ9qL_Hun8hGfapGqG3n81arsNA3FYPGrM48jR6qhrBNtiVScdEc_FSNFVhbE3FnsmX9_gH5cAe7crzaDe40yzfAiwsKyLkoshK_Q2kF_XzAy1Jrde2Zx2svnnyonpG8psT5V00k6bdua4_Jf9weoTdemGE6FCXeuEvSjTgicYNnRdZ68D0G288NZ7YnhGXNCFiDAJZDRrHSScZDkg4HV_xPFtoCvtvfeXqnKvtL36mx5X2n6rQU7hQ7Mj9FimaIgqCYFPqn3_-ZSpHaAoUUJXpaYPGZ6g7QaQ7Xir82LEeJEjXMUF0V2qztDChZ41Lq3QqzN87pAEFB9MfyYjpJ31B6BCV7tENJ4IeLh4cwjqNoGUZRGM5Qg5I4WAR-vHwKHqPI17NVN0M_vc1g4dux0rAfrOLuF-ajWSg)
 
@@ -321,17 +321,6 @@ I believe we can accomplish more by not mixing unrelated processes together, but
 [^8]: There is still some uncertainty surrounding the "many"-part of the "zero to many"-relation between a manifestation and a work-expressions. Having multiple parents in a hierarchy is possibly impractical within Axiell Collections. Thus, we could be touching upon a limitation in our new technical framework.
 
 [^9]: Here is the same model formated in mermaid with some additional important relationships added: [![](https://mermaid.ink/img/pako:eNp9kcFugzAMhl8F-UwRhaRpct51p92mSJNVvDWqSJBJt3bAuw8ondSt6s3-8_22Y3ewCxWBAeuJnxx-MNbW2_gV-LCiU8PUti74ZAirVeiSGr17pzZinEST7LF9u9Em7y3U97PTRaoXwxRO3Cz1Y-G-S3bI7IgXYskm6PowhCwL_7jQnO9N21_gv_LF9Ins0Mf7v3zga5AfmW4no1OkqQekUBPX6Kpxx531SWIh7qkmC2YMK-SDHXc_jBweY3g5-x2YyEdK4dhUGGm5yVVs0L-G8JtS5WLg58sJ50vOCJgOTmBKIbNSSrUutlLoohQqhTMYqTKl8mJd5GutlZbFkML3XDTP1FYXGyFELsuN0Hr4AV_nvcY?type=png)](https://mermaid.live/edit#pako:eNp9kcFugzAMhl8F-UwRhaRpct51p92mSJNVvDWqSJBJt3bAuw8ondSt6s3-8_22Y3ewCxWBAeuJnxx-MNbW2_gV-LCiU8PUti74ZAirVeiSGr17pzZinEST7LF9u9Em7y3U97PTRaoXwxRO3Cz1Y-G-S3bI7IgXYskm6PowhCwL_7jQnO9N21_gv_LF9Ins0Mf7v3zga5AfmW4no1OkqQekUBPX6Kpxx531SWIh7qkmC2YMK-SDHXc_jBweY3g5-x2YyEdK4dhUGGm5yVVs0L-G8JtS5WLg58sJ50vOCJgOTmBKIbNSSrUutlLoohQqhTMYqTKl8mJd5GutlZbFkML3XDTP1FYXGyFELsuN0Hr4AV_nvcY)
-  
-	```mermaid
-	erDiagram
-		work-expression }o--o{ manifestation : has_manifestation
-		manifestation ||--o{ item : has_item
-		item |o--|{ carrier : has_carrier
-		carrier }o..o{ carrier : has_copy
-		work-expression |o..o{ work-expression : has_variant
-		work-expression }o..o{ work-expression : has_part
-		work-expression }o..o{ carrier : has_extent
-	```
 
 [^10]: See page 21 of [FIAF Bulletin Online #25, June 2023](https://www.calameo.com/fiaf/read/0009185400e6b798e58f0)
 
