@@ -304,7 +304,7 @@ I believe we can accomplish more by not mixing unrelated processes together, but
 
 [^1]: Personally, I'm more of a Kittlerian fundamentalist. Matter and technology are not only a precondition for the content, it *is* the content. I don't think it makes much sense to talk of one without the other. 
 
-[^2]: The Mavis metadata model is quite a bit more complex than this, but these three entities sit at its core. Below is a flawed attempt at typing it out in mermaid:
+[^2]: The Mavis metadata model is quite a bit more complex than this, but these three entities sit at its core. Below is a flawed attempt at typing out more of the Mavis data model in mermaid:
   
 	[![](https://mermaid.ink/img/pako:eNqNlE1vgzAMhv8KyrlUFJp05bzrTrtNSCgFr80GCUvCVFb478sIlH6k7TjF5nltx7F8QJnIAcUo4SCfGd1KWiY80TVn70KWqWa6AK8Tvi8OnjVib0dVCvtKglJM8IR75lMgGSgXWVGpU_GeWsJFnye7rbL_WyvKRFkJDlwPgqN9yjrKUbAt3dQxwshcRj7XXuPdg8omfaInqG19vzUqKs1N5aix1kWmKUPVML5Nd0xpIZtjnqoZBEOsf-LOx1b15gOy8Q6D5ejaHe78le-AVxeUkAmZpwXdQDEI-vOIF4XRmtmzzWuvWj5Oz0TeUtLsq2aK9a772lPyQdoT9E6HOS3HoaRb90i6EUclbvBiyFoPvqdi-7PlrPtmTjRDJciSstwsisOfJEF6ByUkKDbHnMrPxCyQznC01uK14RmKtaxhhuoqpxqGxTI6K8rfhDiakDMzli92D_XrqEdQfEB7FJPlnKwxXq9W4XpFwhlqUOyH8wgvliR6wmSBcURIN0M_fchgvg6CKCTBIsIEByTC3S9xKLWm?type=png)](https://mermaid.live/edit#pako:eNqNlE1vgzAMhv8KyrlUFJp05bzrTrtNSCgFr80GCUvCVFb478sIlH6k7TjF5nltx7F8QJnIAcUo4SCfGd1KWiY80TVn70KWqWa6AK8Tvi8OnjVib0dVCvtKglJM8IR75lMgGSgXWVGpU_GeWsJFnye7rbL_WyvKRFkJDlwPgqN9yjrKUbAt3dQxwshcRj7XXuPdg8omfaInqG19vzUqKs1N5aix1kWmKUPVML5Nd0xpIZtjnqoZBEOsf-LOx1b15gOy8Q6D5ejaHe78le-AVxeUkAmZpwXdQDEI-vOIF4XRmtmzzWuvWj5Oz0TeUtLsq2aK9a772lPyQdoT9E6HOS3HoaRb90i6EUclbvBiyFoPvqdi-7PlrPtmTjRDJciSstwsisOfJEF6ByUkKDbHnMrPxCyQznC01uK14RmKtaxhhuoqpxqGxTI6K8rfhDiakDMzli92D_XrqEdQfEB7FJPlnKwxXq9W4XpFwhlqUOyH8wgvliR6wmSBcURIN0M_fchgvg6CKCTBIsIEByTC3S9xKLWm)
 
@@ -335,4 +335,4 @@ I believe we can accomplish more by not mixing unrelated processes together, but
 
 [^10]: See page 21 of [FIAF Bulletin Online #25, June 2023](https://www.calameo.com/fiaf/read/0009185400e6b798e58f0)
 
-[^11]: Using RDA attributes you could model a item-carrier relationship using the a [rdai:P40080](http://www.rdaregistry.info/Elements/i/#P40009)-attribute. However, I really dislike like the possible clutter such an optional catalog entity could create. The same entity operating in two different ways and a hierarchy that sometimes has an additional level, increases the complexity of system integrations.
+[^11]: Using RDA attributes you could model an item-carrier relationship using the a [rdai:P40080](http://www.rdaregistry.info/Elements/i/#P40009)-attribute. I really dislike like the possible clutter such an optional catalog entity could create though. The same entity operating in two different ways and a hierarchy that sometimes has entities that do different things depending on how they are related to each other, increases the complexity of system integrations and data exchanges.
