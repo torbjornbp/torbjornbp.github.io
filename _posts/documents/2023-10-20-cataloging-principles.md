@@ -304,7 +304,9 @@ I believe we can accomplish more by not mixing unrelated processes together, but
 
 [^1]: Personally, I'm more of a Kittlerian fundamentalist. Matter and technology are not only a precondition for the content, it *is* the content. I don't think it makes much sense to talk of one without the other. 
 
-[^2]: The Mavis metadata model is quite a bit more complex than this, but these three entities sit at its core.
+[^2]: The Mavis metadata model is quite a bit more complex than this, but these three entities sit at its core. Below is a flawed attempt at typing it out in mermaid:
+  
+	[![](https://mermaid.ink/img/pako:eNqNlE1vgzAMhv8KyrlUFJp05bzrTrtNSCgFr80GCUvCVFb478sIlH6k7TjF5nltx7F8QJnIAcUo4SCfGd1KWiY80TVn70KWqWa6AK8Tvi8OnjVib0dVCvtKglJM8IR75lMgGSgXWVGpU_GeWsJFnye7rbL_WyvKRFkJDlwPgqN9yjrKUbAt3dQxwshcRj7XXuPdg8omfaInqG19vzUqKs1N5aix1kWmKUPVML5Nd0xpIZtjnqoZBEOsf-LOx1b15gOy8Q6D5ejaHe78le-AVxeUkAmZpwXdQDEI-vOIF4XRmtmzzWuvWj5Oz0TeUtLsq2aK9a772lPyQdoT9E6HOS3HoaRb90i6EUclbvBiyFoPvqdi-7PlrPtmTjRDJciSstwsisOfJEF6ByUkKDbHnMrPxCyQznC01uK14RmKtaxhhuoqpxqGxTI6K8rfhDiakDMzli92D_XrqEdQfEB7FJPlnKwxXq9W4XpFwhlqUOyH8wgvliR6wmSBcURIN0M_fchgvg6CKCTBIsIEByTC3S9xKLWm?type=png)](https://mermaid.live/edit#pako:eNqNlE1vgzAMhv8KyrlUFJp05bzrTrtNSCgFr80GCUvCVFb478sIlH6k7TjF5nltx7F8QJnIAcUo4SCfGd1KWiY80TVn70KWqWa6AK8Tvi8OnjVib0dVCvtKglJM8IR75lMgGSgXWVGpU_GeWsJFnye7rbL_WyvKRFkJDlwPgqN9yjrKUbAt3dQxwshcRj7XXuPdg8omfaInqG19vzUqKs1N5aix1kWmKUPVML5Nd0xpIZtjnqoZBEOsf-LOx1b15gOy8Q6D5ejaHe78le-AVxeUkAmZpwXdQDEI-vOIF4XRmtmzzWuvWj5Oz0TeUtLsq2aK9a772lPyQdoT9E6HOS3HoaRb90i6EUclbvBiyFoPvqdi-7PlrPtmTjRDJciSstwsisOfJEF6ByUkKDbHnMrPxCyQznC01uK14RmKtaxhhuoqpxqGxTI6K8rfhDiakDMzli92D_XrqEdQfEB7FJPlnKwxXq9W4XpFwhlqUOyH8wgvliR6wmSBcURIN0M_fchgvg6CKCTBIsIEByTC3S9xKLWm)
 
 [^3]: During a talk about the state of crisis in film archives at the FIAF congress in Lausanne 2019, someone (Tiago Baptista?) asked the audience to raise their hands if they felt their institution has adequate funds. Of course, no one raised their hands, regardless of the size or wealth of their institutions. Everyone has larger ambitions than their resources allow. I think it is quite illustrative. For me the point is to do as much as you can with what you have. Don't stop striving for more though!
 
@@ -314,22 +316,22 @@ I believe we can accomplish more by not mixing unrelated processes together, but
 
 [^6]: Some of these thoughts have been marinating in my head for years. I've been involved with the Mavis replacement work since 2018. Before that I spent some time evaluating the FIAF cataloging manual/EN15907, and whether we could realistically implement any of it in our current system. The lack of the carrier entity in EN15907 confused us to no end.
 
-[^7]: This photo is linked to the barcode and will be linked to the carrier record - and viewable! - in our new collection management system. It could also potentially be OCR treated at some point, for a further enrichment of metadata down the line.
+[^7]: These photos are linked to a barcode, and will be linked to the carrier record - and viewable! - in our new collection management system. It could also potentially be OCR treated at some point, for a further enrichment of metadata down the line.
 
 [^8]: There is still some uncertainty surrounding the "many"-part of the "zero to many"-relation between a manifestation and a work-expressions. Having multiple parents in a hierarchy is possibly impractical within Axiell Collections. Thus, we could be touching upon a limitation in our new technical framework.
 
 [^9]: Here is the same model formated in mermaid with some additional important relationships added: [![](https://mermaid.ink/img/pako:eNp9kcFugzAMhl8F-UwRhaRpct51p92mSJNVvDWqSJBJt3bAuw8ondSt6s3-8_22Y3ewCxWBAeuJnxx-MNbW2_gV-LCiU8PUti74ZAirVeiSGr17pzZinEST7LF9u9Em7y3U97PTRaoXwxRO3Cz1Y-G-S3bI7IgXYskm6PowhCwL_7jQnO9N21_gv_LF9Ins0Mf7v3zga5AfmW4no1OkqQekUBPX6Kpxx531SWIh7qkmC2YMK-SDHXc_jBweY3g5-x2YyEdK4dhUGGm5yVVs0L-G8JtS5WLg58sJ50vOCJgOTmBKIbNSSrUutlLoohQqhTMYqTKl8mJd5GutlZbFkML3XDTP1FYXGyFELsuN0Hr4AV_nvcY?type=png)](https://mermaid.live/edit#pako:eNp9kcFugzAMhl8F-UwRhaRpct51p92mSJNVvDWqSJBJt3bAuw8ondSt6s3-8_22Y3ewCxWBAeuJnxx-MNbW2_gV-LCiU8PUti74ZAirVeiSGr17pzZinEST7LF9u9Em7y3U97PTRaoXwxRO3Cz1Y-G-S3bI7IgXYskm6PowhCwL_7jQnO9N21_gv_LF9Ins0Mf7v3zga5AfmW4no1OkqQekUBPX6Kpxx531SWIh7qkmC2YMK-SDHXc_jBweY3g5-x2YyEdK4dhUGGm5yVVs0L-G8JtS5WLg58sJ50vOCJgOTmBKIbNSSrUutlLoohQqhTMYqTKl8mJd5GutlZbFkML3XDTP1FYXGyFELsuN0Hr4AV_nvcY)
   
 	```mermaid
-erDiagram
-	work-expression }o--o{ manifestation : has_manifestation
-	manifestation ||--o{ item : has_item
-	item |o--|{ carrier : has_carrier
-	carrier }o..o{ carrier : has_copy
-	work-expression |o..o{ work-expression : has_variant
-	work-expression }o..o{ work-expression : has_part
-	work-expression }o..o{ carrier : has_extent
-```
+	erDiagram
+		work-expression }o--o{ manifestation : has_manifestation
+		manifestation ||--o{ item : has_item
+		item |o--|{ carrier : has_carrier
+		carrier }o..o{ carrier : has_copy
+		work-expression |o..o{ work-expression : has_variant
+		work-expression }o..o{ work-expression : has_part
+		work-expression }o..o{ carrier : has_extent
+	```
 
 [^10]: See page 21 of [FIAF Bulletin Online #25, June 2023](https://www.calameo.com/fiaf/read/0009185400e6b798e58f0)
 
