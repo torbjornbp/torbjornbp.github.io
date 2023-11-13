@@ -4,6 +4,12 @@ layout: post
 title: "Kodacolor"
 ---
 
+
+---
+{: data-content="KODACOLOR LENTICULES"}
+
+![](/assets/img/kodacolor/kodacolor_lenticules.jpg)
+
 ---
 {: data-content="KODACOLOR SHEEN"}
 
