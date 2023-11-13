@@ -1,7 +1,7 @@
 ---
 category: documents
 layout: post
-title: "(DRAFT) Establishing some basic cataloging principles"
+title: "Establishing some practical cataloging principles"
 ---
 
 I have typed out various specific cataloging procedures, I have pushed for certain cataloging changes, and I have specified requirements of our new cataloging system, but I have never spelled out the overarching principles I base my thoughts on. 
@@ -293,11 +293,11 @@ Of equal, or perhaps more, importance is knowing the limitations of what you are
 
 > Principle: Be honest about what you are accomplishing.
 
-In our example of orphaned carriers, we do not achieve content descriptions. We only achieve descriptions at the bottom-level of a complex 4-level hierarchy. Content descriptions are complicated, but also expected of many of our end users. I need to stress that good content descriptions should still be the end goal for most of our material. 
+In our example of orphaned carriers, we do not achieve content descriptions. We only achieve descriptions at the bottom-level of a complex 4-level hierarchy. Content descriptions are complicated, but also expected of many of our end users. I need to stress that good content descriptions should still be the end goal for most of our material! 
 
-We have only eased the first, tiny step in description but the descriptive work is not done! Metadata never appears magically out of nowhere, it has to be created somehow. Losing track of this will lead to disaster.
+What we have accomplished is easing the first, tiny step in description. The descriptive work is not done however! Metadata never appears magically out of nowhere, and has to be created somehow. Losing track of this will lead to disaster.
 
-I believe we can accomplish more by not mixing unrelated processes together, but that does not mean we are not interested in all the processes!
+I believe we can accomplish more and better descriptions over time, by not mixing unrelated processes together. That does not mean we are not interested in all the processes!
 
 ---
 {: data-content="FOOTNOTES"}
