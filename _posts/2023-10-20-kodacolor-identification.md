@@ -1,7 +1,7 @@
 ---
 category: 
 layout: post
-title: "Kodacolor"
+title: "Kodacolor identification aids"
 ---
 
 
