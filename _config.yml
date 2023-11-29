@@ -21,7 +21,7 @@
 title: Torbjørn Pedersen
 author: Torbjørn Pedersen
 email: 
-description: Moving image archivist at the National library of Norway. Personal blog, writing into the ether  # >- this means to ignore newlines until "baseurl:"
+description: Moving image archivist and product lead of digital preservation at the National library of Norway. Personal blog, writing into the ether  # >- this means to ignore newlines until "baseurl:"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://torbjorn.no" # the base hostname & protocol for your site, e.g. http://example.com
 
