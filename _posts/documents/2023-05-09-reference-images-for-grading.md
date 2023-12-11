@@ -41,7 +41,7 @@ I also applied a simple and consistent contrast change to my photos, to compensa
 ---
 {: data-content="CAMERA AND TRIPOD SETUP"}
 
-![](/assets/img/reference-images/tripod.jpg)
+![](/assets/img/reference-images/tripod.webp)
 
 ---
 
@@ -102,15 +102,15 @@ An interesting note here is that the "Green 1" tint was not captured entirely ac
 
 | Tint | Scanity | Spinner | Reference |
 |:--|:--|:--|:--|
-| Green 1 | ![](/assets/img/reference-images/scanity-green-1.png) | ![](/assets/img/reference-images/spinner-green-1.png) | ![](/assets/img/reference-images/ref-green-1.png) |
-| Green 2 | ![](/assets/img/reference-images/scanity-green-2.png) | ![](/assets/img/reference-images/spinner-green-2.png) | ![](/assets/img/reference-images/ref-green-2.png) |
-| Yellow 1 | ![](/assets/img/reference-images/scanity-yellow-1.png) | ![](/assets/img/reference-images/spinner-yellow-1.png) | ![](/assets/img/reference-images/ref-yellow-1.png) |
-| Yellow 2 | ![](/assets/img/reference-images/scanity-yellow-2.png) | ![](/assets/img/reference-images/spinner-yellow-2.png) | ![](/assets/img/reference-images/ref-yellow-2.png) |
-| Red 1 | ![](/assets/img/reference-images/scanity-red-1.png) | ![](/assets/img/reference-images/spinner-red-1.png) | ![](/assets/img/reference-images/ref-red-1.png) |
-| Red 2 | ![](/assets/img/reference-images/scanity-red-2.png) | ![](/assets/img/reference-images/spinner-red-2.png) | ![](/assets/img/reference-images/ref-red-2.png) |
-| Coral | ![](/assets/img/reference-images/scanity-coral-1.png) | ![](/assets/img/reference-images/spinner-coral-1.png) | ![](/assets/img/reference-images/ref-coral-1.png) |
-| Aquamarine/Cyan | ![](/assets/img/reference-images/scanity-cyan-1.png) | ![](/assets/img/reference-images/spinner-cyan-1.png) | ![](/assets/img/reference-images/ref-cyan-1.png) |
-| Black/white | ![](/assets/img/reference-images/scanity-bw-1.png) | ![](/assets/img/reference-images/spinner-bw-1.png) | ![](/assets/img/reference-images/ref-bw-1.png) |
+| Green 1 | ![](/assets/img/reference-images/scanity-green-1.webp) | ![](/assets/img/reference-images/spinner-green-1.webp) | ![](/assets/img/reference-images/ref-green-1.webp) |
+| Green 2 | ![](/assets/img/reference-images/scanity-green-2.webp) | ![](/assets/img/reference-images/spinner-green-2.webp) | ![](/assets/img/reference-images/ref-green-2.webp) |
+| Yellow 1 | ![](/assets/img/reference-images/scanity-yellow-1.webp) | ![](/assets/img/reference-images/spinner-yellow-1.webp) | ![](/assets/img/reference-images/ref-yellow-1.webp) |
+| Yellow 2 | ![](/assets/img/reference-images/scanity-yellow-2.webp) | ![](/assets/img/reference-images/spinner-yellow-2.webp) | ![](/assets/img/reference-images/ref-yellow-2.webp) |
+| Red 1 | ![](/assets/img/reference-images/scanity-red-1.webp) | ![](/assets/img/reference-images/spinner-red-1.webp) | ![](/assets/img/reference-images/ref-red-1.webp) |
+| Red 2 | ![](/assets/img/reference-images/scanity-red-2.webp) | ![](/assets/img/reference-images/spinner-red-2.webp) | ![](/assets/img/reference-images/ref-red-2.webp) |
+| Coral | ![](/assets/img/reference-images/scanity-coral-1.webp) | ![](/assets/img/reference-images/spinner-coral-1.webp) | ![](/assets/img/reference-images/ref-coral-1.webp) |
+| Aquamarine/Cyan | ![](/assets/img/reference-images/scanity-cyan-1.webp) | ![](/assets/img/reference-images/spinner-cyan-1.webp) | ![](/assets/img/reference-images/ref-cyan-1.webp) |
+| Black/white | ![](/assets/img/reference-images/scanity-bw-1.webp) | ![](/assets/img/reference-images/spinner-bw-1.webp) | ![](/assets/img/reference-images/ref-bw-1.webp) |
 
 ## Grading?
 With the reference images made, how do we grade it? It's a different topic, but I've never managed to decide on which grading approach give the best results and is the most practical: 
