@@ -57,7 +57,7 @@ Another thing to note here is that, while the colours might not be 100% accurate
 ---
 {: data-content="TWO DIFFERENT YELLOWS"}
 
-![](/assets/img/reference-images/reference2.jpg)
+![](/assets/img/reference-images/reference2.webp)
 
 ---
 
@@ -70,7 +70,7 @@ For the film in question I took around 100 reference images like this.
 ---
 {: data-content="TYPICAL REFERENCE IMAGE"}
 
-![](/assets/img/reference-images/reference.jpg)
+![](/assets/img/reference-images/reference.webp)
 
 ---
 
