@@ -1,7 +1,7 @@
 ---
-category: 
+category: documents
 layout: post
-title: "Kodacolor identification aids"
+title: "Basic Kodacolor identification aids"
 ---
 
 

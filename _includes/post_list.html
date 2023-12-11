@@ -1,3 +1,13 @@
+<head>
+    <style>
+        table {
+            font-family: 'Berkeley mono';
+            font-style: normal;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
 {%-if include.category-%}
   {%-assign posts = site.categories[include.category]-%}  
 {%-else-%}
@@ -11,15 +21,16 @@
 {%-endif-%}
 
 {%- if posts.size > 0 -%}
-  <ul>
+  <table>
     {%- for post in posts limit: include.limit -%}
-        <li>
-          <span>{{- post.date | date: site.theme_config.date_format -}}</span>
-          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-        </li>
+    <tr>
+      <td>{{- post.date | date: site.theme_config.date_format -}} &nbsp▸ <a href="{{ post.url | relative_url }}">{{ post.title }}</a></td>
+    </tr>
     {%- endfor -%}
     {%- if include.show_more and limit_exceeded -%}
-      <li><a href="{{ include.show_more_url }}">{{ include.show_more_text | default: "Show more..." }}</a></li>
+    <tr>
+      <td><a href="{{ include.show_more_url }}">{{ include.show_more_text | default: "Show more..." }}</a></td>
+    </tr>
     {%- endif -%}
-  </ul>
+  </table>
 {%- endif -%}

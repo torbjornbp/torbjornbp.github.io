@@ -31,24 +31,40 @@ body[a="dark"] { @include dark-appearance; }
   body[a="auto"] { @include dark-appearance; }
 }
 
+
+// -- Fonts -- //
+@import url("https://use.typekit.net/kly0giq.css");
+
+@font-face {
+  font-family: 'Berkeley Mono'; 
+  font-weight: 400;
+  src: url('fonts/BerkeleyMono-Regular.woff2');
+}
+
+
 // -- Core CSS -- //
 
 body {
-  font-family: "Berkeley Mono";
-  font-weight: 400;
+  font-family: "neue-haas-grotesk-display", sans-serif;
+  font-weight: 100;
   font-style: normal;
-  font-size: 15px;
-  line-height: 1.1;
+  font-size: 20px;
+  line-height: 1.4;
   font-variant-ligatures: common-ligatures;
   -webkit-font-feature-settings: "liga";
 }
 
-h1 { 
-  font-size: 25px;
-  text-transform: uppercase; 
-}
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 0rem;
+  margin-top: 2rem; 
+  }
 
-h2, h3, h4, h5, h6 { text-transform: uppercase; }
+h1 { 
+  font-size: 30px;
+  }
+
+h2, h3, h4, h5, h6 {
+  }
 
 ul { 
   margin: 0.4rem 0;
@@ -60,14 +76,22 @@ ul {
 }
 
 div.highlighter-rouge code {
+  font-family: "Berkeley Mono";
   white-space: pre;
   font-size: 11px;
   font-variant-ligatures: none;
 }
 
 blockquote {
+  font-family: "Berkeley Mono";
+  font-size: 17px;
   margin: 0 auto;
   font-style: normal;
+}
+
+hr {
+  font-family: "Berkeley Mono";
+  font-size: 17px; 
 }
 
 table {
@@ -113,14 +137,7 @@ table {
   height: 100%;
 }
 
-// -- Berkeley Mono font -- //
 
-@font-face {
-  font-family: 'Berkeley Mono';
-  src: url('fonts/BerkeleyMono-Regular.woff2');
-  font-weight: 400;
-  font-style: normal;
-}
 
 /* Formatting for PDF exports/printing */
 @media print {
