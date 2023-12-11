@@ -33,8 +33,7 @@ body[a="dark"] { @include dark-appearance; }
 
 
 // -- Fonts -- //
-@import url("https://use.typekit.net/kly0giq.css");
-
+@import url("https://rsms.me/inter/inter.css");
 @font-face {
   font-family: 'Berkeley Mono'; 
   font-weight: 400;
@@ -45,16 +44,18 @@ body[a="dark"] { @include dark-appearance; }
 // -- Core CSS -- //
 
 body {
-  font-family: "neue-haas-grotesk-display", sans-serif;
-  font-weight: 100;
+ font-family: Inter, sans-serif;
+  font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
   font-style: normal;
-  font-size: 20px;
-  line-height: 1.4;
+  font-size: 17px;
+  line-height: 1.5;
   font-variant-ligatures: common-ligatures;
   -webkit-font-feature-settings: "liga";
 }
 
 h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.1;
   margin-bottom: 0rem;
   margin-top: 2rem; 
   }
@@ -76,21 +77,22 @@ ul {
 }
 
 div.highlighter-rouge code {
-  font-family: "Berkeley Mono";
+  font-family: "Berkeley Mono", monospace;
+  line-height: 1;
+  font-weight: 400;
   white-space: pre;
   font-size: 11px;
   font-variant-ligatures: none;
 }
 
 blockquote {
-  font-family: "Berkeley Mono";
-  font-size: 17px;
   margin: 0 auto;
   font-style: normal;
 }
 
 hr {
-  font-family: "Berkeley Mono";
+  font-family: "Berkeley Mono", monospace;
+  font-weight: 400;;
   font-size: 17px; 
 }
 
