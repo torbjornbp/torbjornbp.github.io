@@ -83,7 +83,7 @@ The script can be found here: [https://github.com/torbjornbp/video-ocr2srt](http
 ---
 {: data-content="FUNCTIONAL SRT"}
 
-![](/assets/img/ocr-script/srtscreenshot.png)
+![](/assets/img/ocr-script/srtscreenshot.webp)
 
 
 ---

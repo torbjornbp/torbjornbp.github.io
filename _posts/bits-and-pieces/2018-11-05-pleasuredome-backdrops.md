@@ -14,6 +14,6 @@ Video backdrops for a club night at Lokal bar, Trondheim. Made using the LZX Vid
 
 ---
 
-![Screenshot](/assets/img/pleasuredome/pleasuredome1.jpg)
+![Screenshot](/assets/img/pleasuredome/pleasuredome1.webp)
 
 ---
