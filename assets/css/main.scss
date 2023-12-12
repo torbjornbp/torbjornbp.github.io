@@ -16,6 +16,7 @@
     filter: invert(1); 
     &.ioda { filter: invert(0); }
   }
+
   .embed-container { 
     filter: invert(1);
 
@@ -55,7 +56,7 @@ body {
   color: #292929;
   font-family: Inter, sans-serif;
   font-style: normal;
-  font-size: 17px;
+  font-size: 18px;
   line-height: 1.6;
 }
 
@@ -99,10 +100,11 @@ blockquote {
 hr {
   font-family: "Berkeley Mono", monospace;
   font-weight: 400;
-  font-size: 17px; 
+  font-size: 15px; 
 }
 
 table {
+  font-size: 14px;
   padding: 0;border-collapse: collapse;
   width: 100%; }
   table tr {
@@ -112,7 +114,7 @@ table {
     padding: 0; }
     table tr th {
       font-weight: bold;
-      border: thin solid #F5F5F5;
+      border: thin solid #292929;
       background-color: #292929;
       color: #F5F5F5;
       margin: 0;
