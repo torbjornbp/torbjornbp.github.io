@@ -38,7 +38,7 @@ html, body { background: #F5F5F5; }
 
 :root {
   font-family: Inter, sans-serif;
-  font-feature-settings: 'liga' 1, 'calt' 1, 'tnum' 1, 'salt' 1;
+  font-feature-settings: 'liga' 1, 'calt' 1, 'tnum' 1, 'ss01' 1;
 }
 @supports ( font-variation-settings: normal ) {
   :root { font-family: Inter var, sans-serif; }
@@ -46,7 +46,6 @@ html, body { background: #F5F5F5; }
 
 @font-face {
   font-family: 'Berkeley Mono'; 
-  font-weight: 400;
   src: url('fonts/BerkeleyMono-Regular.woff2');
 }
 
@@ -54,16 +53,14 @@ html, body { background: #F5F5F5; }
 
 body {
   color: #292929;
-  font-family: Inter var, sans-serif;
+  font-family: Inter, sans-serif;
   font-style: normal;
   font-size: 17px;
-  line-height: 1.5;
-  font-variant-ligatures: common-ligatures;
-  -webkit-font-feature-settings: "liga";
+  line-height: 1.6;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.1;
   margin-bottom: 0rem;
   margin-top: 3rem; 
@@ -101,7 +98,7 @@ blockquote {
 
 hr {
   font-family: "Berkeley Mono", monospace;
-  font-weight: 400;;
+  font-weight: 400;
   font-size: 17px; 
 }
 
