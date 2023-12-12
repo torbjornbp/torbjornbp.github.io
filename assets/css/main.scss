@@ -45,7 +45,7 @@ body[a="dark"] { @include dark-appearance; }
 
 body {
  font-family: Inter, sans-serif;
-  font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
+  font-feature-settings: 'liga' 1, 'calt' 1, 'tnum' 1, 'zero' 1, 'dlig' 1, 'cv05' 1; /* fix for Chrome */
   font-style: normal;
   font-size: 17px;
   line-height: 1.5;
