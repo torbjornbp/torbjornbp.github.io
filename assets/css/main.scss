@@ -34,14 +34,14 @@ body[a="dark"] { @include dark-appearance; }
 html, body { background: #F5F5F5; }
 
 // -- Fonts -- //
-@import url('https://fonts.cdnfonts.com/css/inter.css');
+@import url('https://fonts.cdnfonts.com/css/inter');
 
 :root {
   font-family: Inter, sans-serif;
-  font-feature-settings: 'liga' 1, 'calt' 1, 'tnum' 1, 'salt' 1; /* fix for Chrome */
+  font-feature-settings: 'liga' 1, 'calt' 1, 'tnum' 1, 'salt' 1;
 }
 @supports ( font-variation-settings: normal ) {
-  :root { font-family: InterVariable, sans-serif; }
+  :root { font-family: Inter var, sans-serif; }
 }
 
 @font-face {
@@ -54,7 +54,7 @@ html, body { background: #F5F5F5; }
 
 body {
   color: #292929;
-  font-family: Inter, sans-serif;
+  font-family: Inter var, sans-serif;
   font-style: normal;
   font-size: 17px;
   line-height: 1.5;
