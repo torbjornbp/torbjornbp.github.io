@@ -33,11 +33,24 @@ body[a="dark"] { @include dark-appearance; }
 
 
 // -- Fonts -- //
-@import url("https://rsms.me/inter/inter.css");
+:root {
+  font-family: Inter, sans-serif;
+  font-feature-settings: ont-feature-settings: 'liga' 1, 'calt' 1, 'tnum' 1, 'zero' 1, 'dlig' 1, 'cv05' 1; /* fix for Chrome */
+}
+
+@supports (font-variation-settings: normal) {
+  :root {
+    font-family: InterVariable, sans-serif;
+  }
+}
+}
 @font-face {
   font-family: 'Berkeley Mono'; 
   font-weight: 400;
   src: url('fonts/BerkeleyMono-Regular.woff2');
+}
+@supports (font-variation-settings: normal) {
+  :root { font-family: InterVariable, sans-serif; }
 }
 
 
@@ -45,7 +58,6 @@ body[a="dark"] { @include dark-appearance; }
 
 body {
  font-family: Inter, sans-serif;
-  font-feature-settings: 'liga' 1, 'calt' 1, 'tnum' 1, 'zero' 1, 'dlig' 1, 'cv05' 1; /* fix for Chrome */
   font-style: normal;
   font-size: 17px;
   line-height: 1.5;
