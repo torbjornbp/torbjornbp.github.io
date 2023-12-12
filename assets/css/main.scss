@@ -33,19 +33,17 @@ body[a="dark"] { @include dark-appearance; }
 
 html, body { background: #F5F5F5; }
 
-
 // -- Fonts -- //
-@import url('https://fonts.cdnfonts.com/css/inter.css')
+@import url('https://fonts.cdnfonts.com/css/inter.css');
 
 :root {
   font-family: Inter, sans-serif;
-  font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
+  font-feature-settings: 'liga' 1, 'calt' 1, 'tnum' 1, 'salt' 1; /* fix for Chrome */
 }
-@supports (font-variation-settings: normal) {
+@supports ( font-variation-settings: normal ) {
   :root { font-family: InterVariable, sans-serif; }
 }
 
-}
 @font-face {
   font-family: 'Berkeley Mono'; 
   font-weight: 400;
