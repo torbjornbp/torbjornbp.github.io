@@ -16,7 +16,7 @@
     filter: invert(1); 
     &.ioda { filter: invert(0); }
   }
-  .embed-container, { 
+  .embed-container { 
     filter: invert(1);
 
     &.ioda { filter: invert(0); }
@@ -31,33 +31,32 @@ body[a="dark"] { @include dark-appearance; }
   body[a="auto"] { @include dark-appearance; }
 }
 
+html, body { background: #F5F5F5; }
+
 
 // -- Fonts -- //
+@import url('https://fonts.cdnfonts.com/css/inter.css')
+
 :root {
   font-family: Inter, sans-serif;
-  font-feature-settings: ont-feature-settings: 'liga' 1, 'calt' 1, 'tnum' 1, 'zero' 1, 'dlig' 1, 'cv05' 1; /* fix for Chrome */
+  font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
+}
+@supports (font-variation-settings: normal) {
+  :root { font-family: InterVariable, sans-serif; }
 }
 
-@supports (font-variation-settings: normal) {
-  :root {
-    font-family: InterVariable, sans-serif;
-  }
-}
 }
 @font-face {
   font-family: 'Berkeley Mono'; 
   font-weight: 400;
   src: url('fonts/BerkeleyMono-Regular.woff2');
 }
-@supports (font-variation-settings: normal) {
-  :root { font-family: InterVariable, sans-serif; }
-}
-
 
 // -- Core CSS -- //
 
 body {
- font-family: Inter, sans-serif;
+  color: #292929;
+  font-family: Inter, sans-serif;
   font-style: normal;
   font-size: 17px;
   line-height: 1.5;
@@ -69,14 +68,11 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: 1.1;
   margin-bottom: 0rem;
-  margin-top: 2rem; 
+  margin-top: 3rem; 
   }
 
 h1 { 
   font-size: 30px;
-  }
-
-h2, h3, h4, h5, h6 {
   }
 
 ul { 
@@ -95,11 +91,14 @@ div.highlighter-rouge code {
   white-space: pre;
   font-size: 11px;
   font-variant-ligatures: none;
+  color: #F5F5F5;
+  background-color: #292929;
 }
 
 blockquote {
   margin: 0 auto;
   font-style: normal;
+  background-color: #e9fbe9;
 }
 
 hr {
@@ -112,20 +111,20 @@ table {
   padding: 0;border-collapse: collapse;
   width: 100%; }
   table tr {
-    border-top: thin solid black;
-    background-color: white;
+    border-top: thin solid #292929;
+    background-color: #F5F5F5;
     margin: 0;
     padding: 0; }
     table tr th {
       font-weight: bold;
-      border: thin solid darkgrey;
-      background-color: black;
-      color: white;
+      border: thin solid #F5F5F5;
+      background-color: #292929;
+      color: #F5F5F5;
       margin: 0;
       padding: 6px 13px; 
       text-transform: uppercase; }
     table tr td {
-      border: thin solid black;
+      border: thin solid #292929;
       margin: 0;
       padding: 6px 13px; }
     table tr th :first-child, table tr td :first-child {
@@ -157,6 +156,7 @@ table {
 @media print {
   body {
   font-size: 12px;
+  padding: 1cm; 
   }
   table, pre, code, blockquote {
     page-break-inside: avoid;
@@ -166,9 +166,6 @@ table {
   }
   pre {
     word-wrap: break-word;
-  }
-  body {
-    padding: 1cm; 
   }
   
   /* Prevent page-breaks right after a heading */ 
