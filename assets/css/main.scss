@@ -32,7 +32,7 @@ body[a="dark"] { @include dark-appearance; }
   body[a="auto"] { @include dark-appearance; }
 }
 
-html, body { background: #F5F5F5; }
+html, body { background: #ffffff; }
 
 // -- Fonts -- //
 @import url('https://fonts.cdnfonts.com/css/inter');
@@ -53,7 +53,7 @@ html, body { background: #F5F5F5; }
 // -- Core CSS -- //
 
 body {
-  color: #292929;
+  color: #555;
   font-family: Inter, sans-serif;
   font-style: normal;
   font-size: 18px;
@@ -61,6 +61,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
+  color: #333;
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 0rem;
@@ -114,14 +115,14 @@ table {
     padding: 0; }
     table tr th {
       font-weight: bold;
-      border: thin solid #292929;
-      background-color: #292929;
+      border: thin solid #333;
+      background-color: #333;
       color: #F5F5F5;
       margin: 0;
       padding: 6px 13px; 
       text-transform: uppercase; }
     table tr td {
-      border: thin solid #292929;
+      border: thin solid #333;
       margin: 0;
       padding: 6px 13px; }
     table tr th :first-child, table tr td :first-child {
