@@ -39,7 +39,7 @@ html, body { background: #ffffff; }
 
 :root {
   font-family: Inter, sans-serif;
-  font-feature-settings: 'liga' 1, 'calt' 1, 'tnum' 1, 'ss01' 1;
+  font-feature-settings: 'liga' 1, 'calt' 1, 'tnum' 1, 'ss01' 1, 'zero' 1;
 }
 @supports ( font-variation-settings: normal ) {
   :root { font-family: Inter var, sans-serif; }
@@ -56,7 +56,7 @@ body {
   color: #555;
   font-family: Inter, sans-serif;
   font-style: normal;
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.6;
 }
 
@@ -66,9 +66,9 @@ strong {
 
 h1, h2, h3, h4, h5, h6 {
   color: #333;
-  font-weight: 800;
+  font-weight: 900;
   line-height: 1.1;
-  margin-bottom: 0rem;
+  margin-bottom: 1rem;
   margin-top: 3rem; 
   }
 
