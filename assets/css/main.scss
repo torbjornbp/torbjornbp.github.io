@@ -53,8 +53,6 @@ html, body { background: #ffffff; }
 // -- Core CSS -- //
 
 body {
-  text-align: justify;
-  text-justify: inter-word;
   color: #555;
   font-family: Inter, sans-serif;
   font-style: normal;
@@ -70,7 +68,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #333;
   font-weight: 900;
   line-height: 1.1;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0rem;
   margin-top: 3rem; 
   }
 
@@ -98,6 +96,10 @@ div.highlighter-rouge code {
   background-color: black;
 }
 
+div.footnotes {
+  padding-inline-end: 40px;
+  }
+
 blockquote {
   color: #333;
   margin: 0 auto;
@@ -112,24 +114,24 @@ hr {
 }
 
 table {
-  font-size: 14px;
+  font-size: 13px;
   padding: 0;border-collapse: collapse;
   width: 100%; }
   table tr {
-    border-top: thin solid #292929;
+    border-top: thin solid black;
     background-color: #F5F5F5;
     margin: 0;
     padding: 0; }
     table tr th {
       font-weight: bold;
-      border: thin solid #333;
-      background-color: #333;
+      border: thin solid black;
+      background-color: black;
       color: #F5F5F5;
       margin: 0;
       padding: 6px 13px; 
       text-transform: uppercase; }
     table tr td {
-      border: thin solid #333;
+      border: thin solid black;
       margin: 0;
       padding: 6px 13px; }
     table tr th :first-child, table tr td :first-child {
