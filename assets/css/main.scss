@@ -53,10 +53,12 @@ html, body { background: #ffffff; }
 // -- Core CSS -- //
 
 body {
+  text-align: justify;
+  text-justify: inter-word;
   color: #555;
   font-family: Inter, sans-serif;
   font-style: normal;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.6;
 }
 
@@ -68,7 +70,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #333;
   font-weight: 900;
   line-height: 1.1;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   margin-top: 3rem; 
   }
 
@@ -93,7 +95,7 @@ div.highlighter-rouge code {
   white-space: pre;
   font-size: 12px;
   font-variant-ligatures: none;
-  background-color: #333;
+  background-color: black;
 }
 
 blockquote {
