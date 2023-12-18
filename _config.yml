@@ -18,10 +18,11 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Torbjørn Pedersen
+title: Torbjørn Pedersen's webpage
 author: Torbjørn Pedersen
 email: 
-description: Personal website of Torbjørn Pedersen. Moving image archivist and P&P alumni. Currently working as product lead of digital preservation at the National library of Norway.  # >- this means to ignore newlines until "baseurl:"
+description: This is my personal web page, where I have tried to gather texts I have written, presentations I have held and other things I have done. I can be reached on <a href="tbp@tuta.io">email</a>, <a href="https://www.linkedin.com/in/torbjørn-pedersen-57617b227/">linkedin</a>, <a href="https://www.instagram.com/filmarkivar">instagram</a> or <a href="https://github.com/torbjornbp">github</a> (which also hosts this page).  
+# >- this means to ignore newlines until "baseurl:"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://torbjorn.no" # the base hostname & protocol for your site, e.g. http://example.com
 

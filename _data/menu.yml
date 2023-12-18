@@ -3,14 +3,6 @@
 
 entries:
 
-#  - title: About me
-#    entries:
-#      - title: Name - Torbjørn Pedersen
-#      - title: Occupation - Currently working as product lead of digital preservation at the National Library of Norway.
-#      - title: Background - BackgroundMoving image archivist, P&P alumni, FIAF TC corresponding member.
-#      - title: Email
-#        url: tbp@tuta.io
-
   - title: Archiving
     post_list:
       category: documents
@@ -35,13 +27,8 @@ entries:
  #         - title: example page
  #           url: about
 
-  - title: Links
+  - title: More
     entries:
-      - title: Linkedin
-        url: https://www.linkedin.com/in/torbjørn-pedersen-57617b227/
-      - title: Instagram
-        url: https://www.instagram.com/filmarkivar
-      - title: Github
-        url: https://github.com/torbjornbp
       - title: RSS
         url: feed.xml
+

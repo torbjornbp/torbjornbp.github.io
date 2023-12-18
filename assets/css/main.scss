@@ -53,7 +53,7 @@ html, body { background: #ffffff; }
 // -- Core CSS -- //
 
 body {
-  color: #555;
+  color: #444;
   font-family: Inter, sans-serif;
   font-style: normal;
   font-weight: 500;
@@ -62,23 +62,16 @@ body {
 }
 
 strong {
-   color: #333;
-}
+  color: #333;
+  }
 
 h1, h2, h3, h4, h5, h6 {
   color: #333;
+  font-size: 16px;
   font-weight: 900;
   line-height: 1.1;
-  margin-bottom: 0rem;
-  margin-top: 3rem;
+  margin-bottom: 0.5rem;
   border-bottom: thin solid #000
-  }
-
-h2, h3, h4, h5, h6 {
-}
-
-h1 { 
-  font-size: 30px;
   }
 
 ul { 
@@ -87,7 +80,8 @@ ul {
 }
 
 .w {
-  max-width: 880px;
+  max-width: 800px;
+  padding: 1rem 2rem;
 }
 
 div.highlighter-rouge code {
@@ -144,6 +138,12 @@ table {
     table tr th :last-child, table tr td :last-child {
       margin-bottom: 0; }
 
+@media (max-width: 500px) {
+    /* For small screen decices */
+    body {font-size: 12px;}
+    div.highlighter-rouge code {font-size: 8px;}
+}
+
 // --Youtube video embed plugin -- //
 
 .embed-container {
@@ -162,8 +162,6 @@ table {
   height: 100%;
 }
 
-
-
 /* Formatting for PDF exports/printing */
 @media print {
   body {
@@ -173,6 +171,7 @@ table {
   table, pre, code, blockquote {
     page-break-inside: avoid;
   }
+
   div.footnotes {
     break-before: page;
   }
@@ -189,5 +188,5 @@ table {
     display: block;
     margin-bottom: -4rem;
     height: 4rem;
-    }
+  }
 }
