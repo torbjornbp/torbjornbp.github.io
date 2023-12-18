@@ -56,6 +56,7 @@ body {
   color: #555;
   font-family: Inter, sans-serif;
   font-style: normal;
+  font-weight: 500;
   font-size: 16px;
   line-height: 1.6;
 }
@@ -69,8 +70,12 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 900;
   line-height: 1.1;
   margin-bottom: 0rem;
-  margin-top: 3rem; 
+  margin-top: 3rem;
+  border-bottom: thin solid #000
   }
+
+h2, h3, h4, h5, h6 {
+}
 
 h1 { 
   font-size: 30px;
@@ -82,7 +87,7 @@ ul {
 }
 
 .w {
-  max-width: 800px;
+  max-width: 880px;
 }
 
 div.highlighter-rouge code {
@@ -109,8 +114,8 @@ blockquote {
 
 hr {
   font-family: "Berkeley Mono", monospace;
-  font-weight: 400;
-  font-size: 15px; 
+  font-weight: 500;
+  font-size: 16px; 
 }
 
 table {

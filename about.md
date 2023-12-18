@@ -4,15 +4,6 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+This is my personal web page, where I have tried to gather texts I have written, presentations I have held and other things I have done.
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
-
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
-
-
-[jekyll-organization]: https://github.com/jekyll
+I'm a moving image archivist and P&P alumni. Between 2013 and 2023 this was my also my job. As a moving image archivist I have worked extensively with our film collections, cataloging, identification, selection, as well as both digital and photochemical preservation. Starting from 2024 I'm working as product lead for digital preservation, and collection systems manager.
