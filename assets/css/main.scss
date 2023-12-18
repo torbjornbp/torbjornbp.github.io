@@ -81,7 +81,7 @@ ul {
 
 .w {
   max-width: 800px;
-  padding: 1rem 2rem;
+  padding: 2rem 2rem;
 }
 
 div.highlighter-rouge code {
@@ -140,8 +140,9 @@ table {
 
 @media (max-width: 500px) {
     /* For small screen decices */
-    body {font-size: 12px;}
-    div.highlighter-rouge code {font-size: 8px;}
+    body {font-size: 13px;}
+    div.highlighter-rouge code {font-size: 9px;}
+    .w {padding: 1rem 1rem;}
 }
 
 // --Youtube video embed plugin -- //
