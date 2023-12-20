@@ -62,11 +62,12 @@ body {
 }
 
 a {
-  color: #333;
+  color: blue;
   }
 
 a:hover {
   background-color: yellow;
+  }
 
 strong {
   color: #333;
@@ -84,12 +85,12 @@ h1, h2, h3, h4, h5, h6 {
 ul { 
   margin: 0.4rem 0;
   list-style-type: disclosure-closed;
-}
+  }
 
 .w {
   max-width: 800px;
   padding: 2rem 2rem;
-}
+  }
 
 div.highlighter-rouge code {
   font-family: "Berkeley Mono", monospace;
@@ -100,7 +101,7 @@ div.highlighter-rouge code {
   font-size: 12px;
   font-variant-ligatures: none;
   background-color: black;
-}
+  }
 
 div.footnotes {
   padding-inline-end: 40px;
@@ -111,13 +112,13 @@ blockquote {
   margin: 0 auto;
   font-style: normal;
   background-color: #e9fbe9;
-}
+  }
 
 hr {
   font-family: "Berkeley Mono", monospace;
   font-weight: 500;
   font-size: 16px; 
-}
+  }
 
 table {
   font-size: 13px;
@@ -145,12 +146,12 @@ table {
     table tr th :last-child, table tr td :last-child {
       margin-bottom: 0; }
 
-@media (max-width: 500px) {
-    /* For small screen decices */
+@media (max-width: 500px) { /* For small screen decices */
     body {font-size: 14px;}
     div.highlighter-rouge code {font-size: 9px;}
     .w {padding: 1rem 1rem;}
-}
+    hr {font-size:12px;}
+    }
 
 // --Youtube video embed plugin -- //
 
@@ -176,6 +177,7 @@ table {
   font-size: 12px;
   padding: 1cm; 
   }
+
   table, pre, code, blockquote {
     page-break-inside: avoid;
   }
@@ -183,6 +185,7 @@ table {
   div.footnotes {
     break-before: page;
   }
+
   pre {
     word-wrap: break-word;
   }
