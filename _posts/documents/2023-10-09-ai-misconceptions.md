@@ -1,7 +1,7 @@
 ---
 category: documents
 layout: post
-title: "Hype: a danger of AI/ML technology"
+title: "Dangers of AI/ML hype"
 ---
 
 There is a lot of "cool" things happening in the AI/ML field, but as other, more poignant, people have stated, there is an abundance of downsides, pitfalls and straight up dangers lurking in the background of it all. 
