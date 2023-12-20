@@ -1,7 +1,7 @@
 ---
 category: documents
 layout: post
-title: "Establishing some practical cataloging principles"
+title: "Practical cataloging principles"
 ---
 
 I have typed out various specific cataloging procedures, I have pushed for certain cataloging changes, and I have specified requirements of our new cataloging system, but I have never spelled out the overarching principles I base my thoughts on. 
