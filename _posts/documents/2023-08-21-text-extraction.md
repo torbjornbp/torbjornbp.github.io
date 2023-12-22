@@ -1,7 +1,7 @@
 ---
 category: documents
 layout: post
-title: "Video OCR (using python and chatGPT)"
+title: "video-ocr.py (and chatGPT)"
 ---
 
 Over the last year or so, I've been dabbling with various scripts to manipulate video, metadata etc. I've been running a wide range of experiments, amongst others grading film scans using Python and Jupyter notebooks (with massive help from [Paul Duchesne](paulduchesne.github.io)) and trying use the [IFIscripts](https://github.com/kieranjol/IFIscripts) for digital preservation of the scans of my grandparent's Super8 home movies. I've been a light user of FFmpeg for years, but I think finally realised how low the bar for starting to use these tools in more advanced ways actually is. 
