@@ -128,19 +128,19 @@ You can describe extensively or barely at all. The amount of metadata you *need*
 Minimum metadata entered in one stage, serves as the basis for further enrichment in another. I have tried to illustrate it in the basic illustration below. 
 
 ```
-      STAGE 1     ───────────▶      STAGE 2     ───────────▶      STAGE 3     ───────────▶       ETC.
+      STAGE 1    ───────▶     STAGE 2    ───────▶     STAGE 3    ───────▶     ETC.
 
-┌────────────────┐            ┌────────────────┐            ┌────────────────┐
-│░░░░ Record ░░░░│░           │░░░░ Record ░░░░│░           │░░░░ Record ░░░░│░
-├────────────────┤░           ├────────────────┤░           ├────────────────┤░
-│Attribute 1: "X"│░           │Attribute 1: "X"│░           │Attribute 1: "X"│░
-│Attribute 2:    │░           │Attribute 2:    │░           │Attribute 2: "Y"│░
-│Attribute 3: "Z"│░           │Attribute 3: "Z"│░           │Attribute 3: "Z"│░
-│Attribute 4:    │░           │Attribute 4: "Æ"│░           │Attribute 4: "Æ"│░
-│Attribute 5:    │░           │Attribute 5:    │░           │Attribute 5: "Ø"│░
-│Attribute 6:    │░           │Attribute 6:    │░           │Attribute 6: "Å"│░
-└────────────────┘░           └────────────────┘░           └────────────────┘░
- ░░░░░░░░░░░░░░░░░░            ░░░░░░░░░░░░░░░░░░            ░░░░░░░░░░░░░░░░░░
+┌────────────────┐      ┌────────────────┐      ┌────────────────┐
+│░░░░ Record ░░░░│░     │░░░░ Record ░░░░│░     │░░░░ Record ░░░░│░
+├────────────────┤░     ├────────────────┤░     ├────────────────┤░
+│Attribute 1: "X"│░     │Attribute 1: "X"│░     │Attribute 1: "X"│░
+│Attribute 2:    │░     │Attribute 2:    │░     │Attribute 2: "Y"│░
+│Attribute 3: "Z"│░     │Attribute 3: "Z"│░     │Attribute 3: "Z"│░
+│Attribute 4:    │░     │Attribute 4: "A"│░     │Attribute 4: "A"│░
+│Attribute 5:    │░     │Attribute 5:    │░     │Attribute 5: "B"│░
+│Attribute 6:    │░     │Attribute 6:    │░     │Attribute 6: "C"│░
+└────────────────┘░     └────────────────┘░     └────────────────┘░
+ ░░░░░░░░░░░░░░░░░░      ░░░░░░░░░░░░░░░░░░      ░░░░░░░░░░░░░░░░░░
 ```
 
 For example: Stage 1 is the point where a record is first created. Attributes 1 and 2 are the minimum metadata attributes that should be filled out during this type of record creation stage. Stage 2 is an inspection event that looks at material where Attribute 3 = "Z", and creates metadata for attribute 4. Stage 3 is a more extensive cataloging event that creates a range of other metadata. I haven't included it in the drawing, but existing attributes can of course also be changed.

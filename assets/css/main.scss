@@ -40,6 +40,7 @@ html, body { background: #ffffff; }
 :root {
   font-family: Inter, sans-serif;
   font-feature-settings: 'liga' 1, 'calt' 1, 'tnum' 1, 'ss01' 1, 'zero' 1;
+  font-display: fallback;
 }
 @supports ( font-variation-settings: normal ) {
   :root { font-family: Inter var, sans-serif; }
@@ -48,10 +49,10 @@ html, body { background: #ffffff; }
 @font-face {
   font-family: 'Berkeley Mono'; 
   src: url('fonts/BerkeleyMono-Regular.woff2');
+  font-display: fallback;
 }
 
 // -- Core CSS -- //
-
 body {
   color: #444;
   font-family: Inter, sans-serif;
