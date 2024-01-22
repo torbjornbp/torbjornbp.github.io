@@ -40,7 +40,7 @@ theme_config:
   show_description: true # show blog description in home page
 
 sass:
-  style: :compressed
+  style: compressed
 
 plugins:
   - jekyll-feed
