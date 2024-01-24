@@ -3,8 +3,6 @@
 
 @import "no-style-please";
 
-// -- No style please invert -- //
-
 @mixin dark-appearance {
   filter: invert(1);
   img {
@@ -34,7 +32,6 @@ body[a="dark"] { @include dark-appearance; }
 
 html, body { background: #ffffff; }
 
-// -- Fonts -- //
 @import url('https://fonts.cdnfonts.com/css/inter');
 
 :root {
@@ -52,10 +49,9 @@ html, body { background: #ffffff; }
   font-display: fallback;
 }
 
-// -- Core CSS -- //
 body {
   color: #444;
-  font-family: Inter, sans-serif;
+  font-family: 'Inter', sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -82,7 +78,25 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 900;
   line-height: 1.1;
   margin-bottom: 0.5rem;
-  border-bottom: thin solid #000
+  text-decoration: underline;
+  }
+
+h1 {
+  border-bottom: thin solid #000;
+  text-decoration: none;
+  }
+
+code {
+  font-family: "Berkeley Mono", monospace;
+  color: #333;
+  font-weight: 400;
+  font-size: 15px;
+  font-variant-ligatures: none;
+  border-radius: 0.5ch;
+  padding-left: 0.3ch;
+  padding-right: 0.3ch;
+  white-space: pre;
+  background-color: #F5F5F5;
   }
 
 ul { 
@@ -155,8 +169,6 @@ table {
     .w {padding: 1rem 1rem;}
     hr {font-size:12px;}
     }
-
-// --Youtube video embed plugin -- //
 
 .embed-container {
   position: relative;
