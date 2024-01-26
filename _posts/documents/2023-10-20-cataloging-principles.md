@@ -32,7 +32,7 @@ You do not only operate within a descriptive framework, you also operate within 
 
 Creating records in Mavis has been synonymous with filmographic cataloging. It is a large and advanced system holding all our audiovisual metadata (recorded sound, photographies, moving images, +++). However, it does not offer a good way of describing objects without also describing their content. It is a product of a content focused descriptive framework. It is also a product of its time (it's old).
 
-Mavis operates with a three-level hierarchy of description using the entities *title*, *component* and *carrier*[^2]. It is a non-standard data model, but not that different from more modern metadata models (e.g., FRBR/LRM, EN15907, [FIAFcore](https://fiafcore.org)). 
+Mavis operates with a three-level hierarchy of description using the entities *title*, *component* and *carrier*[^2]. It is a non-standard data model, but not that different from more modern metadata models (e.g., FRBR/LRM, EN15907, FIAFcore[^12]. 
 
 Compared to FRBR/LRM/FIAFcore:
 
@@ -237,7 +237,7 @@ Attaching material to titles is perfectly doable though, and for components that
 My view is that we should avoid tampering with this metadata too much while we are still operating within Mavis. We are replacing the system, and at some point these records will have their metadata shuffled around. Most importantly the changes we would like to make to the data, will be much easier to perform in a new system. There is no reason to rush things in a manner that causes issues. It is often stated in our organization, that we work in a thousand-year perspective, but we still tend to hurry in unconstructive ways... 
 
 ## Towards a new data model and system
-The tender process for the replacement of Mavis concluded in 2022, with Axiell [being awarded the contract](https://www.axiell.com/blog-post/axiell-collections-chosen-by-national-library-of-norway-to-manage-norways-largest-collection-of-audiovisual-materials/) with their *Collections* system. We are still in the middle of implementation, hoping to go live during 2024. 
+The tender process for the replacement of Mavis concluded in 2022, with Axiell being awarded the contract[^13] with their *Collections* system. We are still in the middle of implementation, hoping to go live during 2024. 
 
 In this project we are implementing a unified and flexible data model for all our audiovisual metadata. This model aims to be compatible with both IFLA LRM and the FIAF cataloging manual (with FIAFcore coming to play a more important role). I have high hopes for the implementation and there is a myriad of new opportunities here that we are probably not even seeing yet.
 
@@ -325,3 +325,7 @@ I believe we can accomplish more and better descriptions over time, by not mixin
 [^10]: See page 21 of [FIAF Bulletin Online #25, June 2023](https://www.calameo.com/fiaf/read/0009185400e6b798e58f0)
 
 [^11]: Using RDA attributes you could model an item-carrier relationship using the a [rdai:P40080](http://www.rdaregistry.info/Elements/i/#P40009)-attribute. I really dislike like the possible clutter such an optional catalog entity could create though. The same entity operating in two different ways and a hierarchy that sometimes has entities that do different things depending on how they are related to each other, increases the complexity of system integrations and data exchanges.
+
+[^12]: [FIAFcore](https://fiafcore.org)
+
+[^13]: ["Axiell Collections chosen by National of Norway to manage Norways largest collection of audiovisual materials"](https://www.axiell.com/blog-post/axiell-collections-chosen-by-national-library-of-norway-to-manage-norways-largest-collection-of-audiovisual-materials/)
