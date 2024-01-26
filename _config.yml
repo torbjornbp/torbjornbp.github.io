@@ -21,7 +21,7 @@
 title: Torbjørn Pedersen's webpage
 author: Torbjørn Pedersen
 email: 
-description: This is my personal web page, where I have tried to gather texts I have written, presentations I have held and other things I have done. I can be reached on <a href="mailto:tbp@tuta.io">email</a>, <a href="https://www.linkedin.com/in/torbjørn-pedersen-57617b227/">linkedin</a>, <a href="https://www.instagram.com/filmarkivar">instagram</a> or <a href="https://github.com/torbjornbp">github</a> (which also hosts this page).  
+description: This is my personal web page, where I have tried to gather texts I have written, presentations I have held and other things I have done. My resume can be found <a href="/about/">here</a>. I can be reached on <a href="mailto:tbp@tuta.io">email</a>, <a href="https://www.linkedin.com/in/torbjørn-pedersen-57617b227/">linkedin</a>, <a href="https://www.instagram.com/filmarkivar">instagram</a> or <a href="https://github.com/torbjornbp">github</a> (which also hosts this page).  
 # >- this means to ignore newlines until "baseurl:"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://torbjorn.no" # the base hostname & protocol for your site, e.g. http://example.com
@@ -35,7 +35,7 @@ remote_theme: riggraz/no-style-please # if you are using GitHub Pages, change it
 
 theme_config:
   appearance: "light" # can be "light", "dark" or "auto"
-  back_home_text: "◂◂" # customize text for homepage link in post layout
+  back_home_text: "~" # customize text for homepage link in post layout
   date_format: "%Y-%m-%d" # customize how date is formatted
   show_description: true # show blog description in home page
 
