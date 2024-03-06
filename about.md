@@ -16,7 +16,7 @@ Skills: `preservation metadata`, `digital preservation`.
 
 ### **Senior advisor moving image cataloging and metadata (National Library of Norway)** 
 
-Dec 2024 -> Present
+Jan 2024 -> Present
 
 Extensive work on setting up new data model for moving image metadata and standardization. Responsibility for moving images in major collection management system migration project. 
 
@@ -38,7 +38,7 @@ Sep 2014 -> Nov 2022
 
 Jack of all trades working on film and video collections. Mainly cataloguing, research and running preservation projects of varying sizes.
 
-Skills: `cataloging`, `film preservation`, `film history`, `film digitisation`, `video digitisation`, `acquisition handling`.
+Skills: `cataloging`, `film preservation`, `film history`, `film digitisation`, `film grading`, `film restoration`, `video digitisation`, `acquisition handling`.
 
 
 ### **Secretary (NVE)** 
