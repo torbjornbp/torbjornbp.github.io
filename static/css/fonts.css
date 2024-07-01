@@ -1,13 +1,13 @@
 @font-face {
     font-family: 'Iosevka';
-    src: url('fonts/iosevka/iosevka-regular.woff2') format('woff2');
+    src: url('/fonts/iosevka/iosevka-regular.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Iosevka Aile';
-    src: url('fonts/iosevka-aile/iosevkaAile-regular.woff2') format('woff2');
+    src: url('/fonts/iosevka-aile/iosevkaAile-regular.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
