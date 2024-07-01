@@ -67,5 +67,6 @@ Curriculum: `film history`, `film theory`
 ## **Other** 
 
 FIAF CDC corresponding member
+2022 ->
 
 
