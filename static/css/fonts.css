@@ -1,5 +1,4 @@
-@import url('https://cdnjs.cloudflare.com/ajax/libs/Iosevka/11.1.1/iosevka-aile/iosevka-aile.min.css');
-body { font-family: "Iosevka Aile", sans-serif; }
+@import url(https://cdn.xeiaso.net/static/css/iosevka/family.css);
 
-@import url('https://cdnjs.cloudflare.com/ajax/libs/Iosevka/11.1.1/iosevka/iosevka.min.css');
+body { font-family: "Iosevka Aile", sans-serif; }
 code { font-family: "Iosevka term", monospace; }
