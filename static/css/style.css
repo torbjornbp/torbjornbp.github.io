@@ -8,6 +8,7 @@ body {
 
 /* header and footer areas */
 .menu, .article-meta, footer { text-align: center; }
+.menu {padding: 0;}
 .menu li { display: inline-block; }
 .menu a { text-decoration: none; }
 .article-meta, .menu a, blockquote, table {
@@ -17,7 +18,6 @@ body {
   padding: 5px;
   margin: 4px;
 }
-
 hr {
   border-style: 1px solid #aaa;
   max-width: calc(100% - 10px);
@@ -58,10 +58,8 @@ blockquote {
   border-left: 4px solid #777;
   padding: 3px 1em;
 }
-figcaption { 
-  text-align: center;
-}
-ul { list-style-type: disclosure-closed; }
+figcaption {  text-align: center; }
+ul {  list-style-type: disclosure-closed; }
 
 /* table */
 table {
