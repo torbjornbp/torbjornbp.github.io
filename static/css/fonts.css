@@ -5,7 +5,6 @@
     font-style: normal;
 }
 
-/* Define the Iosevka Aile font */
 @font-face {
     font-family: 'Iosevka Aile';
     src: url('fonts/iosevka-aile/iosevkaAile-regular.woff2') format('woff2');
@@ -13,7 +12,6 @@
     font-style: normal;
 }
 
-/* Apply the fonts to body and code elements */
 body {
     font-family: "Iosevka Aile", "Arial", sans-serif;
 }
