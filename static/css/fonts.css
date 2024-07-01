@@ -1,5 +1,23 @@
-@import url('https://cdnjs.cloudflare.com/ajax/libs/Iosevka/6.0.0/iosevka/iosevka.min.css');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/Iosevka/6.0.0/iosevka-aile/iosevka-aile.min.css');
+@font-face {
+    font-family: 'Iosevka';
+    src: url('fonts/iosevka/iosevka-regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
 
-body { font-family: "Iosevka Aile", sans-serif; }
-code { font-family: "Iosevka term", monospace; }
+/* Define the Iosevka Aile font */
+@font-face {
+    font-family: 'Iosevka Aile';
+    src: url('fonts/iosevka-aile/iosevkaAile-regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Apply the fonts to body and code elements */
+body {
+    font-family: "Iosevka Aile", "Arial", sans-serif;
+}
+
+code {
+    font-family: "Iosevka", "Courier New", monospace;
+}
