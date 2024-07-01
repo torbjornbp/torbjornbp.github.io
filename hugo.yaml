@@ -1,0 +1,69 @@
+baseurl: "https://torbjorn.no/"  # please update this to your actual URL
+languageCode: "en-us"
+title: "Torbjørn Bakken Pedersen's home page"
+theme: "xmin"
+#disqusShortname: ""
+ignoreFiles: ["\\.Rmd$", "\\.Rmarkdown$", "_cache$"]
+footnotereturnlinkcontents: "↩"
+date-format: 2006-01-02
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+tableOfContents: true
+
+permalinks:
+  note: "/note/:year/:month/:day/:slug/"
+  post: "/post/:year/:month/:day/:slug/"
+
+menu:
+  main:
+    - name: Home
+      url: ""
+      weight: 1
+    - name: Resume
+      url: "resume/"
+      weight: 2
+    - name: Categories
+      url: "categories/"
+      weight: 3
+    # - name: Tags
+    #   url: "tags/"
+    #   weight: 4
+    - name: RSS
+      url: "index.xml"
+
+params:
+  description: "Torbjørn Bakken Pedersen's personal web page"
+  footer: "&copy; Torbjørn Bakken Pedersen 2023 -- {Year}"
+  goatcounter: "torbjorn888888"
+
+minify:
+  disableCSS: false
+  disableHTML: false
+  disableJS: false
+  disableJSON: false
+  disableSVG: false
+  disableXML: false
+  minifyOutput: true
+
+markup:
+  highlight:
+    style: bw
+    guessSyntax: true
+  goldmark:
+    renderer:
+      unsafe: true
+    extensions:
+      passthrough:
+        enable: true
+        delimiters:
+          block:
+          - - \[
+            - \]
+          - - $$
+            - $$
+          inline:
+          - - \\(
+            - \\)
+          - - $
+            - $

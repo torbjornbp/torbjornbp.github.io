@@ -1,0 +1,77 @@
+/* Background */
+.chroma { background-color: hsl(60, 30%, 99%) }
+
+/* LineNumbers */
+.chroma .ln { color: hsl(0, 0%, 80%) }
+
+/* Keyword */
+.chroma .k { color: hsla(240, 100%, 23%, 0.67); font-weight: bold }
+
+/* KeywordConstant */
+.chroma .kc { color: hsla(240, 100%, 23%, 0.67); font-weight: bold }
+
+/* KeywordDeclaration */
+.chroma .kd { color: hsla(240, 100%, 23%, 0.67); font-weight: bold }
+
+/* KeywordNamespace */
+.chroma .kn { color: hsla(240, 100%, 23%, 0.67); font-weight: bold }
+
+/* KeywordPseudo */
+.chroma .kp { color: hsla(240, 100%, 23%, 0.67) }
+
+/* KeywordType */
+.chroma .kt { color: hsla(200, 100%, 10%, 0.8) }
+
+/* NameAttribute */
+.chroma .na { color: hsl(0, 0%, 20%) }
+
+/* NameBuiltin */
+.chroma .nb { color: hsla(200, 100%, 10%, 0.8) }
+
+/* NameClass */
+.chroma .nc { color: hsl(216, 100%, 33%); font-weight: bold }
+
+/* NameConstant */
+.chroma .no { color: hsl(317, 100%, 23%) }
+
+/* NameDecorator */
+.chroma .nd { color: hsl(0, 0%, 40%); font-weight: bold }
+
+/* NameFunction */
+.chroma .nf { color: black; font-weight: bold }
+
+/* String */
+.chroma .s { color: hsl(144, 71%, 23%) }
+
+/* Comment */
+.chroma .c { color: hsla(0, 0%, 0%, 0.47); font-style: italic }
+
+/* CommentMultiline */
+.chroma .cm { color: hsla(0, 0%, 0%, 0.47); font-style: italic }
+
+/* CommentSingle */
+.chroma .c1 { color: hsla(0, 0%, 0%, 0.47); font-style: italic }
+
+/* CommentSpecial */
+.chroma .cs { color: hsl(0, 0%, 20%); font-style: italic }
+
+/* OperatorWord */
+.chroma .ow { color: hsla(240, 100%, 23%, 0.67) }
+
+/* Punctuation */
+.chroma .p { color: hsla(240, 100%, 10%, 0.47) }
+
+/* GenericEmph */
+.chroma .ge { font-style: italic }
+
+/* GenericStrong */
+.chroma .gs { font-weight: bold }
+
+/* GenericSubheading, GenericHeading */
+.chroma .gu, .chroma .gh { color: hsl(216, 100%, 33%) }
+
+/* GenericError */
+.chroma .gr { color: hsl(0, 100%, 50%) }
+
+/* TextWhitespace */
+.chroma .w { color: hsl(0, 0%, 80%) }
