@@ -6,6 +6,7 @@
 /assets/jsconfig.json
 hugo_stats.json
 /content/draft
+/--noHTTPCache
 
 # Executable may be added to repository
 hugo.exe
