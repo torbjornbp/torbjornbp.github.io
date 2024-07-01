@@ -19,3 +19,7 @@
     </ul>
     <hr>
     </nav>
+
+{{ with .Site.Params.favicon }}
+<link rel="icon" type="image/png" href="/favicon.png">
+{{ end }}

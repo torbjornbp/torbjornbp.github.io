@@ -9,7 +9,6 @@ date-format: 2006-01-02
 buildDrafts: false
 buildFuture: false
 buildExpired: false
-tableOfContents: true
 
 permalinks:
   note: "/note/:year/:month/:day/:slug/"
@@ -36,6 +35,7 @@ params:
   description: "Torbjørn Bakken Pedersen's personal web page"
   footer: "&copy; Torbjørn Bakken Pedersen 2023 -- {Year}"
   goatcounter: "torbjorn888888"
+  favicon: "/favicon.png"
 
 minify:
   disableCSS: false
