@@ -31,11 +31,7 @@ code {
 }
 
 body.comic-sans {
-    font-family: "Comic Sans MS", "Comic Sans", cursive;
-}
-
-body.comic-sans code {
-    font-family: "Comic Mono", monospace;
+    font-family: "Comic Mono", "Comic Sans MS", "Comic Sans", cursive;
 }
 
 .font-change-button {
@@ -50,5 +46,5 @@ body.comic-sans code {
 }
 
 body.comic-sans .font-change-button {
-    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    font-family: "Comic Mono", "Comic Sans MS", "Comic Sans", cursive;
 }
