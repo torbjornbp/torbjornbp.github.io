@@ -34,6 +34,10 @@ body.comic-sans {
     font-family: "Comic Mono", "Comic Sans MS", "Comic Sans", sans-serif;
 }
 
+body.comic-sans code {
+    font-family: "Comic Mono", "Comic Sans MS", "Comic Sans", sans-serif;
+}
+
 .font-change-button {
     font-size: 30px;
     cursor: pointer;
@@ -46,5 +50,5 @@ body.comic-sans {
 }
 
 body.comic-sans .font-change-button {
-    font-family: "Comic Mono", "Comic Sans MS", "Comic Sans", cursive;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
 }
