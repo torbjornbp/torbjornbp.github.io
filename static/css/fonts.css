@@ -22,7 +22,6 @@
     font-display: swap;
 }
 
-
 body {
     font-family: "Iosevka Aile", "Arial", sans-serif;
     transition: font-family 0.3s ease;
@@ -34,11 +33,7 @@ code {
 }
 
 body.comic-sans {
-    font-family: "Comic Mono", "Comic Sans MS", "Comic Sans", sans-serif;
-}
-
-body.comic-sans code {
-    font-family: "Comic Mono", "Comic Sans MS", "Comic Sans", sans-serif;
+    font-family: "Comic Mono", "Comic Sans MS", "Comic Sans", monospace;
 }
 
 .font-change-button {
@@ -49,9 +44,5 @@ body.comic-sans code {
     padding: 0;
     margin: 0;
     outline: none;
-    font-family: inherit; /* This will make the button text use the same font as the body */
-}
-
-body.comic-sans .font-change-button {
-    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    font-family: inherit;
 }
