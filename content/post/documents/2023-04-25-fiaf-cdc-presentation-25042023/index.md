@@ -7,6 +7,7 @@ tags:
   - FIAF CDC
   - FIAF
   - Preservation metadata
+aliases: "/fiaf-cdc-presentation-25042023.html"
 ---
 
 Presentation for FIAF CDC Preservation/Restoration Documentation Task Force about current and future(?) practices of documenting preservation processes at the moving image archive of the National Library of Norway.

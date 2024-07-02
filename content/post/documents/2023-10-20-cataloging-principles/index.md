@@ -10,7 +10,8 @@ tags:
   - LRM
   - EN15907
   - Film cataloging
-  - Asset management    
+  - Asset management
+aliases: "/cataloging-principles.html"
 ---
 
 I have typed out various specific cataloging procedures, I have pushed for certain cataloging changes, and I have specified requirements of our new cataloging system, but I have never spelled out the overarching principles I base my thoughts on. 

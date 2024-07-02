@@ -3,6 +3,7 @@ title: Making reference images for grading tinted film
 date: '2023-05-09'
 categories: 
   - work stuff
+aliases: "/reference-images-for-grading.html"
 ---
 
 Digitising autonomous colours poses a range of challenges ("chromatic callier-effect"[^1], autonomous colours falling outside scanner spectral sensitivities[^2], etc.).

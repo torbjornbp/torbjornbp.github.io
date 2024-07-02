@@ -10,6 +10,7 @@ tags:
   - python
   - ocr
   - silent films
+aliases: "/text-extraction.html"
 ---
 
 Over the last year or so, I've been dabbling with various scripts to manipulate video, metadata etc. 

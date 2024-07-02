@@ -3,6 +3,7 @@ title: Risoprint "Utsikten"
 date: '2020-12-01'
 categories: 
   - bits and pieces
+aliases: "/risoprinting.html"
 ---
 
 Three layer risoprint of a photography processed using Stochaster. 

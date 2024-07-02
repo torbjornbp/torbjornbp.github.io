@@ -3,6 +3,7 @@ title: Pleasuredome backdrops
 date: '2018-11-05'
 categories: 
   - bits and pieces
+aliases: "/pleasuredome-backdrops.html"
 ---
 
 Video backdrops for a club night at Lokal bar, Trondheim. Made using the LZX Vidiot, 3trinsRGB+1c, BPMC premium cable and an assortment of video mixers.

@@ -1,5 +1,6 @@
 ---
 title: Resume
+aliases: "/about.html"
 ---
 
 ## **Work Experience**

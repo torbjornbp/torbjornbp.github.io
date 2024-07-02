@@ -3,6 +3,7 @@ title: Basic Kodacolor identification aids
 date: '2023-11-13'
 categories: 
   - film identification
+aliases: "/kodacolor-identification.html"
 ---
 
 ### Kodacolor lenticules
