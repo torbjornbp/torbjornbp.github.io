@@ -22,16 +22,13 @@ It's a a tool that can be used to recreate the colours of a [Kodacolor](https://
 It uses a trained AI model to detect the *lenticules* on the image frames, before performing its magic. 
 A breath of fresh air considering all the bogus colourised black and white clips you'll see floating around these days...
 
----
-{: data-content="KODACOLOR FILM PROCESSED BY DEEP-DOLCE"}
+### Kodacolor film processed by Deep-doLCE
 
 <video width="100%" autoplay muted loop playsinline>
 	<source src="kodacolor.webm" type="video/webm">
 	<source src="kodacolor.mp4" type="video/mp4">
 	<p>Your browser does not support the video format/codec.</p>
 </video>
-
----
 
 ## GPT and Python
 While I've always liked to think of myself as tech savvy, I've sadly never learned to code. 
@@ -59,16 +56,11 @@ This works remarkably well, even though you have to be patient and often rephras
 It's a great learning tool, after a while I've started to get a better idea of when the bot feeds me faulty solutions (am I learning Python?). 
 I'm sure my involuntary tech-support friends were glad to be pestered less with Python related questions as well.
 
----
-
 <video width="100%" autoplay muted loop playsinline>
 	<source  src="demo.webm" type="video/webm">
 	<source  src="demo.mp4" type="video/mp4">
 	<p>Your browser does not support the video format/codec.</p>
 </video>
-
-
----
 
 ## OCR processing intertitles
 This spring I had the chance to put all this to the test. 
@@ -117,7 +109,4 @@ Looking back at it, I'm amazed at what I managed to achieve with my limited expe
 
 The script can be found here: [https://github.com/torbjornbp/video-ocr2srt](https://github.com/torbjornbp/video-ocr2srt)
 
----
-{: data-content="FUNCTIONAL SRT"}
-
-![](srtscreenshot.webp)
+{{< figure src="srtscreenshot.webp" caption="Functional SRT">}}
