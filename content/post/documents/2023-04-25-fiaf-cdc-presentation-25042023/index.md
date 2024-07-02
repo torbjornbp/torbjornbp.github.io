@@ -1,10 +1,11 @@
 ---
-title: Preservation metadata at the NLN
+title: FPreservation metadata at the NLN
 date: '2023-04-25'
 categories: 
   - presentation
 tags:
   - FIAF CDC
+  - FIAF
   - Preservation metadata
 ---
 

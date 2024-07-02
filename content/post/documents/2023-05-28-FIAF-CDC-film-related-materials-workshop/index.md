@@ -1,8 +1,18 @@
 ---
 title: Generic AV-cataloging
 date: '2023-05-28'
+description:
+  - Slides from a presentation i held at the FIAF CDC Workshop "So Much More Than Non-Film Cataloguing Film-Related Materials".
 categories: 
   - presentation
+tags:
+  - FIAF
+  - CDC
+  - cataloging
+  - slides
+  - FRBR
+  - LRM
+  - EN15907
 ---
 
 Presentation held at the FIAF CDC Workshop ["So Much More Than Non-Film: Cataloguing Film-Related Materials"](https://www.fiafnet.org/pages/Training/CDC-Workshop-2023-Film-related-Materials.html) in Stockholm 25.05.2023. 

@@ -1,8 +1,15 @@
 ---
 title: video-ocr.py (and chatGPT)
 date: '2023-08-21'
+description:
+  - A short text about how you can use chatGPT to make simple scripts very easily, with little or no previous knowledge of python or programming.
 categories: 
   - experimentation
+tags:
+  - chatgpt
+  - python
+  - ocr
+  - silent films
 ---
 
 Over the last year or so, I've been dabbling with various scripts to manipulate video, metadata etc. 
