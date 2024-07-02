@@ -32,6 +32,7 @@ code {
     transition: font-family 0.3s ease;
 }
 
+/* clown mode */
 body.comic-sans,
 body.comic-sans code {
     font-family: "Comic Mono", "Comic Sans MS", "Comic Sans", monospace;
