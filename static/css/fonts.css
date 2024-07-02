@@ -12,10 +12,43 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Comic Mono';
+    src: url('/fonts/ComicMono.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
 body {
     font-family: "Iosevka Aile", "Arial", sans-serif;
+    transition: font-family 0.3s ease;
 }
 
 code {
     font-family: "Iosevka Term Web", "Courier New", monospace;
+    transition: font-family 0.3s ease;
+}
+
+body.comic-sans {
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+body.comic-sans code {
+    font-family: "Comic Mono", monospace;
+}
+
+.font-change-button {
+    font-size: 30px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    font-family: inherit; /* This will make the button text use the same font as the body */
+}
+
+body.comic-sans .font-change-button {
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
 }

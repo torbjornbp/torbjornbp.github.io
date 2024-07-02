@@ -10,7 +10,7 @@
   </head>
 
   <body>
-    <h1 style="text-align: center;">☻</h1> 
+    <h1 style="text-align: center;">{{ partial "clown.html" . }}</h1> 
     <nav>
     <ul class="menu">
       <p><strong>Torbjørn Bakken Pedersen's page</strong></p>
@@ -24,3 +24,5 @@
 {{ with .Site.Params.favicon }}
 <link rel="icon" type="image/png" href="/favicon.png">
 {{ end }}
+
+
