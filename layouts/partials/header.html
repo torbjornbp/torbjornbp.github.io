@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="{{ "css/style.css" | relURL }}" />
     <link rel="stylesheet" href="{{ "css/fonts.css" | relURL }}" />
     {{ partial "head_custom.html" . }}
+    {{ with .Site.Params.favicon }}
+    <link rel="icon" type="image/png" href="/favicon.png">
+    {{ end }} 
   </head>
 
   <body>
@@ -20,9 +23,3 @@
     </ul>
     <hr>
     </nav>
-
-{{ with .Site.Params.favicon }}
-<link rel="icon" type="image/png" href="/favicon.png">
-{{ end }}
-
-
