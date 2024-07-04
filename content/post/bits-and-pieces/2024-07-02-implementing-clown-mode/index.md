@@ -24,15 +24,16 @@ Previously I had used [Inter](https://rsms.me/inter/) for my main body of text.
 While it is both an excellent font and very legible, I also find that these neo-grotesque fonts lack a bit of character. 
 I also considered using [Atkinson Hyperlegible](https://brailleinstitute.org/freefont). 
 While it might be even more legible than Inter, it is also slightly less pretty.
-In the end though, I ended up sacrificing some legibility for character (It is a personal web site after all!).
+In the end though, I ended up sacrificing some legibility for character - it is a personal web site after all!
+
 I'm currently using the [Iosevka](https://github.com/be5invis/Iosevka) font family. 
-Iosevka Aile for prose and Iosevka Term for code blocks (which I mostly have used for box drawing). 
+Iosevka Aile for prose and Iosevka Term for code blocks (which I mostly have used for box drawings). 
 
 ## Clown mode > dark mode
 While contemplating the balance between legibility and aesthetics, I toyed with the idea of allowing readers to set the font themselves. 
 Instead of doing something practical and sensible with the font-changing idea though, I opted for a more whimsical idea.
 
-I have turned the "☻"" at the top of my page into a button that toggles a font change to Comic Sans (for prose) and [Comic Channs Mono](https://github.com/jesusmgg/comic-shanns-mono)! 
+I have turned the "☻"" at the top of my page into a button that toggles a font change to Comic Sans (for prose) and [Comic Shanns Mono](https://github.com/jesusmgg/comic-shanns-mono)! 
 It's done using a bit of CSS and a Hugo shortcode with some JavaScript.
 I call it clown mode.
 
