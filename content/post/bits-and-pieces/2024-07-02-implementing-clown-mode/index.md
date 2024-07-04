@@ -26,7 +26,7 @@ I also considered using [Atkinson Hyperlegible](https://brailleinstitute.org/fre
 While it might be even more legible than Inter, it is also slightly less pretty.
 In the end though, I ended up sacrificing some legibility for character - it is a personal web site after all!
 
-I'm currently using the [Iosevka](https://github.com/be5invis/Iosevka) font family. 
+I'm currently using the [Iosevka](https://typeof.net/Iosevka/) font family. 
 Iosevka Aile for prose and Iosevka Term for code blocks (which I mostly have used for box drawings). 
 
 ## Clown mode > dark mode
