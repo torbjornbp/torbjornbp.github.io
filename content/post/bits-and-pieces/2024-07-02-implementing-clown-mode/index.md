@@ -1,8 +1,8 @@
 ---
 title: Migrating to hugo and implementing "clown mode"
-date: '2024-07-05'
+date: '2024-07-04'
 categories: 
-  - bits and pieces
+  - web design
 ---
 
 I recently made the decision to move my home page from [Jekyll](https://jekyllrb.com/) to [Hugo](https://gohugo.io/). 
