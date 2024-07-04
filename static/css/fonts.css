@@ -33,7 +33,7 @@ code {
 }
 
 /* clown mode */
-body.comic-sans { font-family: "Comic Shanns Mono", "Comic Sans MS", "Comic Sans", sans-serif; }
+body.comic-sans { font-family: "Comic Sans MS", "Comic Sans", "Comic Shanns Mono", sans-serif; }
 body.comic-sans code { font-family: "Comic Shanns Mono", "Comic Sans MS", "Comic Sans", monospace; }
 
 .font-change-button {
