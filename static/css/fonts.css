@@ -35,9 +35,19 @@ code {
 /* clown mode */
 body.comic-sans { font-family: "Comic Sans MS", "Comic Sans", "Comic Shanns Mono", sans-serif; }
 body.comic-sans code { font-family: "Comic Shanns Mono", "Comic Sans MS", "Comic Sans", monospace; }
+body.comic-sans { 
+    font-family: "Comic Sans MS", "Comic Sans", "Comic Shanns Mono", sans-serif;
+    transition: font-family 0.3s ease; 
+}
+body.comic-sans code { 
+    font-family: "Comic Shanns Mono", "Comic Sans MS", "Comic Sans", monospace;
+    transition: font-family 0.3s ease; 
+}
 
 .font-change-button {
     font-size: 30px;
+    font: inherit;
+    font-size: inherit;
     cursor: pointer;
     background: none;
     border: none;
