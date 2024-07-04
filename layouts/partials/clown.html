@@ -1,8 +1,14 @@
-<button id="font-change-button" class="font-change-button">☻</button>
-
+<button id="font-change-button" class="font-change-button" aria-label="Toggle font">☻</button>
 <script>
-  document.getElementById('font-change-button').addEventListener('click', function() {
-    document.body.classList.toggle('comic-sans');
-    this.textContent = document.body.classList.contains('comic-sans') ? '🤡' : '☻';
-  });
+  (function() {
+    const button = document.getElementById('font-change-button');
+    
+    function toggleFont() {
+      document.body.classList.toggle('comic-sans');
+      button.textContent = document.body.classList.contains('comic-sans') ? '🤡' : '☻';
+      button.setAttribute('aria-pressed', document.body.classList.contains('comic-sans'));
+    }
+
+    button.addEventListener('click', toggleFont);
+  })();
 </script>
