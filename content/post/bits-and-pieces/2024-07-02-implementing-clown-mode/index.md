@@ -89,12 +89,10 @@ The shortcode and css used can be found below:
 
 body.comic-sans { 
     font-family: "Comic Sans MS", "Comic Sans", "Comic Shanns Mono", sans-serif;
-    transition: font-family 0.3s ease; 
 }
 
 body.comic-sans code { 
-    font-family: "Comic Shanns Mono", "Comic Sans MS", "Comic Sans", monospace;
-    transition: font-family 0.3s ease; 
+    font-family: "Comic Shanns Mono", "Comic Sans MS", "Comic Sans", monospace; 
 }
 
 .font-change-button {
