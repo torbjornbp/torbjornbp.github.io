@@ -52,14 +52,30 @@ pre code {
 
 /* misc elements */
 img, figure, iframe, video { max-width: 100%; }
-figure { margin: 0 }
 main { hyphens: auto; }
 blockquote {
   border-left: 4px solid #777;
   padding: 3px 1em;
 }
-figcaption {  text-align: center; }
 ul {  list-style-type: disclosure-closed; }
+
+/* figure and captions */
+figure { 
+  position: relative;
+  margin: 0;
+}
+figure figcaption {
+  color: black;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: right;
+  padding: 10px;
+  font-size: smaller;
+  mix-blend-mode: hard-light;
+  text-shadow: 0px 0px 4px white;
+}
 
 /* table */
 table {
