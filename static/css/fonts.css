@@ -49,5 +49,5 @@ body.comic-sans code {
 }
 
 @media (max-width: 500px) { /* For small screen decices */
-    body { font-size: 14px; }
+    body, code, figcaption { font-size: 15px; }
 }
