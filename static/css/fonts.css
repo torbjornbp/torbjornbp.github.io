@@ -23,6 +23,7 @@
 }
 
 body {
+body, figcaption {
     font-family: "Iosevka Aile", "Arial", sans-serif;
     transition: font-family 0.3s ease;
 }
