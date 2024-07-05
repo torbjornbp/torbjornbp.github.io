@@ -3,6 +3,10 @@ title: Cherokee '93
 date: '2016-06-06'
 categories: 
   - bits and pieces
+tags:
+  - memphis rap
+  - southern rap
+  - mixtape
 aliases: "/cherokee93.html"
 ---
 

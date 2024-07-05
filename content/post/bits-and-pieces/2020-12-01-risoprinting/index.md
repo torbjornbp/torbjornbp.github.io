@@ -3,6 +3,9 @@ title: Risoprint "Utsikten"
 date: '2020-12-01'
 categories: 
   - bits and pieces
+tags:
+  - risoprinting
+  - stochaster
 aliases: "/risoprinting.html"
 ---
 

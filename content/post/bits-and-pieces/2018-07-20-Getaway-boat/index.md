@@ -3,6 +3,9 @@ title: Getaway boat
 date: '2018-07-20'
 categories: 
   - bits and pieces
+tags:
+  - glitch
+  - video synthesis
 aliases: "/getaway-boat.html"
 ---
 

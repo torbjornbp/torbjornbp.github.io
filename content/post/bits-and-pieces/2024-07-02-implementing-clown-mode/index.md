@@ -3,6 +3,14 @@ title: Migrating to hugo and implementing "clown mode"
 date: '2024-07-04'
 categories: 
   - web design
+tags:
+  - web design
+  - typography
+  - iosevka
+  - inter
+  - atkinson hyperlegible
+  - hugo
+  - jekyll
 ---
 
 I recently made the decision to move my home page from [Jekyll](https://jekyllrb.com/) to [Hugo](https://gohugo.io/). 

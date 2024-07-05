@@ -3,6 +3,9 @@ title: Pleasuredome backdrops
 date: '2018-11-05'
 categories: 
   - bits and pieces
+tags:
+  - video synthesis
+  - glitch
 aliases: "/pleasuredome-backdrops.html"
 ---
 
