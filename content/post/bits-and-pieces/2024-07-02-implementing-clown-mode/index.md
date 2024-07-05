@@ -37,10 +37,12 @@ I have turned the "☻"" at the top of my page into a button that toggles a font
 It's done using a bit of CSS and a Hugo shortcode with some JavaScript.
 I call it clown mode.
 
->  <video width="100%" autoplay muted loop playsinline>
->    <source src="clowndemo.mp4" type="video/mp4">
->    <p>Your browser does not support the video format/codec.</p>
->  </video>
+<div style="border: 1px solid #aaa; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<video width="100%" autoplay muted loop playsinline;
+   <source src="clowndemo.mp4" type="video/mp4">
+   <p>Your browser does not support the video format/codec.</p>
+</video>
+</div>
 
 There's still some issues with box drawing characters in Comic Shanns Mono, but I'm sure one of the many [Comic Shanns](https://github.com/shannpersand/comic-shanns) forks has a solution. 
 If I was rich I could also shell out for [Comic Code](https://tosche.net/fonts/comic-code) for a solid solution.
