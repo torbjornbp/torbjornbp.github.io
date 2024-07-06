@@ -43,7 +43,7 @@ While contemplating the balance between legibility and aesthetics, I toyed with 
 Instead of doing something practical and sensible with the font-changing idea though, I opted for a more whimsical idea.
 
 I have turned the "☻"" at the top of my page into a button that toggles a font change to Comic Sans (for prose) and [Comic Shanns Mono](https://github.com/jesusmgg/comic-shanns-mono)! 
-It's done using a bit of CSS and a Hugo shortcode with some JavaScript.
+It's done using a bit of CSS and a Hugo partial with some JavaScript.
 I call it clown mode.
 
 <div style="border: 1px solid #aaa; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
@@ -60,9 +60,9 @@ Why do this though?
 First of all I find the idea of a professional Comic Sans hilarious, but on the other hand it is actually a pretty legible font!
 It's the best of both worlds - putting the fun in function.
 
-The shortcode and css used can be found below:
+The Hugo partial and css used can be found below:
 
-### Clown.html shortcode
+### Clown.html Hugo partial
 
 ```html
 <button id="font-change-button" class="font-change-button" aria-label="Toggle font style">☻</button>
