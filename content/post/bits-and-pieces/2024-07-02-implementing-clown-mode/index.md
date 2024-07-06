@@ -63,6 +63,9 @@ It's the best of both worlds - putting the fun in function.
 The shortcode and css used can be found below:
 
 ### Clown.html shortcode
+
+{{< ghcode "https://github.com/torbjornbp/torbjornbp.github.io/blob/main/layouts/partials/clown.html" >}}
+
 ```html
 <button id="font-change-button" class="font-change-button" aria-label="Toggle font style">☻</button>
 <script>
