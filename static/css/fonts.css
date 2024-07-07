@@ -34,7 +34,7 @@ code, .posts-list {
 body.comic-sans { 
     font-family: "Comic Sans MS", "Comic Sans", "Comic Shanns Mono", sans-serif;
 }
-body.comic-sans code { 
+body.comic-sans code, .posts-list { 
     font-family: "Comic Shanns Mono", "Comic Sans MS", "Comic Sans", monospace;
 }
 
