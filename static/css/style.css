@@ -96,7 +96,7 @@ thead, tfoot, tr:nth-child(even) { background: #eee; }
 
 /* For low resolution widths */
 @media (max-width: 500px) { 
-    .post-item {
+    .posts-list {
         white-space: nowrap;
         overflow-x: auto;
     }
