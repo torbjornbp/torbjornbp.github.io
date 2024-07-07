@@ -93,3 +93,12 @@ table thead th {
 }
 th, td { padding: 5px; border: 1px dotted #777}
 thead, tfoot, tr:nth-child(even) { background: #eee; }
+
+/* For low resolution widths */
+@media (max-width: 500px) { 
+    .post-item {
+        white-space: nowrap;
+        overflow-x: auto;
+    }
+}
+
