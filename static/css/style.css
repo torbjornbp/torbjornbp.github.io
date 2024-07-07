@@ -22,6 +22,7 @@ hr {
   border-style: 1px solid #aaa;
   max-width: calc(100% - 10px);
 }
+.posts-list { font-size: 80%; }
 
 /* links */
 a, footer a { color: royalblue; }
