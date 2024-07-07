@@ -26,7 +26,7 @@ body, figcaption {
     font-family: "Iosevka Aile", "Arial", sans-serif;
 }
 
-code {
+code, .posts-list {
     font-family: "Iosevka Term Web", "Courier New", monospace;
 }
 
