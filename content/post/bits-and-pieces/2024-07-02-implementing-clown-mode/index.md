@@ -2,7 +2,7 @@
 title: Migrating to hugo and implementing "clown mode"
 date: '2024-07-04'
 categories: 
-  - this page
+  - bits and pieces
 tags:
   - web design
   - typography
