@@ -72,7 +72,7 @@ At my dad's office, I have vivid memories of playing a shareware version of some
 {{< figure src="pfi.webp" alt="The PFI-building at Gaustad" caption="The PFI-building at Gaustad" >}}
 
 ## Baryon
-Turns out that game was [*Baryon*](https://www.mobygames.com/game/1318/baryon/)  (not *Tyrian*), a name I’ve been trying to remember for more than 20 years. Apparently, it's a South-Korean game developed by Acro Studio, and distributed by The Game Factory. The original Game Factory readme is attached in the following footnote -> [^4]. They seem to have distributed a few other games (threat, but I have never heard of them. There's some more info on the game here [here](http://www.hardcoregaming101.net/korea/part2/games-other2.htm#baryon).
+Turns out that game was [*Baryon*](https://www.mobygames.com/game/1318/baryon/) (not *Tyrian*), a name I’ve been trying to remember for more than 20 years. Apparently, it's a South-Korean game developed by Acro Studio, and distributed by The Game Factory. The original Game Factory readme is attached in the following footnote -> [^4]. They seem to have distributed a few other games (*Threat, Super speed* both released in 1995) but I have never heard of them. There's some more info on the game here [here](http://www.hardcoregaming101.net/korea/part2/games-other2.htm#baryon).
 
 I finally had the chance to revisit it earlier this week. Date wise, I know I played it before 1997, as he moved offices. With the game released in 1995, I reckon 1996 is a good bet as to when I played it.
 
