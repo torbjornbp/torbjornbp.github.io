@@ -36,6 +36,7 @@ params:
   footer: "&copy; Torbjørn Bakken Pedersen 2023 -- {Year}"
   goatcounter: "torbjorn888888"
   favicon: "/favicon.png"
+  defaultImage: "/favicon.png"
 
 minify:
   disableCSS: false
