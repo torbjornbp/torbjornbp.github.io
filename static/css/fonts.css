@@ -49,7 +49,19 @@ body.comic-sans code, body.comic-sans .posts-list {
 }
 
 /* For small screen devices */
-@media (max-width: 500px) { 
-    body, code, figcaption { font-size: 15px; }
-    pre code { font-size: 12px; } /* 80% of 15px */
+@media (max-width: 500px) {
+    body {
+        -webkit-text-size-adjust: 100%;
+        -moz-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+        font-size: 14px;
+    }
+    pre, code {
+        -webkit-text-size-adjust: 100%;
+        -moz-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+        font-size: 13px; /* Adjust this value as needed */
+    }
 }
