@@ -3,6 +3,7 @@ title: Gaming nostalgia
 date: '2024-07-29'
 categories: 
   - bits and pieces
+description: "Remembering the games I used to play before 1998"
 tags:
   - dosbox
   - dos games
