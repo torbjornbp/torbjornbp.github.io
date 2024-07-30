@@ -51,4 +51,5 @@ body.comic-sans code, body.comic-sans .posts-list {
 /* For small screen devices */
 @media (max-width: 500px) { 
     body, code, figcaption { font-size: 15px; }
+    pre code { font-size: 12px; } /* 80% of 15px */
 }
