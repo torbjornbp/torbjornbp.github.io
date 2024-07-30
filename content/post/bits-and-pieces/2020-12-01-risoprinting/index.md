@@ -6,6 +6,8 @@ categories:
 tags:
   - risoprinting
   - stochaster
+images:
+  - utsikten2.jpg
 aliases: "/risoprinting.html"
 ---
 

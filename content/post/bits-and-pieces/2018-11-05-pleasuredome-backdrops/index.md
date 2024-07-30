@@ -6,6 +6,8 @@ categories:
 tags:
   - video synthesis
   - glitch
+images:
+  - pleasuredome1.webp
 aliases: "/pleasuredome-backdrops.html"
 ---
 
