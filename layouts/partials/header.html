@@ -4,41 +4,22 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ .Title }} | {{ .Site.Title }}</title>
-
-    <!-- OpenGraph tags -->
-    <meta property="og:title" content="{{ .Title }}" />
-    <meta property="og:description" content="{{ .Description }}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="{{ .Permalink }}" />
-    <meta property="og:image" content="{{ with .Params.images }}{{ ($.Page.Resources.GetMatch (index . 0)).Permalink }}{{ else }}{{ .Site.Params.defaultImage | absURL }}{{ end }}" />    
-    <meta property="og:site_name" content="{{ .Site.Title }}" />
-    <meta property="og:locale" content="{{ .Site.LanguageCode }}" />
-
-    <!-- Twitter Card tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ .Title }}">
-    <meta name="twitter:description" content="{{ .Description }}">
-    <meta name="twitter:image" content="{{ with .Params.images }}{{ ($.Page.Resources.GetMatch (index . 0)).Permalink }}{{ else }}{{ .Site.Params.defaultImage | absURL }}{{ end }}">
-    <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ "css/style.css" | relURL }}" />
     <link rel="stylesheet" href="{{ "css/fonts.css" | relURL }}" />
-
-    <!-- Custom head content -->
     {{ partial "head_custom.html" . }}
-
-    <!-- Favicon -->
     {{ with .Site.Params.favicon }}
     <link rel="icon" type="image/png" href="/favicon.png">
-    {{ end }}
+    {{ end }} 
   </head>
+
   <body>
     <h1 style="text-align: center;">{{ partial "clown.html" . }}</h1> 
     <nav>
-      <ul class="menu">
-        <p><strong>Torbjørn Bakken Pedersen's page</strong></p>
-        {{ range .Site.Menus.main }}
-        <li><a href="{{ .URL | relURL }}">{{ .Name }}</a></li>
-        {{ end }}
-      </ul>
-      <hr>
+    <ul class="menu">
+      <p><strong>Torbjørn Bakken Pedersen's page</strong></p>
+      {{ range .Site.Menus.main }}
+      <li><a href="{{ .URL | relURL }}">{{ .Name }}</a></li>
+      {{ end }}
+    </ul>
+    <hr>
     </nav>
