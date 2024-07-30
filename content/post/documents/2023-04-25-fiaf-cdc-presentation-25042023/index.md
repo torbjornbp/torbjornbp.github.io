@@ -1,6 +1,7 @@
 ---
 title: Preservation metadata at the National Library of Norway
 date: '2023-04-25'
+description: Slides from a presentation I held for the FIAF CDC preservation/restoration documentation task force, about current practices at the National library of Norway.
 categories: 
   - presentation
 tags:

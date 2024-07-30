@@ -3,6 +3,7 @@ title: Basic Kodacolor identification aids
 date: '2023-11-13'
 categories:
   - film identification
+description: Some easy example images to help identify kodacolor film.
 aliases: "/kodacolor-identification.html"
 ---
 

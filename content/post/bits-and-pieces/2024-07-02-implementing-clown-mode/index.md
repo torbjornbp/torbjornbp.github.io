@@ -1,6 +1,7 @@
 ---
 title: Migrating to hugo and implementing "clown mode"
 date: '2024-07-04'
+description: How I migrated my blog from jekyll to hugo and implemented "clown mode" to view the page with an alternate font.
 categories: 
   - bits and pieces
 tags:
