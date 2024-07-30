@@ -1,10 +1,8 @@
 ---
 title: Basic Kodacolor identification aids
 date: '2023-11-13'
-categories: 
+categories:
   - film identification
-images:
-	- kodacolor_lenticules_zoomed.jpg
 aliases: "/kodacolor-identification.html"
 ---
 
