@@ -13,7 +13,7 @@ tags:
   - word rescue
   - kings quest
   - tyrian
-image: 
+images: 
   - vestli-gorillas.webp
 ---
 
