@@ -13,8 +13,8 @@ tags:
   - word rescue
   - kings quest
   - tyrian
-cover:
-  image: vestli-gorillas.webp
+image: 
+  - vestli-gorillas.webp
 ---
 
 Recently, I stumbled upon an old shoot-em up game called [Tyrian](https://www.mobygames.com/game/586/tyrian/), released in 1995.  While I’ve never played Tyrian, the name sparked a wave of nostalgia, reminding me of a distinct game with a similar title. 
