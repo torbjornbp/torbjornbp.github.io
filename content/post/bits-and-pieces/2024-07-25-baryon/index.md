@@ -116,7 +116,7 @@ Player 2:
 It was easy to play the game again, once I identified it. [Dosbox](https://www.dosbox.com/) works like a charm! I found the game files for the registered version of the game at some abandonware site. That means you are not getting the authentic shareware experience, but the actual full game. I've embedded the game using on this web-page using [JS-DOS](https://js-dos.com/overview.html). Looking at the game directory I also found an original nfo-file[^5] from [Razor 1911](https://en.wikipedia.org/wiki/Razor_1911). Another blast from the past!
 
 [^4]:	Readme.txt from the shareware version:
-	```
+	```txt
 	                 ÛÛÛÛÛÛÜ ÜÛÛÛÛÛÜ ÛÛÛÛÛÛÜ ÛÛ   ÛÛ ÜÛÛÛÛÛÜ ÜÛÛÛÛÛÜ
 	                 ÛÛÜÜÜÛß ÛÛÜÜÜÛÛ ÛÛ   ÛÛ ÛÛÜ ÜÛÛ ÛÛ   ÛÛ ÛÛ   ÛÛ
 	                 ÛÛßßßÛÛ ÛÛßßßÛÛ ÛÛÛÛÛÛ   ßÛÛÛß  ÛÛ   ÛÛ ÛÛ   ÛÛ
@@ -196,7 +196,7 @@ It was easy to play the game again, once I identified it. [Dosbox](https://www.d
 
 
 [^5]:	Razor 1911 nfo:
-	```
+	```txt
 
 
 
