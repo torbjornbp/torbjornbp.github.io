@@ -91,7 +91,7 @@ Enough rambling - let's play *Baryon*!
   <iframe 
     src="/baryon.html"
     title="Dosbox"
-    style="width: 100%; aspect-ratio: 4 / 3; margin: 4px; border: 1px solid #aaa; box-shadow: 2px 2px #ddd; display: block;"
+    style="width: 100%; aspect-ratio: 4 / 3; margin: 4px; border: 1px solid #aaa; box-shadow: 2px 2px #ddd; display: block; background: black;"
   ></iframe>
 </div>
 
