@@ -20,8 +20,7 @@
           DosBoxLoader.nativeResolution(640, 480),
           DosBoxLoader.aspectRatio(4/3),
           DosBoxLoader.mountZip("c", DosBoxLoader.fetchFile("Game File", "games/BARYON.zip")),
-          DosBoxLoader.startExe("GO.COM"),
-          DosBoxLoader.extraArgs(["-c", "c:", "-c", "cd \\BARYON"])
+          DosBoxLoader.startExe("BARYON/GO.COM"),
         )
       );
       emulator.start({ waitAfterDownloading: true });
