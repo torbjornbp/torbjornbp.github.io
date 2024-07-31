@@ -21,7 +21,7 @@ images:
 Recently, I stumbled upon an old shoot-em up game called [Tyrian](https://www.mobygames.com/game/586/tyrian/), released in 1995.  While I’ve never played Tyrian, the name sparked a wave of nostalgia, reminding me of a distinct game with a similar title. 
 
 ## Gaming ur-memories
-Playing games was probably my favourite past-time growing up. I have a handful of these very fond ur-memories of playing games. The memories from before 1998 - when I got my own computer - have always stood out. Most-likely because they are somewhat hazy and, most likely, particularly rose-tinted. The games I played after 1998 lacks some of the mystique of those early memories, as I had a better grasp of English and mostly remember what I played. (I'm looking at you, pirate copy of Heroes 2 and Age of Empires 1)
+Playing games was probably my favourite past-time growing up. I have a handful of these very fond memories of playing games. The memories from before 1998 - when I got my own computer - have always stood out. They are somewhat hazy and, most probably, particularly rose-tinted. The games I played after 1998 lacks some of the mystique of those early memories, as I had a better grasp of English and mostly remember what I played. (I'm looking at you, pirate copy of Heroes 2 and Age of Empires 1)
 
 One of the things that have made me mull over these early gaming memories in particular, is that I often didn’t know the titles of the games until much later. I have memories of playing all these cool games, but I didn’t  get to revisit them until much later. 
 
@@ -43,7 +43,7 @@ Considering the amount of time I spent playing PC games, I'm surprised I haven't
 {{< figure src="vestli-gorillas.webp" alt="gorillas on the vestli terrace high-rises" caption="The Vestli terrace high-rises" >}}
 
 ## Spooky games at Kampen (1995-1998)
-[*Hover!*](https://www.mobygames.com/game/33747/hover/) is another hazy memory. I always thought I played it while living at Vestli, but looking at the release dates, it must have been after we moved to Kampen. *Hover!* seems to have been released alongside Windows 95 and in 95 we moved. There were Windows 95 ads plastered around the industry buildings at Ensjø at the time. It took me many years to identify and revisit the game, as I didn't know the name of it. I only remembered it as a slightly spooky bumper car game. For some reason, I can only remember playing it once. 
+[*Hover!*](https://www.mobygames.com/game/33747/hover/) is another hazy memory. I always thought I played it while living at Vestli, but looking at the release dates, I must remember wrong. *Hover!* seems to have been released alongside Windows 95 - in 95 we moved to Kampen. There were Windows 95 ads plastered around the industry buildings at nearby Ensjø at the time. It took me many years to identify and revisit the game, as I didn't know the name of it. I only remembered it as a slightly spooky bumper car game. For some reason, I can only remember playing it once. 
 
 We lived at Kampen for several years, and I played many games while living there. There's a couple memories and titles that stand out in their haziness and spookiness though. At the SFO (after school programme) there were a few computers. I recall the computers being in the computer-and-monitor-in-one form factor[^1]. I remember playing two games there: [*King's Quest VII*](https://www.mobygames.com/game/135/roberta-williams-kings-quest-vii-the-princeless-bride/) (1994) and [*Caesar II*](https://www.mobygames.com/game/1588/caesar-ii/) (1995)
 
@@ -87,13 +87,13 @@ I've never been back to the PFI-building, but I should probably go there the nex
 
 Enough rambling - let's play *Baryon*!
 
-<iframe 
+<div style="width: calc(100% - 10px); max-width: 800px; box-sizing: border-box;">
+  <iframe 
     src="/baryon.html"
     title="Dosbox"
-    width="1000"
-    height="624"
-    style="border: 1px solid #aaa; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
-</iframe>
+    style="width: 100%; aspect-ratio: 4 / 3; margin: 4px; border: 1px solid #aaa; box-shadow: 2px 2px #ddd; display: block;"
+  ></iframe>
+</div>
 
 
 ```
