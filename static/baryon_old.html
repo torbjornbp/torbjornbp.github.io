@@ -3,34 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <title>js-dos baryon 8.xx</title>
-
     <style>
         html, body {
             height: 100%;
+            margin: 0;
+            padding: 0;
         }
-
         #dos {
             width: 100%;
             height: 100%;
         }
+        /* Hide unwanted UI elements */
+        .jsdos-rso .pre-run-window > div:not(:first-child):not(.mb-8.cursor-pointer),
+        .jsdos-rso .text-center.mt-8 {
+            display: none !important;
+        }
     </style>
-
     <!-- js-dos style sheet -->
     <link rel="stylesheet" href="https://v8.js-dos.com/latest/js-dos.css">
-
     <!-- js-dos -->
     <script src="https://v8.js-dos.com/latest/js-dos.js"></script>
 </head>
 <body>
-
     <div id="dos" style="width: 100%; height: 100%"></div>
-
     <script>
         Dos(document.getElementById("dos"), {
             url: "baryon.jsdos",
             background: "baryon.png",
             theme: "black",
-            renderAspect: "4/3"
+            kiosk: "true",
+            renderAspect: "4/3",
+        }).then(function(ci) {
+            // Add a class to body after js-dos is initialized
+            document.body.classList.add('jsdos-loaded');
         });
     </script>
 </body>
