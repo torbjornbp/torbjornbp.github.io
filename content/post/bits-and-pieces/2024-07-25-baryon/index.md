@@ -18,74 +18,148 @@ images:
   - vestli-gorillas.webp
 ---
 
-Recently, I stumbled upon an old shoot-em up game called [Tyrian](https://www.mobygames.com/game/586/tyrian/), released in 1995.  While I’ve never played Tyrian, the name sparked a wave of nostalgia, reminding me of a distinct game with a similar title. 
+Recently, I stumbled upon an old shoot-'em-up game called [Tyrian](https://www.mobygames.com/game/586/tyrian/), released in 1995. 
+While I’ve never played Tyrian, the name sparked a wave of nostalgia, reminding me of a distinct game with a similar title. 
 
 ## Gaming ur-memories
-Playing games was probably my favourite past-time growing up. I have a handful of these very fond memories of playing games. The memories from before 1998 - when I got my own computer - have always stood out. They are somewhat hazy and, most probably, particularly rose-tinted. The games I played after 1998 lacks some of the mystique of those early memories, as I had a better grasp of English and mostly remember what I played. (I'm looking at you, pirate copy of Heroes 2 and Age of Empires 1)
+Playing games was probably my favourite past-time growing up. 
+I have a handful of these very fond memories of playing games. 
+The memories from before 1998 - when I got my own computer - have always stood out. 
+They are somewhat hazy and, most probably, particularly rose-tinted. 
+The games I played after 1998 lacks some of the mystique of those early memories, as I had a better grasp of English and mostly remember what I played [^6]. 
 
-One of the things that have made me mull over these early gaming memories in particular, is that I often didn’t know the titles of the games until much later. I have memories of playing all these cool games, but I didn’t  get to revisit them until much later. 
+[^6]: I'm looking at you, pirate copy of *Heroes II* and *Age of Empires I*...
+
+One of the things that have made me mull over these early gaming memories in particular, is that I often didn’t know the titles of the games until much later. 
+I have memories of playing all these cool games, but I didn’t  get to revisit them until much later. 
 
 ## Sliming gruzzles at Kampen (1996->2000???)
-Two of the early games I remember playing was *Matteeventyret* (1996?) and *Ordeventyret* (1996?). They were Norwegian language versions of [*Math Rescue*](https://www.mobygames.com/game/3100/math-rescue/) (1992) and [*Word Rescue*](https://www.mobygames.com/game/912/word-rescue/) (1992), translated and released by “Edutainment Software Systems A/S”. They are fairly primitive games, answering the question: *what if Super Mario was all about doing maths homework?*
+Two of the early games I remember playing was *Matteeventyret* (1996?) and *Ordeventyret* (1996?). 
+They were Norwegian language versions of [*Math Rescue*](https://www.mobygames.com/game/3100/math-rescue/) (1992) and [*Word Rescue*](https://www.mobygames.com/game/912/word-rescue/) (1992), translated and released by “Edutainment Software Systems A/S”. 
+They are fairly primitive games, answering the question: *What if Super Mario was all about doing maths homework?*
 
-I spent a lot of time with those games, even though they left a lot to be desired. I guess I didn't have access to much else to play (and sliming gruzzles[^2] isn't all bad).
+I spent a lot of time with those games, even though they left a lot to be desired. 
+I guess I didn't have access to much else to play (and sliming gruzzles[^2] isn't all bad).
 
 [^2]: Some gruzzles: {{< figure src="gruzzles.webp" alt="Gruzzles" >}}
 
 {{< figure src="math-stac.webp" alt="me in y2k" caption="The author playing *Math Rescue* instead of *StarCraft* in 2000" >}}
 
-Considering the amount of time I spent playing PC games, I'm surprised I haven't been able to find more photos of me doing it. The one above is the only one I've found. It's from the year 2000, after I got my own PC. It is easily dated by the Donald Duck magazine in the foreground advertising for the upcoming *Pokémon the Movie 2000,* which was released in late 2000 in Norway. My PC posture is still the same after all these years.
+Considering the amount of time I spent playing PC games, I'm surprised I haven't been able to find more photos of me doing it. 
+The one above is the only one I've found. 
+It's from the year 2000, after I got my own PC. It is easily dated by the Donald Duck magazine in the foreground advertising for the upcoming *Pokémon the Movie 2000,* which was released in late 2000 in Norway. 
+My PC posture is still the same after all these years.
 
 ## Gorillas at Vestli (1993-94)
 
-*[Gorillas.bas](https://en.wikipedia.org/wiki/Gorillas_%28video_game%29)* is most likely my oldest computer game memory. I remember playing it at my dad's computer at our flat in the Vestli high-rises. It must have been around 93-94 before I started school, as we moved in 1995. I never managed to get the hang of Gorillas, probably due to my inability to read and my limited knowledge of angles.
+*[Gorillas.bas](https://en.wikipedia.org/wiki/Gorillas_%28video_game%29)* is most likely my oldest computer game memory. 
+I remember playing it at my dad's computer at our flat in the Vestli high-rises. 
+It must have been around 93-94 before I started school, as we moved in 1995. 
+I never managed to get the hang of Gorillas, probably due to my inability to read and my limited knowledge of angles.
 
 {{< figure src="vestli-gorillas.webp" alt="gorillas on the vestli terrace high-rises" caption="The Vestli terrace high-rises" >}}
 
 ## Spooky games at Kampen (1995-1998)
-[*Hover!*](https://www.mobygames.com/game/33747/hover/) is another hazy memory. I always thought I played it while living at Vestli, but looking at the release dates, I must remember wrong. *Hover!* seems to have been released alongside Windows 95 - in 95 we moved to Kampen. There were Windows 95 ads plastered around the industry buildings at nearby Ensjø at the time. It took me many years to identify and revisit the game, as I didn't know the name of it. I only remembered it as a slightly spooky bumper car game. For some reason, I can only remember playing it once. 
+[*Hover!*](https://www.mobygames.com/game/33747/hover/) is another hazy memory. 
+I always thought I played it while living at Vestli, but looking at the release dates, I must remember wrong. 
+*Hover!* seems to have been released alongside Windows 95 - in 95 we moved to Kampen. 
+There were Windows 95 ads plastered around the industry buildings at nearby Ensjø at the time. 
+It took me many years to identify and revisit the game, as I didn't know the name of it. 
+I only remembered it as a slightly spooky bumper car game. 
+For some reason, I can only remember playing it once. 
 
-We lived at Kampen for several years, and I played many games while living there. There's a couple memories and titles that stand out in their haziness and spookiness though. At the SFO (after school programme) there were a few computers. I recall the computers being in the computer-and-monitor-in-one form factor[^1]. I remember playing two games there: [*King's Quest VII*](https://www.mobygames.com/game/135/roberta-williams-kings-quest-vii-the-princeless-bride/) (1994) and [*Caesar II*](https://www.mobygames.com/game/1588/caesar-ii/) (1995)
+We lived at Kampen for several years, and I played many games while living there. 
+There's a couple memories and titles that stand out in their haziness and spookiness though. 
+At the SFO (after school programme) there were a few computers. 
+I recall the computers being in the computer-and-monitor-in-one form factor[^1]. 
+I remember playing two games there: [*King's Quest VII*](https://www.mobygames.com/game/135/roberta-williams-kings-quest-vii-the-princeless-bride/) (1994) and [*Caesar II*](https://www.mobygames.com/game/1588/caesar-ii/) (1995)
 
 [^1]: Probably some Compaq variant like this: {{< figure src="presario.webp" alt="Some Compaq pc" >}}
 
-*King's Quest* I remember as a series of gruelling ordeals, a spooky desert with scorpions and crypts, being turned into a troll and finally being followed by some awful monster in a graveyard. The monster in the graveyard I found so upsetting that I had to stop playing the game. Rediscovering the game many years later, I discovered that these are indeed chapter 1, 2 and 4 of the game. Chapter 3 I can't remember playing at all... I assume we took turns on the computer and someone else played chapter 3. The upsetting monster in chapter 4 seems to have been the "Boogeyman" (he does not look as frightening today). I'm utterly confused as to how we managed to play it or get anywhere considering we had zero grasp of English.
+*King's Quest* I remember as a series of gruelling ordeals. A spooky desert with scorpions and crypts, being turned into a troll and finally being followed by some awful monster in a graveyard. 
+The monster in the graveyard I found so upsetting that I had to stop playing the game. 
+Rediscovering the game many years later, I discovered that these are indeed chapter 1, 2 and 4 of the game. 
+Chapter 3 I can't remember playing at all... 
+I assume we took turns on the computer and someone else played chapter 3. 
+The upsetting monster in chapter 4 seems to have been the "Boogeyman" (he does not look as frightening today). 
+I'm utterly confused as to how we managed to play it or get anywhere considering we had zero grasp of English.
 
 {{< figure src="kampen-hover.webp" alt="hover! at Kampen Hageby" caption="Kampen Hageby" >}}
 
-*Caesar II* was equally gruelling. I played it as a city building game, placing buildings how I wanted it to look. Without any idea of how the game *really* worked or was supposed to be played, I was actually just slowly spending all my denarii, building awful fire traps with rampant disease and unrest. The experience of having my nice cities fall apart again and again was awful. Each time things started going south, some jarring cutscene would play. I had nightmares about one of them. I haven't been able to find it again, but I think it was some sort of disease event with rats scurrying around.
+*Caesar II* was equally gruelling. 
+I played it as a city building game, placing buildings in an aesthetically pleasing manner. 
+Without any idea of how the game *really* worked or was supposed to be played, I was actually just slowly spending all my denarii, building awful fire traps with rampant disease and unrest. 
+The experience of having my nice cities fall apart again and again was awful. 
+Each time things started going south, some jarring cutscene would play. 
+I had nightmares about one of them. 
+I haven't been able to find it again, but I think it was some sort of disease event with rats scurrying around.
 
 ## Dyna blaster at Blindern (1996)
-Back when I was a kid, I sometimes had to come along my parents to work, due to the school or kindergarten being closed. My memories of those days are a mix of being bored trying to entertain myself, and of bliss, when I got to play some game on a spare computer. 
+Back when I was a kid, I sometimes had to come along my parents to work, due to the school or kindergarten being closed. 
+My memories of those days are a mix of being bored trying to entertain myself, and of bliss, when I got to play some game on a spare computer. 
 
-At my mom's office at the University of Oslo, I have vivid memories of playing what I believe was *Dyna blaster* (1990) at one point. I also remember the (dimly lit) office hallways, their (dusty, bookish) smell and the (old) people encountered in the hallways. I reckon most of those fossils were about my age today… 
+At my mom's office at the University of Oslo, I have vivid memories of playing what I believe was *Dyna Blaster* (1990) at one point. 
+I also remember the (dimly lit) office hallways, their (dusty, bookish) smell and the (old) people encountered in the hallways. 
+I reckon most of those fossils were about my age today… 
 
 {{< figure src="blindern.webp" alt="P.A. Munch's building" caption="P.A. Munch's hus at the University of Oslo" >}}
 
-## Mystery shoot-em-up at PFI (1996)
-My dad's office was close by, in the PFI building. To get there from my mom's office you only had to cross one of the bridges (with its own scary bridge [troll](https://no.wikipedia.org/wiki/Bj%C3%B8rn_Pettersen)!) over the metro line, walk past my kindergarten and cross a big field. I remember the PFI building as beautiful, with echoing stone floors, and a big mural over(?) the stairs. My dad's office was a few floors up and to the left. Where my mom's office was bookish, the PFI building was sciency, with weird equipment littering the various rooms. I think there was a small vestibule with racks of pagers near the entrance - a cool moment in time! I'm actually typing this out, while sitting in an old IKEA chair that used to sit in that office [^3]. 
+## Mystery shoot-'em-up at PFI (1996)
+My dad's office was close by, in the PFI building. 
+To get there from my mom's office you only had to cross one of the bridges (with its own scary bridge [troll](https://no.wikipedia.org/wiki/Bj%C3%B8rn_Pettersen)!) over the metro line, walk past my kindergarten and cross a big field. 
+I remember the PFI building as beautiful, with echoing stone floors, and a big mural over(?) the stairs. 
+My dad's office was a few floors up and to the left. Where my mom's office was bookish, the PFI building was sciency, with weird equipment littering the various rooms. 
+I think there was a small vestibule with racks of pagers near the entrance - a cool moment in time! I'm actually typing this out, while sitting in an old IKEA chair that used to sit in that office [^3]. 
 
-[^3]: I love this IKEA Klinte chair. The leather is all worn out by now though... {{< figure src="stol.webp" alt="IKEA Klinte" >}}
+[^3]: I love this IKEA Klinte chair. 
+The leather is all worn out by now though... 
+{{< figure src="stol.webp" alt="IKEA Klinte" >}}
 
-At my dad's office, I have vivid memories of playing a shareware version of some mystery shoot-em-up. I can't remember the sound or music of the game, so I've always assumed I didn't get the sound to work. Come to think of it, a lot of my early computer game memories are of playing games without sound, so I don't think I ever got the hang of the sound configuration in dos... Typing this out, I just realized that the sound simply could have been disabled - we were at an office, after all!
+At my dad's office, I have vivid memories of playing a shareware version of some mystery shoot-'em-up. 
+I can't remember the sound or music of the game, so I've always assumed I didn't get the sound to work. 
+Come to think of it, a lot of my early computer game memories are of playing games without sound. I don't think I ever got the hang of the sound configuration in dos... 
+Typing this out, I just realized that the sound simply could have been disabled - we were at an office, after all!
 
 {{< figure src="pfi.webp" alt="The PFI-building at Gaustad" caption="The PFI-building at Gaustad" >}}
 
 ## Baryon
-Turns out that game was [*Baryon*](https://www.mobygames.com/game/1318/baryon/) (not *Tyrian*), a name I’ve been trying to remember for more than 20 years. Apparently, it's a South-Korean game developed by Acro Studio, and distributed by The Game Factory. The original Game Factory readme is attached in the following footnote -> [^4]. They seem to have distributed a few other games (*Threat, Super speed* both released in 1995) but I have never heard of them. There's some more info on the game here [here](http://www.hardcoregaming101.net/korea/part2/games-other2.htm#baryon).
+Turns out that game was [*Baryon*](https://www.mobygames.com/game/1318/baryon/) (not *Tyrian*). It's a name I’ve been trying to remember for more than 20 years. 
+Apparently, it's a South-Korean game developed by Acro Studio, and distributed by The Game Factory. 
+The original Game Factory readme is attached in the following footnote -> [^4]. 
+They seem to have distributed a few other games (*Threat, Super speed*, both released in 1995) but I have never heard of them. 
+There's some more info on the game here [here](http://www.hardcoregaming101.net/korea/part2/games-other2.htm#baryon).
 
-I finally had the chance to revisit it earlier this week. Date wise, I know I played it before 1997, as he moved offices. With the game released in 1995, I reckon 1996 is a good bet as to when I played it.
+I finally had the chance to revisit it earlier this week. 
+Date wise, I know I played it before 1997, as he moved offices. 
+With the game released in 1995, I reckon 1996 is a good bet as to when I played it.
 
-I sucked at it, and don't think I ever managed to finish the first level. I’ve come to love the shoot-em up genre, and I think the seed that made me seek out these games stem from that one gaming session back in the 90s. The fact that I never managed to identify the game, made all shoot-em-ups somewhat alluring. They tend to trigger some happy nostalgia in me every time. 
+I sucked at it, and don't think I ever managed to finish the first level. 
+I’ve come to love the shoot-'em-up genre, and I think the seed that made me seek out these games stem from that one gaming session back in the 90s. 
+The fact that I never managed to identify the game, made all shoot-'em-ups somewhat alluring. 
+They tend to trigger some happy nostalgia in me every time. 
 
-Gameplay wise, *Baryon* does not stand out in any way among the myriad other shoot-em ups I've played since. I can see why I struggled with it back then though. It happened to be my first introduction to the genre. It was probably a good thing that I never managed to beat the first level, as that’s where the shareware version I played ends. Having finished it back then would probably have taken some of the magic away. It's odd how media can transport you back in time.
+Gameplay wise, *Baryon* does not stand out in any way among the myriad other shoot-'em-ups I've played since. 
+I can see why I struggled with it back then though. 
+It happened to be my first introduction to the genre. 
+It was probably a good thing that I never managed to beat the first level, as that’s where the shareware version I played ends. 
+Having finished it back then would probably have taken some of the magic away. 
+It's odd how media can transport you back in time.
 
 ## Nostalgia
-I revisited that hallway where my mom's office used to be a few years back by chance, and discovered that the it had all been refurbished. The cell offices are gone and you instead find small (bright, modern) colloquium rooms (filled with people younger than me) instead. The refurbished buildings retain nothing from my memories, apart from the nice view out the windows. 
+I revisited that hallway where my mom's office used to be a few years back by chance, and discovered that it had all been refurbished. 
+The cell offices are gone and you instead find small (bright, modern) colloquium rooms (filled with people younger than me) instead. 
+The refurbished buildings retain nothing from my memories, apart from the nice view out the windows. 
 
-I've never been back to the PFI-building, but I should probably go there the next time I'm in Oslo. It's apparently been turned into the institute of psychology at the University of Oslo. Looking at google maps, there seems to be a new building in front of it, ruining the view across the field. Perhaps the whole field is gone... I seem to remember there was a quiet park/grass area, with a pond or a fountaint at the back. That could be my nostalgia playing tricks on me though (google maps makes it hard to conclude with anything). 
+I've never been back to the PFI-building, but I should probably go there the next time I'm in Oslo. 
+It's apparently been turned into the Institute of Psychology at the University of Oslo. 
+Looking at google maps, there seems to be a new building in front of it, ruining the view across the field. 
+Perhaps the whole field is gone... 
+I seem to remember there was a quiet park/grass area, with a pond or a fountaint at the back. 
+That could be my nostalgia playing tricks on me though (google maps makes it hard to conclude with anything). 
 
 Enough rambling - let's play *Baryon*!
+
+## Dosbox/JS-DOS
 
 <div style="width: calc(100% - 10px); max-width: 800px; box-sizing: border-box;">
   <iframe 
@@ -112,8 +186,12 @@ Player 2:
 - Pause: P
 ```
 
-## Dosbox/JS-DOS
-It was easy to play the game again, once I identified it. [Dosbox](https://www.dosbox.com/) works like a charm! I found the game files for the registered version of the game at some abandonware site. That means you are not getting the authentic shareware experience, but the actual full game. I've embedded the game using on this web-page using [JS-DOS](https://js-dos.com/overview.html). Looking at the game directory I also found an original nfo-file[^5] from [Razor 1911](https://en.wikipedia.org/wiki/Razor_1911). Another blast from the past!
+It was easy to play the game again, once I identified it. 
+[Dosbox](https://www.dosbox.com/) works like a charm! I found the game files for the registered version of the game at some abandonware site. 
+That means you are not getting the authentic shareware experience, but the actual full game. 
+I've embedded the game using on this web-page using [JS-DOS](https://js-dos.com/overview.html). 
+Looking at the game directory I also found an original nfo-file[^5] from [Razor 1911](https://en.wikipedia.org/wiki/Razor_1911). 
+Another blast from the past!
 
 [^4]:	Readme.txt from the shareware version:
 	```txt
