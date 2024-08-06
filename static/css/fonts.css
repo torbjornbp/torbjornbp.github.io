@@ -3,7 +3,7 @@
     src: url('/fonts/IosevkaTerm-Regular.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
-    font-display: fallback;
+    font-display: swap;
 }
 
 @font-face {
@@ -11,7 +11,7 @@
     src: url('/fonts/IosevkaAile-Regular.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
-    font-display: fallback;
+    font-display: swap;
 }
 
 @font-face {
@@ -19,7 +19,7 @@
     src: url('/fonts/ComicShannsMono-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-    font-display: fallback;
+    font-display: swap;
 }
 
 body, figcaption {
@@ -55,13 +55,13 @@ body.comic-sans code, body.comic-sans .posts-list {
         -moz-text-size-adjust: 100%;
         -ms-text-size-adjust: 100%;
         text-size-adjust: 100%;
-        font-size: 14px;
+        font-size: 13px;
     }
     pre, code {
         -webkit-text-size-adjust: 100%;
         -moz-text-size-adjust: 100%;
         -ms-text-size-adjust: 100%;
         text-size-adjust: 100%;
-        font-size: 13px; /* Adjust this value as needed */
+        font-size: 12px; /* Adjust this value as needed */
     }
 }
