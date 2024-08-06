@@ -52,7 +52,7 @@ My PC posture is still the same after all these years.
 
 ## Gorillas at Vestli (1993-94)
 
-*[Gorillas.bas](https://en.wikipedia.org/wiki/Gorillas_%28video_game%29 "Gorillas (video game) on wikipedia")* is most likely my oldest computer game memory. 
+[*Gorillas.bas*](https://en.wikipedia.org/wiki/Gorillas_%28video_game%29 "Gorillas (video game) on wikipedia") is most likely my oldest computer game memory. 
 I remember playing it at my dad's computer at our flat in the Vestli high-rises. 
 It must have been around 93-94 before I started school, as we moved in 1995. 
 I never managed to get the hang of Gorillas, probably due to my inability to read and my limited knowledge of angles.
@@ -131,7 +131,7 @@ It's a name I’ve been trying to remember for more than 20 years.
 Apparently, it's a South-Korean game developed by Acro Studio, and distributed by The Game Factory. 
 The original Game Factory readme is attached in the following footnote -> [^4]. 
 They seem to have distributed a few other games (*Threat, Super speed*, both released in 1995) but I have never heard of them. 
-There's some more info on the game here [here](http://www.hardcoregaming101.net/korea/part2/games-other2.htm#baryon "A history of Korean Gaming - 바리온 (Baryon) on Hardcore gaming 101").
+There's some more info on the game at [Hardcore gaming 101](http://www.hardcoregaming101.net/korea/part2/games-other2.htm#baryon "A history of Korean Gaming - 바리온 (Baryon) on Hardcore gaming 101").
 
 I finally had the chance to revisit *Baryon* earlier this week. 
 Date wise, I know I played it before 1997, as my dad changed offices then. 
