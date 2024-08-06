@@ -1,6 +1,7 @@
 ---
 title: Cherokee '93
 date: '2016-06-06'
+description: Mix of southern 90s rap, with an emphasis on Memphis.
 categories: 
   - bits and pieces
 tags:

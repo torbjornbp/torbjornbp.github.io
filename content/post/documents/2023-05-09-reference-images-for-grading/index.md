@@ -1,6 +1,7 @@
 ---
 title: Making reference images for grading tinted film
 date: '2023-05-09'
+description: An attempt to document film tints and make useful reference images for grading.
 categories: 
   - work stuff
 images:

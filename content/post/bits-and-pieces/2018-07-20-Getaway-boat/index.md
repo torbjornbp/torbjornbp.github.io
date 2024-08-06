@@ -1,6 +1,7 @@
 ---
 title: Getaway boat
 date: '2018-07-20'
+description: Music video/visuals for KEVINTHECREEP - Getaway boat.
 categories: 
   - bits and pieces
 tags:

@@ -1,8 +1,7 @@
 ---
 title: video-ocr.py (and chatGPT)
 date: '2023-08-21'
-description:
-  - How I used chatGPT to make a simple script very easily, with little or no previous knowledge of python or programming.
+description: How I used chatGPT to make a simple script very easily, with little or no previous knowledge of python or programming.
 categories: 
   - experimentation
 tags:

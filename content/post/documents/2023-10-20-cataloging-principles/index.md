@@ -1,8 +1,7 @@
 ---
 title: Practical cataloging principles
 date: '2023-10-20'
-description:
-  - A text spelling out various suggestions for how to approach cataloging and asset description in a practical manner.
+description: A text spelling out various suggestions for how to approach cataloging and asset description in a practical manner.
 categories:
   - cataloging
 tags:

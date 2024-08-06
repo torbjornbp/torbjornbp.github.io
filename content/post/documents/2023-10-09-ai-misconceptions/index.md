@@ -1,8 +1,7 @@
 ---
 title: Dangers of AI/ML hype
 date: '2023-10-09'
-description:
-  - Some quick thoughts on AI/ML hype and possible effects of jumping on the bandwagon.
+description: Some quick thoughts on AI/ML hype and possible effects of jumping on the bandwagon.
 categories: 
   - thoughts
 tags:

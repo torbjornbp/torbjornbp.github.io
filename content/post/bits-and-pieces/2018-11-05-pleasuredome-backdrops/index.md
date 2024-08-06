@@ -1,6 +1,7 @@
 ---
 title: Pleasuredome backdrops
 date: '2018-11-05'
+description: Video backdrops for the Pleasuredome club night at Lokal bar, Trondheim.
 categories: 
   - bits and pieces
 tags:
