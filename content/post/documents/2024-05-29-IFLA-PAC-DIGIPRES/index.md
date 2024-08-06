@@ -1,8 +1,7 @@
 ---
 title: Digital Preservation at the National Library of Norway
 date: '2024-05-29'
-description:
-  - Slides and video recording of the presentation I held at the Digital libraries: storage for now and forever conference.
+description: "Slides and video recording of the presentation I held at the Digital libraries: storage for now and forever conference."
 categories: 
   - presentation
 tags:
@@ -12,6 +11,7 @@ tags:
   - hpss
   - sam-fs
   - product orientation
+  - digital preservation
 ---
 
 Presentation at the [Digital libraries: storage for now and forever](https://www.bn.org.pl/aktualnosci/5307-digital-libraries:-storage-for-now-and-forever.-konferencja-na-temat-przechowywania-zbiorow-w-bibliotekach-cyfrowych..html) conference hosted by the IFLA Preservation and Conservation Center at the National Library of Poland. 
