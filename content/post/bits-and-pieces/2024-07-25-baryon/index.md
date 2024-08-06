@@ -18,7 +18,7 @@ images:
   - vestli-gorillas.webp
 ---
 
-Recently, I stumbled upon an old shoot-'em-up game called [Tyrian](https://www.mobygames.com/game/586/tyrian/), released in 1995. 
+Recently, I stumbled upon an old shoot-'em-up game called [Tyrian](https://www.mobygames.com/game/586/tyrian/ "Tyrian (1995) on Mobygames"), released in 1995. 
 While I’ve never played Tyrian, the name sparked a wave of nostalgia, reminding me of a distinct game with a similar title. 
 
 ## Gaming ur-memories
@@ -35,7 +35,7 @@ I have memories of playing all these cool games, but I didn’t  get to revisit 
 
 ## Sliming gruzzles at Kampen (1996->2000???)
 Two of the early games I remember playing was *Matteeventyret* (1996?) and *Ordeventyret* (1996?). 
-They were Norwegian language versions of [*Math Rescue*](https://www.mobygames.com/game/3100/math-rescue/) (1992) and [*Word Rescue*](https://www.mobygames.com/game/912/word-rescue/) (1992), translated and released by “Edutainment Software Systems A/S”. 
+They were Norwegian language versions of [*Math Rescue*](https://www.mobygames.com/game/3100/math-rescue/ "Math Rescue (1992) on Mobygames") (1992) and [*Word Rescue*](https://www.mobygames.com/game/912/word-rescue/ "Word Rescue (1992) on Mobygames") (1992), translated and released by “Edutainment Software Systems A/S”. 
 They are fairly primitive games, answering the question: *What if Super Mario was all about doing maths homework?*
 
 I spent a lot of time with those games, even though they left a lot to be desired. 
@@ -52,7 +52,7 @@ My PC posture is still the same after all these years.
 
 ## Gorillas at Vestli (1993-94)
 
-*[Gorillas.bas](https://en.wikipedia.org/wiki/Gorillas_%28video_game%29)* is most likely my oldest computer game memory. 
+*[Gorillas.bas](https://en.wikipedia.org/wiki/Gorillas_%28video_game%29 "Gorillas (video game) on wikipedia")* is most likely my oldest computer game memory. 
 I remember playing it at my dad's computer at our flat in the Vestli high-rises. 
 It must have been around 93-94 before I started school, as we moved in 1995. 
 I never managed to get the hang of Gorillas, probably due to my inability to read and my limited knowledge of angles.
@@ -60,7 +60,7 @@ I never managed to get the hang of Gorillas, probably due to my inability to rea
 {{< figure src="vestli-gorillas.webp" alt="gorillas on the vestli terrace high-rises" caption="The Vestli terrace high-rises" >}}
 
 ## Spooky games at Kampen (1995-1998)
-[*Hover!*](https://www.mobygames.com/game/33747/hover/) is another hazy memory. 
+[*Hover!*](https://www.mobygames.com/game/33747/hover/ "Hover! (1995) on Mobygames") is another hazy memory. 
 I always thought I played it while living at Vestli, but looking at the release dates, I must remember wrong. 
 *Hover!* seems to have been released alongside Windows 95 - in 95 we moved to Kampen. 
 There were Windows 95 ads plastered around the industry buildings at nearby Ensjø at the time. 
@@ -72,7 +72,7 @@ We lived at Kampen for several years, and I played many games while living there
 There's a couple memories and titles that stand out in their haziness and spookiness though. 
 At the SFO (after school programme) there were a few computers. 
 I recall the computers being in the computer-and-monitor-in-one form factor[^1]. 
-I remember playing two games there: [*King's Quest VII*](https://www.mobygames.com/game/135/roberta-williams-kings-quest-vii-the-princeless-bride/) (1994) and [*Caesar II*](https://www.mobygames.com/game/1588/caesar-ii/) (1995)
+I remember playing two games there: [*King's Quest VII*](https://www.mobygames.com/game/135/roberta-williams-kings-quest-vii-the-princeless-bride/ "King's Quest VII (1994) on Mobygames") (1994) and [*Caesar II*](https://www.mobygames.com/game/1588/caesar-ii/ "Caesar II (1995) on Mobygames") (1995)
 
 [^1]: Probably some Compaq variant like this: {{< figure src="presario.webp" alt="Some Compaq pc" >}}
 
@@ -82,7 +82,7 @@ The monster in the graveyard I found so upsetting that I had to stop playing the
 Rediscovering the game many years later, I discovered that these are indeed chapter 1, 2 and 4 of the game. 
 Chapter 3 I can't remember playing at all... 
 I assume we took turns on the computer and someone else played chapter 3. 
-The upsetting monster in chapter 4 seems to have been the [Boogeyman](https://kingsquest.fandom.com/wiki/Boogeyman) (he does not look as frightening today). 
+The upsetting monster in chapter 4 seems to have been the [Boogeyman](https://kingsquest.fandom.com/wiki/Boogeyman "Boogeyman on King's Quest Omnipedia") (he does not look as frightening today). 
 I'm utterly confused as to how we managed to play it or get anywhere considering we had zero grasp of English.
 
 {{< figure src="kampen-hover.webp" alt="hover! at Kampen Hageby" caption="Kampen Hageby" >}}
@@ -107,7 +107,7 @@ I reckon most of those fossils were about my age today…
 
 ## Mystery shoot-'em-up at PFI (1996)
 My dad's office was close by, in the PFI building. 
-To get there from my mom's office you only had to cross one of the bridges (with its own scary bridge [troll](https://no.wikipedia.org/wiki/Bj%C3%B8rn_Pettersen)!) over the metro line, walk past my kindergarten and cross a big field. 
+To get there from my mom's office you only had to cross one of the bridges (with its own scary bridge [troll](https://no.wikipedia.org/wiki/Bj%C3%B8rn_Pettersen "Norwegian article on Bjørn Pettersen on wikipedia")!) over the metro line, walk past my kindergarten and cross a big field. 
 I remember the PFI building as beautiful, with echoing stone floors, and a big mural over(?) the stairs. 
 My dad's office was a few floors up and to the left. 
 Where my mom's office was bookish, the PFI building was sciency, with weird equipment littering the various rooms. 
@@ -126,12 +126,12 @@ Typing this out, I just realized that the sound simply could have been disabled 
 {{< figure src="pfi.webp" alt="The PFI-building at Gaustad" caption="The PFI-building at Gaustad" >}}
 
 ## Baryon
-Turns out that game was [*Baryon*](https://www.mobygames.com/game/1318/baryon/) (not *Tyrian*). 
+Turns out that game was [*Baryon*](https://www.mobygames.com/game/1318/baryon/ "Baryon (1995) in Mobygames") (not *Tyrian*). 
 It's a name I’ve been trying to remember for more than 20 years. 
 Apparently, it's a South-Korean game developed by Acro Studio, and distributed by The Game Factory. 
 The original Game Factory readme is attached in the following footnote -> [^4]. 
 They seem to have distributed a few other games (*Threat, Super speed*, both released in 1995) but I have never heard of them. 
-There's some more info on the game here [here](http://www.hardcoregaming101.net/korea/part2/games-other2.htm#baryon).
+There's some more info on the game here [here](http://www.hardcoregaming101.net/korea/part2/games-other2.htm#baryon "A history of Korean Gaming - 바리온 (Baryon) on Hardcore gaming 101").
 
 I finally had the chance to revisit *Baryon* earlier this week. 
 Date wise, I know I played it before 1997, as my dad changed offices then. 
@@ -190,10 +190,10 @@ Player 2:
 ```
 
 It was easy to play the game again, once I identified it. 
-[Dosbox](https://www.dosbox.com/) works like a charm! I found the game files for the registered version of the game at some abandonware site. 
+[Dosbox](https://www.dosbox.com/ "Home page of the Dosbox software") works like a charm! I found the game files for the registered version of the game at some abandonware site. 
 That means you are not getting the authentic shareware experience, but the actual full game. 
-I've embedded the game using on this web-page using [JS-DOS](https://js-dos.com/overview.html). 
-Looking at the game directory I also found an original nfo-file[^5] from [Razor 1911](https://en.wikipedia.org/wiki/Razor_1911). 
+I've embedded the game using on this web-page using [JS-DOS](https://js-dos.com/overview.html "Home page of the js-dos project"). 
+Looking at the game directory I also found an original nfo-file[^5] from [Razor 1911](https://en.wikipedia.org/wiki/Razor_1911 "Razor 1911 article on wikipedia"). 
 Another blast from the past!
 
 [^4]:	Readme.txt from the shareware version:
