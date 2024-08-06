@@ -1,4 +1,4 @@
---- 
+---
 title: Gaming nostalgia
 date: '2024-07-29'
 categories: 
