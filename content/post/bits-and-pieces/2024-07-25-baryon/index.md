@@ -1,4 +1,4 @@
----
+--- 
 title: Gaming nostalgia
 date: '2024-07-29'
 categories: 
@@ -76,22 +76,23 @@ I remember playing two games there: [*King's Quest VII*](https://www.mobygames.c
 
 [^1]: Probably some Compaq variant like this: {{< figure src="presario.webp" alt="Some Compaq pc" >}}
 
-*King's Quest* I remember as a series of gruelling ordeals. A spooky desert with scorpions and crypts, being turned into a troll and finally being followed by some awful monster in a graveyard. 
+*King's Quest* I remember as a series of gruelling ordeals. 
+Starting off in a spooky desert with scorpions and crypts, having the protagonist be turned into a troll, and finally being followed by some awful monster in a graveyard. 
 The monster in the graveyard I found so upsetting that I had to stop playing the game. 
 Rediscovering the game many years later, I discovered that these are indeed chapter 1, 2 and 4 of the game. 
 Chapter 3 I can't remember playing at all... 
 I assume we took turns on the computer and someone else played chapter 3. 
-The upsetting monster in chapter 4 seems to have been the "Boogeyman" (he does not look as frightening today). 
+The upsetting monster in chapter 4 seems to have been the [Boogeyman](https://kingsquest.fandom.com/wiki/Boogeyman) (he does not look as frightening today). 
 I'm utterly confused as to how we managed to play it or get anywhere considering we had zero grasp of English.
 
 {{< figure src="kampen-hover.webp" alt="hover! at Kampen Hageby" caption="Kampen Hageby" >}}
 
 *Caesar II* was equally gruelling. 
 I played it as a city building game, placing buildings in an aesthetically pleasing manner. 
-Without any idea of how the game *really* worked or was supposed to be played, I was actually just slowly spending all my denarii, building awful fire traps with rampant disease and unrest. 
+Without any idea of how the game *really* worked or was supposed to be played, I was in reality just slowly spending all my denarii, building awful fire traps with rampant disease and unrest. 
 The experience of having my nice cities fall apart again and again was awful. 
 Each time things started going south, some jarring cutscene would play. 
-I had nightmares about one of them. 
+I think I had nightmares about one of them. 
 I haven't been able to find it again, but I think it was some sort of disease event with rats scurrying around.
 
 ## Dyna blaster at Blindern (1996)
@@ -108,8 +109,10 @@ I reckon most of those fossils were about my age today…
 My dad's office was close by, in the PFI building. 
 To get there from my mom's office you only had to cross one of the bridges (with its own scary bridge [troll](https://no.wikipedia.org/wiki/Bj%C3%B8rn_Pettersen)!) over the metro line, walk past my kindergarten and cross a big field. 
 I remember the PFI building as beautiful, with echoing stone floors, and a big mural over(?) the stairs. 
-My dad's office was a few floors up and to the left. Where my mom's office was bookish, the PFI building was sciency, with weird equipment littering the various rooms. 
-I think there was a small vestibule with racks of pagers near the entrance - a cool moment in time! I'm actually typing this out, while sitting in an old IKEA chair that used to sit in that office [^3]. 
+My dad's office was a few floors up and to the left. 
+Where my mom's office was bookish, the PFI building was sciency, with weird equipment littering the various rooms. 
+I think there was a small vestibule with racks of pagers near the entrance - a cool moment in time! 
+I'm actually typing this out, while sitting in an old IKEA chair that used to sit in that office [^3]. 
 
 [^3]: I love this IKEA Klinte chair. 
 The leather is all worn out by now though... 
@@ -123,24 +126,25 @@ Typing this out, I just realized that the sound simply could have been disabled 
 {{< figure src="pfi.webp" alt="The PFI-building at Gaustad" caption="The PFI-building at Gaustad" >}}
 
 ## Baryon
-Turns out that game was [*Baryon*](https://www.mobygames.com/game/1318/baryon/) (not *Tyrian*). It's a name I’ve been trying to remember for more than 20 years. 
+Turns out that game was [*Baryon*](https://www.mobygames.com/game/1318/baryon/) (not *Tyrian*). 
+It's a name I’ve been trying to remember for more than 20 years. 
 Apparently, it's a South-Korean game developed by Acro Studio, and distributed by The Game Factory. 
 The original Game Factory readme is attached in the following footnote -> [^4]. 
 They seem to have distributed a few other games (*Threat, Super speed*, both released in 1995) but I have never heard of them. 
 There's some more info on the game here [here](http://www.hardcoregaming101.net/korea/part2/games-other2.htm#baryon).
 
-I finally had the chance to revisit it earlier this week. 
-Date wise, I know I played it before 1997, as he moved offices. 
+I finally had the chance to revisit *Baryon* earlier this week. 
+Date wise, I know I played it before 1997, as my dad changed offices then. 
 With the game released in 1995, I reckon 1996 is a good bet as to when I played it.
 
-I sucked at it, and don't think I ever managed to finish the first level. 
+I sucked at it, and I don't think I ever managed to finish the first level. 
 I’ve come to love the shoot-'em-up genre, and I think the seed that made me seek out these games stem from that one gaming session back in the 90s. 
-The fact that I never managed to identify the game, made all shoot-'em-ups somewhat alluring. 
+The fact that I never managed to identify the game, made other shoot-'em-ups somewhat alluring. 
 They tend to trigger some happy nostalgia in me every time. 
 
 Gameplay wise, *Baryon* does not stand out in any way among the myriad other shoot-'em-ups I've played since. 
 I can see why I struggled with it back then though. 
-It happened to be my first introduction to the genre. 
+It happened to be my first introduction to the genre and it's relatively fast. 
 It was probably a good thing that I never managed to beat the first level, as that’s where the shareware version I played ends. 
 Having finished it back then would probably have taken some of the magic away. 
 It's odd how media can transport you back in time.
@@ -160,7 +164,6 @@ That could be my nostalgia playing tricks on me though (google maps makes it har
 Enough rambling - let's play *Baryon*!
 
 ## Dosbox/JS-DOS
-
 <div style="width: calc(100% - 10px); max-width: 800px; box-sizing: border-box;">
   <iframe 
     src="/games/baryon.html"
