@@ -28,7 +28,7 @@ The memories from before 1998 - when I got my own computer - have always stood o
 They are somewhat hazy and, most probably, particularly rose-tinted. 
 The games I played after 1998 lacks some of the mystique of those early memories, as I had a better grasp of English and mostly remember what I played [^6]. 
 
-[^6]: I'm looking at you, pirate copy of *Heroes II* and *Age of Empires I*...
+[^6]: I'm looking at you, burned cd of *Heroes II* and *Age of Empires I*...
 
 One of the things that have made me mull over these early gaming memories in particular, is that I often didn’t know the titles of the games until much later. 
 I have memories of playing all these cool games, but I didn’t  get to revisit them until much later. 
@@ -41,9 +41,9 @@ They are fairly primitive games, answering the question: *What if Super Mario wa
 I spent a lot of time with those games, even though they left a lot to be desired. 
 I guess I didn't have access to much else to play (and sliming gruzzles[^2] isn't all bad).
 
-[^2]: Some gruzzles: {{< figure src="gruzzles.webp" alt="Gruzzles" >}}
+[^2]: Some gruzzles: ![Gruzzles](gruzzles.webp)
 
-{{< figure src="math-stac.webp" alt="me in y2k" caption="The author playing *Math Rescue* instead of *StarCraft* in 2000" >}}
+![The author playing *Math Rescue* instead of *StarCraft* in 2000"](math-stac.webp "The author playing *Math Rescue* instead of *StarCraft* in 2000")
 
 Considering the amount of time I spent playing PC games, I'm surprised I haven't been able to find more photos of me doing it. 
 The one above is the only one I've found. 
@@ -57,7 +57,7 @@ I remember playing it at my dad's computer at our flat in the Vestli high-rises.
 It must have been around 93-94 before I started school, as we moved in 1995. 
 I never managed to get the hang of Gorillas, probably due to my inability to read and my limited knowledge of angles.
 
-{{< figure src="vestli-gorillas.webp" alt="gorillas on the vestli terrace high-rises" caption="The Vestli terrace high-rises" >}}
+![gorillas on the vestli terrace high-rises](vestli-gorillas.webp "The Vestli terrace high-rises") 
 
 ## Spooky games at Kampen (1995-1998)
 [*Hover!*](https://www.mobygames.com/game/33747/hover/ "Hover! (1995) on Mobygames") is another hazy memory. 
@@ -85,7 +85,7 @@ I assume we took turns on the computer and someone else played chapter 3.
 The upsetting monster in chapter 4 seems to have been the [Boogeyman](https://kingsquest.fandom.com/wiki/Boogeyman "Boogeyman on King's Quest Omnipedia") (he does not look as frightening today). 
 I'm utterly confused as to how we managed to play it or get anywhere considering we had zero grasp of English.
 
-{{< figure src="kampen-hover.webp" alt="hover! at Kampen Hageby" caption="Kampen Hageby" >}}
+![Hover! at Kampen Hageby](kampen-hover.webp "Kampen Hageby")
 
 *Caesar II* was equally gruelling. 
 I played it as a city building game, placing buildings in an aesthetically pleasing manner. 
@@ -103,7 +103,7 @@ At my mom's office at the University of Oslo, I have vivid memories of playing w
 I also remember the (dimly lit) office hallways, their (dusty, bookish) smell and the (old) people encountered in the hallways. 
 I reckon most of those fossils were about my age today… 
 
-{{< figure src="blindern.webp" alt="P.A. Munch's building" caption="P.A. Munch's hus at the University of Oslo" >}}
+![P.A. Munch's building](blindern.webp "P.A. Munch's hus at the University of Oslo") 
 
 ## Mystery shoot-'em-up at PFI (1996)
 My dad's office was close by, in the PFI building. 
@@ -123,7 +123,7 @@ I can't remember the sound or music of the game, so I've always assumed I didn't
 Come to think of it, a lot of my early computer game memories are of playing games without sound. I don't think I ever got the hang of the sound configuration in dos... 
 Typing this out, I just realized that the sound simply could have been disabled - we were at an office, after all!
 
-{{< figure src="pfi.webp" alt="The PFI-building at Gaustad" caption="The PFI-building at Gaustad" >}}
+![The PFI-building at Gaustad](pfi.webp "The PFI-building at Gaustad")
 
 ## Baryon
 Turns out that game was [*Baryon*](https://www.mobygames.com/game/1318/baryon/ "Baryon (1995) in Mobygames") (not *Tyrian*). 
