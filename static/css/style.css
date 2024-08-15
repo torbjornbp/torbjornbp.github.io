@@ -53,7 +53,7 @@ pre code {
 }
 
 /* misc elements */
-img, figure, iframe, video { max-width: 100%; }
+img, figure, iframe, video, .responsive-image { max-width: 100%; height: auto; }
 main { hyphens: auto; }
 blockquote {
   border-left: 4px solid #777;
@@ -61,12 +61,17 @@ blockquote {
 }
 ul {  list-style-type: disclosure-closed; }
 
+.responsive-image img {
+  width: 100%;
+  height: auto;
+}
+
 /* figure and captions */
 figure { 
   position: relative;
   margin: 0;
 }
-figure figcaption {
+figure figcaption, .imgCaption {
   color: black;
   text-align: right;
   padding: 10px;

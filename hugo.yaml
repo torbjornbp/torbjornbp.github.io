@@ -38,6 +38,9 @@ params:
   favicon: "/favicon.png"
   defaultImage: "/cover.png"
 
+imaging:
+  quality: 85
+
 minify:
   disableCSS: false
   disableHTML: false
