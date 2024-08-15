@@ -91,8 +91,6 @@ Documenting that yellow 1 has redder mid-tones/shadows than yellow 2 for example
 
 {{< figure src="reference2.webp" caption="Two different yellows">}}
 
-![](reference2.webp "Two different yellows")
-
 As long as you are aware of the limitations of what you are doing, I think this is a valid approach for documenting film colours - at least in the short term for grading help.
 
 For assessment controls of film material you could also work like this to produce photo documentation very easily.
