@@ -8,6 +8,9 @@ body {
   overflow-y: scroll;
 }
 
+/* headers */
+h2, h3, h4 { margin: 1.5em auto 0.5em; }
+
 /* header and footer areas */
 .menu, .article-meta, footer { text-align: center; }
 .menu {padding: 0;}
@@ -35,7 +38,11 @@ a:hover{
 sup {
   vertical-align: top;
   font-size: 0.8em;
-  font-weight: 600;
+}
+
+sub {
+  vertical-align: bottom;
+  font-size: 0.8em;
 }
 
 /* code */
@@ -45,6 +52,7 @@ pre {
   padding: 1em;
   margin: 4px;
   overflow-x: auto;
+  line-height: 1.3;
 }
 code { background: #ddd; }
 pre code {
@@ -58,6 +66,7 @@ main { hyphens: auto; }
 blockquote {
   border-left: 4px solid #777;
   padding: 3px 1em;
+  font-size: 80%;
 }
 ul {  list-style-type: disclosure-closed; }
 
@@ -75,10 +84,8 @@ figure figcaption, .imgCaption {
   color: black;
   text-align: right;
   padding: 10px;
-  font-style: ;
-  font-size: smaller;
-  mix-blend-mode: hard-light;
-  text-shadow: 1px 1px 3px white;
+  font-size: 80%;
+
 }
 
 /* table */
@@ -104,4 +111,3 @@ thead, tfoot, tr:nth-child(even) { background: #eee; }
         font-size: 85%;
     }
 }
-

@@ -57,7 +57,7 @@ body.comic-sans code, body.comic-sans .posts-list {
         text-size-adjust: 100%;
         font-size: 13px;
     }
-    pre, code {
+    pre, code, blockquote {
         -webkit-text-size-adjust: 100%;
         -moz-text-size-adjust: 100%;
         -ms-text-size-adjust: 100%;

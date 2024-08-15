@@ -58,6 +58,18 @@ markup:
     renderer:
       unsafe: true
     extensions:
+      extras:
+        delete:
+          enable: true
+        insert:
+          enable: true
+        mark:
+          enable: true
+        subscript:
+          enable: true
+        superscript:
+          enable: true
+      strikethrough: false
       passthrough:
         enable: true
         delimiters:
