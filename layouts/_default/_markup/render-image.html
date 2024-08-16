@@ -10,17 +10,16 @@
 {{- $caption := .Title -}}
 {{- $src := .Destination -}}
 {{- $imgBd5 := md5 $src -}}
-{{- $dataSzes := "(min-width: 1024px) 100vw, 50vw" -}}
+{{- $dataSzes := "100vw" -}}
 {{- $holder := "GIP" -}}
 {{- $hint := "photo" -}}
 {{- $filter := "box" -}}
 {{- $imgClass := "w-full h-auto shadow animate-fade" -}}
-
 {{- if .Page.Resources.GetMatch $src -}}
     {{ with .Page.Resources.GetMatch $src }}
         {{- $divClass := print "relative bigImgDiv imgB-" $imgBd5 "-" $holder -}}
         {{- $imgRsc := . -}}
-        {{- $actualImg := $imgRsc.Process (print "resize 640x jpg " $filter) -}}
+        {{- $actualImg := $imgRsc.Process (print "resize 800x jpg " $filter) -}}
         <div class="{{ $divClass }}" data-pagefind-ignore>
             <picture data-pagefind-ignore>
                 <source type="image/webp" srcset="
@@ -39,7 +38,7 @@
                         {{- end -}}
                     {{- end -}}
                 {{- end -}}" sizes="{{ $dataSzes }}" />
-                <img class="{{ $imgClass }}" src="{{ $actualImg.RelPermalink }}" width="{{ $imgRsc.Width }}" height="{{ $imgRsc.Height }}" alt="{{ $alt }}" title="{{ $alt }}" loading="lazy" data-pagefind-ignore />
+                <img class="{{ $imgClass }}" src="{{ $actualImg.RelPermalink }}" width="{{ $imgRsc.Width }}" height="{{ $imgRsc.Height }}" alt="{{ $alt }}" title="{{ $alt }}" loading="lazy" fetchpriority="high" data-pagefind-ignore />
             </picture>
         </div>
     {{- end -}}
