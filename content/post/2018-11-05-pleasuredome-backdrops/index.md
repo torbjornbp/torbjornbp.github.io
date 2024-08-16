@@ -8,7 +8,7 @@ tags:
   - video synthesis
   - glitch
 images:
-  - pleasuredome1.webp
+  - pleasuredome1.jpg
 aliases: "/pleasuredome-backdrops.html"
 ---
 
@@ -22,4 +22,4 @@ Made using the LZX Vidiot, 3trinsRGB+1c, BPMC premium cable and an assortment of
 
 ---
 
-![Screenshot](pleasuredome1.webp)
+![Screenshot from the Pleasuredome video](pleasuredome1.jpg)

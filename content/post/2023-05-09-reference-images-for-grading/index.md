@@ -5,7 +5,7 @@ description: An attempt to document film tints and make useful reference images 
 categories: 
   - work stuff
 images:
-  - reference.webp
+  - reference.jpg
 aliases: "/reference-images-for-grading.html"
 ---
 
@@ -69,8 +69,7 @@ I also applied a simple and consistent contrast change to my photos, to compensa
 Before using the photos I applied a white point adjustment to D65, for grading in rec709.
 You need to pay some attention to colour spaces here!
 
-
-{{< figure src="tripod.webp" caption="Camera and tripod setup">}}
+![A photo showing a tripod with a camera, over a film inspection table](tripod.jpg "Camera and tripod setup")
 
 ## Results
 Working like this produced good results, with reference images that very accurately reproduced the colours of the film as I saw them on the light box. 
@@ -88,8 +87,7 @@ Another thing to note here is that, while the colours might not be 100% accurate
 Eg. "tint X" is greener than "tint Y".
 Documenting that yellow 1 has redder mid-tones/shadows than yellow 2 for example is valuable information.
 
-
-{{< figure src="reference2.webp" caption="Two different yellows">}}
+![A reference image showing two slightly different yellow tints](reference2.jpg "Two different yellows")
 
 As long as you are aware of the limitations of what you are doing, I think this is a valid approach for documenting film colours - at least in the short term for grading help.
 
@@ -99,7 +97,7 @@ For example of documentation of damages to the film.
 
 For the film in question I took around 100 reference images like this.
 
-{{< figure src="reference.webp" caption="Typical reference image">}}
+![A reference image showing an aquamarine and red tint](reference.jpg "Typical reference image")
 
 If I were to do this for other film material more routinely, I would do some changes to my approach:
 - I would use the camera tethered to a computer, so that I could use remotely trigger the shutter, adjust focus better, do reviews of the images' "representativeness" more effectively, as well as apply contrast/white point adjustments for further use automatically.
@@ -141,15 +139,15 @@ The actual colour is somewhere in between what the Scanity captured and the refe
 
 | Tint | Scanity | Spinner | Reference |
 |:--|:--|:--|:--|
-| Green 1 | ![](scanity-green-1.webp) | ![](spinner-green-1.webp) | ![](ref-green-1.webp) |
-| Green 2 | ![](scanity-green-2.webp) | ![](spinner-green-2.webp) | ![](ref-green-2.webp) |
-| Yellow 1 | ![](scanity-yellow-1.webp) | ![](spinner-yellow-1.webp) | ![](ref-yellow-1.webp) |
-| Yellow 2 | ![](scanity-yellow-2.webp) | ![](spinner-yellow-2.webp) | ![](ref-yellow-2.webp) |
-| Red 1 | ![](scanity-red-1.webp) | ![](spinner-red-1.webp) | ![](ref-red-1.webp) |
-| Red 2 | ![](scanity-red-2.webp) | ![](spinner-red-2.webp) | ![](ref-red-2.webp) |
-| Coral | ![](scanity-coral-1.webp) | ![](spinner-coral-1.webp) | ![](ref-coral-1.webp) |
-| Aquamarine/Cyan | ![](scanity-cyan-1.webp) | ![](spinner-cyan-1.webp) | ![](ref-cyan-1.webp) |
-| Black/white | ![](scanity-bw-1.webp) | ![](spinner-bw-1.webp) | ![](ref-bw-1.webp) |
+| Green 1 | ![](scanity-green-1.png) | ![](spinner-green-1.png) | ![](ref-green-1.png) |
+| Green 2 | ![](scanity-green-2.png) | ![](spinner-green-2.png) | ![](ref-green-2.png) |
+| Yellow 1 | ![](scanity-yellow-1.png) | ![](spinner-yellow-1.png) | ![](ref-yellow-1.png) |
+| Yellow 2 | ![](scanity-yellow-2.png) | ![](spinner-yellow-2.png) | ![](ref-yellow-2.png) |
+| Red 1 | ![](scanity-red-1.png) | ![](spinner-red-1.png) | ![](ref-red-1.png) |
+| Red 2 | ![](scanity-red-2.png) | ![](spinner-red-2.png) | ![](ref-red-2.png) |
+| Coral | ![](scanity-coral-1.png) | ![](spinner-coral-1.png) | ![](ref-coral-1.png) |
+| Aquamarine/Cyan | ![](scanity-cyan-1.png) | ![](spinner-cyan-1.png) | ![](ref-cyan-1.png) |
+| Black/white | ![](scanity-bw-1.png) | ![](spinner-bw-1.png) | ![](ref-bw-1.png) |
 
 ## Grading?
 With the reference images made, how do we grade it? It's a different topic, but I've never managed to decide on which grading approach give the best results and is the most practical: 

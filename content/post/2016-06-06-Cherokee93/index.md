@@ -17,4 +17,4 @@ Mix of southern 90s rap, with an emphasis on Memphis.
 Micro run of 20 tapes made at Tapedub, Berlin.
 [Bandcamp](https://rmtapes.bandcamp.com/album/cherokee-93-extended "Cherokee 93 on bandcamp")
 
-![Physical format](0007597003_10.jpg)
+![A photo of the cherokee 93 cassette tape](0007597003_10.jpg)

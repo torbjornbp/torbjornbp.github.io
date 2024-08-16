@@ -17,8 +17,8 @@ Three layer risoprint of a photography processed using Stochaster.
 
 ---
 
-![Physical format](utsikten1.jpg)
+![A close up of the finished risoprint](utsikten1.jpg)
 
 ---
 
-![Physical format](utsikten2.jpg)
+![Digital draft of the risoprint](utsikten2.jpg)

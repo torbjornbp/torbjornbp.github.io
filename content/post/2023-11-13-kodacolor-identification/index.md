@@ -9,9 +9,9 @@ aliases: "/kodacolor-identification.html"
 
 ### Kodacolor lenticules
 
-{{< figure src="kodacolor_lenticules.jpg" alt="Kodacolor lenticules">}}
+![An image barely showing the kodacolor striped lenticules](kodacolor_lenticules.jpg)
 
-{{< figure src="kodacolor_lenticules_zoomed.jpg" alt="Kodacolor lenticules zoomed">}}
+![A zoomed image showing the kodacolor striped lenticules](kodacolor_lenticules_zoomed.jpg)
 
 ### Kodacolor sheen
 <video width="100%" autoplay muted loop playsinline>

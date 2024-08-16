@@ -108,4 +108,4 @@ Looking back at it, I'm amazed at what I managed to achieve with my limited expe
 
 The script can be found here: [https://github.com/torbjornbp/video-ocr2srt](https://github.com/torbjornbp/video-ocr2srt "video ocr2srt repository on github")
 
-{{< figure src="srtscreenshot.webp" caption="Functional SRT">}}
+![A screenshot showing an intertitle with a functional SRT caption](srtscreenshot.png "Functional SRT")
