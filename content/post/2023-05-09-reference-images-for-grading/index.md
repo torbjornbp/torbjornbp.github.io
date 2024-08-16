@@ -28,8 +28,6 @@ The film in question is also a six reel feature film, with a multitude of differ
 
 I decided to see if I could find a way to create good reference photos of all the tints from all the reels, during my preparation inspection of the reels.
 My goal was to create reference photos that were good enough to be used for reference in the grading process, so that I would not have to retrieve the nitrate materials from the vault again.
-
----
  
 ## Creating reference images
 After some thinking I landed on an approach that was 1. easy to set up, and 2. did not require any equipment I did not already have available.
