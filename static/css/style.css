@@ -4,7 +4,7 @@ body {
   margin: auto;
   padding: 1em;
   line-height: 1.4;
-  font-size: 16px;
+  font-size: 15px;
   overflow-y: scroll;
 }
 
@@ -108,6 +108,6 @@ thead, tfoot, tr:nth-child(even) { background: #eee; }
     .posts-list {
         white-space: nowrap;
         overflow-x: auto;
-        font-size: 85%;
+        font-size: 80%;
     }
 }
