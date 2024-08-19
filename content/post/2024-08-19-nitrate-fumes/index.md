@@ -95,7 +95,7 @@ Needless to say, my exposure was most likely quite high.
     >
     > **Stage 5:** Film mass degenerates partially or entirely into a shock sensitive brownish acrid powder.
 
-As nitrate cellulose decomposes, it produces nitric oxide (NO) and nitrogen dioxide (NO~2~), which again produce nitric acid. 
+As nitrate cellulose decomposes, it produces nitric oxide (NO) and nitrogen dioxide (NO₂), which again produce nitric acid. 
 These are acrid chemicals that can cause skin, eye and respiratory irritations.
 The US National Park Service's *[Conserve-o-gram](https://www.nps.gov/museum/publications/conserveogram/02-20.pdf)*[^4] for "Handling And Shipping Cellulose Nitrate Film" gives a good overview of the dangers of handling nitrate film.
 
@@ -119,13 +119,13 @@ To put my mind at ease and make sure that we were not doing anything reckless, w
 We were interested in doing measurements of acetic gases and measurements of nitrate fumes, in various situations, and comparing these with the recommended exposure limits. While the primary focus of this text deals with nitrate fumes, I'm also including our findings for acetic acids as well.
 
 ## Acetic acid
-The measurements of acetic acids (C~2~H~4~O~2~), were done in our vinegar syndrome isolation cell, which truly stinks of vinegar.
+The measurements of acetic acids (C₂H₄O₂), were done in our vinegar syndrome isolation cell, which truly stinks of vinegar.
 The acetic acid <acronym title="Automated Thermal Desorption Gas Chromatography Mass Spectrometry">ATD-GC/MS</acronym> measurements were made using an AirChek Essential pump using Carbograph absorbent tubes.
 
 The Norwegian acetic acid exposure limits[^5] mirror those suggested by the EU Scientific Committee on Occupational Exposure Limits[^6] (SCOEL).
 
 [^5]: Arbeidstilsynet's [Grunnlagsdokument for
-eddiksyre (C~2~H~4~O~2~). Kommisjonsdirektiv 2017/164/EU](https://www.arbeidstilsynet.no/contentassets/47a167d6069c43079fe87e916195d4b8/eddiksyre-grunnlagsdokument-2018.pdf)
+eddiksyre (C₂H₄O₂). Kommisjonsdirektiv 2017/164/EU](https://www.arbeidstilsynet.no/contentassets/47a167d6069c43079fe87e916195d4b8/eddiksyre-grunnlagsdokument-2018.pdf)
 
 [^6]: [Recommendation from the Scientific
 Committee on Occupational Exposure
@@ -155,48 +155,48 @@ Due to how these measurements were made, we do not have a graph showing the rate
 I'm going to assume that the gases would continue to accumulate to very high levels relatively quickly.
 
 ## Nitrogen dioxide
-We spent a few days doing measurements of NO~2~ in different locations and situations using a [Dräger X-am 5000](https://www.draeger.com/no_no/Products/X-am-5000).
+We spent a few days doing measurements of NO₂ in different locations and situations using a [Dräger X-am 5000](https://www.draeger.com/no_no/Products/X-am-5000).
 The Dräger is a different type of device than the AirChek, as it provides continuous logging and can be worn.
 We did measurements while working *with* nitrate materials and while working *in* the nitrate vault.
-In addition to this, we also placed the sensor by itself in some vault cells to measure NO~2~ levels over time.
+In addition to this, we also placed the sensor by itself in some vault cells to measure NO₂ levels over time.
 To correlate the measurements with activities, we wrote timestamped logs of what we were doing in the measurement periods.
 
-The Norwegian NO~2~ exposure limits[^7] are again following the EU SCOEL limits[^8]:
+The Norwegian NO₂ exposure limits[^7] are again following the EU SCOEL limits[^8]:
 
-[^7]: Arbeidstilsynet's [Grunnlagsdokument for nitrogendioksid (NO~2~). Kommisjonsdirektiv 2017/164/EU](https://www.arbeidstilsynet.no/contentassets/d6ab3a365a414113b10597bfe4f16321/nitrogendioksid-grunnlagsdokument-2018.pdf)
+[^7]: Arbeidstilsynet's [Grunnlagsdokument for nitrogendioksid (NO₂). Kommisjonsdirektiv 2017/164/EU](https://www.arbeidstilsynet.no/contentassets/d6ab3a365a414113b10597bfe4f16321/nitrogendioksid-grunnlagsdokument-2018.pdf)
 [^8]: [Recommendation from the Scientific Committee on Occupational Exposure Limits for Nitrogen Dioxide. SCOEL/SUM/53 June 2014](https://echa.europa.eu/documents/10162/35144386/046_nitrogen_dioxide_oel_en.pdf/cc6a3a75-49ae-0749-c08e-90d513ad8e90?t=1691407227472)
 - 8-hour TWA: 0,5 ppm (0.96 mg/m^3^3) 
 - 15-minute STEL: 1 ppm (1.91 mg/m^3)
 
 The report contains various graphs of different test periods. 
 The yellow line shows the Norwegian 8-hour TWA limit (it's an older slightly higher limit of 0.6 ppm), while the red stippled line shows the STEL of 1 ppm.
-The purple line shows the NO~2~ measurements.
+The purple line shows the NO₂ measurements.
 
 ### Ambient nitrogen dioxide levels in A1 nitrate cell
-Graph 1 shows the ambient NO~2~ levels in the A1-cell in the nitrate vault (with the ventilation system running). The cell reeks of decaying nitrate.
+Graph 1 shows the ambient NO₂ levels in the A1-cell in the nitrate vault (with the ventilation system running). The cell reeks of decaying nitrate.
 
-![A graph showing ambient NO~2~ concentrations in the A1-cell](graph1.png "Graph 1")
+![A graph showing ambient NO₂ concentrations in the A1-cell](graph1.png "Graph 1")
 
-The ambient levels are just below 0.2 ppm at chest height[^9], which means it should be safe to carry out work in the cell. In cells only holding "healthy" nitrate materials, we found no measurable levels of NO~2~. Good! 
+The ambient levels are just below 0.2 ppm at chest height[^9], which means it should be safe to carry out work in the cell. In cells only holding "healthy" nitrate materials, we found no measurable levels of NO₂. Good! 
 
-[^9]: NO~2~ is heavier than air, so concentrations towards the floor will most likely be higher.
+[^9]: NO₂ is heavier than air, so concentrations towards the floor will most likely be higher.
 
 ### Working in the A1 nitrate cell
 Graph 2 shows my exposure while doing some quick work in the A1-cell that holds all the deteriorated nitrate reels. 
 
-![A graph showing NO~2~ values  while doing some quick work in the A1-cell](graph2.png "Graph 2")
+![A graph showing NO₂ values  while doing some quick work in the A1-cell](graph2.png "Graph 2")
 
 I wore the device on my chest and entered the cell right after 16:26. 
-You can see how the exposure increases to the ambient cell level of 0.2 ppm NO~2~ the moment I enter the cell.
+You can see how the exposure increases to the ambient cell level of 0.2 ppm NO₂ the moment I enter the cell.
 Right before 16:31 I successfully located the reel I was looking for and had a peek inside its can.
-This resulted in a considerable spike in measured NO~2~ levels.
+This resulted in a considerable spike in measured NO₂ levels.
 While the exposure is short, 2.5 ppm is more than double the STEL value.
 Not good.
 
 ### Doing inspection/manual repairs on nitrate
 Graph 3 shows measurements of working with decomposing nitrate reels at an inspection table with ventilation running.
 
-![A graph showing NO~2~ values while doing manual repairs](graph3.png "Graph 3")
+![A graph showing NO₂ values while doing manual repairs](graph3.png "Graph 3")
 
 The measurement ran for almost a full workday for simplicity's sake, but not all the day was spent hunched over nitrate reels. 
 We are using flexible fume extractor arms, as close as possible to the inspection tables while working with anything that produces fumes (decomposing nitrate, vinegary acetate, isopropyl alcohol, perc, etc.).
@@ -209,7 +209,7 @@ It is the result of sticking the sensor into a bucket holding badly decomposing 
 
 Graph 4 is another day of working with nitrate film:
 
-![A graph showing NO~2~ values while doing manual repairs](graph4.png "Graph 4")
+![A graph showing NO₂ values while doing manual repairs](graph4.png "Graph 4")
 
 Again the work was carried out with the fume extractor close to the inspection tables, with good results.
 From 9:00 until 11:00 inspection and repairs were done on "healthy" reels of nitrate film.
@@ -228,12 +228,12 @@ It seems you can safely work with decomposing nitrate as long as you are using p
 ### Ambient nitrogen dioxide levels in A1 nitrate cell (with malfunctioning ventilation)
 Graph 5 shows values in the A1 cell during the day when the ventilation system malfunctioned.
 
-![A graph showing NO~2~ in the A1 cell with malfunctioning ventilation](graph5.png "Graph 5")
+![A graph showing NO₂ in the A1 cell with malfunctioning ventilation](graph5.png "Graph 5")
 
 On the day of this measurement, the ventilation system stopped working repeatedly.
 It first stopped recycling air around 08:30, before starting again at 10:10.
 It then sort of worked for an hour, before it stopped functioning again at 11:00 until 14:10.
-You can see clearly how the NO~2~ builds up rather quickly in the cell.
+You can see clearly how the NO₂ builds up rather quickly in the cell.
 
 It took only around 3 hours for the concentrations to reach the STEL value.
 If left unchecked for days, the values would probably have kept on increasing to a point where it would be immediately unhealthy to just enter the cell in question...
@@ -241,26 +241,26 @@ With functioning ventilation, it took about an hour for the concentrations to re
 
 However, some values were actually removed from graph 5 to make it scale better...
 At 08:27 right after I entered the cell and before I put the sensor down on a shelf, I opened a can containing some badly deteriorated nitrate. 
-This resulted in a spike of 6.3 PPM of NO~2~(!), a dose much higher than the STEL...
+This resulted in a spike of 6.3 PPM of NO₂(!), a dose much higher than the STEL...
 This was not an artificial measurement, like the spike in graph 3, but what can happen if you open film cans lacking ventilation holes, where the gas has been allowed to build up some pressure.
 
-![A photo showing a sticky and brittle decomposing nitrate reel](culprit.jpg "A decomposed reel producing high concentrations of NO~2~")
+![A photo showing a sticky and brittle decomposing nitrate reel](culprit.jpg "A decomposed reel producing high concentrations of NO₂")
 
 ## Key takeaways
 Proper ventilation is crucial. 
 Our measurements clearly showed that functioning ventilation systems significantly reduce exposure to harmful gases.
-When ventilation failed, NO~2~ levels quickly rose to dangerous levels.
+When ventilation failed, NO₂ levels quickly rose to dangerous levels.
 Taking steps to move nitrate to ventilated cans, or create ventilation holes, seems beneficial.
 
-Regular monitoring of NO~2~ in storage is important.
+Regular monitoring of NO₂ in storage is important.
 Our measurements revealed potentially dangerous situations that weren't apparent without monitoring equipment.
 
-Fume extractors are effective for NO~2~. 
+Fume extractors are effective for NO₂. 
 Using flexible fume extractor arms during closer inspection and manual repair work kept NO₂ levels well within safe limits, even when working with decomposing nitrate film.
 
-Short-term exposure to NO~2~ can be significant.
+Short-term exposure to NO₂ can be significant.
 Opening cans of deteriorating nitrate film can lead to brief but intense exposures to NO₂, potentially exceeding safe limits. 
-There is a correlation between high spikes of NO~2~ and the opening of film cans.
+There is a correlation between high spikes of NO₂ and the opening of film cans.
 Cans without ventilation holes, where the gas has been allowed to build up, more so.
 In general, it seems to be a bad idea to open mystery cans of nitrate film, without either wearing an appropriate respirator or having the can under a closed fume hood.
 
@@ -276,10 +276,10 @@ The ambient levels in the A1 cell are most likely somewhat lower than 0.2 ppm af
 Perhaps, I'm being too alarmist.
 Reading the Norwegian/EU recommendation documents, the concentrations encountered are not *that* extreme.
 Our averages for those days were probably within the 8-hour TWA (and we did not work full 8-hour days).
-On the other hand, I have no doubt that I was exposed to concentrations of NO~2~ over the exposure limits during the 2019 nitrate inspection.
+On the other hand, I have no doubt that I was exposed to concentrations of NO₂ over the exposure limits during the 2019 nitrate inspection.
 I not only looked closely at all the decomposing reels identified that year, but also the 170 decomposing reels identified in 2012.
 
-Furthermore, we have only measured NO~2~, that is not the only chemical exuded from decomposing nitrate.
+Furthermore, we have only measured NO₂, that is not the only chemical exuded from decomposing nitrate.
 There are most likely other nasty gases in those cans...
 I encountered a host of other less familiar, but equally nasty smells.
 
@@ -315,7 +315,7 @@ Gjør om lenker til fotnoter
 
 
 ### The nitrate vault cells
-![A plot of the NO~2~ measurements in the A1 cell, showing stable concentrations of NO~2~ below dangerous levels](plot2.png "NO~2~ values in A1 nitrate cell")
+![A plot of the NO₂ measurements in the A1 cell, showing stable concentrations of NO₂ below dangerous levels](plot2.png "NO₂ values in A1 nitrate cell")
 > As was stated in various parts of section one, the decomposition of cellulose (nitrate) bases produces nitrogen dioxide and nitric acid, these being gases which accelerate the degradation of materials; as occurs with the acetic acid produced by the degradation of acetates.
 Both for reasons of conservation and for fundamental reasons of the health and safety of personnel, all these gases have to be removed – as quickly as possible – and replaced with clean air. 
 H. Schou states that, in warehouses of inflammable materials, the air must be completely renovated a minimum of four times a day. FIAF TC - FILM PRESERVATION 2004.pdf s. 233-234
