@@ -33,7 +33,7 @@ menu:
 
 params:
   description: "Torbjørn Bakken Pedersen's personal web page"
-  footer: "&copy; Torbjørn Bakken Pedersen 2023 - {Year}"
+  footer: "&copy; Torbjørn Bakken Pedersen 2023 -- {Year}"
   goatcounter: "torbjorn888888"
   favicon: "/favicon.png"
   defaultImage: "/cover.png"
