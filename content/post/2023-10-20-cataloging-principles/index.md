@@ -19,6 +19,8 @@ This post is an attempt to start spelling out some possible overarching principl
 Perhaps some ideas make little sense outside of my organization due to organizational specifics, but I think at least some of these principles could be of use elsewhere. 
 I will try to illustrate the point of these principles using a practical challenge from the cataloging of our filmographic collection.
 
+{{< toc >}}
+
 ## Content description
 Cataloging, at its core, is the act of describing something - *what is it?* - to enable some sort of use of the metadata. 
 I won't go into detail about the many possible uses of metadata, but the aims proposed in FRBR for example, is a good starting point: to **find**, **identify**, **select**, and **obtain**.
