@@ -54,6 +54,11 @@ markup:
   highlight:
     style: bw
     guessSyntax: true
+  markup:
+    tableOfContents:
+      endLevel: 3
+      ordered: false
+      startLevel: 2
   goldmark:
     renderer:
       unsafe: true
