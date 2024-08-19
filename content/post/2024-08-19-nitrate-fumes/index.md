@@ -172,7 +172,7 @@ The report contains various graphs of different test periods.
 The yellow line shows the Norwegian 8-hour TWA limit (it's an older slightly higher limit of 0.6 ppm), while the red stippled line shows the STEL of 1 ppm.
 The purple line shows the NO~2~ measurements.
 
-### Ambient NO~2~ levels in A1 nitrate cell
+### Ambient nitrogen dioxide levels in A1 nitrate cell
 Graph 1 shows the ambient NO~2~ levels in the A1-cell in the nitrate vault (with the ventilation system running). The cell reeks of decaying nitrate.
 
 ![A graph showing ambient NO~2~ concentrations in the A1-cell](graph1.png "Graph 1")
@@ -225,7 +225,7 @@ It produces a much higher spike, but it is still not above the 1 ppm STEL.
 It seems you can safely work with decomposing nitrate as long as you are using proper ventilation.
 
 
-### Ambient NO~2~ levels in A1 nitrate cell (with malfunctioning ventilation)
+### Ambient nitrogen dioxide levels in A1 nitrate cell (with malfunctioning ventilation)
 Graph 5 shows values in the A1 cell during the day when the ventilation system malfunctioned.
 
 ![A graph showing NO~2~ in the A1 cell with malfunctioning ventilation](graph5.png "Graph 5")
