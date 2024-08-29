@@ -65,7 +65,7 @@ We can assume that dimethylcadmium is not easily confused with beaujolais in the
 So if you're working with organocadmium derivatives and smell something nasty, but nasty in a new, exciting way that you've never quite smelled before, then you can probably assume the worst.
 
 Luckily, nitrate is not exuding dimethylcadmium! 
-However, if you can *smell* nitrate deterioration, you are also being *exposed* to whatever gases produce that smell... 
+However, if you can smell nitrate deterioration, you are also being *exposed* to whatever gases produce that smell... 
 Personally, I find the smell sweet and sickening.
 
 ![A photo of a badly deteriorated reel of nitrate film](smelly.jpg "I can smell this picture")
@@ -116,7 +116,7 @@ During the inspection of 2019 we wore dust masks to shield us from surprise dust
 
 ## Measuring exposure
 To put my mind at ease and make sure that we were not doing anything reckless, we got in touch with SINTEF Norlab (now Nemko Norlab) to help do gas measurements.
-We were interested in doing measurements of acetic gases and measurements of nitrate fumes, in various situations, and comparing these with the recommended exposure limits. While the primary focus of this text deals with nitrate fumes, I'm also including our findings for acetic acids as well.
+We were interested in doing measurements of acetic gases and measurements of nitrate fumes, in various situations, and comparing these with the recommended exposure limits. While the primary focus of this text deals with nitrate fumes, I'm also including our findings for acetic acids.
 
 ## Acetic acid
 The measurements of acetic acids (C₂H₄O₂), were done in our vinegar syndrome isolation cell, which truly stinks of vinegar.
@@ -165,8 +165,8 @@ The Norwegian NO₂ exposure limits[^7] are again following the EU SCOEL limits[
 
 [^7]: Arbeidstilsynet's [Grunnlagsdokument for nitrogendioksid (NO₂). Kommisjonsdirektiv 2017/164/EU](https://www.arbeidstilsynet.no/contentassets/d6ab3a365a414113b10597bfe4f16321/nitrogendioksid-grunnlagsdokument-2018.pdf)
 [^8]: [Recommendation from the Scientific Committee on Occupational Exposure Limits for Nitrogen Dioxide. SCOEL/SUM/53 June 2014](https://echa.europa.eu/documents/10162/35144386/046_nitrogen_dioxide_oel_en.pdf/cc6a3a75-49ae-0749-c08e-90d513ad8e90?t=1691407227472)
-- 8-hour TWA: 0,5 ppm (0.96 mg/m^3^3) 
-- 15-minute STEL: 1 ppm (1.91 mg/m^3)
+- 8-hour TWA: 0,5 ppm (0.96 mg/m^3^) 
+- 15-minute STEL: 1 ppm (1.91 mg/m^3^)
 
 The report contains various graphs of different test periods. 
 The yellow line shows the Norwegian 8-hour TWA limit (it's an older slightly higher limit of 0.6 ppm), while the red stippled line shows the STEL of 1 ppm.
@@ -202,7 +202,7 @@ The measurement ran for almost a full workday for simplicity's sake, but not all
 We are using flexible fume extractor arms, as close as possible to the inspection tables while working with anything that produces fumes (decomposing nitrate, vinegary acetate, isopropyl alcohol, perc, etc.).
 
 The results are good, with no sudden spikes above the exposure limits for the entire workday. 
-The small spike at 10:00 indicates when a film can was opened and inspection of a decomposing reel of nitrate began.
+The small spike at 10:00 indicates that a film can was opened and inspection of a decomposing reel of nitrate began.
 
 There is a much bigger spike of 3.1 ppm around 14:00, but this is an artificial measurement.
 It is the result of sticking the sensor into a bucket holding badly decomposing nitrate clippings.
@@ -213,7 +213,7 @@ Graph 4 is another day of working with nitrate film:
 
 Again the work was carried out with the fume extractor close to the inspection tables, with good results.
 From 9:00 until 11:00 inspection and repairs were done on "healthy" reels of nitrate film.
-From 11:00 until 12:40 work is carried out on decomposing nitrating.
+From 11:00 until 12:40 work is carried out on decomposing nitrate.
 The Dräger does not pick up anything in this entire period, meaning the extractor hood does a good job!
 
 However, at 12:55 work on a heavily decomposed nitrate reel begins.
