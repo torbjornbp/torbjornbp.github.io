@@ -9,6 +9,7 @@ body {
 }
 
 /* headers */
+h1 { font-size: 1.7em }
 h2, h3, h4 { margin: 1.5em auto 0.5em; }
 
 /* header and footer areas */

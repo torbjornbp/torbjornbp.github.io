@@ -33,9 +33,9 @@
     {{ end }}
   </head>
   <body>
-    <h1 style="text-align: center;">{{ partial "clown.html" . }}</h1> 
+    <div style="text-align: center; font-size: 2em; margin: 0em">{{ partial "clown.html" . }}</div> 
     <nav>
-      <p style="text-align: center"><strong>Torbjørn Bakken Pedersen's page</strong></p>
+      <h1 style="text-align: center; font-size: 1em">Torbjørn Bakken Pedersen's page</h1>
       <ul class="menu">
         {{ range .Site.Menus.main }}
         <li><a href="{{ .URL | relURL }}">{{ .Name }}</a></li>
