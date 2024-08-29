@@ -1,0 +1,10 @@
+<h{{ .Level }} id="{{ .Anchor }}">
+  <a href="#{{ .Anchor }}">{{ .Text | safeHTML }}</a>
+</h{{ .Level }}>
+
+<style>
+  h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+    color: inherit;
+    text-decoration: none;
+  }
+</style>
