@@ -68,7 +68,21 @@ blockquote {
   padding: 3px 1em;
   font-size: 80%;
 }
-ul {  list-style-type: disclosure-closed; }
+
+ul {
+  list-style-type: square;
+}
+
+ul li li {
+  list-style-type: none;
+  position: relative;
+}
+
+ul li li::before {
+  content: "└─";
+  position: absolute;
+  left: -1.5em;
+}
 
 .responsive-image img {
   width: 100%;
