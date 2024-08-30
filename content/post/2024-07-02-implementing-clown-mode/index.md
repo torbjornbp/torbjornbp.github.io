@@ -44,7 +44,9 @@ Iosevka Aile for prose and Iosevka Term for code blocks (which I mostly have use
 
 
 ## Clown mode > dark mode
-While contemplating the balance between legibility and aesthetics, I toyed with the idea of allowing readers to set the font themselves. 
+I've also been considering adding a dark mode, but after giving it some thought I've realised that I generally do not like dark web pages.
+They all look the same, in the same boring way.
+While contemplating the balance between legibility and aesthetics, I also toyed with the idea of allowing readers to set the font themselves. 
 Instead of doing something practical and sensible with the font-changing idea though, I opted for a more whimsical idea.
 
 I have turned the "☻"" at the top of my page into a button that toggles a font change to Comic Sans (for prose) and [Comic Shanns Mono](https://github.com/jesusmgg/comic-shanns-mono "github repository for the Comic Shanns Mono font")!
@@ -62,7 +64,7 @@ There's still some issues with box drawing characters in Comic Shanns Mono, but 
 If I was rich I could also shell out for [Comic Code](https://tosche.net/fonts/comic-code "Comic Code on the tosche.net") for a solid solution.
 
 Why do this though?
-First of all I find the idea of a professional Comic Sans hilarious, but on the other hand it is actually a pretty legible font!
+First of all I find the idea of a professional Comic Sans use amusing, but on the other hand it is actually a pretty legible font!
 It's the best of both worlds - putting the fun in function.
 
 The Hugo partial and css used can be found below:
