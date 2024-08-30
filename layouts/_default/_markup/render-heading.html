@@ -1,10 +1,51 @@
+<!-- HTML -->
 <h{{ .Level }} id="{{ .Anchor }}">
-  <a href="#{{ .Anchor }}">{{ .Text | safeHTML }}</a>
+  <a href="#{{ .Anchor }}" class="heading-link">
+    {{ .Text | safeHTML }}
+    <span class="anchor-symbol">#</span>
+  </a>
 </h{{ .Level }}>
 
 <style>
-  h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+  /* CSS */
+  h1, h2, h3, h4, h5, h6 {
+    position: relative;
+  }
+
+  .heading-link {
     color: inherit;
     text-decoration: none;
+    display: inline-block;
+    width: 100%;
+    background-color: transparent;
+  }
+
+  .heading-link:hover {
+    color: inherit;
+    text-decoration: none;
+    background-color: transparent;
+  }
+
+  .anchor-symbol {
+    position: absolute;
+    left: -1em;
+    color: #999;
+    opacity: 0;
+  }
+
+  h1:hover .anchor-symbol,
+  h2:hover .anchor-symbol,
+  h3:hover .anchor-symbol,
+  h4:hover .anchor-symbol,
+  h5:hover .anchor-symbol,
+  h6:hover .anchor-symbol {
+    opacity: 1;
+  }
+
+  /* Ensure no background change on hover for all heading levels */
+  h1:hover, h2:hover, h3:hover, h4:hover, h5:hover, h6:hover,
+  h1:hover .heading-link, h2:hover .heading-link, h3:hover .heading-link, 
+  h4:hover .heading-link, h5:hover .heading-link, h6:hover .heading-link {
+    background-color: transparent !important;
   }
 </style>
