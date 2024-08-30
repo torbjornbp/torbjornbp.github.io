@@ -1,6 +1,7 @@
 ---
 title: Resume
 aliases: "/about.html"
+description: Torbjørn Bakken Pedersen's resume
 ---
 
 ## **Work Experience**
@@ -20,7 +21,7 @@ aliases: "/about.html"
 > Extensive work on setting up new data model for moving image metadata and standardization. 
 > Responsibility for moving images in major collection management system migration project. 
 > 
-> Skills: `metadata management`, `standards`, `standardisation`.
+> Skills: `metadata management`, `standards`, `standardisation`, `Axiell Collections`.
 
 
 > ### **Film Preservation Coordinator (National Library of Norway)** 
