@@ -13,6 +13,8 @@ tags:
   - hugo
   - jekyll
   - clown mode
+images:
+  - clown.png
 ---
 
 I recently made the decision to move my home page from [Jekyll](https://jekyllrb.com/ "Home page of Jekyll") to [Hugo](https://gohugo.io/ "Home page of Hugo").
