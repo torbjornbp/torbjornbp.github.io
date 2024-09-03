@@ -1,15 +1,17 @@
+:root {  line-height: 1.4rem; } 
+
 /* body */
 body {
   max-width: 800px;
   margin: auto;
   padding: 1em;
-  line-height: 1.4rem;
   overflow-y: scroll;
 }
 
 /* headers */
 h1 { font-size: 1.7em }
-h2, h3, h4 { margin: 1.5em auto 0.5em; }
+h2, h3, h4, h5, h6 { margin: 1.5em auto 0.5em; }
+h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
 
 /* header and footer areas */
 .menu, .article-meta, footer { text-align: center; }
@@ -35,14 +37,15 @@ a:hover{
   color: white;
   background-color: royalblue;
 } 
-sup {
-  vertical-align: top;
-  font-size: 0.8em;
+sup, sub {
+  vertical-align: baseline;
+  position: relative;
+  top: -0.4em;
 }
-sub {
-  vertical-align: bottom;
-  font-size: 0.8em;
+sub { 
+  top: 0.4em; 
 }
+
 
 /* code */
 pre {
@@ -56,7 +59,7 @@ pre {
 code { background: #ddd; }
 pre code {
   background: none;
-  font-size: 80%;
+  font-size: 0.8rem;
 }
 
 /* misc elements */
@@ -65,8 +68,11 @@ main { hyphens: auto; }
 blockquote {
   border-left: 4px solid #777;
   padding: 3px 1em;
+  font-size: 0.8rem;
+  line-height: 1.2rem;
 }
 
+/* lists */
 ul { list-style-type: square;}
 ul li li {
   list-style-type: none;
@@ -77,6 +83,7 @@ ul li li::before {
   position: absolute;
   left: -1.5em;
 }
+
 /* figure and captions */
 .responsive-image img {
   width: 100%;
@@ -90,7 +97,7 @@ figure figcaption, .imgCaption {
   color: black;
   text-align: right;
   padding: 10px;
-  font-size: 80%;
+  font-size: 0.8rem;
 
 }
 
@@ -101,7 +108,7 @@ table {
   background: #fff;
   max-width: calc(100% - 10px);
   border-collapse: collapse;
-  font-size: 80%;
+  font-size: 0.8rem;
 }
 table thead th {
   border-bottom: 1px solid #777;
@@ -115,6 +122,6 @@ thead, tfoot, tr:nth-child(even) { background: #eee; }
     .posts-list {
         white-space: nowrap;
         overflow-x: auto;
-        font-size: 80%;
+        font-size: 0.8rem;
     }
 }
