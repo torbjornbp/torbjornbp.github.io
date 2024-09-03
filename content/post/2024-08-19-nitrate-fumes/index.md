@@ -25,11 +25,15 @@ In the summer of 2019, I oversaw a thorough inspection of the National Library o
 Nitrate inspections are exciting, tedious, and slightly disconcerting. 
 On the one hand, I was excited about what might be discovered while going through all the cans, on the other I was hoping that we would not discover a lot of new deteriorating film materials...
 
-The previous inspection had happened seven years prior, back in 2012.
+The previous inspection had happened seven years prior, back in 2010-2011.
+The previous inspection was performed over a long stretch of time
 It was before my time here, but work generated from that inspection was still going on at the time of my internship in 2012-2013.
 These inspections generate a lot of follow-up work!
-That inspection had only gone through slightly half of the nitrate collection - the half with the least amount of metadata.
-In 2019, we went through the complete holdings. It took us about two weeks.
+
+The 2011 inspection had only gone through slightly half of the nitrate collection - the half with the least amount of metadata. 
+This was due to other half having been rehoused to new cans (and looked at) some years prior.
+In 2019, however, we went through the complete holdings. 
+It took us about two weeks.
 
 ![A photo of the nitrate vaults at the National Library of Norway](vault5.jpeg "The nitrate vault exterior")
 
@@ -37,24 +41,24 @@ In 2019, we went through the complete holdings. It took us about two weeks.
 We proceeded in the same manner as the nitrate inspection of 2012 had been performed.
 Meticulously going through the vault, opening every can and having a peek inside. 
 We looked for obvious signs of chemical decay or other signs that something was off with the reel. 
-Dust, rust, discoloration, spoking, deformities, bubbles, degassing rings, *smell* etc.
+Dust, rust, discoloration, spoking, deformities, bubbles, degassing rings, **smell** etc.
 The bar for singling out a suspected deteriorating reel was intentionally low, as every suspect would be brought to me for a second check and further documentation.
 
 In the end, I probably took a close look at something south of a thousand reels, with further notes written down for around 500 of them.
 The documentation and findings in those notes are interesting (and deserve their own write-up). 
-For the purposes of this text, however, it is the *number* of closely inspected reels that is important.
+For the purposes of this text, however, it is the **number** of closely inspected reels that is important.
 
 
 ## The "characteristic" smell of nitrate
 Anyone who has been in contact with deteriorating nitrate film will recognize its smell.
 It is unpleasant, and its unpleasantness increases as the film deteriorates.
-In *Restoration of motion picture film*[^1] the smell is described as "aromatic", "characteristic" and "acrid".
+In **Restoration of motion picture film**[^1] the smell is described as "aromatic", "characteristic" and "acrid".
 That characteristic smell had been one of the most essential ways of identifying and singling out bad reels during the nitrate inspection.
 
 [^1]: Paul Read and Mark-Paul Meyer, *Restoration of Motion Picture Film* (Oxford: Butterworth Heinemann, 2000), page 258: 
     > The ==characteristic, aromatic smell of nitrate cellulose== increases. Later on the gases affect the photographic image, and the film convolutions starts to stick together and exuding almost liquid blisters. Eventually the film may set in a block and disintegrate into a little pile of brown powder and an acrid odour.
 
-The relevant passage in *Restoration of motion picture film* reminds me of something I recently read in Derek Lowe's fascinating series: *[Things I won't work with](https://www.science.org/topic/blog-category/things-i-wont-work-with)*.
+The relevant passage in **Restoration of motion picture film** reminds me of something I recently read in Derek Lowe's fascinating series: [Things I won't work with](https://www.science.org/topic/blog-category/things-i-wont-work-with).
 In his description of dimethylcadmium[^2], he talks briefly about the description of smells in chemical literature:
 
 [^2]:[Things I Won't Work With: Dimethylcadmium](https://www.science.org/content/blog-post/things-i-won-t-work-dimethylcadmium)
@@ -66,7 +70,7 @@ We can assume that dimethylcadmium is not easily confused with beaujolais in the
 So if you're working with organocadmium derivatives and smell something nasty, but nasty in a new, exciting way that you've never quite smelled before, then you can probably assume the worst.
 
 Luckily, nitrate is not exuding dimethylcadmium! 
-However, if you can smell nitrate deterioration, you are also being *exposed* to whatever gases produce that smell... 
+However, if you can smell nitrate deterioration, you are also being **exposed** to whatever gases produce that smell... 
 Personally, I find the smell sweet and sickening.
 
 ![A photo of a badly deteriorated reel of nitrate film](smelly.jpg "I can smell this picture")
@@ -98,7 +102,7 @@ Needless to say, my exposure was most likely quite high.
 
 As nitrate cellulose decomposes, it produces nitric oxide (NO) and nitrogen dioxide (NO₂), which again produce nitric acid. 
 These are acrid chemicals that can cause skin, eye and respiratory irritations.
-The US National Park Service's *[Conserve-o-gram](https://www.nps.gov/museum/publications/conserveogram/02-20.pdf)*[^4] for "Handling And Shipping Cellulose Nitrate Film" gives a good overview of the dangers of handling nitrate film.
+The US National Park Service's [Conserve-o-gram](https://www.nps.gov/museum/publications/conserveogram/02-20.pdf)[^4] for "Handling And Shipping Cellulose Nitrate Film" gives a good overview of the dangers of handling nitrate film.
 
 [^4]: There is a note that the "Handling And Shipping Cellulose Nitrate Film" Conserve-o-gram was updated in 2023, but I'm unable to find the revised version.
 
@@ -108,9 +112,9 @@ It states rather clearly that: "repeated exposure may cause eye irritation, rash
 They even advise against wearing contact lenses while handling nitrate film as  "gases may concentrate and build up under your contacts causing eye injury and contact lens deterioration". 
 Furthermore, the use of an appropriate respirator is advised if you notice any breathing difficulties or build-up of odor in the workspace.
 
-However, looking at 3M's *[Respirator Selection Guide](https://multimedia.3m.com/mws/media/639110O/3m-respirator-selection-guide.pdf)*, there are references to "ineffective sorbents" for nitrogen dioxide, nitrogen monoxide and nitric acid. 
+However, looking at 3M's [Respirator Selection Guide](https://multimedia.3m.com/mws/media/639110O/3m-respirator-selection-guide.pdf), there are references to "ineffective sorbents" for nitrogen dioxide, nitrogen monoxide and nitric acid. 
 
-> References to *Ineffective sorbents* or *Unknown sorbent effectiveness* indicate 3M does not make chemical cartridge respirators appropriate for these substances at this time or it is not known how effective the sorbents would be for these materials. 3M does not recommend using a chemical cartridge respirator or attempting to establish a change schedule for these chemicals.
+> References to **Ineffective sorbents** or **Unknown sorbent effectiveness** indicate 3M does not make chemical cartridge respirators appropriate for these substances at this time or it is not known how effective the sorbents would be for these materials. 3M does not recommend using a chemical cartridge respirator or attempting to establish a change schedule for these chemicals.
 
 All three chemicals thus require supplied air respirators. 
 During the inspection of 2019 we wore dust masks to shield us from surprise dust clouds coming out of opened cans (an unfortunate experience in the 2012 inspection...), but nothing that shielded us effectively from the fumes.
@@ -158,7 +162,7 @@ I'm going to assume that the gases would continue to accumulate to very high lev
 ## Nitrogen dioxide
 We spent a few days doing measurements of NO₂ in different locations and situations using a [Dräger X-am 5000](https://www.draeger.com/no_no/Products/X-am-5000).
 The Dräger is a different type of device than the AirChek, as it provides continuous logging and can be worn.
-We did measurements while working *with* nitrate materials and while working *in* the nitrate vault.
+We did measurements while working **with** nitrate materials and while working **in** the nitrate vault.
 In addition to this, we also placed the sensor by itself in some vault cells to measure NO₂ levels over time.
 To correlate the measurements with activities, we wrote timestamped logs of what we were doing in the measurement periods.
 
@@ -275,7 +279,7 @@ It also led to us increasing the ventilation degree of the nitrate vault.
 The ambient levels in the A1 cell are most likely somewhat lower than 0.2 ppm after the change.
 
 Perhaps, I'm being too alarmist.
-Reading the Norwegian/EU recommendation documents, the concentrations encountered are not *that* extreme.
+Reading the Norwegian/EU recommendation documents, the concentrations encountered are not **that** extreme.
 Our averages for those days were probably within the 8-hour TWA (and we did not work full 8-hour days).
 On the other hand, I have no doubt that I was exposed to concentrations of NO₂ over the exposure limits during the 2019 nitrate inspection.
 I not only looked closely at all the decomposing reels identified that year, but also the 170 decomposing reels identified in 2012.
