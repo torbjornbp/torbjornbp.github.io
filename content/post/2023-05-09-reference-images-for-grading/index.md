@@ -4,6 +4,13 @@ date: '2023-05-09'
 description: An attempt to document film tints and make useful reference images for grading.
 categories: 
   - work stuff
+tags:
+  - Film restoration
+  - Grading
+  - DFT Scanity
+  - MWA Nova Spinner
+  - Film scanning
+  - tinting
 images:
   - reference.jpg
 aliases: "/reference-images-for-grading.html"

@@ -10,6 +10,7 @@ tags:
   - EN15907
   - Film cataloging
   - Asset management
+  - cataloging
 aliases: "/cataloging-principles.html"
 ---
 

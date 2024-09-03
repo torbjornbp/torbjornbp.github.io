@@ -4,6 +4,9 @@ date: '2023-11-13'
 description: Some example images to help identify kodacolor film.
 categories:
   - film identification
+tags:
+  - Kodacolor
+  - film identification
 aliases: "/kodacolor-identification.html"
 ---
 

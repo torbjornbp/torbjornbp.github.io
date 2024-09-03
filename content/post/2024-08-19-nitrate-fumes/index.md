@@ -4,8 +4,9 @@ date: '2024-08-19'
 categories: 
   - documents
 description: Nitrate film inspection, measurements of nitrate fume concentrations and thoughts on how to inspect nitrate films safely.
-tags:
+tags: 
   - film inspection
+  - film preservation
   - nitrate fumes
   - nitrate film
   - acetic acid

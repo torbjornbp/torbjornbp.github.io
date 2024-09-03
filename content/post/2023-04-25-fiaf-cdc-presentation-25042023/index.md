@@ -5,9 +5,10 @@ description: Slides from a presentation I held for the FIAF CDC preservation/res
 categories: 
   - presentation
 tags:
-  - FIAF CDC
+  - CDC
   - FIAF
   - Preservation metadata
+  - cataloging
 aliases: "/fiaf-cdc-presentation-25042023.html"
 ---
 
