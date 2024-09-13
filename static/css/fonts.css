@@ -11,7 +11,7 @@
     src: url('/fonts/IosevkaCustomAile-Regular-reducedmore.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
-    font-display: swap;
+    font-display: fallback;
 }
 
 @font-face {
@@ -19,7 +19,7 @@
     src: url('/fonts/IosevkaCustomAile-Bold-reducedmore.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
-    font-display: swap;
+    font-display: fallback;
 }
 
 @font-face {
@@ -27,7 +27,7 @@
     src: url('/fonts/ComicShannsMono-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-    font-display: swap;
+    font-display: fallback;
 }
 
 :root {
