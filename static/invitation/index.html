@@ -9,7 +9,7 @@
         body { 
             margin: 0; 
             background: black; 
-            font-family: 'Jacquard 12', serif;
+            font-family: 'Jacquard 12', 'Times New Roman', serif;
             touch-action: none;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
@@ -36,6 +36,35 @@
     <div id="loading">Loading textures...</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
+        // font loading check
+                function checkFontLoading() {
+            return new Promise((resolve) => {
+                // Use Font Face Observer pattern
+                const checkFont = () => {
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    const testText = 'test-font';
+                    
+                    // Test with default font first
+                    context.font = `16px serif`;
+                    const defaultWidth = context.measureText(testText).width;
+                    
+                    // Test with our custom font
+                    context.font = `16px "Jacquard 12", serif`;
+                    const customWidth = context.measureText(testText).width;
+                    
+                    // If widths are different, custom font is loaded
+                    if (defaultWidth !== customWidth) {
+                        resolve();
+                    } else {
+                        setTimeout(checkFont, 50);
+                    }
+                };
+                
+                checkFont();
+            });
+        }
+
         // Scene setup
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x000000);
@@ -458,8 +487,8 @@
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
             
-            canvas.width = 2048;
-            canvas.height = 512;
+            canvas.width = 1024;
+            canvas.height = 256;
             
             context.textRendering = 'geometricPrecision';
             context.imageSmoothingEnabled = true;
@@ -476,8 +505,8 @@
             context.textAlign = 'center';
             context.textBaseline = 'middle';
             
-            const fontSize = 120;
-            context.font = `${fontSize}px "Jacquard 12", serif`;
+            const fontSize = 80;
+            context.font = `${fontSize}px "Jacquard 12", "Times New Roman", serif`;
             
             // First layer - glow
             context.fillStyle = '#ffdb4d';
