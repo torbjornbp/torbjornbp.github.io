@@ -1,0 +1,550 @@
+!DOCTYPE html>
+<html>
+<head>
+    <title>Medieval Castle Invitation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jacquard+12&display=swap');
+        
+        body { 
+            margin: 0; 
+            background: black; 
+            font-family: 'Jacquard 12', serif;
+        }
+        
+        canvas { 
+            display: block; 
+        }
+        
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">Loading textures...</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 0.5;
+        document.body.appendChild(renderer.domElement);
+
+        // Global variables
+        const mouse = new THREE.Vector2();
+        const targetRotation = new THREE.Vector2();
+        let isMouseMoving = false;
+        let cauldronGroup, fireGroup, textGroup;
+        let steam, fireParticles, potion;
+
+        // Room dimensions
+        const ROOM = {
+            width: 20,
+            height: 15,
+            depth: 20
+        };
+
+        // Texture loader setup
+        const loadingManager = new THREE.LoadingManager();
+        const loadingElement = document.getElementById('loading');
+        
+        loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
+            const progress = (itemsLoaded / itemsTotal * 100).toFixed(0);
+            loadingElement.textContent = `Loading textures... ${progress}%`;
+        };
+        
+        loadingManager.onError = (url) => {
+            console.error('Error loading texture:', url);
+            // Continue even if texture loading fails
+            loadingElement.textContent = 'Some textures failed to load. Continuing with fallbacks...';
+            setTimeout(() => {
+                loadingElement.style.display = 'none';
+            }, 2000);
+        };
+        
+        loadingManager.onLoad = () => {
+            loadingElement.style.display = 'none';
+        };
+
+        const textureLoader = new THREE.TextureLoader(loadingManager);
+
+        // Helper function to load texture with fallback
+        function loadTextureWithFallback(url) {
+            const texture = textureLoader.load(url, 
+                undefined, 
+                undefined, 
+                () => {
+                    // On error, create a basic canvas texture as fallback
+                    const canvas = document.createElement('canvas');
+                    canvas.width = canvas.height = 2;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#888888';
+                    ctx.fillRect(0, 0, 2, 2);
+                    const fallbackTexture = new THREE.CanvasTexture(canvas);
+                    fallbackTexture.wrapS = fallbackTexture.wrapT = THREE.RepeatWrapping;
+                    return fallbackTexture;
+                }
+            );
+            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            return texture;
+        }
+
+        // Modified texture loading
+        const wallTextures = {
+            basecolor: loadTextureWithFallback('wall/Bricks091_1K-JPG_Color.jpg'),
+            normal: loadTextureWithFallback('wall/Bricks091_1K-JPG_NormalGL.jpg'),
+            displacement: loadTextureWithFallback('wall/Bricks091_1K-JPG_Displacement.jpg'),
+            roughness: loadTextureWithFallback('wall/Bricks091_1K-JPG_Roughness.jpg'),
+            ao: loadTextureWithFallback('wall/Bricks091_1K-JPG_AmbientOcclusion.jpg')
+        };
+
+        const floorTextures = {
+            basecolor: loadTextureWithFallback('floor/Bricks075A_1K-JPG_Color.jpg'),
+            normal: loadTextureWithFallback('floor/Bricks075A_1K-JPG_NormalGL.jpg'),
+            displacement: loadTextureWithFallback('floor/Bricks075A_1K-JPG_Displacement.jpg'),
+            roughness: loadTextureWithFallback('floor/Bricks075A_1K-JPG_Roughness.jpg'),
+            ao: loadTextureWithFallback('floor/Bricks075A_1K-JPG_AmbientOcclusion.jpg')
+        };
+
+        const ceilingTextures = {
+            basecolor: loadTextureWithFallback('ceiling/Planks023A_1K-JPG_Color.jpg'),
+            normal: loadTextureWithFallback('ceiling/Planks023A_1K-JPG_NormalGL.jpg'),
+            displacement: loadTextureWithFallback('ceiling/Planks023A_1K-JPG_Displacement.jpg'),
+            roughness: loadTextureWithFallback('ceiling/Planks023A_1K-JPG_Roughness.jpg'),
+            ao: loadTextureWithFallback('ceiling/Planks075A_1K-JPG_AmbientOcclusion.jpg'),
+            metalness: loadTextureWithFallback('ceiling/Planks023A_1K-JPG_Metalness.jpg')
+        };
+
+        // Configure texture settings
+        [wallTextures, floorTextures, ceilingTextures].forEach(textureSet => {
+            Object.values(textureSet).forEach(texture => {
+                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            });
+        });
+
+        // Create PBR materials
+        function createPBRMaterial(textures, repeat = { x: 2, y: 2 }) {
+            const material = new THREE.MeshStandardMaterial({
+                map: textures.basecolor,
+                normalMap: textures.normal,
+                displacementMap: textures.displacement,
+                displacementScale: 0.1,
+                roughnessMap: textures.roughness,
+                aoMap: textures.ao,
+                aoMapIntensity: 1.5,
+                roughness: 1.0,
+                metalness: 0.0
+            });
+
+            if (textures.metalness) {
+                material.metalnessMap = textures.metalness;
+            }
+
+            Object.values(textures).forEach(texture => {
+                texture.repeat.set(repeat.x, repeat.y);
+            });
+
+            return material;
+        }
+
+        // Create the room
+        const wallMaterial = createPBRMaterial(wallTextures, { x: 3, y: 2 });
+        const floorMaterial = createPBRMaterial(floorTextures, { x: 4, y: 4 });
+        const ceilingMaterial = createPBRMaterial(ceilingTextures, { x: 4, y: 4 });
+
+        function createDetailedMesh(geometry, material) {
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            geometry.attributes.uv2 = geometry.attributes.uv;
+            return mesh;
+        }
+
+        const wallGeometry = new THREE.BoxGeometry(ROOM.width, ROOM.height, 1, 32, 32, 1);
+        const sideWallGeometry = new THREE.BoxGeometry(1, ROOM.height, ROOM.depth, 1, 32, 32);
+        const floorGeometry = new THREE.BoxGeometry(ROOM.width, 1, ROOM.depth, 32, 1, 32);
+
+        const backWall = createDetailedMesh(wallGeometry, wallMaterial);
+        backWall.position.z = -ROOM.depth/2;
+
+        const leftWall = createDetailedMesh(sideWallGeometry, wallMaterial);
+        leftWall.position.x = -ROOM.width/2;
+
+        const rightWall = createDetailedMesh(sideWallGeometry, wallMaterial);
+        rightWall.position.x = ROOM.width/2;
+
+        const floor = createDetailedMesh(floorGeometry, floorMaterial);
+        floor.position.y = -ROOM.height/2;
+
+        const ceiling = createDetailedMesh(floorGeometry, ceilingMaterial);
+        ceiling.position.y = ROOM.height/2;
+
+        scene.add(backWall, leftWall, rightWall, floor, ceiling);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x102030, 0.2);
+        scene.add(ambientLight);
+
+        const torch1 = new THREE.PointLight(0x4d6dff, 0.3, 12);
+        torch1.position.set(-5, 2, -5);
+        torch1.castShadow = true;
+        torch1.shadow.bias = -0.001;
+        torch1.shadow.mapSize.width = 512;
+        torch1.shadow.mapSize.height = 512;
+
+        const torch2 = new THREE.PointLight(0x4d6dff, 0.3, 12);
+        torch2.position.set(5, 2, -5);
+        torch2.castShadow = true;
+        torch2.shadow.bias = -0.001;
+        torch2.shadow.mapSize.width = 512;
+        torch2.shadow.mapSize.height = 512;
+
+        const textLight = new THREE.PointLight(0xff6622, 0.8, 1);
+        textLight.position.set(0, 0, -5);
+
+        scene.add(torch1, torch2, textLight);
+
+        // Create cauldron
+        cauldronGroup = new THREE.Group();
+        fireGroup = new THREE.Group();
+        scene.add(cauldronGroup, fireGroup);
+
+        const cauldronMaterial = new THREE.MeshStandardMaterial({
+            color: 0x303030,
+            metalness: 0.8,
+            roughness: 0.3,
+            side: THREE.FrontSide
+        });
+
+        const cauldronInteriorMaterial = new THREE.MeshStandardMaterial({
+            color: 0x303030,
+            metalness: 0.9,
+            roughness: 0.2,
+            side: THREE.BackSide
+        });
+
+        const potionMaterial = new THREE.MeshPhongMaterial({
+            color: 0x4d6dff,
+            transparent: true,
+            opacity: 0.8,
+            shininess: 90,
+            emissive: 0x4d6dff,
+            emissiveIntensity: 0.5
+        });
+
+        const cauldronGeometry = new THREE.SphereGeometry(1, 32, 32, 0, Math.PI * 2, Math.PI * 0.25, Math.PI * 0.75);
+        const cauldron = new THREE.Mesh(cauldronGeometry, cauldronMaterial);
+        cauldron.scale.set(1.3, 1, 1);
+        cauldronGroup.add(cauldron);
+
+        const interiorGeometry = new THREE.SphereGeometry(0.95, 32, 32, 0, Math.PI * 2, Math.PI * 0.25, Math.PI * 0.75);
+        const interior = new THREE.Mesh(interiorGeometry, cauldronInteriorMaterial);
+        interior.scale.set(1.3, 1, 1);
+        cauldronGroup.add(interior);
+
+        const potionGeometry = new THREE.CylinderGeometry(0.75, 0.75, 0.1, 32);
+        potion = new THREE.Mesh(potionGeometry, potionMaterial);
+        potion.position.y = 0.1;
+        cauldronGroup.add(potion);
+
+        const rimGeometry = new THREE.TorusGeometry(1, 0.08, 16, 32);
+        const rim = new THREE.Mesh(rimGeometry, cauldronMaterial);
+        rim.position.y = 0.7;
+        rim.rotation.x = Math.PI / 2;
+        rim.scale.set(0.9, 0.9, 0.9);
+        cauldronGroup.add(rim);
+
+        // Add magical steam particles
+        const steamGeometry = new THREE.BufferGeometry();
+        const steamCount = 100;
+        const steamPositions = new Float32Array(steamCount * 3);
+        const steamSizes = new Float32Array(steamCount);
+        const steamOpacities = new Float32Array(steamCount);
+
+        for(let i = 0; i < steamCount; i++) {
+            const radius = Math.random() * 0.5;
+            const angle = Math.random() * Math.PI * 2;
+            steamPositions[i * 3] = Math.cos(angle) * radius;
+            steamPositions[i * 3 + 1] = Math.random() * 2;
+            steamPositions[i * 3 + 2] = Math.sin(angle) * radius;
+            steamSizes[i] = Math.random() * 0.1 + 0.05;
+            steamOpacities[i] = Math.random();
+        }
+
+        steamGeometry.setAttribute('position', new THREE.BufferAttribute(steamPositions, 3));
+        steamGeometry.setAttribute('size', new THREE.BufferAttribute(steamSizes, 1));
+        steamGeometry.setAttribute('opacity', new THREE.BufferAttribute(steamOpacities, 1));
+
+        const steamMaterial = new THREE.PointsMaterial({
+            color: 0x8888ff,
+            size: 0.1,
+            transparent: true,
+            opacity: 0.3,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+
+        steam = new THREE.Points(steamGeometry, steamMaterial);
+        steam.position.y = 0.3;
+        cauldronGroup.add(steam);
+
+        // Create rocks for the firepit
+        const rockGroup = new THREE.Group();
+
+        function createRockMaterial() {
+            return new THREE.MeshStandardMaterial({
+                color: new THREE.Color(0x666666).offsetHSL(0, 0, (Math.random() - 0.5) * 0.1),
+                roughness: 0.8,
+                metalness: 0.1
+            });
+        }
+
+        function createRock() {
+            const geometry = new THREE.IcosahedronGeometry(0.3 + Math.random() * 0.2, 0);
+            
+            const positions = geometry.attributes.position;
+            for (let i = 0; i < positions.count; i++) {
+                positions.setXYZ(
+                    i,
+                    positions.getX(i) * (1 + (Math.random() - 0.5) * 0.3),
+                    positions.getY(i) * (1 + (Math.random() - 0.5) * 0.3),
+                    positions.getZ(i) * (1 + (Math.random() - 0.5) * 0.3)
+                );
+            }
+
+            const rock = new THREE.Mesh(geometry, createRockMaterial());
+            rock.rotation.set(
+                Math.random() * Math.PI,
+                Math.random() * Math.PI,
+                Math.random() * Math.PI
+            );
+            
+            return rock;
+        }
+
+        const rockCount = 26;
+        const circleRadius = 2;
+
+        for (let i = 0; i < rockCount; i++) {
+            const angle = (i / rockCount) * Math.PI * 2;
+            const rock = createRock();
+            
+            rock.position.x = Math.cos(angle) * (circleRadius + (Math.random() - 0.5) * 0.3);
+            rock.position.z = Math.sin(angle) * (circleRadius + (Math.random() - 0.5) * 0.3);
+            rock.position.y = (Math.random() - 0.5) * 0.2;
+            
+            const scale = 0.8 + Math.random() * 0.4;
+            rock.scale.set(scale, scale * 0.7, scale);
+            
+            rock.castShadow = true;
+            rock.receiveShadow = true;
+            
+            rockGroup.add(rock);
+        }
+
+        rockGroup.position.set(0, -ROOM.height/2 + 0.6, -5);
+        scene.add(rockGroup);
+
+        // Add fire effect beneath cauldron
+        const fireLight = new THREE.PointLight(0xff4400, 2, 5);
+        fireLight.position.y = -0.4;
+        fireGroup.add(fireLight);
+
+        // Create fire particles
+        const fireParticleCount = 50;
+        fireParticles = new THREE.BufferGeometry(); // Changed from const to the global variable
+        const firePositions = new Float32Array(fireParticleCount * 3);
+        const fireParticleMaterial = new THREE.PointsMaterial({
+            color: 0xff4400,
+            size: 0.2,
+            blending: THREE.AdditiveBlending,
+            transparent: true
+        });
+
+        for(let i = 0; i < fireParticleCount * 3; i += 3) {
+            firePositions[i] = (Math.random() - 0.5) * 2.0;
+            firePositions[i + 1] = Math.random() * 0.5 - 0.8;
+            firePositions[i + 2] = (Math.random() - 0.5) * 2.0;
+        }
+
+        fireParticles.setAttribute('position', new THREE.BufferAttribute(firePositions, 3));
+        const fireParticleSystem = new THREE.Points(fireParticles, fireParticleMaterial);
+        fireParticleSystem.position.y = -1.2;
+        fireGroup.add(fireParticleSystem);
+
+        // Position groups
+        cauldronGroup.scale.set(1.9, 1.9, 1.9);
+        cauldronGroup.position.set(0, -ROOM.height/2 + 2.4, -5);
+        fireGroup.position.copy(cauldronGroup.position);
+        
+        // Create floating text
+        textGroup = new THREE.Group();
+        scene.add(textGroup);
+
+        function createTextSprite(message, y) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            
+            canvas.width = 2048;
+            canvas.height = 512;
+            
+            context.textRendering = 'geometricPrecision';
+            context.imageSmoothingEnabled = true;
+            context.imageSmoothingQuality = 'high';
+
+            context.fillStyle = '#000000';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            
+            context.shadowColor = '#ffdb4d';
+            context.shadowBlur = 20;
+            context.shadowOffsetX = 0;
+            context.shadowOffsetY = 0;
+            
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            
+            const fontSize = 120;
+            context.font = `${fontSize}px "Jacquard 12", serif`;
+            
+            // First layer - glow
+            context.fillStyle = '#ffdb4d';
+            context.globalAlpha = 0.6;
+            context.fillText(message, canvas.width/2, canvas.height/2);
+            
+            // Second layer - sharper edge
+            context.shadowBlur = 10;
+            context.globalAlpha = 0.8;
+            context.fillText(message, canvas.width/2, canvas.height/2);
+            
+            // Third layer - core text
+            context.shadowBlur = 0;
+            context.globalAlpha = 1.0;
+            context.fillStyle = '#ffffff';
+            context.fillText(message, canvas.width/2, canvas.height/2);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.minFilter = THREE.LinearFilter;
+            texture.magFilter = THREE.LinearFilter;
+            texture.generateMipmaps = false;
+            
+            const spriteMaterial = new THREE.SpriteMaterial({ 
+                map: texture,
+                transparent: true,
+                blending: THREE.AdditiveBlending
+            });
+
+            const sprite = new THREE.Sprite(spriteMaterial);
+            sprite.scale.set(10, 2.5, 1);
+            sprite.position.set(0, y, -5);
+            return sprite;
+        }
+
+        const line1 = createTextSprite("Du er herved invitert", 1.5);
+        const line2 = createTextSprite("til suppekveld i Fiolveien 4", 0.5);
+        const line3 = createTextSprite("November 15, 2024 klokka 16:00", -0.5);
+        const line4 = createTextSprite("hilsen Suppens brorskap", -1.5);
+
+        textGroup.add(line1, line2, line3, line4);
+
+        // Event listeners
+        document.addEventListener('mousemove', (event) => {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            isMouseMoving = true;
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = Date.now() * 0.001;
+
+            // Camera movement
+            if (isMouseMoving) {
+                targetRotation.x = mouse.y * 0.5;
+                targetRotation.y = mouse.x * 0.5;
+
+                camera.position.x = 10 * Math.sin(targetRotation.y);
+                camera.position.z = 10 * Math.cos(targetRotation.y);
+                camera.position.y = 5 * Math.sin(targetRotation.x);
+
+                camera.lookAt(0, 0, 0);
+            }
+
+            // Steam animation
+            const steamPos = steam.geometry.attributes.position.array;
+            const steamOpac = steam.geometry.attributes.opacity.array;
+            
+            for(let i = 0; i < steamCount; i++) {
+                steamPos[i * 3 + 1] += 0.015;
+                
+                if(steamPos[i * 3 + 1] > 3) {
+                    steamPos[i * 3 + 1] = 0.7;
+                    steamOpac[i] = Math.random();
+                    const radius = Math.random() * 0.8;
+                    const angle = Math.random() * Math.PI * 2;
+                    steamPos[i * 3] = Math.cos(angle) * radius;
+                    steamPos[i * 3 + 2] = Math.sin(angle) * radius;
+                }
+                
+                steamOpac[i] *= 0.998;
+                steamPos[i * 3] += Math.sin(time + i) * 0.002;
+                steamPos[i * 3 + 2] += Math.cos(time + i) * 0.002;
+            }
+            
+            // Fire animation
+            const firePos = fireParticleSystem.geometry.attributes.position.array;
+            for(let i = 0; i < fireParticleCount * 3; i += 3) {
+                firePos[i] += Math.sin(time * 0.005 + i) * 0.02;
+                firePos[i + 1] += 0.04;
+                firePos[i + 2] += Math.cos(time * 0.005 + i) * 0.02;
+                
+                if(firePos[i + 1] > 0) {
+                    firePos[i] = (Math.random() - 0.5) * 2.0;
+                    firePos[i + 1] = -0.8;
+                    firePos[i + 2] = (Math.random() - 0.5) * 2.0;
+                }
+            }
+            
+            // Update geometries
+            steam.geometry.attributes.position.needsUpdate = true;
+            steam.geometry.attributes.opacity.needsUpdate = true;
+            fireParticleSystem.geometry.attributes.position.needsUpdate = true;
+            
+            // Animate lights
+            fireLight.intensity = 2 + Math.sin(time * 3) * 0.5;
+            potion.position.y = 0.1 + Math.sin(time * 0.002) * 0.01;
+            textLight.intensity = 1.5 + Math.sin(time * 2) * 0.3;
+            
+            // Animate text
+            textGroup.position.y = Math.sin(time) * 0.2;
+            textGroup.children.forEach((sprite, index) => {
+                sprite.material.opacity = 0.8 + Math.sin(time + index) * 0.2;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
