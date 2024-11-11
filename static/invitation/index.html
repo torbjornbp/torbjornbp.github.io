@@ -642,14 +642,60 @@
 
         setTimeout(createAndAnimateText, 2000);
 
-        // Create audio elements
-        const dungeonAmbience = new Audio('dungeon.ogg');
-        dungeonAmbience.loop = true;
-        dungeonAmbience.volume = 0.4;  // Adjust volume as needed
+                // Modified audio handling
+        let audioContext;
+        let dungeonGainNode;
+        let fireplaceGainNode;
+        let dungeonSource;
+        let fireplaceSource;
+        let audioInitialized = false;
 
-        const fireplaceSound = new Audio('fireplace.mp3');
-        fireplaceSound.loop = true;
-        fireplaceSound.volume = 0.5;  // Adjust volume as needed
+        // Create audio context
+        async function initializeAudio() {
+            if (audioInitialized) return;
+            
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Create gain nodes
+                dungeonGainNode = audioContext.createGain();
+                fireplaceGainNode = audioContext.createGain();
+                
+                dungeonGainNode.connect(audioContext.destination);
+                fireplaceGainNode.connect(audioContext.destination);
+                
+                // Set initial volumes
+                dungeonGainNode.gain.value = 0.3;
+                fireplaceGainNode.gain.value = 0.4;
+                
+                // Load and decode audio files
+                const [dungeonBuffer, fireplaceBuffer] = await Promise.all([
+                    fetch('dungeon.ogg')
+                        .then(response => response.arrayBuffer())
+                        .then(buffer => audioContext.decodeAudioData(buffer)),
+                    fetch('fireplace.mp3')
+                        .then(response => response.arrayBuffer())
+                        .then(buffer => audioContext.decodeAudioData(buffer))
+                ]);
+                
+                // Create and start audio sources
+                function createAndStartSource(buffer, gainNode) {
+                    const source = audioContext.createBufferSource();
+                    source.buffer = buffer;
+                    source.loop = true;
+                    source.connect(gainNode);
+                    source.start(0);
+                    return source;
+                }
+                
+                dungeonSource = createAndStartSource(dungeonBuffer, dungeonGainNode);
+                fireplaceSource = createAndStartSource(fireplaceBuffer, fireplaceGainNode);
+                
+                audioInitialized = true;
+            } catch (error) {
+                console.error('Audio initialization failed:', error);
+            }
+        }
 
         // Create mute button
         const muteButton = document.createElement('button');
@@ -671,27 +717,47 @@
             justify-content: center;
             z-index: 1000;
             transition: background-color 0.3s;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
         `;
 
         document.body.appendChild(muteButton);
 
         let isMuted = false;
 
-        // Function to handle mute toggle
+        // Modified mute toggle function
         function toggleMute() {
+            if (!audioContext) return;
+            
             isMuted = !isMuted;
             muteButton.textContent = isMuted ? '🔈' : '🔊';
-            dungeonAmbience.volume = isMuted ? 0 : 0.3;
-            fireplaceSound.volume = isMuted ? 0 : 0.4;
+            
+            const targetVolume = isMuted ? 0 : 0.3;
+            const fireplaceVolume = isMuted ? 0 : 0.4;
+            
+            // Smoothly transition volumes
+            dungeonGainNode.gain.setValueAtTime(dungeonGainNode.gain.value, audioContext.currentTime);
+            dungeonGainNode.gain.linearRampToValueAtTime(targetVolume, audioContext.currentTime + 0.1);
+            
+            fireplaceGainNode.gain.setValueAtTime(fireplaceGainNode.gain.value, audioContext.currentTime);
+            fireplaceGainNode.gain.linearRampToValueAtTime(fireplaceVolume, audioContext.currentTime + 0.1);
         }
 
-        muteButton.addEventListener('click', toggleMute);
+        // Add click and touch handlers for the mute button
+        muteButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!audioInitialized) {
+                initializeAudio().then(toggleMute);
+            } else {
+                toggleMute();
+            }
+        });
 
-        // Start audio on first user interaction
-        document.addEventListener('pointerdown', function initAudio() {
-            dungeonAmbience.play();
-            fireplaceSound.play();
-            document.removeEventListener('pointerdown', initAudio);
+        // Initialize audio on first interaction
+        document.addEventListener('pointerdown', function initAudioOnInteraction() {
+            initializeAudio();
+            document.removeEventListener('pointerdown', initAudioOnInteraction);
         }, { once: true });
 
         // Modified animation loop
