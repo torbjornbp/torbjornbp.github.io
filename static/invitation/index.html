@@ -303,7 +303,7 @@
             color: 0x4d6dff,
             transparent: true,
             opacity: 0.8,
-            shininess: 90,
+            shininess: 100,
             emissive: 0xff6347,
             emissiveIntensity: 0.5
         });
@@ -480,73 +480,101 @@
         fireGroup.position.copy(cauldronGroup.position);
         
         // Create floating text
-        textGroup = new THREE.Group();
-        scene.add(textGroup);
+        function createAndAnimateText() {
+            textGroup = new THREE.Group();
+            scene.add(textGroup);
 
-        function createTextSprite(message, y) {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            
-            canvas.width = 1024;
-            canvas.height = 256;
-            
-            context.textRendering = 'geometricPrecision';
-            context.imageSmoothingEnabled = true;
-            context.imageSmoothingQuality = 'high';
+            function createTextSprite(message, y) {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                
+                canvas.width = 1024;
+                canvas.height = 256;
+                
+                context.textRendering = 'geometricPrecision';
+                context.imageSmoothingEnabled = true;
+                context.imageSmoothingQuality = 'high';
 
-            context.fillStyle = '#000000';
-            context.fillRect(0, 0, canvas.width, canvas.height);
-            
-            context.shadowColor = '#ffdb4d';
-            context.shadowBlur = 20;
-            context.shadowOffsetX = 0;
-            context.shadowOffsetY = 0;
-            
-            context.textAlign = 'center';
-            context.textBaseline = 'middle';
-            
-            const fontSize = 80;
-            context.font = `${fontSize}px "Jacquard 12", "Times New Roman", serif`;
-            
-            // First layer - glow
-            context.fillStyle = '#ffdb4d';
-            context.globalAlpha = 0.6;
-            context.fillText(message, canvas.width/2, canvas.height/2);
-            
-            // Second layer - sharper edge
-            context.shadowBlur = 10;
-            context.globalAlpha = 0.8;
-            context.fillText(message, canvas.width/2, canvas.height/2);
-            
-            // Third layer - core text
-            context.shadowBlur = 0;
-            context.globalAlpha = 1.0;
-            context.fillStyle = '#ffffff';
-            context.fillText(message, canvas.width/2, canvas.height/2);
+                context.fillStyle = '#000000';
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                
+                context.shadowColor = '#ffdb4d';
+                context.shadowBlur = 20;
+                context.shadowOffsetX = 0;
+                context.shadowOffsetY = 0;
+                
+                context.textAlign = 'center';
+                context.textBaseline = 'middle';
+                
+                const fontSize = 80;
+                context.font = `${fontSize}px "Jacquard 12", "Times New Roman", serif`;
+                
+                // First layer - glow
+                context.fillStyle = '#ffdb4d';
+                context.globalAlpha = 0.6;
+                context.fillText(message, canvas.width/2, canvas.height/2);
+                
+                // Second layer - sharper edge
+                context.shadowBlur = 10;
+                context.globalAlpha = 0.8;
+                context.fillText(message, canvas.width/2, canvas.height/2);
+                
+                // Third layer - core text
+                context.shadowBlur = 0;
+                context.globalAlpha = 1.0;
+                context.fillStyle = '#ffffff';
+                context.fillText(message, canvas.width/2, canvas.height/2);
 
-            const texture = new THREE.CanvasTexture(canvas);
-            texture.minFilter = THREE.LinearFilter;
-            texture.magFilter = THREE.LinearFilter;
-            texture.generateMipmaps = false;
-            
-            const spriteMaterial = new THREE.SpriteMaterial({ 
-                map: texture,
-                transparent: true,
-                blending: THREE.AdditiveBlending
+                const texture = new THREE.CanvasTexture(canvas);
+                texture.minFilter = THREE.LinearFilter;
+                texture.magFilter = THREE.LinearFilter;
+                texture.generateMipmaps = false;
+                
+                const spriteMaterial = new THREE.SpriteMaterial({ 
+                    map: texture,
+                    transparent: true,
+                    blending: THREE.AdditiveBlending
+                });
+
+                const sprite = new THREE.Sprite(spriteMaterial);
+                sprite.scale.set(10, 2.5, 1);
+                sprite.position.set(0, y, -5);
+                return sprite;
+            }
+
+            const line1 = createTextSprite("Du er herved invitert", 1.5);
+            const line2 = createTextSprite("til suppekveld ved neste fullmåne", 0.5);
+            const line3 = createTextSprite("November 15, 2024 klokka 16:00", -0.5);
+            const line4 = createTextSprite("hilsen Suppens brorskap", -1.5);
+
+            // Start all sprites with 0 opacity
+            [line1, line2, line3, line4].forEach(sprite => {
+                sprite.material.opacity = 0;
             });
 
-            const sprite = new THREE.Sprite(spriteMaterial);
-            sprite.scale.set(10, 2.5, 1);
-            sprite.position.set(0, y, -5);
-            return sprite;
-        }
+            textGroup.add(line1, line2, line3, line4);
 
-        const line1 = createTextSprite("Du er herved invitert", 1.5);
-        const line2 = createTextSprite("til suppekveld ved neste fullmåne", 0.5);
-        const line3 = createTextSprite("November 15, 2024 klokka 16:00", -0.5);
-        const line4 = createTextSprite("hilsen Suppens brorskap", -1.5);
+            // Fade in each line
+            [line1, line2, line3, line4].forEach((sprite, index) => {
+                    setTimeout(() => {
+                        const startTime = Date.now();
+                        const fadeInDuration = 2000; // 2 seconds fade-in duration (up from 0)
 
-        textGroup.add(line1, line2, line3, line4);
+                        function fadeIn() {
+                            const elapsed = Date.now() - startTime;
+                            const progress = Math.min(elapsed / fadeInDuration, 1);
+                            
+                            sprite.material.opacity = progress;
+                            
+                            if (progress < 1) {
+                                requestAnimationFrame(fadeIn);
+                            }
+                        }
+                        
+                        fadeIn();
+                    }, index * 1500); // 1.5 seconds between each line (up from 1 second)
+                });
+            }
 
         // Event listeners
         // Touch and mouse interaction variables
@@ -625,6 +653,8 @@
         document.addEventListener('gesturestart', (e) => e.preventDefault());
         document.addEventListener('gesturechange', (e) => e.preventDefault());
         document.addEventListener('gestureend', (e) => e.preventDefault());
+
+        setTimeout(createAndAnimateText, 2000);
 
         // Modified animation loop
         function animate() {
@@ -717,11 +747,15 @@
             fireLight.intensity = 2 + Math.sin(time * 3) * 0.5;
             textLight.intensity = 1.5 + Math.sin(time * 2) * 0.3;
             
-            // Animate text
-            textGroup.position.y = Math.sin(time) * 0.2;
-            textGroup.children.forEach((sprite, index) => {
-                sprite.material.opacity = 0.8 + Math.sin(time + index) * 0.2;
-            });
+            // Text animations
+            if (textGroup && textGroup.children.length > 0) {
+                textGroup.position.y = Math.sin(time) * 0.2;
+                textGroup.children.forEach((sprite, index) => {
+                    if (sprite.material.opacity > 0) {  // Only animate if the sprite is visible
+                        sprite.material.opacity = 0.8 + Math.sin(time + index) * 0.2;
+                    }
+                });
+            }
 
             renderer.render(scene, camera);
         }
