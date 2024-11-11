@@ -556,25 +556,11 @@
 
             // Fade in each line
             [line1, line2, line3, line4].forEach((sprite, index) => {
-                    setTimeout(() => {
-                        const startTime = Date.now();
-                        const fadeInDuration = 2000; // 2 seconds fade-in duration (up from 0)
-
-                        function fadeIn() {
-                            const elapsed = Date.now() - startTime;
-                            const progress = Math.min(elapsed / fadeInDuration, 1);
-                            
-                            sprite.material.opacity = progress;
-                            
-                            if (progress < 1) {
-                                requestAnimationFrame(fadeIn);
-                            }
-                        }
-                        
-                        fadeIn();
-                    }, index * 1500); // 1.5 seconds between each line (up from 1 second)
-                });
-            }
+                setTimeout(() => {
+                    sprite.material.opacity = 1;  // Set to full opacity when it's time to show
+                }, index * 1000);
+            });
+        }
 
         // Event listeners
         // Touch and mouse interaction variables
@@ -655,6 +641,58 @@
         document.addEventListener('gestureend', (e) => e.preventDefault());
 
         setTimeout(createAndAnimateText, 2000);
+
+        // Create audio elements
+        const dungeonAmbience = new Audio('dungeon.ogg');
+        dungeonAmbience.loop = true;
+        dungeonAmbience.volume = 0.3;  // Adjust volume as needed
+
+        const fireplaceSound = new Audio('fireplace.mp3');
+        fireplaceSound.loop = true;
+        fireplaceSound.volume = 0.4;  // Adjust volume as needed
+
+        // Create mute button
+        const muteButton = document.createElement('button');
+        muteButton.textContent = '🔊';
+        muteButton.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #ffdb4d;
+            color: #ffdb4d;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: background-color 0.3s;
+        `;
+
+        document.body.appendChild(muteButton);
+
+        let isMuted = false;
+
+        // Function to handle mute toggle
+        function toggleMute() {
+            isMuted = !isMuted;
+            muteButton.textContent = isMuted ? '🔈' : '🔊';
+            dungeonAmbience.volume = isMuted ? 0 : 0.3;
+            fireplaceSound.volume = isMuted ? 0 : 0.4;
+        }
+
+        muteButton.addEventListener('click', toggleMute);
+
+        // Start audio on first user interaction
+        document.addEventListener('pointerdown', function initAudio() {
+            dungeonAmbience.play();
+            fireplaceSound.play();
+            document.removeEventListener('pointerdown', initAudio);
+        }, { once: true });
 
         // Modified animation loop
         function animate() {
