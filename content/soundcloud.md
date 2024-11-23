@@ -342,3 +342,31 @@ Tracklist:
 52. DJ Nasty - Sounds of the City
 53. Leatherface - Bounce Drop
 54. DJ Slugo - Big Booty Hoes
+
+## Boom Mix
+Tracklist:
+1. Doc Nasty - Orange Telephones
+2. Doc Nasty - Miami to Rio
+3. Exzakt - City of Bass
+4. Hydroz - Lovin & Hatin
+5. Hydraulix - Citi Roc
+6. Code Rising - Steppin Back
+7. The Wreck Shop - It's Yours
+8. Hydroz - Givn It Up
+9. The Wreck Shop - Bucky Bass Alamr
+10. The Dogs - Mutt Them Hos
+11. D.I.E. - Get Up (Dub)
+12. DJ Nasty - Hurricane
+13. DJ Omega - Disco 78
+14. DJ Godfather - Throw Some D's
+15. DJ Baddmixx - Whoop That Trick
+16. DJ Nasty - Supa Fly
+17. Dj Godfather - Put Your Hands Up For Detroit (N-Ter Remix Feat. DJ Omega)
+18. Marvy Da Pimp - Get Hype
+19. Chi Boogie - Girlz On Da Flo
+20. DJ Godfather & DJ Omega - Ghetto Electro
+21. DJ Deeon - Gimme Head
+22. Bitch Ass Darius - Ride
+23. Starski & Clutch - Players, Ballers, Rollers
+24. DJ Omega - Hey There
+25. DJ Nasty - The Chase Scene
