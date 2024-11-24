@@ -16,13 +16,25 @@
   let webampInstance = null;
 
   function launchWebamp() {
-    if (!webampInstance) {
-      webampInstance = new Webamp({
-        initialTracks: {{ $tracks | jsonify | safeJS }}
-      });
-      
-      document.getElementById("app").style.display = "block";
-      webampInstance.renderWhenReady(document.getElementById("app"));
+    // Always dispose of any existing instance
+    if (webampInstance) {
+      webampInstance.dispose();
+      webampInstance = null;
     }
+
+    // Create new instance
+    webampInstance = new Webamp({
+      initialTracks: {{ $tracks | jsonify | safeJS }}
+    });
+    
+    document.getElementById("app").style.display = "block";
+    webampInstance.renderWhenReady(document.getElementById("app")).then(() => {
+      // Add an event listener for when Webamp is closed
+      webampInstance.onClose(() => {
+        document.getElementById("app").style.display = "none";
+        webampInstance.dispose();
+        webampInstance = null;
+      });
+    });
   }
 </script> 
