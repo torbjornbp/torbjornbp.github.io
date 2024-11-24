@@ -1,0 +1,21 @@
+<details class="custom-details">
+    <summary class="custom-summary">{{ .Get 0 }}</summary>
+    {{ .Inner | markdownify }}
+</details>
+
+<style>
+    .custom-details {
+        border: 1px solid #aaa;
+        background: #f9f9f9;
+        border-left: 4px solid #777;
+        box-shadow: 2px 2px #ddd;
+        padding: 5px;
+        margin: 4px;
+    }
+
+    .custom-summary {
+        font-weight: bold;
+        padding: 0.5em;
+        cursor: pointer;
+    }
+</style> 

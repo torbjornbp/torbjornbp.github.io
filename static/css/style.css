@@ -18,13 +18,14 @@ h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
 .menu {padding: 0;}
 .menu li { display: inline-block; }
 .menu a { text-decoration: none; }
-.article-meta, .menu a, blockquote, table {
+.article-meta, .menu a, blockquote, table, button.menu {
   background: #f9f9f9;
   border: 1px solid #aaa;
   box-shadow: 2px 2px #ddd;
   padding: 5px;
   margin: 4px;
 }
+
 hr {
   border-style: 1px solid #aaa;
   max-width: calc(100% - 10px);
@@ -98,7 +99,6 @@ figure figcaption, .imgCaption {
   text-align: right;
   padding: 10px;
   font-size: 0.8rem;
-
 }
 
 /* table */
@@ -124,4 +124,13 @@ thead, tfoot, tr:nth-child(even) { background: #eee; }
         overflow-x: auto;
         font-size: 0.8rem;
     }
+}
+
+button.menu:hover {
+  color: white;
+  background-color: royalblue;
+}
+
+button.menu {
+    font-family: inherit;
 }
