@@ -1,31 +1,9 @@
 <div class="menu">
-  <button onclick="launchWebamp()" class="menu flashing">
-    <strong>Launch webamp player </strong>
+  <button onclick="launchWebamp()" class="menu">
+    <strong>Launch webamp player</strong>
     <img src="/webamp/webamp.svg" alt="Webamp logo" style="height: 1.5em; vertical-align: middle;">
   </button>
 </div>
-
-<style>
-  @keyframes flash {
-    0%, 100% { 
-      background: #f9f9f9;
-      color: inherit;
-    }
-    50% { 
-      background: royalblue;
-      color: white;
-    }
-  }
-
-  .flashing {
-    animation: flash 1s infinite;
-  }
-
-  /* Stop animation on hover to match your site's hover style */
-  .flashing:hover {
-    animation: none;
-  }
-</style>
 
 <div id="app" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; display: none;">
   <!-- Webamp will attempt to center itself within this div -->
