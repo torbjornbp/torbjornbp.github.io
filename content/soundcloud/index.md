@@ -6,10 +6,11 @@ I'm tired of paying soundcloud for hosting files. Slowly moving all my stuff her
 
 {{< webamp tracks="tracks.yaml" >}}
 
+<br>
+
 {{% details "HOLMGANG 96 (2019)" %}}
 
 Tracklist:
-
 1. Public Domain - The Puritan (The Voice Mix)
 2. El Bruto - Hardcore Motherfucker
 3. Obliterator - Mind Twist
@@ -66,29 +67,18 @@ MUSIC FOR CARS
 {{% /details %}}
 
 {{% details "Robotron Live 28.06.14 (2014)" %}}
-
-Tracklist:
-
 {{% /details %}}
 
 {{% details "Robotron Live 27.07.14 (2014)" %}}
-Tracklist:
 {{% /details %}}
 
 {{% details "Robotron Live 04.07.14 (2014)" %}}
-
-Tracklist:
 {{% /details %}}
 
 {{% details "ATAL & VATAMAN Show - Episode 2 (2014)" %}}
-
-
-Tracklist:
 {{% /details %}}
 
 {{% details "ATAL & VATAMAN Show - Episode 1 (2014)" %}}
-
-Tracklist:
 {{% /details %}}
 
 {{% details "Godzilla 313 (2014)" %}}
@@ -244,19 +234,12 @@ Tracklist:
 {{% /details %}}
 
 {{% details "Trondheim Violenta (2013)" %}}
-
-Tracklist:
-
 {{% /details %}}
 
 {{% details "Un Robot tra i morti viventi (2013)" %}}
-
-Tracklist:
 {{% /details %}}
 
 {{% details "Minimix 050312 (2012)" %}}
-
-Tracklist:
 {{% /details %}}
 
 {{% details "Fotarbeid (2011)" %}}
@@ -321,7 +304,6 @@ Tracklist:
 {{% details "Boom Mix (2011)" %}}
 
 Tracklist:
-
 1. Doc Nasty - Orange Telephones
 2. Doc Nasty - Miami to Rio
 3. Exzakt - City of Bass
@@ -350,6 +332,4 @@ Tracklist:
 {{% /details %}}
 
 {{% details "Mollenberg Mix (2009)" %}}
-
-Tracklist:
 {{% /details %}}
