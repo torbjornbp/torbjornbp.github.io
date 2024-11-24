@@ -38,26 +38,42 @@ title: "Mixtape backup"
                 {
                     metaData: {
                         artist: "Robot Monster",
-                        title: "Dance or Die!",
+                        title: "Robotron Live 28.06.14",
                     },
-                    url: "https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Dance%20or%20Die!.mp3",
+                    url: "https://filehost.s3.nl-ams.scw.cloud/mix/RM%20@%20Robotron%2028.06.14.mp3",
+                    duration: 3676,
+                },
+                {
+                    metaData: {
+                        artist: "Robot Monster",
+                        title: "Robotron Live 27.07.14",
+                    },
+                    url: "https://filehost.s3.nl-ams.scw.cloud/mix/RM%20@%20Robotron%2027.07.14.mp3",
+                    duration: 3190,
+                },
+                {
+                    metaData: {
+                        artist: "Robot Monster",
+                        title: "Robotron Live 04.07.14",
+                    },
+                    url: "https://filehost.s3.nl-ams.scw.cloud/mix/RM%20@%20Robotron%2004.07.14.mp3",
+                    duration: 3772,
+                },
+                {
+                    metaData: {
+                        artist: "ATAL & VATAMAN",
+                        title: "Episode 2",
+                    },
+                    url: "https://filehost.s3.nl-ams.scw.cloud/mix/ATAL%20%26%20VATAMAN%20SHOW%20-%20Episode%202.mp3",
                     duration: 3600,
                 },
                 {
                     metaData: {
-                        artist: "Romskip",
-                        title: "Fotarbeid",
+                        artist: "ATAL & VATAMAN",
+                        title: "Episode 1",
                     },
-                    url: "https://filehost.s3.nl-ams.scw.cloud/mix/Romskip%20-%20Fotarbeid.mp3",
-                    duration: 3463,
-                },
-                {
-                    metaData: {
-                        artist: "Romskip",
-                        title: "Boom Mix (uten intro)",
-                    },
-                    url: "https://filehost.s3.nl-ams.scw.cloud/mix/Romskip%20-%20Boom%20Mix%20(uten%20intro).mp3",
-                    duration: 3335,
+                    url: "https://filehost.s3.nl-ams.scw.cloud/mix/ATAL%20%26%20VATAMAN%20SHOW%20-%20Episode%201.mp3",
+                    duration: 3600,
                 },
                 {
                     metaData: {
@@ -66,6 +82,22 @@ title: "Mixtape backup"
                     },
                     url: "https://filehost.s3.nl-ams.scw.cloud/mix/Robot%20Monster%20-%20Godzilla%20313.mp3",
                     duration: 3529,
+                },
+                {
+                    metaData: {
+                        artist: "Robot Monster",
+                        title: "Dance or Die!",
+                    },
+                    url: "https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Dance%20or%20Die!.mp3",
+                    duration: 3600,
+                },
+                {
+                    metaData: {
+                        artist: "Robot Monster",
+                        title: "Straight Outta Kampen",
+                    },
+                    url: "https://filehost.s3.nl-ams.scw.cloud/mix/Robot%20Monster%20-%20Straight%20Outta%20Kampen.mp3",
+                    duration: 3600,
                 },
                 {
                     metaData: {
@@ -101,27 +133,19 @@ title: "Mixtape backup"
                 },
                 {
                     metaData: {
-                        artist: "Robot Monster",
-                        title: "Robotron Live 28.06.14",
+                        artist: "Romskip",
+                        title: "Fotarbeid",
                     },
-                    url: "https://filehost.s3.nl-ams.scw.cloud/mix/RM%20@%20Robotron%2028.06.14.mp3",
-                    duration: 3676,
+                    url: "https://filehost.s3.nl-ams.scw.cloud/mix/Romskip%20-%20Fotarbeid.mp3",
+                    duration: 3463,
                 },
                 {
                     metaData: {
-                        artist: "Robot Monster",
-                        title: "Robotron Live 27.07.14",
+                        artist: "Romskip",
+                        title: "Boom Mix (uten intro)",
                     },
-                    url: "https://filehost.s3.nl-ams.scw.cloud/mix/RM%20@%20Robotron%2027.07.14.mp3",
-                    duration: 3190,
-                },
-                {
-                    metaData: {
-                        artist: "Robot Monster",
-                        title: "Robotron Live 04.07.14",
-                    },
-                    url: "https://filehost.s3.nl-ams.scw.cloud/mix/RM%20@%20Robotron%2004.07.14.mp3",
-                    duration: 3772,
+                    url: "https://filehost.s3.nl-ams.scw.cloud/mix/Romskip%20-%20Boom%20Mix%20(uten%20intro).mp3",
+                    duration: 3335,
                 },
                 {
                     metaData: {
@@ -184,11 +208,13 @@ title: "Mixtape backup"
     pointer-events: auto;
 }
 </style>
+I'm tired of paying soundcloud for hosting files. Slowly moving all my stuff here.
 
-{{< toc >}}
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">HOLMGANG 96 (2019)</summary>
 
-## Holmgang 96
 Tracklist:
+
 1. Public Domain - The Puritan (The Voice Mix)
 2. El Bruto - Hardcore Motherfucker
 3. Obliterator - Mind Twist
@@ -215,13 +241,17 @@ Tracklist:
 24. Tellurian - Squash The Floor
 25. Wayward - Hardcore Hijacked Me
 26. Cray Emoticon - Choice Chip
+</details>
 
-## Cherokee '93
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">Cherokee '93 (2016)</summary>
+
 Extended 100 min cut available on tape + download here: rmtapes.bandcamp.com
 
 MUSIC FOR CARS
 
-SIDE A
+**SIDE A**
+
 1. THREE 6 MAFIA - FUCK WIT DIS CLICK
 2. GIMISUM FAMILY - STRAPPED AT ALL TIMES
 3. DA CRIME CLICK - LIFESTYLE OF A THUG
@@ -230,7 +260,8 @@ SIDE A
 6. CRIMINAL E AND UNDERGROUND SAM - BREAKIN BAD
 7. LIL FLY - BREAK DA LAW 93
 
-SIDE B
+**SIDE B**
+
 1. LINNI - MAXIMUM
 2. KINGPIN SKINNY PIMP - DON'T TEST ME
 3. STREET MILITARY - NEVER LEAVE THA PAD
@@ -238,9 +269,88 @@ SIDE B
 5. DJ SOUND - RIDGECREST KILLAZ
 6. BLOODS AND CRIPS - STEADY DIPPIN
 7. SKIMASK TROOPAZ - GET YO WIG SPLIT
+</details>
 
-## Dance or Die!
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">Robotron Live 28.06.14 (2014)</summary>
+
 Tracklist:
+
+</details>
+
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">Robotron Live 27.07.14 (2014)</summary>
+
+Tracklist:
+
+</details>
+
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">Robotron Live 04.07.14 (2014)</summary>
+
+Tracklist:
+
+</details>
+
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">ATAL & VATAMAN Show - Episode 2 (2014)</summary>
+
+Tracklist:
+
+</details>
+
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">ATAL & VATAMAN Show - Episode 1 (2014)</summary>
+
+Tracklist:
+
+</details>
+
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">Godzilla 313 (2014)</summary>
+
+Tracklist:
+1. DJ Slugo - Godzilla (DJ Nasty Remix)
+2. Non Stop DJs - Watch Your Back
+3. DJ Godfather - Fire It Up
+4. 313 Bass Mechanics - Pump Dat Bass
+5. DJ Deeon - The Freaks
+6. Six-0-Nine - Enjoy The Moment
+7. DJ X-Change - Jaws
+8. Non Stop DJs - Hoezzat
+9. Waxmaster - Partystarter 3
+10. DJ Omega - Turn Around Lil Mama
+11. Raziek - 5 Fingerz
+12. Jonny MegaByte - Get To Werk
+13. Starski & Clutch - New Dance Show
+14. DJ Xed - Power Outage
+15. Starski & Clutch - Work Shake
+16. DJ Rashad - Electro Keyz
+17. DJ Xed - Freak
+18. Mister Ries - Tire A Camisa
+19. Kaptain Cadillac - Pop Dat Pussy
+20. DJ Dick Nixon - Shaft (Remix)
+21. DJ Surgeon - The Master Plan
+22. DJ Godfather - I'm Everywhere
+23. Technician - Pop That
+24. Mr. De' - Disco Guitar (Red Record Version)
+25. DJ Godfather - No Ass No Pass
+26. DJ Godfather - Let Em Buck (Dirty Mix)
+27. Non Stop DJs - The Raw
+28. Starski & Clutch - Michigan Ave.
+29. DJ Assault - Sweet Potato Pie
+30. DJ Deeon - Headhunters (Shake That Ass Mix)
+31. Mister Ries - Hit Hard
+32. N-Ter - Detroit Technology
+33. Morphogenetic - Crazy House
+
+</details>
+
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">Dance or Die! (2014)</summary>
+
+Tracklist:
+
 1. Intro
 2. Eruption - I Need Somebody
 3. DJ Scholar - Simple Mane
@@ -285,9 +395,100 @@ Tracklist:
 39. Vibes & Wishdokta - Feels Good
 40. DJ Isaac - Bad Dreams (Remix)
 41. Sirenia
+</details>
 
-## Fotarbeid
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">Straight Outta Kampen (2013)</summary>
+
 Tracklist:
+
+1. AS1 - Gearshift
+2. Exzakt - The Future of Electro
+3. V-MR - Burning Hill
+4. Bass Junkie - Myami Style
+5. The Sonarphonics - We're Gonna Get Ya
+6. Maggatron Crushing Crew - Miami's Rockin' Baby
+7. Hashim - Al Naafiysh (The Soul)
+8. Splack Pack - Let me C-Ya Work It
+9. Maggotron - Coming Back To Bass (DJ Madness & Dr. Boom's Back Trackin Bass Remix)
+10. Dynamik Bass System - Face Down Bass Up
+11. Danny D & DJ Wiz - Your Girlfriend's A Freak
+12. The Dogs - Dogga Mixx II
+13. Ontonio - Badd Minded
+14. Armando - 100% Of Dissin' You
+15. Robotman - Do Da Doo (Hard House Mix)
+16. Dopplereffekt - Superior Race
+17. I-F - I Do Because I Couldn't Care Less
+18. Model 500 - Night Drive (Time, Space, Transmat)
+19. Queen Latifah - Come Into My House (Zanzibar Mix)
+20. Dynamix Bass System - We Are Binary (But We Have Human Needs)
+21. Industrial Bass Machine - The Voice of World Control
+22. Illektrolab - The 6th Chakra
+23. Dynamix II - Pledge Your Allegiance 2 Electro Funk
+24. The Unknown DJ - Basstronic
+25. Egypt Ear Werk - Egypt Ear Werk (Egyptian Version)
+26. JDC - Jealous Girls
+27. Dynamix II - Sedona
+28. Faceless Mind - Safe Facelift
+29. Luke Eargoggle - Drinking And Smoking
+30. Legowelt vs. Orgue Electronique - Sail Into Danger
+</details>
+
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">Elektro med K (2013)</summary>
+
+Tracklist:
+1. Industrial Bass Machine - Devastate the Planet
+2. Boris Divider - Recombination
+3. Exzakt - sub sonic bass
+4. Kronos Device - Distress Signal (Vocal)
+5. The Dexorcist - Bassmatrix
+6. Kobol Electronics - Tidoc
+7. Vcs2600 - Deep Sea Robotics
+8. Luke eargoggle - Kut Me Loose
+9. Aux 88 - We Are The Future
+10. Underground Resistance - Sonic Destroyer
+11. Model 500 - Orbit
+12. Dj Funk - JB Trax
+13. Bass Junkie vs The Dexorcist - Robot Movement (Dexorcist's B-boy / Bass Edit)
+14. Splack Pack - Scrub Da Ground
+15. Dj Assault - Ass-N-Titties (Remix)
+16. Maggatron Crushing Crew - Bass It Y'All
+17. M.C. Gemini & Jealous J - Cut It Up Def
+18. Get It Boyz - Bass Obsession
+19. MC Cool Rock and MC Chaszy Chess - Boot the Booty (Instrumental)
+20. Los Hermanos Rodriguez - Gymnasty
+21. Raheem Hershell - Gotta Have The Pokey
+22. Raheem Hershell - The Tool
+22. Mr. Clavio - Tsjupa Tsjupa
+</details>
+
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">Trondheim Violenta (2013)</summary>
+
+Tracklist:
+
+</details>
+
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">Un Robot tra i morti viventi (2013)</summary>
+
+Tracklist:
+
+</details>
+
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">Minimix 050312 (2012)</summary>
+
+Tracklist:
+
+</details>
+
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">Fotarbeid (2011)</summary>
+
+Tracklist:
+
 1. DJ Godfather - Scooby Snacks
 2. DJ Godfather - Booty Perculate
 3. Non Stop DJs - Rock The Nation
@@ -342,9 +543,13 @@ Tracklist:
 52. DJ Nasty - Sounds of the City
 53. Leatherface - Bounce Drop
 54. DJ Slugo - Big Booty Hoes
+</details>
 
-## Boom Mix
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">Boom Mix (2011)</summary>
+
 Tracklist:
+
 1. Doc Nasty - Orange Telephones
 2. Doc Nasty - Miami to Rio
 3. Exzakt - City of Bass
@@ -370,3 +575,11 @@ Tracklist:
 23. Starski & Clutch - Players, Ballers, Rollers
 24. DJ Omega - Hey There
 25. DJ Nasty - The Chase Scene
+</details>
+
+<details style="border: 1px solid #aaa; background: #f9f9f9; border-left: 4px solid #777; box-shadow: 2px 2px #ddd; padding: 5px; margin: 4px;">
+<summary style="font-weight: bold; padding: 0.5em; cursor: pointer;">Mollenberg Mix (2009)</summary>
+
+Tracklist:
+
+</details>
