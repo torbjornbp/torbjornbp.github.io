@@ -72,6 +72,8 @@ blockquote {
   font-size: 0.8rem;
   line-height: 1.2rem;
 }
+button.menu:hover { color: white; background-color: royalblue; cursor: pointer; }
+button.menu { font-family: inherit; cursor: pointer; }
 
 /* lists */
 ul { list-style-type: square;}
@@ -124,13 +126,4 @@ thead, tfoot, tr:nth-child(even) { background: #eee; }
         overflow-x: auto;
         font-size: 0.8rem;
     }
-}
-
-button.menu:hover {
-  color: white;
-  background-color: royalblue;
-}
-
-button.menu {
-    font-family: inherit;
 }
