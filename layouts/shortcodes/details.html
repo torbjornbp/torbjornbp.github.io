@@ -1,6 +1,6 @@
 <details class="custom-details">
     <summary class="custom-summary">{{ .Get 0 }}</summary>
-    {{ .Inner | markdownify }}
+    {{ .Inner | .Page.RenderString }}
 </details>
 
 <style>
