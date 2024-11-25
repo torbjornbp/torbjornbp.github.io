@@ -11,97 +11,121 @@
   duration: 366
 
 - metaData:
+    artist: Romskip
+    title: Romskip Møllenberg (2010)
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/Robot%20Monster%20-%20Romskip%20Mllenberg.mp3
+  duration: 5038
+
+- metaData:
     artist: RM
     title: Cherokee '93
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Cherokee%20'93.mp3
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Cherokee%20%2793.mp3
   duration: 3276
 
 - metaData:
     artist: RM
-    title: Robotron Live 28.06.14
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Robotron%20Live%2028.06.14.mp3
-  duration: 3600
+    title: 4 da summa
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%204%20DA%20SUMMA.zip
+  duration: 1616
 
 - metaData:
     artist: RM
-    title: Robotron Live 27.07.14
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Robotron%20Live%2027.07.14.mp3
-  duration: 3600
+    title: Robotron Live (2014-06-28)
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20%40%20Robotron%2028.06.14.mp3
+  duration: 3676
 
 - metaData:
     artist: RM
-    title: Robotron Live 04.07.14
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Robotron%20Live%2004.07.14.mp3
-  duration: 3600
+    title: Robotron Live (2014-04-27)
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20%40%20Robotron%2027.07.14.mp3
+  duration: 3190
+
+- metaData:
+    artist: RM
+    title: Robotron Live (2014-07-04)
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20%40%20Robotron%2004.07.14.mp3
+  duration: 3772
+
+- metaData:
+    artist: RM
+    title: Robotron Live (2014-04-12)
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/rm%40ifm6%20120414.mp3
+  duration: 3802
 
 - metaData:
     artist: ATAL & VATAMAN
     title: Episode 2
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/ATAL%20%26%20VATAMAN%20-%20Episode%202.mp3
-  duration: 3600
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/ATAL%20%26%20VATAMAN%20SHOW%20-%20Episode%202.mp3
+  duration: 7324
 
 - metaData:
     artist: ATAL & VATAMAN
     title: Episode 1
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/ATAL%20%26%20VATAMAN%20-%20Episode%201.mp3
-  duration: 3600
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/ATAL%20%26%20VATAMAN%20SHOW%20-%20Episode%201.mp3
+  duration: 7336
 
 - metaData:
-    artist: Robot Monster
+    artist: RM
     title: Godzilla 313
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Godzilla%20313.mp3
-  duration: 3600
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/Robot%20Monster%20-%20Godzilla%20313.mp3
+  duration: 3529
 
 - metaData:
     artist: RM
     title: Dance or Die!
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Dance%20or%20Die!.mp3
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Dance%20or%20Die%21.mp3
   duration: 3600
 
 - metaData:
-    artist: Robot Monster
+    artist: RM
     title: Straight Outta Kampen
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Straight%20Outta%20Kampen.mp3
-  duration: 3600
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/Robot%20Monster%20-%20Straight%20Outta%20Kampen.mp3
+  duration: 3508
 
 - metaData:
-    artist: Robot Monster
+    artist: RM
     title: Elektro med K
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Elektro%20med%20K.mp3
-  duration: 3600
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/Robot%20Monster%20-%20Elektro%20med%20K.mp3
+  duration: 2999
 
 - metaData:
-    artist: Robot Monster
+    artist: RM
     title: Trondheim Violenta
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Trondheim%20Violenta.mp3
-  duration: 3600
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/Luca%20Canali%20-%20Trondheim%20Violenta.mp3
+  duration: 3137
 
 - metaData:
-    artist: Robot Monster
+    artist: RM
     title: Un Robot tra i morti viventi
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Un%20Robot%20tra%20i%20morti%20viventi.mp3
-  duration: 3600
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/Luca%20Canali%20-%20Un%20Robot%20tra%20i%20morti%20viventi.mp3
+  duration: 1855
 
 - metaData:
-    artist: Robot Monster
+    artist: RM
     title: Minimix 050312
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Minimix%20050312.mp3
-  duration: 3600
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/Romskip%20-%20Minimix%20050312.mp3
+  duration: 1326
 
 - metaData:
     artist: Romskip
     title: Fotarbeid
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Fotarbeid.mp3
-  duration: 3600
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/Romskip%20-%20Fotarbeid.mp3
+  duration: 3467
 
 - metaData:
-    artist: Robot Monster
+    artist: RM
     title: Boom Mix
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Boom%20Mix.mp3
-  duration: 3600
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/Romskip%20-%20Boom%20Mix%20%28uten%20intro%29.mp3
+  duration: 3335
 
 - metaData:
-    artist: Robot Monster
+    artist: RM
     title: Mollenberg Mix
-  url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Mollenberg%20Mix.mp3
-  duration: 3600
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/Robot.Monster.-.Mollenberg.Mix.2009.mp3
+  duration: 3338
+
+- metaData:
+    artist: RM
+    title: Nydisko-House-Technoviking 2009-10-09
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/Robot%20Monster%20-%20Nydisko-House-Technoviking%20091009.mp3
+  duration: 2700

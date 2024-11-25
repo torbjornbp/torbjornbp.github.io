@@ -1,5 +1,6 @@
 ---
 title: "Mixtape backup"
+date: 2024-11-25
 ---
 
 I'm tired of paying soundcloud for hosting files. Slowly moving all my stuff here.
@@ -9,6 +10,10 @@ I'm tired of paying soundcloud for hosting files. Slowly moving all my stuff her
 <br>
 
 {{% details "HOLMGANG 96 (2019)" %}}
+
+![HOLMGANG 96 cover](holmgang96.jpg)
+
+A mix of early gabber/hardcore/turbo music that's been on my mind for two decades.
 
 Tracklist:
 1. Public Domain - The Puritan (The Voice Mix)
@@ -41,7 +46,11 @@ Tracklist:
 
 {{% details "Cherokee '93 (2016)" %}}
 
-Extended 100 min cut available on tape + download here: rmtapes.bandcamp.com
+![Cherokee '93 cover](cherokee93.png)
+
+90s southern rap, mostly memphis stuff.
+
+Extended 100 min cut available on ~~tape~~ (sold out) + download here: [rmtapes.bandcamp.com](https://rmtapes.bandcamp.com)
 
 MUSIC FOR CARS
 
@@ -64,21 +73,48 @@ MUSIC FOR CARS
 5. DJ SOUND - RIDGECREST KILLAZ
 6. BLOODS AND CRIPS - STEADY DIPPIN
 7. SKIMASK TROOPAZ - GET YO WIG SPLIT
+
+![Cherokee '93 tapes](cherokee93_2.jpg)
+{{% /details %}}
+
+{{% details "4 da summa (2018)" %}}
+![4 da summa cover](4dasumma.jpg)
+
+Tracklist:
+1. INTRO
+2. LIL SLIM - TURN IT UP
+3. LADY BEE - 93 CHEROKEE
+4. 187 FAMILY - PLASTIC GLOCK
+5. BUCKSHOT - STRAPPED WITH THEM THANGZ
+6. CRIMINAL MANNE - IT'S CRIMINAL MANNE
+7. THE HOLOCAUST CLICK - MAFIA STYLE
+8. LO DOWN & THE UNIFIED FAMILY - L. O. D.
+DJ BIG TIM - TRYNA CROSS A KILLA
+OUTRO
 {{% /details %}}
 
 {{% details "Robotron Live 28.06.14 (2014)" %}}
+Mixed live on IFM6/Radio free robotron.
 {{% /details %}}
 
 {{% details "Robotron Live 27.07.14 (2014)" %}}
+Mixed live on IFM6/Radio free robotron.
 {{% /details %}}
 
 {{% details "Robotron Live 04.07.14 (2014)" %}}
+Mixed live on IFM6/Radio free robotron.
 {{% /details %}}
 
 {{% details "ATAL & VATAMAN Show - Episode 2 (2014)" %}}
+![ATAL & VATAMAN Show - Episode 2 cover](atalvataman2.jpeg)
+
+Recorded in the summer of 2014 at b2b at sjur tings apartment.
 {{% /details %}}
 
 {{% details "ATAL & VATAMAN Show - Episode 1 (2014)" %}}
+![ATAL & VATAMAN Show - Episode 1 cover](atalvataman1.jpg)
+
+Recorded in the summer of 2014 at b2b at sjur tings apartment.
 {{% /details %}}
 
 {{% details "Godzilla 313 (2014)" %}}
@@ -120,6 +156,10 @@ Tracklist:
 {{% /details %}}
 
 {{% details "Dance or Die! (2014)" %}}
+
+![Dance or Die! cover](danceordie.jpg)
+
+All kinds of stuff. Ghettotek, gabber, happy hardcore, electro, raptor house, footwork. Let's go!
 
 Tracklist:
 1. Intro
@@ -168,7 +208,9 @@ Tracklist:
 41. Sirenia
 {{% /details %}}
 
-{{% details "Straight Outta Kampen (2013)" %}}
+{{% details "Straight Outta Kampen (2009)" %}}
+
+Electro, miami bass, techno
 
 Tracklist:
 
@@ -204,7 +246,11 @@ Tracklist:
 30. Legowelt vs. Orgue Electronique - Sail Into Danger
 {{% /details %}}
 
-{{% details "Elektro med K (2013)" %}}
+{{% details "Elektro med K (2008)" %}}
+
+![Elektro med K cover](elektromedk.jpg)
+
+Electro, techno
 
 Tracklist:
 
@@ -234,15 +280,18 @@ Tracklist:
 {{% /details %}}
 
 {{% details "Trondheim Violenta (2013)" %}}
+Italian poliziotteschi soundtracks.
 {{% /details %}}
 
 {{% details "Un Robot tra i morti viventi (2013)" %}}
+Italian horror soundtracks.
 {{% /details %}}
 
 {{% details "Minimix 050312 (2012)" %}}
 {{% /details %}}
 
 {{% details "Fotarbeid (2011)" %}}
+Juke, jit, footwork stuff.
 
 Tracklist:
 1. DJ Godfather - Scooby Snacks
@@ -303,6 +352,8 @@ Tracklist:
 
 {{% details "Boom Mix (2011)" %}}
 
+Electro and bass music. Make your car rattle.
+
 Tracklist:
 1. Doc Nasty - Orange Telephones
 2. Doc Nasty - Miami to Rio
@@ -329,6 +380,14 @@ Tracklist:
 23. Starski & Clutch - Players, Ballers, Rollers
 24. DJ Omega - Hey There
 25. DJ Nasty - The Chase Scene
+{{% /details %}}
+
+{{% details "Satanisten in Deutschland" %}}
+Video and audio oscillators blasting through a reverb pedal.
+{{% /details %}}
+
+{{% details "Romskip Møllenberg (2010)" %}}
+Spaced out stuff. Nic Raicevic, Ananda Shankar, Runes order etc.
 {{% /details %}}
 
 {{% details "Mollenberg Mix (2009)" %}}
