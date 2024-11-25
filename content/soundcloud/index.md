@@ -117,7 +117,7 @@ Recorded in the summer of 2014 at b2b at sjur tings apartment.
 Recorded in the summer of 2014 at b2b at sjur tings apartment.
 {{% /details %}}
 
-{{% details "Godzilla 313 (2014)" %}}
+{{% details "Godzilla 313 (2009)" %}}
 
 Tracklist:
 1. DJ Slugo - Godzilla (DJ Nasty Remix)
@@ -279,11 +279,11 @@ Tracklist:
 22. Mr. Clavio - Tsjupa Tsjupa
 {{% /details %}}
 
-{{% details "Trondheim Violenta (2013)" %}}
+{{% details "Trondheim Violenta (2008)" %}}
 Italian poliziotteschi soundtracks.
 {{% /details %}}
 
-{{% details "Un Robot tra i morti viventi (2013)" %}}
+{{% details "Un Robot tra i morti viventi (2009)" %}}
 Italian horror soundtracks.
 {{% /details %}}
 
@@ -382,7 +382,7 @@ Tracklist:
 25. DJ Nasty - The Chase Scene
 {{% /details %}}
 
-{{% details "Satanisten in Deutschland" %}}
+{{% details "Satanisten in Deutschland (2016)" %}}
 Video and audio oscillators blasting through a reverb pedal.
 {{% /details %}}
 
