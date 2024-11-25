@@ -10,7 +10,7 @@
 {{- $caption := .Title -}}
 {{- $src := .Destination -}}
 {{- $imgBd5 := md5 $src -}}
-{{- $dataSzes := "100vw" -}}
+{{- $dataSzes := "800px" -}}
 {{- $holder := "GIP" -}}
 {{- $hint := "photo" -}}
 {{- $filter := "box" -}}
@@ -19,26 +19,43 @@
     {{ with .Page.Resources.GetMatch $src }}
         {{- $divClass := print "relative bigImgDiv imgB-" $imgBd5 "-" $holder -}}
         {{- $imgRsc := . -}}
-        {{- $actualImg := $imgRsc.Process (print "resize 800x jpg " $filter) -}}
+        {{- $actualImg := cond (gt $imgRsc.Width 800) 
+            ($imgRsc.Process (print "resize 800x jpg " $filter))
+            $imgRsc -}}
         <div class="{{ $divClass }}" data-pagefind-ignore>
             <picture data-pagefind-ignore>
                 <source type="image/webp" srcset="
                 {{- with $respSizes -}}
                     {{- range $i, $e := . -}}
-                        {{- if ge $imgRsc.Width . -}}
-                            {{- if $i }}, {{ end -}}{{- ($imgRsc.Process (print "resize " . "x webp " $hint " " $filter) ).RelPermalink }} {{ . }}w
+                        {{- if ge $imgRsc.Width (int .) -}}
+                            {{- if $i }}, {{ end -}}
+                            {{- if lt $imgRsc.Width 800 -}}
+                                {{- $imgRsc.RelPermalink }} {{ $imgRsc.Width }}w
+                            {{- else -}}
+                                {{- (cond (gt $imgRsc.Width .) ($imgRsc.Process (print "resize " . "x webp " $hint " " $filter)) $imgRsc).RelPermalink }} {{ . }}w
+                            {{- end -}}
                         {{- end -}}
                     {{- end -}}
+                {{- else -}}
+                    {{- $imgRsc.RelPermalink }} {{ $imgRsc.Width }}w
                 {{- end -}}" sizes="{{ $dataSzes }}" />
                 <source type="image/jpeg" srcset="
                 {{- with $respSizes -}}
                     {{- range $i, $e := . -}}
                         {{- if ge $imgRsc.Width . -}}
-                            {{- if $i }}, {{ end -}}{{- ($imgRsc.Process (print "resize " . "x jpg " $filter) ).RelPermalink }} {{ . }}w
+                            {{- if $i }}, {{ end -}}{{- (cond (gt $imgRsc.Width .) ($imgRsc.Process (print "resize " . "x jpg " $filter)) $imgRsc).RelPermalink }} {{ . }}w
                         {{- end -}}
                     {{- end -}}
                 {{- end -}}" sizes="{{ $dataSzes }}" />
-                <img class="{{ $imgClass }}" src="{{ $actualImg.RelPermalink }}" width="{{ $imgRsc.Width }}" height="{{ $imgRsc.Height }}" alt="{{ $alt }}" title="{{ $alt }}" loading="lazy" fetchpriority="high" data-pagefind-ignore />
+                <img class="{{ $imgClass }}" 
+                    src="{{ $actualImg.RelPermalink }}" 
+                    width="{{ $imgRsc.Width }}" 
+                    height="{{ $imgRsc.Height }}" 
+                    alt="{{ $alt }}" 
+                    title="{{ $alt }}" 
+                    loading="lazy" 
+                    fetchpriority="high" 
+                    data-pagefind-ignore />
             </picture>
         </div>
     {{- end -}}

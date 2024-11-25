@@ -87,20 +87,34 @@ ul li li::before {
   left: -1.5em;
 }
 
-/* figure and captions */
-.responsive-image img {
-  width: 100%;
-  height: auto;
-}
+/* Images and Figures */
 figure { 
-  position: relative;
-  margin: 0;
+    position: relative;
+    margin: 0;
 }
+
+/* Captions for both figure shortcode and image render hook */
 figure figcaption, .imgCaption {
-  color: black;
-  text-align: right;
-  padding: 10px;
-  font-size: 0.8rem;
+    color: black;
+    text-align: right;
+    padding: 10px;
+    font-size: 0.8rem;
+}
+
+/* Responsive image containers */
+.bigImgDiv {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.bigImgDiv picture {
+    max-width: fit-content;
+}
+
+.bigImgDiv img {
+    height: auto;
+    max-width: 100%;
 }
 
 /* table */
