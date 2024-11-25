@@ -157,7 +157,7 @@ Tracklist:
 
 {{% details "Dance or Die! (2014)" %}}
 
-![Dance or Die! cover](danceordie.jpg)
+![Dance or Die! cover](danceordie.png)
 
 All kinds of stuff. Ghettotek, gabber, happy hardcore, electro, raptor house, footwork. Let's go!
 
