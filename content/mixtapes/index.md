@@ -1,5 +1,6 @@
 ---
 title: "Mixtapes"
+description: "Mixtapes made through the years"
 aliases: "mixtapes.html"
 ---
 
