@@ -15,9 +15,44 @@
         <tr>
             <td>
                 {{ if .metaData.cover }}
-                    <img src="{{ .metaData.cover }}" alt="{{ .metaData.title }}">
+                    {{ $src := .metaData.cover }}
+                    {{ $title := .metaData.title }}
+                    {{ if $.Page.Resources.GetMatch $src }}
+                        {{ with $.Page.Resources.GetMatch $src }}
+                            {{ $imgRsc := . }}
+                            {{ $actualImg := cond (gt $imgRsc.Width 800) 
+                                ($imgRsc.Process (print "resize 800x jpg box"))
+                                $imgRsc }}
+                            <a href="{{ $imgRsc.RelPermalink }}" target="_blank">
+                                <picture>
+                                    <source type="image/webp" srcset="
+                                        {{- if ge $imgRsc.Width 320 }}{{ ($imgRsc.Process "resize 320x webp photo box").RelPermalink }} 320w{{ end }}
+                                        {{- if ge $imgRsc.Width 640 }}, {{ ($imgRsc.Process "resize 640x webp photo box").RelPermalink }} 640w{{ end }}
+                                        {{- if ge $imgRsc.Width 800 }}, {{ ($imgRsc.Process "resize 800x webp photo box").RelPermalink }} 800w{{ end }}"
+                                        sizes="(max-width: 250px) 100vw, 250px">
+                                    <source type="image/jpeg" srcset="
+                                        {{- if ge $imgRsc.Width 320 }}{{ ($imgRsc.Process "resize 320x jpg box").RelPermalink }} 320w{{ end }}
+                                        {{- if ge $imgRsc.Width 640 }}, {{ ($imgRsc.Process "resize 640x jpg box").RelPermalink }} 640w{{ end }}
+                                        {{- if ge $imgRsc.Width 800 }}, {{ ($imgRsc.Process "resize 800x jpg box").RelPermalink }} 800w{{ end }}"
+                                        sizes="(max-width: 250px) 100vw, 250px">
+                                    <img 
+                                        class="w-full h-auto shadow animate-fade"
+                                        src="{{ $actualImg.RelPermalink }}"
+                                        width="{{ $imgRsc.Width }}"
+                                        height="{{ $imgRsc.Height }}"
+                                        alt="{{ $title }}"
+                                        loading="lazy"
+                                        fetchpriority="high">
+                                </picture>
+                            </a>
+                        {{ end }}
+                    {{ else }}
+                        <a href="{{ $src }}" target="_blank">
+                            <img src="{{ $src }}" alt="{{ $title }}" class="w-full h-auto" loading="lazy">
+                        </a>
+                    {{ end }}
                 {{ else }}
-                    <img src="rm.jpg" alt="{{ .metaData.title }}">
+                    <img src="rm.jpg" alt="{{ .metaData.title }}" class="w-full h-auto" loading="lazy">
                 {{ end }}
             </td>
             <td>{{ .metaData.title }}</td>
@@ -157,5 +192,24 @@ function sortTable(n) {
 
 #musicTable th.sortable:hover {
     background-color: #f5f5f5;
+}
+
+#musicTable td:first-child a {
+    display: block;
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    cursor: zoom-in;
+}
+
+#musicTable td:first-child a:hover {
+    background-color: transparent;
+}
+
+#musicTable td:first-child a:hover img {
+    opacity: 0.8;
+    transition: opacity 0.2s ease-in-out;
 }
 </style> 
