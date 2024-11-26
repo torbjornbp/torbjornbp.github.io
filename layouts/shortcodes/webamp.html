@@ -5,7 +5,7 @@
   </button>
 </div>
 
-<div id="app" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; display: none;">
+<div id="app" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; display: none; touch-action: manipulation;">
   <!-- Webamp will attempt to center itself within this div -->
 </div>
 
@@ -54,61 +54,13 @@
       }
     });
     
-    const appElement = document.getElementById("app");
-    appElement.style.display = "block";
-
-    // Add touch event handlers
-    let isDragging = false;
-    let currentX;
-    let currentY;
-    let initialX;
-    let initialY;
-    let xOffset = 0;
-    let yOffset = 0;
-
-    function handleTouchStart(e) {
-      initialX = e.touches[0].clientX - xOffset;
-      initialY = e.touches[0].clientY - yOffset;
-      
-      if (e.target.closest(".window")) {
-        isDragging = true;
-      }
-    }
-
-    function handleTouchMove(e) {
-      if (isDragging) {
-        e.preventDefault();
-        currentX = e.touches[0].clientX - initialX;
-        currentY = e.touches[0].clientY - initialY;
-        xOffset = currentX;
-        yOffset = currentY;
-        
-        const windows = document.querySelectorAll(".window");
-        windows.forEach(window => {
-          window.style.transform = `translate(${currentX}px, ${currentY}px)`;
-        });
-      }
-    }
-
-    function handleTouchEnd() {
-      isDragging = false;
-    }
-
-    webampInstance.renderWhenReady(appElement).then(() => {
-      // Add touch event listeners
-      appElement.addEventListener("touchstart", handleTouchStart, false);
-      appElement.addEventListener("touchmove", handleTouchMove, false);
-      appElement.addEventListener("touchend", handleTouchEnd, false);
-      
+    document.getElementById("app").style.display = "block";
+    webampInstance.renderWhenReady(document.getElementById("app")).then(() => {
       // Minimize (shade) the equalizer
       webampInstance.store.dispatch({ type: 'TOGGLE_WINDOW_SHADE_MODE', windowId: 'equalizer' });
       
       webampInstance.onClose(() => {
-        appElement.style.display = "none";
-        // Remove touch event listeners
-        appElement.removeEventListener("touchstart", handleTouchStart);
-        appElement.removeEventListener("touchmove", handleTouchMove);
-        appElement.removeEventListener("touchend", handleTouchEnd);
+        document.getElementById("app").style.display = "none";
         webampInstance.dispose();
         webampInstance = null;
       });
