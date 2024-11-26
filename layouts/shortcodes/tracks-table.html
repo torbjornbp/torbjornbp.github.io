@@ -20,26 +20,24 @@
                     {{ if $.Page.Resources.GetMatch $src }}
                         {{ with $.Page.Resources.GetMatch $src }}
                             {{ $imgRsc := . }}
-                            {{ $actualImg := cond (gt $imgRsc.Width 800) 
-                                ($imgRsc.Process (print "resize 800x jpg box"))
+                            {{ $actualImg := cond (gt $imgRsc.Width 250) 
+                                ($imgRsc.Process (print "resize 250x jpg box"))
                                 $imgRsc }}
                             <a href="{{ $imgRsc.RelPermalink }}" target="_blank">
                                 <picture>
                                     <source type="image/webp" srcset="
-                                        {{- if ge $imgRsc.Width 320 }}{{ ($imgRsc.Process "resize 320x webp photo box").RelPermalink }} 320w{{ end }}
-                                        {{- if ge $imgRsc.Width 640 }}, {{ ($imgRsc.Process "resize 640x webp photo box").RelPermalink }} 640w{{ end }}
-                                        {{- if ge $imgRsc.Width 800 }}, {{ ($imgRsc.Process "resize 800x webp photo box").RelPermalink }} 800w{{ end }}"
+                                        {{- if ge $imgRsc.Width 125 }}{{ ($imgRsc.Process "resize 125x webp photo box").RelPermalink }} 125w{{ end }}
+                                        {{- if ge $imgRsc.Width 250 }}, {{ ($imgRsc.Process "resize 250x webp photo box").RelPermalink }} 250w{{ end }}"
                                         sizes="(max-width: 250px) 100vw, 250px">
                                     <source type="image/jpeg" srcset="
-                                        {{- if ge $imgRsc.Width 320 }}{{ ($imgRsc.Process "resize 320x jpg box").RelPermalink }} 320w{{ end }}
-                                        {{- if ge $imgRsc.Width 640 }}, {{ ($imgRsc.Process "resize 640x jpg box").RelPermalink }} 640w{{ end }}
-                                        {{- if ge $imgRsc.Width 800 }}, {{ ($imgRsc.Process "resize 800x jpg box").RelPermalink }} 800w{{ end }}"
+                                        {{- if ge $imgRsc.Width 125 }}{{ ($imgRsc.Process "resize 125x jpg box").RelPermalink }} 125w{{ end }}
+                                        {{- if ge $imgRsc.Width 250 }}, {{ ($imgRsc.Process "resize 250x jpg box").RelPermalink }} 250w{{ end }}"
                                         sizes="(max-width: 250px) 100vw, 250px">
                                     <img 
                                         class="w-full h-auto shadow animate-fade"
                                         src="{{ $actualImg.RelPermalink }}"
-                                        width="{{ $imgRsc.Width }}"
-                                        height="{{ $imgRsc.Height }}"
+                                        width="{{ $actualImg.Width }}"
+                                        height="{{ $actualImg.Height }}"
                                         alt="{{ $title }}"
                                         loading="lazy"
                                         fetchpriority="high">
