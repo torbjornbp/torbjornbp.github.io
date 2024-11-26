@@ -24,15 +24,17 @@
             <td>{{ div .duration 60 }}:{{ printf "%02d" (mod .duration 60) }}</td>
             <td>{{ .metaData.year }}</td>
             <td>
-                {{ if .metaData.tracklist }}
+                {{ if or .metaData.tracklist .metaData.description }}
                 <details>
                     <summary>View details</summary>
                     {{ if .metaData.description }}<strong>{{ .metaData.description }}</strong>{{ end }}
+                    {{ if .metaData.tracklist }}
                     <ol>
                         {{ range .metaData.tracklist }}
                             <li>{{ if .artist }}{{ .artist }} - {{ end }}{{ .title }}</li>
                         {{ end }}
                     </ol>
+                    {{ end }}
                 </details>
                 {{ end }}
             </td>
@@ -125,6 +127,10 @@ function sortTable(n) {
     max-width: 250px;
     width: 100%;
     height: auto;
+}
+
+#musicTable td {
+    vertical-align: top;
 }
 
 #musicTable td:first-child {
