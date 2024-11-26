@@ -7,7 +7,6 @@
             <th class="sortable" onclick="sortTable(1)">Artist - Title</th>
             <th>Duration</th>
             <th class="sortable" onclick="sortTable(3)">Year</th>
-            <th>Description</th>
             <th>Tracklist</th>
         </tr>
     </thead>
@@ -24,7 +23,6 @@
             <td>{{ .metaData.artist }} - {{ .metaData.title }}</td>
             <td>{{ div .duration 60 }}:{{ printf "%02d" (mod .duration 60) }}</td>
             <td>{{ .metaData.year }}</td>
-            <td>{{ .metaData.description }}</td>
             <td>
                 {{ if .metaData.tracklist }}
                 <details>
