@@ -2,7 +2,6 @@
     artist: RM
     title: HOLMGANG 96
     year: 2019
-    genre: "Gabber/Hardcore"
     description: "A mix of early gabber/hardcore/turbo music that's been on my mind for two decades."
     cover: holmgang96.jpg
     tracklist:
@@ -60,12 +59,11 @@
         title: "Choice Chip"
   url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20HOLMGANG%2096.mp3
   duration: 3584
-
 - metaData:
     artist: RM
     title: "4 da summa"
     year: 2018
-    genre: "Southern Rap"
+    description: "Southern Rap"
     cover: 4dasumma.jpg
     tracklist:
       - artist: ""
@@ -90,21 +88,18 @@
         title: "OUTRO"
   url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%204%20DA%20SUMMA%20-%2001%20Side%20A.mp3
   duration: 1616
-
 - metaData:
     artist: Romskip
     title: "satanisten in duitsland"
     year: 2016
-    genre: "Experimental"
+    cover: satanisteninduitsland.jpg
     description: "Video and audio oscillators blasting through a reverb pedal."
   url: https://filehost.s3.nl-ams.scw.cloud/mix/satanisteninduitsland.mp3
   duration: 366
-
 - metaData:
     artist: RM
     title: "Cherokee '93"
     year: 2016
-    genre: "Southern Rap"
     description: "90s southern rap, mostly memphis stuff"
     cover: cherokee93.png
     tracklist:
@@ -138,12 +133,10 @@
         title: "GET YO WIG SPLIT"
   url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Cherokee%20%2793.mp3
   duration: 3276
-
 - metaData:
     artist: RM
     title: "Dance or Die!"
     year: 2014
-    genre: "Mixed"
     description: "All kinds of stuff. Ghettotek, gabber, happy hardcore, electro, raptor house, footwork. Let's go!"
     cover: danceordie.png
     tracklist:
@@ -237,67 +230,61 @@
         title: "Sirenia"
   url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20-%20Dance%20or%20Die%21.mp3
   duration: 3600
-
 - metaData:
     artist: "ATAL & VATAMAN"
     title: "Episode 2"
     year: 2014
-    genre: "Live Mix"
     description: "Recorded in the summer of 2014 at b2b at sjur tings apartment."
     cover: atalvataman2.jpeg
   url: https://filehost.s3.nl-ams.scw.cloud/mix/ATAL%20%26%20VATAMAN%20SHOW%20-%20Episode%202.mp3
   duration: 7324
-
 - metaData:
     artist: "ATAL & VATAMAN"
     title: "Episode 1"
     year: 2014
-    genre: "Live Mix"
     description: "Recorded in the summer of 2014 at b2b at sjur tings apartment."
     cover: atalvataman1.jpg
   url: https://filehost.s3.nl-ams.scw.cloud/mix/ATAL%20%26%20VATAMAN%20SHOW%20-%20Episode%201.mp3
   duration: 7336
-
 - metaData:
     artist: RM
     title: "Robotron Live (2014-06-28)"
     year: 2014
-    genre: "Live Mix"
     description: "Mixed live on IFM6/Radio free robotron."
   url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20%40%20Robotron%2028.06.14.mp3
   duration: 3676
-
 - metaData:
     artist: RM
     title: "Robotron Live (2014-07-27)"
     year: 2014
-    genre: "Live Mix"
     description: "Mixed live on IFM6/Radio free robotron."
   url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20%40%20Robotron%2027.07.14.mp3
   duration: 3190
-
 - metaData:
     artist: RM
     title: "Robotron Live (2014-07-04)"
     year: 2014
-    genre: "Live Mix"
     description: "Mixed live on IFM6/Radio free robotron."
   url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20%40%20Robotron%2004.07.14.mp3
   duration: 3772
-
+- metaData:
+    artist: Romskip
+    title: "Robotron live (2014-04-12)"
+    year: 2014
+    description:
+  url: https://filehost.s3.nl-ams.scw.cloud/mix/rm%40ifm6%20120414.mp3
+  duration: 2802
 - metaData:
     artist: RM
     title: "Minimix 050312"
     year: 2012
-    genre: "Mixed"
+    description: ""
   url: https://filehost.s3.nl-ams.scw.cloud/mix/Romskip%20-%20Minimix%20050312.mp3
   duration: 1326
-
 - metaData:
     artist: Romskip
     title: "Fotarbeid"
     year: 2011
-    genre: "Juke/Footwork"
     description: "Juke, jit, footwork stuff."
     cover: fotarbeid.jpg
     tracklist:
@@ -411,12 +398,10 @@
         title: "Big Booty Hoes"
   url: https://filehost.s3.nl-ams.scw.cloud/mix/Romskip%20-%20Fotarbeid.mp3
   duration: 3467
-
 - metaData:
     artist: RM
     title: "Boom Mix"
     year: 2011
-    genre: "Electro/Bass"
     description: "Electro and bass music. Make your car rattle."
     tracklist:
       - artist: "Doc Nasty"
@@ -471,21 +456,19 @@
         title: "The Chase Scene"
   url: https://filehost.s3.nl-ams.scw.cloud/mix/Romskip%20-%20Boom%20Mix%20%28uten%20intro%29.mp3
   duration: 3335
-
 - metaData:
     artist: Romskip
     title: "Romskip Møllenberg"
     year: 2010
-    genre: "Experimental"
     description: "Spaced out stuff. Nic Raicevic, Ananda Shankar, Runes order etc."
   url: https://filehost.s3.nl-ams.scw.cloud/mix/Robot%20Monster%20-%20Romskip%20Mllenberg.mp3
   duration: 5038
-
 - metaData:
     artist: RM
     title: "Godzilla 313"
     year: 2009
-    genre: "Electro/Ghettotech. Lot's of juketrax"
+    description: "Electro/Ghettotech. Lot's of juketrax"
+    cover: godzilla313.jpg
     tracklist:
       - artist: "DJ Slugo"
         title: "Godzilla (DJ Nasty Remix)"
@@ -555,13 +538,13 @@
         title: "Crazy House"
   url: https://filehost.s3.nl-ams.scw.cloud/mix/Robot%20Monster%20-%20Godzilla%20313.mp3
   duration: 3529
-
 - metaData:
     artist: RM
     title: "Straight Outta Kampen"
     year: 2009
-    genre: "Electro/Miami Bass/Techno"
+    description: "Electro/Miami Bass/Techno"
     description: "Electro, miami bass, techno"
+    cover: straightouttakampen.jpg
     tracklist:
       - artist: "AS1"
         title: "Gearshift"
@@ -625,35 +608,30 @@
         title: "Sail Into Danger"
   url: https://filehost.s3.nl-ams.scw.cloud/mix/Robot%20Monster%20-%20Straight%20Outta%20Kampen.mp3
   duration: 3508
-
 - metaData:
     artist: RM
     title: "Un Robot tra i morti viventi"
     year: 2009
-    genre: "Soundtrack"
+    description: "Soundtrack"
     description: "Italian horror soundtracks."
   url: https://filehost.s3.nl-ams.scw.cloud/mix/Luca%20Canali%20-%20Un%20Robot%20tra%20i%20morti%20viventi.mp3
   duration: 1855
-
 - metaData:
     artist: RM
     title: "Mollenberg Mix"
     year: 2009
   url: https://filehost.s3.nl-ams.scw.cloud/mix/Robot.Monster.-.Mollenberg.Mix.2009.mp3
   duration: 3338
-
 - metaData:
     artist: RM
     title: "Nydisko-House-Technoviking 2009-10-09"
     year: 2009
   url: https://filehost.s3.nl-ams.scw.cloud/mix/Robot%20Monster%20-%20Nydisko-House-Technoviking%20091009.mp3
   duration: 2700
-
 - metaData:
     artist: RM
     title: "Elektro med K"
     year: 2008
-    genre: "Electro/Techno"
     description: "Electro, techno"
     cover: elektromedk.jpg
     tracklist:
@@ -705,12 +683,10 @@
         title: "Tsjupa Tsjupa"
   url: https://filehost.s3.nl-ams.scw.cloud/mix/Robot%20Monster%20-%20Elektro%20med%20K.mp3
   duration: 2999
-
 - metaData:
     artist: RM
     title: "Trondheim Violenta"
     year: 2008
-    genre: "Soundtrack"
     description: "Italian poliziotteschi soundtracks."
   url: https://filehost.s3.nl-ams.scw.cloud/mix/Luca%20Canali%20-%20Trondheim%20Violenta.mp3
   duration: 3137
