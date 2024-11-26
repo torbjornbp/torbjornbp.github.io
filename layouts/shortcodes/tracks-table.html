@@ -4,8 +4,8 @@
     <thead>
         <tr>
             <th>Cover</th>
-            <th class="sortable" onclick="sortTable(1)">Artist - Title</th>
-            <th>Duration</th>
+            <th class="sortable" onclick="sortTable(1)">Title</th>
+            <th class="sortable" onclick="sortTable(2)">Duration</th>
             <th class="sortable" onclick="sortTable(3)">Year</th>
             <th>Tracklist</th>
         </tr>
@@ -20,7 +20,7 @@
                     <img src="rm.jpg" alt="{{ .metaData.title }}">
                 {{ end }}
             </td>
-            <td>{{ .metaData.artist }} - {{ .metaData.title }}</td>
+            <td>{{ .metaData.title }}</td>
             <td>{{ div .duration 60 }}:{{ printf "%02d" (mod .duration 60) }}</td>
             <td>{{ .metaData.year }}</td>
             <td>
@@ -41,17 +41,100 @@
 </table>
 
 <script>
+function timeToSeconds(timeStr) {
+    if (!timeStr) return 0;
+    const parts = timeStr.split(':');
+    if (parts.length === 2) {
+        return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+    }
+    if (parts.length === 3) {
+        return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+    }
+    return 0;
+}
+
 function sortTable(n) {
     var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
     table = document.getElementById("musicTable");
     switching = true;
     dir = "asc";
     
-    // ... existing sort function code ...
+    while (switching) {
+        switching = false;
+        rows = table.getElementsByTagName("TR");
+        
+        for (i = 1; i < (rows.length - 1); i++) {
+            shouldSwitch = false;
+            
+            x = rows[i].getElementsByTagName("TD")[n];
+            y = rows[i + 1].getElementsByTagName("TD")[n];
+            
+            if (!x || !y) continue;
+            
+            let xValue, yValue;
+            
+            // Special handling based on column type
+            if (n === 0) {
+                // Image column - sort by alt text or src
+                xValue = x.getElementsByTagName("img")[0]?.alt || x.getElementsByTagName("img")[0]?.src || "";
+                yValue = y.getElementsByTagName("img")[0]?.alt || y.getElementsByTagName("img")[0]?.src || "";
+            } else if (n === 2) {  // Duration column
+                // Convert time strings to seconds for comparison
+                xValue = timeToSeconds(x.textContent.trim());
+                yValue = timeToSeconds(y.textContent.trim());
+            } else {
+                // Default text sorting
+                xValue = x.textContent.toLowerCase();
+                yValue = y.textContent.toLowerCase();
+            }
+            
+            if (dir == "asc") {
+                if (n === 2) {  // Duration column - numeric comparison
+                    shouldSwitch = xValue > yValue;
+                } else {  // String comparison
+                    shouldSwitch = xValue > yValue;
+                }
+            } else {
+                if (n === 2) {  // Duration column - numeric comparison
+                    shouldSwitch = xValue < yValue;
+                } else {  // String comparison
+                    shouldSwitch = xValue < yValue;
+                }
+            }
+            
+            if (shouldSwitch) break;
+        }
+        
+        if (shouldSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+            switchcount++;
+        } else {
+            if (switchcount == 0 && dir == "asc") {
+                dir = "desc";
+                switching = true;
+            }
+        }
+    }
 }
 </script>
 
 <style>
+#musicTable img {
+    max-width: 250px;
+    width: 100%;
+    height: auto;
+}
+
+#musicTable td:first-child {
+    width: 25%;
+    max-width: 250px;
+}
+
+#musicTable td:last-child {
+    width: 40%;
+}
+
 #musicTable th.sortable {
     cursor: pointer;
     position: relative;
