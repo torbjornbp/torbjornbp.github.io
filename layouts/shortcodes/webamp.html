@@ -5,7 +5,7 @@
   </button>
 </div>
 
-<div id="app" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; display: none; touch-action: none; -webkit-user-select: none; user-select: none;">
+<div id="app" style="height: 100vh; position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: none;">
   <!-- Webamp will attempt to center itself within this div -->
 </div>
 
@@ -54,20 +54,22 @@
       }
     };
 
-    if ('ontouchstart' in window) {
-      webampOptions.zIndex = 1000;
-      webampOptions.enableHotkeys = false;
-    }
-
     webampInstance = new Webamp(webampOptions);
     
-    document.getElementById("app").style.display = "block";
-    webampInstance.renderWhenReady(document.getElementById("app")).then(() => {
+    const app = document.getElementById("app");
+    app.style.display = "block";
+    
+    // Ensure mobile Safari plays nice with touch events
+    app.addEventListener('touchmove', function(e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    webampInstance.renderWhenReady(app).then(() => {
       // Minimize (shade) the equalizer
       webampInstance.store.dispatch({ type: 'TOGGLE_WINDOW_SHADE_MODE', windowId: 'equalizer' });
       
       webampInstance.onClose(() => {
-        document.getElementById("app").style.display = "none";
+        app.style.display = "none";
         webampInstance.dispose();
         webampInstance = null;
       });
