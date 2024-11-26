@@ -1,5 +1,5 @@
 <div class="menu">
-  <button onclick="launchWebamp()" class="menu">
+  <button onclick="initWebamp()" class="menu">
     <strong>Launch webamp player</strong>
     <img src="/webamp/webamp.svg" alt="Webamp logo" style="height: 1.5em; vertical-align: middle;">
   </button>
@@ -9,13 +9,38 @@
   <!-- Webamp will attempt to center itself within this div -->
 </div>
 
-<script src="https://unpkg.com/webamp@1.5.0/built/webamp.bundle.min.js"></script>
-<script src="https://unpkg.com/butterchurn@2.6.7/lib/butterchurn.min.js"></script>
-<script src="https://unpkg.com/butterchurn-presets@2.4.7/lib/butterchurnPresets.min.js"></script>
 <script>
-  const Webamp = window.Webamp;
   {{ $tracks := .Page.Resources.GetMatch (.Get "tracks" | default "tracks.yaml") | transform.Unmarshal }}
   let webampInstance = null;
+
+  async function loadScript(url) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = url;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.body.appendChild(script);
+    });
+  }
+
+  async function initWebamp() {
+    if (webampInstance) {
+      launchWebamp();
+      return;
+    }
+
+    try {
+      await Promise.all([
+        loadScript('https://unpkg.com/webamp@1.5.0/built/webamp.bundle.min.js'),
+        loadScript('https://unpkg.com/butterchurn@2.6.7/lib/butterchurn.min.js'),
+        loadScript('https://unpkg.com/butterchurn-presets@2.4.7/lib/butterchurnPresets.min.js')
+      ]);
+      
+      launchWebamp();
+    } catch (error) {
+      console.error('Failed to load Webamp dependencies:', error);
+    }
+  }
 
   function launchWebamp() {
     if (webampInstance) {
