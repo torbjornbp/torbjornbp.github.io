@@ -7,7 +7,7 @@
             <th class="sortable" onclick="sortTable(1)">Title</th>
             <th class="sortable" onclick="sortTable(2)">Duration</th>
             <th class="sortable" onclick="sortTable(3)">Year</th>
-            <th>Tracklist</th>
+            <th>Details</th>
         </tr>
     </thead>
     <tbody>
@@ -26,7 +26,8 @@
             <td>
                 {{ if .metaData.tracklist }}
                 <details>
-                    <summary>View Tracklist</summary>
+                    <summary>View details</summary>
+                    {{ if .metaData.description }}<strong>{{ .metaData.description }}</strong>{{ end }}
                     <ol>
                         {{ range .metaData.tracklist }}
                             <li>{{ if .artist }}{{ .artist }} - {{ end }}{{ .title }}</li>
