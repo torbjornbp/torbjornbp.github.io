@@ -41,22 +41,23 @@
       __initialWindowLayout: {
         main: { position: { x: 0, y: 0 } },
         equalizer: { 
-          position: { x: 0, y: 232 }
+          position: { x: 0, y: 116 }
         },
         playlist: {
-          position: { x: 0, y: 116 },
-          size: [0, 4]
+          position: { x: 0, y: 130 },
+          size: [0, 1]
         },
         milkdrop: {
-          position: { x: 275, y: 0 },
-          size: [0, 8]
+          position: { x: 0, y: 274 },
+          size: [0,2]
         }
       }
     });
     
     document.getElementById("app").style.display = "block";
     webampInstance.renderWhenReady(document.getElementById("app")).then(() => {
-      webampInstance.store.dispatch({ type: 'CLOSE_WINDOW', windowId: 'equalizer' });
+      // Minimize (shade) the equalizer
+      webampInstance.store.dispatch({ type: 'TOGGLE_WINDOW_SHADE_MODE', windowId: 'equalizer' });
       
       webampInstance.onClose(() => {
         document.getElementById("app").style.display = "none";
