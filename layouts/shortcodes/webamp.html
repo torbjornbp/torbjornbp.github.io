@@ -5,7 +5,7 @@
   </button>
 </div>
 
-<div id="app" style="height: 100vh; position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: none;">
+<div id="app" style="height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; pointer-events: none;">
   <!-- Webamp will attempt to center itself within this div -->
 </div>
 
@@ -90,6 +90,15 @@
     }, { passive: false });
 
     webampInstance.renderWhenReady(app).then(() => {
+      // Add this code to enable pointer events only on Webamp windows
+      const webampElements = app.getElementsByClassName('webamp-media-library')[0];
+      if (webampElements) {
+        const windows = app.querySelectorAll('.window');
+        windows.forEach(window => {
+          window.style.pointerEvents = 'auto';
+        });
+      }
+      
       // Minimize (shade) the equalizer
       webampInstance.store.dispatch({ type: 'TOGGLE_WINDOW_SHADE_MODE', windowId: 'equalizer' });
       
