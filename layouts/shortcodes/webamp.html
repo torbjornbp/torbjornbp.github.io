@@ -5,7 +5,7 @@
   </button>
 </div>
 
-<div id="app" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; display: none; touch-action: none;">
+<div id="app" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; display: none; touch-action: none; -webkit-user-select: none; user-select: none;">
   <!-- Webamp will attempt to center itself within this div -->
 </div>
 
@@ -23,7 +23,7 @@
       webampInstance = null;
     }
 
-    webampInstance = new Webamp({
+    const webampOptions = {
       initialTracks: {{ $tracks | jsonify | safeJS }},
       __butterchurnOptions: {
         importButterchurn: () => Promise.resolve(window.butterchurn),
@@ -52,7 +52,14 @@
           size: [0,2]
         }
       }
-    });
+    };
+
+    if ('ontouchstart' in window) {
+      webampOptions.zIndex = 1000;
+      webampOptions.enableHotkeys = false;
+    }
+
+    webampInstance = new Webamp(webampOptions);
     
     document.getElementById("app").style.display = "block";
     webampInstance.renderWhenReady(document.getElementById("app")).then(() => {
