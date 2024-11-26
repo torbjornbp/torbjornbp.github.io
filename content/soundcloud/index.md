@@ -1,6 +1,5 @@
 ---
 title: "Mixtape backup"
-date: 2024-11-25
 ---
 
 I'm tired of paying soundcloud for hosting files. Slowly moving all my stuff here.
