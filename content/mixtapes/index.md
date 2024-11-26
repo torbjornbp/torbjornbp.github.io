@@ -1,5 +1,6 @@
 ---
-title: "Mixtape backup"
+title: "Mixtapes"
+aliases: "mixtapes.html"
 ---
 
 I'm tired of paying soundcloud for hosting files. Slowly moving all my stuff here.
