@@ -28,6 +28,9 @@ menu:
     # - name: Tags
     #   url: "tags/"
     #   weight: 4
+    - name: Mixtapes
+      url: "mixtapes/"
+      weight: 3
     - name: RSS
       url: "index.xml"
 
