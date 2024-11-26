@@ -1,0 +1,73 @@
+{{ $tracks := .Page.Resources.GetMatch "sorted_tracks.yaml" | transform.Unmarshal }}
+
+<table id="musicTable">
+    <thead>
+        <tr>
+            <th>Cover</th>
+            <th class="sortable" onclick="sortTable(1)">Artist - Title</th>
+            <th>Duration</th>
+            <th class="sortable" onclick="sortTable(3)">Year</th>
+            <th>Description</th>
+            <th>Tracklist</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{ range $tracks }}
+        <tr>
+            <td>
+                {{ if .metaData.cover }}
+                    <img src="{{ .metaData.cover }}" alt="{{ .metaData.title }}">
+                {{ else }}
+                    <img src="rm.jpg" alt="{{ .metaData.title }}">
+                {{ end }}
+            </td>
+            <td>{{ .metaData.artist }} - {{ .metaData.title }}</td>
+            <td>{{ div .duration 60 }}:{{ printf "%02d" (mod .duration 60) }}</td>
+            <td>{{ .metaData.year }}</td>
+            <td>{{ .metaData.description }}</td>
+            <td>
+                {{ if .metaData.tracklist }}
+                <details>
+                    <summary>View Tracklist</summary>
+                    <ol>
+                        {{ range .metaData.tracklist }}
+                            <li>{{ if .artist }}{{ .artist }} - {{ end }}{{ .title }}</li>
+                        {{ end }}
+                    </ol>
+                </details>
+                {{ end }}
+            </td>
+        </tr>
+        {{ end }}
+    </tbody>
+</table>
+
+<script>
+function sortTable(n) {
+    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    table = document.getElementById("musicTable");
+    switching = true;
+    dir = "asc";
+    
+    // ... existing sort function code ...
+}
+</script>
+
+<style>
+#musicTable th.sortable {
+    cursor: pointer;
+    position: relative;
+    padding-right: 20px;
+}
+
+#musicTable th.sortable::after {
+    content: "⇅";
+    position: absolute;
+    right: 5px;
+    color: #666;
+}
+
+#musicTable th.sortable:hover {
+    background-color: #f5f5f5;
+}
+</style> 
