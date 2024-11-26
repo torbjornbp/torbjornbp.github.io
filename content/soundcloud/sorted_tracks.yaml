@@ -268,10 +268,10 @@
   url: https://filehost.s3.nl-ams.scw.cloud/mix/RM%20%40%20Robotron%2004.07.14.mp3
   duration: 3772
 - metaData:
-    artist: Romskip
+    artist: RM  
     title: "Robotron live (2014-04-12)"
     year: 2014
-    description:
+    description: "Mixed live on IFM6/Radio free robotron."
   url: https://filehost.s3.nl-ams.scw.cloud/mix/rm%40ifm6%20120414.mp3
   duration: 2802
 - metaData:
