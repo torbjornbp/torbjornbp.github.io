@@ -1,7 +1,7 @@
 ---
 title: "Mixtapes"
 description: "Mixtapes made through the years"
-aliases: "mixtapes.html"
+aliases: ["mixtapes.html", "soundcloud.html"]
 images: 
     - satanisteninduitsland.jpg
 ---
