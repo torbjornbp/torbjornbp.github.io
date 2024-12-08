@@ -12,8 +12,8 @@ buildExpired: false
 
 deployment:
   targets:
-    - name: scaleway
-      URL: "s3://bucket-site/?endpoint=https://bucket-site.s3.nl-ams.scw.cloud&region=nl-ams"
+    - name: torbjorn.no
+      URL: "s3:/torbjorn.no/?endpoint=https://torbjorn.no.s3.nl-ams.scw.cloud&region=nl-ams"
 
 permalinks:
   note: "/note/:year/:month/:day/:slug/"
