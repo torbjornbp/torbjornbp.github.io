@@ -1,4 +1,5 @@
-name: Build and Deploy Hugo
+name: Scaleway builder/deployer
+
 on:
   push:
     branches: [ "main" ]
@@ -8,25 +9,16 @@ jobs:
     name: Deploy Hugo Website
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
-        
-    - name: Set up Go
-      uses: actions/setup-go@v4
+    - name: setup hugo
+      uses: peaceiris/actions-hugo@v2.6.0
       with:
-        go-version: '1.21'
-        
-    - name: Install Hugo with deploy support
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y gcc
-        CGO_ENABLED=1 go install -tags extended,withdeploy github.com/gohugoio/hugo@v0.138.0
-        
-    - name: Build site
+        hugo-version: '0.138.0'
+    - name: build site
       run: hugo
-      
-    - name: Deploy to S3
+    - name: deploy to scaleway
       run: hugo deploy --force --maxDeletes -1
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY_ID }}
