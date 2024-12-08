@@ -13,7 +13,7 @@ buildExpired: false
 deployment:
   targets:
     - name: "torbjorn.no"
-      URL: "s3://torbjorn.no?endpoint=https://torbjorn.no.s3.nl-ams.scw.cloud"
+      URL: "s3://torbjorn.no?endpoint=https://s3.nl-ams.scw.cloud&region=nl-ams"
 
 permalinks:
   note: "/note/:year/:month/:day/:slug/"
