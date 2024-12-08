@@ -10,6 +10,11 @@ buildDrafts: false
 buildFuture: false
 buildExpired: false
 
+deployment:
+  targets:
+    - name: 
+      URL: "s3://torbjorn.no/?endpoint=https://bucket-site.s3.nl-ams.scw.cloud&region=nl-ams"
+
 permalinks:
   note: "/note/:year/:month/:day/:slug/"
   post: "/post/:year/:month/:day/:slug/"
