@@ -27,7 +27,9 @@ h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
 }
 
 hr {
-  border-style: 1px solid #aaa;
+  height: 1px;
+  background-color: #aaa;
+  border: none;
   max-width: calc(100% - 10px);
 }
 
