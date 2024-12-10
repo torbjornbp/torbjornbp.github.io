@@ -1,4 +1,4 @@
-name: Scaleway builder/deployer
+name: Deploy to Scaleway
 on:
   push:
     branches: [ "main" ]
@@ -15,8 +15,6 @@ jobs:
         && cd ${{ runner.temp }} \
         && tar -xvf hugo.tar.gz hugo \
         && sudo mv hugo /usr/local/bin/
-    - name: Install Dart Sass
-      run: sudo snap install dart-sass
     - name: Checkout
       uses: actions/checkout@v4
       with:
@@ -26,7 +24,7 @@ jobs:
         HUGO_ENVIRONMENT: production
         HUGO_ENV: production
       run: hugo --minify
-    - name: Deploy to scaleway
+    - name: Deploy to S3
       run: hugo deploy --force --maxDeletes -1
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.SCW_ACCESS_KEY_ID }}
