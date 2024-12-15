@@ -23,43 +23,66 @@
             ($imgRsc.Process (print "resize 800x jpg " $filter))
             $imgRsc -}}
         <div class="{{ $divClass }}" data-pagefind-ignore>
-            <picture data-pagefind-ignore>
-                <source type="image/webp" srcset="
-                {{- with $respSizes -}}
-                    {{- range $i, $e := . -}}
-                        {{- if ge $imgRsc.Width (int .) -}}
-                            {{- if $i }}, {{ end -}}
-                            {{- if lt $imgRsc.Width 800 -}}
-                                {{- $imgRsc.RelPermalink }} {{ $imgRsc.Width }}w
-                            {{- else -}}
-                                {{- (cond (gt $imgRsc.Width .) ($imgRsc.Process (print "resize " . "x webp " $hint " " $filter)) $imgRsc).RelPermalink }} {{ . }}w
+            <a href="{{ $imgRsc.RelPermalink }}" target="_blank">
+                <picture data-pagefind-ignore>
+                    <source type="image/webp" srcset="
+                    {{- with $respSizes -}}
+                        {{- range $i, $e := . -}}
+                            {{- if ge $imgRsc.Width (int .) -}}
+                                {{- if $i }}, {{ end -}}
+                                {{- if lt $imgRsc.Width 800 -}}
+                                    {{- $imgRsc.RelPermalink }} {{ $imgRsc.Width }}w
+                                {{- else -}}
+                                    {{- (cond (gt $imgRsc.Width .) ($imgRsc.Process (print "resize " . "x webp " $hint " " $filter)) $imgRsc).RelPermalink }} {{ . }}w
+                                {{- end -}}
                             {{- end -}}
                         {{- end -}}
-                    {{- end -}}
-                {{- else -}}
-                    {{- $imgRsc.RelPermalink }} {{ $imgRsc.Width }}w
-                {{- end -}}" sizes="{{ $dataSzes }}" />
-                <source type="image/jpeg" srcset="
-                {{- with $respSizes -}}
-                    {{- range $i, $e := . -}}
-                        {{- if ge $imgRsc.Width . -}}
-                            {{- if $i }}, {{ end -}}{{- (cond (gt $imgRsc.Width .) ($imgRsc.Process (print "resize " . "x jpg " $filter)) $imgRsc).RelPermalink }} {{ . }}w
+                    {{- else -}}
+                        {{- $imgRsc.RelPermalink }} {{ $imgRsc.Width }}w
+                    {{- end -}}" sizes="{{ $dataSzes }}" />
+                    <source type="image/jpeg" srcset="
+                    {{- with $respSizes -}}
+                        {{- range $i, $e := . -}}
+                            {{- if ge $imgRsc.Width . -}}
+                                {{- if $i }}, {{ end -}}{{- (cond (gt $imgRsc.Width .) ($imgRsc.Process (print "resize " . "x jpg " $filter)) $imgRsc).RelPermalink }} {{ . }}w
+                            {{- end -}}
                         {{- end -}}
-                    {{- end -}}
-                {{- end -}}" sizes="{{ $dataSzes }}" />
-                <img class="{{ $imgClass }}" 
-                    src="{{ $actualImg.RelPermalink }}" 
-                    width="{{ $imgRsc.Width }}" 
-                    height="{{ $imgRsc.Height }}" 
-                    alt="{{ $alt }}" 
-                    title="{{ $alt }}" 
-                    loading="lazy" 
-                    fetchpriority="high" 
-                    data-pagefind-ignore />
-            </picture>
+                    {{- end -}}" sizes="{{ $dataSzes }}" />
+                    <img class="{{ $imgClass }}" 
+                        src="{{ $actualImg.RelPermalink }}" 
+                        width="{{ $imgRsc.Width }}" 
+                        height="{{ $imgRsc.Height }}" 
+                        alt="{{ $alt }}" 
+                        title="{{ $alt }}" 
+                        loading="lazy" 
+                        fetchpriority="high" 
+                        data-pagefind-ignore />
+                </picture>
+            </a>
         </div>
     {{- end -}}
 {{- else -}}
     <p class="ctr legal"><em>Image unavailable.</em></p>
 {{- end -}}
 {{- with $caption -}}<p class="imgCaption">{{ $caption | $.Page.RenderString }}</p>{{- end }}
+
+<style>
+.bigImgDiv a {
+    display: block;
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    cursor: zoom-in;
+}
+
+.bigImgDiv a:hover {
+    background-color: transparent;
+}
+
+.bigImgDiv a:hover img {
+    opacity: 0.9;
+    transition: opacity 0.2s ease-in-out;
+}
+</style>
