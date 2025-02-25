@@ -6,17 +6,11 @@
     <title>{{ .Title }} | {{ .Site.Title }}</title>
     <meta name="description" content="{{ .Description }}" />
 
-    <!-- Preconnect to external domains -->
-    <link rel="preconnect" href="https://gc.zgo.at">
-    <link rel="preconnect" href="https://{{ .Site.Params.goatcounter }}.goatcounter.com">
-    
-    <!-- Preload primary font -->
-    <link rel="preload" href="/fonts/IosevkaCustomAile-Regular-reducedmore.woff2" as="font" type="font/woff2" crossorigin>
-
     <!-- Inline critical CSS -->
     <style>
       /* Essential styles for above-the-fold content */
-      body {max-width: 800px; margin: auto; padding: 1em; overflow-y: scroll;}
+      html {font-size: 16px;} /* Base size for stability */
+      body {max-width: 800px; margin: auto; padding: 1em; overflow-y: scroll; font-size: 1rem;}
       .menu, .article-meta, footer {text-align: center;}
       .menu {padding: 0;}
       .menu li {display: inline-block;}
@@ -28,7 +22,18 @@
         padding: 5px; 
         margin: 4px;
       }
-      .clown-container {text-align: center; font-size: 2em; margin: 0;}
+      .clown-container {
+        text-align: center; 
+        font-size: 2em; 
+        margin: 0;
+      }
+      .font-change-button {
+        width: 1em;
+        height: 1em;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
       .site-title {text-align: center; font-size: 1em;}
       h1 {font-size: 1.7em;}
       hr {height: 1px; background-color: #aaa; border: none; max-width: calc(100% - 10px);}
@@ -53,13 +58,9 @@
     <meta name="twitter:description" content="{{ .Description }}">
     <meta name="twitter:image" content="{{ with .Params.images }}{{ ($.Page.Resources.GetMatch (index . 0)).Permalink }}{{ else }}{{ .Site.Params.defaultImage | absURL }}{{ end }}">
     
-    <!-- Non-critical stylesheets with media queries for delayed loading -->
-    <link rel="stylesheet" href="{{ "css/style.css" | relURL }}" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="{{ "css/fonts.css" | relURL }}" media="print" onload="this.media='all'">
-    <noscript>
-      <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
-      <link rel="stylesheet" href="{{ "css/fonts.css" | relURL }}">
-    </noscript>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ "css/style.css" | relURL }}" />
+    <link rel="stylesheet" href="{{ "css/fonts.css" | relURL }}" />
 
     <!-- Custom head content -->
     {{ partial "head_custom.html" . }}
