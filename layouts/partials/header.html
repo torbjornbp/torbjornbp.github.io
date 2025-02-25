@@ -6,6 +6,38 @@
     <title>{{ .Title }} | {{ .Site.Title }}</title>
     <meta name="description" content="{{ .Description }}" />
 
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://gc.zgo.at">
+    <link rel="preconnect" href="https://{{ .Site.Params.goatcounter }}.goatcounter.com">
+    
+    <!-- Preload primary font -->
+    <link rel="preload" href="/fonts/IosevkaCustomAile-Regular-reducedmore.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- Inline critical CSS -->
+    <style>
+      /* Essential styles for above-the-fold content */
+      body {max-width: 800px; margin: auto; padding: 1em; overflow-y: scroll;}
+      .menu, .article-meta, footer {text-align: center;}
+      .menu {padding: 0;}
+      .menu li {display: inline-block;}
+      .menu a {
+        text-decoration: none; 
+        background: #f9f9f9; 
+        border: 1px solid #aaa; 
+        box-shadow: 2px 2px #ddd;
+        padding: 5px; 
+        margin: 4px;
+      }
+      .clown-container {text-align: center; font-size: 2em; margin: 0;}
+      .site-title {text-align: center; font-size: 1em;}
+      h1 {font-size: 1.7em;}
+      hr {height: 1px; background-color: #aaa; border: none; max-width: calc(100% - 10px);}
+      .posts-list .post-item {margin: 0;}
+      .posts-list .date {margin-right: 0.5em;}
+      a {color: royalblue;}
+      a:hover {color: white; background-color: royalblue;}
+    </style>
+
     <!-- OpenGraph tags -->
     <meta property="og:title" content="{{ .Title }}" />
     <meta property="og:description" content="{{ .Description }}" />
@@ -20,9 +52,14 @@
     <meta name="twitter:title" content="{{ .Title }}">
     <meta name="twitter:description" content="{{ .Description }}">
     <meta name="twitter:image" content="{{ with .Params.images }}{{ ($.Page.Resources.GetMatch (index . 0)).Permalink }}{{ else }}{{ .Site.Params.defaultImage | absURL }}{{ end }}">
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="{{ "css/style.css" | relURL }}" />
-    <link rel="stylesheet" href="{{ "css/fonts.css" | relURL }}" />
+    
+    <!-- Non-critical stylesheets with media queries for delayed loading -->
+    <link rel="stylesheet" href="{{ "css/style.css" | relURL }}" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="{{ "css/fonts.css" | relURL }}" media="print" onload="this.media='all'">
+    <noscript>
+      <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
+      <link rel="stylesheet" href="{{ "css/fonts.css" | relURL }}">
+    </noscript>
 
     <!-- Custom head content -->
     {{ partial "head_custom.html" . }}
@@ -33,9 +70,9 @@
     {{ end }}
   </head>
   <body>
-    <div style="text-align: center; font-size: 2em; margin: 0em">{{ partial "clown.html" . }}</div> 
+    <div class="clown-container">{{ partial "clown.html" . }}</div> 
     <nav>
-      <h1 style="text-align: center; font-size: 1em">Torbjørn Bakken Pedersen's page</h1>
+      <h1 class="site-title">Torbjørn Bakken Pedersen's page</h1>
       <ul class="menu">
         {{ range .Site.Menus.main }}
         <li><a href="{{ .URL | relURL }}">{{ .Name }}</a></li>

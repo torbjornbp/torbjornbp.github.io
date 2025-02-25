@@ -11,13 +11,9 @@
   {{ if .IsHome }}{{ $pages = .Site.RegularPages }}{{ end }}
   {{ range (where $pages "Section" "!=" "") }}
   <div class="post-item">
-    <span class="date"><strong>{{ .Date.Format "2006-01-02" }} -</strong></span>
-    <a href="{{ .RelPermalink }}">{{ .Title | markdownify }}</a>
+    <span class="date"><strong>{{ .Date.Format "2006-01-02" }} -</strong></span><a href="{{ .RelPermalink }}">{{ .Title | markdownify }}</a>
   </div>
   {{ end }}
 </div>
 
-{{- if .Site.Params.goatcounter }}
-  {{ partial "analytics.html" . -}}
-{{- end}}
 {{ partial "footer.html" . }}

@@ -4,8 +4,9 @@
   </svg>
 </button>
 
-<script>
-(function() {
+<script defer>
+// Defer non-critical JavaScript
+document.addEventListener('DOMContentLoaded', function() {
   const btn = document.getElementById('font-change-button');
   
   function setFontState(isComicSans) {
@@ -17,12 +18,23 @@
     localStorage.setItem('useComicSans', isComicSans);
   }
 
-  const savedState = localStorage.getItem('useComicSans') === 'true';
-  setFontState(savedState);
+  // Use requestIdleCallback for non-critical initialization
+  if (window.requestIdleCallback) {
+    requestIdleCallback(function() {
+      const savedState = localStorage.getItem('useComicSans') === 'true';
+      setFontState(savedState);
+    });
+  } else {
+    // Fallback for browsers that don't support requestIdleCallback
+    setTimeout(function() {
+      const savedState = localStorage.getItem('useComicSans') === 'true';
+      setFontState(savedState);
+    }, 200);
+  }
 
   btn.addEventListener('click', function() {
     const newState = !document.body.classList.contains('comic-sans');
     setFontState(newState);
   });
-})();
+});
 </script>

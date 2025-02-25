@@ -17,6 +17,7 @@
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src = url;
+      script.async = true;
       script.onload = resolve;
       script.onerror = reject;
       document.body.appendChild(script);
@@ -28,12 +29,13 @@
       launchWebamp();
       return;
     }
-
+    
     try {
+      // Load locally hosted webamp files
       await Promise.all([
-        loadScript('https://unpkg.com/webamp@1.5.0/built/webamp.bundle.min.js'),
-        loadScript('https://unpkg.com/butterchurn@2.6.7/lib/butterchurn.min.js'),
-        loadScript('https://unpkg.com/butterchurn-presets@2.4.7/lib/butterchurnPresets.min.js')
+        loadScript('/js/webamp/webamp.bundle.min.js'),
+        loadScript('/js/webamp/butterchurn.min.js'),
+        loadScript('/js/webamp/butterchurnPresets.min.js')
       ]);
       
       launchWebamp();

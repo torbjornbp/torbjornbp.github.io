@@ -1,9 +1,7 @@
-baseurl: "https://torbjorn.no/"  # please update this to your actual URL
+baseurl: "https://torbjorn.no/"
 languageCode: "en-us"
 title: "Torbjørn Bakken Pedersen's home page"
-theme: "xmin"
-#disqusShortname: ""
-ignoreFiles: ["\\.Rmd$", "\\.Rmarkdown$", "_cache$"]
+ignoreFiles: ["_cache$"]
 footnotereturnlinkcontents: "↩"
 date-format: 2006-01-02
 buildDrafts: false
@@ -38,6 +36,7 @@ menu:
       weight: 3
     - name: RSS
       url: "index.xml"
+      weight: 4
 
 params:
   description: "Torbjørn Bakken Pedersen's personal web page"

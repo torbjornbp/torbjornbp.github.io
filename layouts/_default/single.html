@@ -13,9 +13,6 @@
 <main>
 {{ .Content }}
 </main>
-{{- if .Site.Params.goatcounter }}
-  {{ partial "analytics.html" . -}}
-{{- end}}
 {{ partial "footer.html" . }}
 
 

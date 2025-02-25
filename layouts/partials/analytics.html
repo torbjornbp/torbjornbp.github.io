@@ -1,3 +1,10 @@
-<script id="partials/analytics.html" 
-  data-goatcounter="https://{{ .Site.Params.goatcounter }}.goatcounter.com/count"
-  async src="//gc.zgo.at/count.js"></script>
+<script>
+// Delay loading analytics until after page content is loaded
+window.addEventListener('load', function() {
+  var script = document.createElement('script');
+  script.src = '//gc.zgo.at/count.js';
+  script.setAttribute('data-goatcounter', 'https://{{ .Site.Params.goatcounter }}.goatcounter.com/count');
+  script.setAttribute('async', '');
+  document.body.appendChild(script);
+});
+</script>

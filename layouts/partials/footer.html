@@ -1,0 +1,12 @@
+  <footer>
+  {{ with .Site.Params.footer }}
+  <hr/>
+  {{ replace . "{Year}" now.Year | markdownify}}
+  {{ end }}
+  </footer>
+  
+  {{- if .Site.Params.goatcounter }}
+    {{ partial "analytics.html" . -}}
+  {{- end}}
+  </body>
+</html>
