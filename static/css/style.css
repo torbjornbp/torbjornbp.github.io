@@ -37,13 +37,38 @@ h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
 .menu li { display: inline-block; }
 .menu a { text-decoration: none; }
 
-/* Boxed elements */
-.article-meta, .menu a, blockquote, table, button.menu, pre {
+/* Boxed elements for navigation */
+.menu a, button.menu {
   background: var(--block-bg);
   border: 1px solid var(--border-color);
   box-shadow: 2px 2px var(--shadow-color);
   padding: 5px;
   margin: 4px;
+}
+
+/* Full-width boxed elements */
+.article-meta, blockquote, pre, details {
+  background: var(--block-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 2px 2px var(--shadow-color);
+  padding: 5px;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Details element specific styling */
+details {
+  margin-bottom: 1em;
+  border-left: 4px solid var(--accent-color);
+}
+details summary {
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0.5em;
+}
+details > *:not(summary) {
+  padding: 0.5em;
 }
 
 pre {
@@ -57,7 +82,7 @@ hr {
   height: 1px;
   background-color: var(--border-color);
   border: none;
-  max-width: calc(100% - 10px);
+  width: 100%;
 }
 
 /* Links */
@@ -93,9 +118,10 @@ img, figure, iframe, video, .responsive-image {
 main { hyphens: auto; }
 blockquote {
   border-left: 4px solid var(--accent-color);
-  padding: 3px 1em;
+  padding: 5px 1em;
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
+  box-sizing: border-box;
 }
 
 /* Buttons */
@@ -164,12 +190,13 @@ figure figcaption, .imgCaption {
 
 /* Tables */
 table {
-  margin: auto;
+  margin: 0;
   border-left: 4px solid var(--accent-color);
   background: var(--bg-color);
-  max-width: calc(100% - 10px);
+  width: 100%;
   border-collapse: collapse;
   font-size: var(--font-size-small);
+  box-sizing: border-box;
 }
 table thead th {
   border-bottom: 1px solid var(--accent-color);
@@ -187,7 +214,9 @@ thead, tfoot, tr:nth-child(even) { background: #eee; }
   background-color: #fff8f8;
   color: #822;
   padding: 10px;
-  margin: 10px 0;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
   border-radius: 3px;
   font-size: var(--font-size-small);
 }
@@ -198,8 +227,6 @@ thead, tfoot, tr:nth-child(even) { background: #eee; }
     white-space: nowrap;
     overflow-x: auto;
     font-size: var(--font-size-small);
-    content-visibility: auto;
-    contain-intrinsic-size: 0 500px; /* Estimate of list size */
   }
 }
 
