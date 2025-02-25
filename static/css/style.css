@@ -61,6 +61,9 @@ h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
 details {
   margin-bottom: 1em;
   border-left: 4px solid var(--accent-color);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 details summary {
   cursor: pointer;
@@ -69,6 +72,10 @@ details summary {
 }
 details > *:not(summary) {
   padding: 0.5em;
+}
+details ol {
+  padding-left: 2em;
+  margin-right: 0.5em;
 }
 
 pre {
