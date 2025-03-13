@@ -1,0 +1,7 @@
+<span class="sidenote">
+    <label class="sidenote-label" for="sidenote-{{ $.Ordinal }}">{{ .Get 0 | markdownify }}</label>
+    <input class="sidenote-checkbox" type="checkbox" id="sidenote-{{ $.Ordinal }}"></input>
+    <span class="sidenote-content sidenote-{{ if ( .Get 1 ) }}{{ .Get 1 }}{{ else }}right{{end}}">
+    {{ .Inner | markdownify }}
+    </span>
+</span>

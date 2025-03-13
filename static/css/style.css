@@ -122,7 +122,10 @@ img, figure, iframe, video, .responsive-image {
 }
 
 /* Text formatting */
-main { hyphens: auto; }
+main { 
+  hyphens: auto; 
+  position: relative;
+}
 blockquote {
   border-left: 4px solid var(--accent-color);
   padding: 5px 1em;
@@ -240,5 +243,71 @@ thead, tfoot, tr:nth-child(even) { background: #eee; }
 @media (prefers-reduced-motion: reduce) {
   .bigImgDiv a:hover img {
     transition: none;
+  }
+}
+
+/* Sidenotes */
+.sidenote:hover {
+  background-color: var(--hover-bg);
+}
+
+.sidenote:hover .sidenote-label { 
+  text-decoration: none; 
+  color: var(--hover-text);
+}
+
+.sidenote:hover .sidenote-content {
+  border-style: dashed;
+  border-color: var(--hover-bg);
+}
+
+.sidenote-label {
+  text-decoration: underline dashed var(--hover-bg);
+}
+
+.sidenote-checkbox {
+  display: none;
+}
+
+.sidenote-content {
+  display: block;
+  position: absolute;
+  width: 240px;
+  box-sizing: border-box;
+  margin-top: -1.5em;
+  border: 1px solid var(--border-color);
+  padding: 0.5rem;
+  font-size: .75rem;
+}
+
+.sidenote-content.sidenote-right {
+  right: 0;
+  margin-right: -250px;
+}
+
+.sidenote-content.sidenote-left {
+  left: 0;
+  margin-left: -250px;
+}
+
+@media screen and (max-width: 1320px) {
+  .sidenote-content {
+    position: static;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    display: none;
+  }
+
+  .sidenote-checkbox:checked ~ .sidenote-content {
+    display: block;
+  }
+
+  .sidenote-content.sidenote-right {
+    margin-right: 0px;
+  }
+  
+  .sidenote-content.sidenote-left {
+    margin-left: 0px;
   }
 }
