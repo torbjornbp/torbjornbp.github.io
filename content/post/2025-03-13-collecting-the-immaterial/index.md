@@ -23,7 +23,7 @@ This belief has informed my thinking about the digital/analog ever since.
 Perhaps my dropped chapter, that attempted to drag **Discourse networks 1800/1900** into the mix, would have enabled me to state those thoughts more clearly, but such is life.
 
 The UvA scripties page, which used to host it, seems to have undergone some changes, and I can no longer find the thesis there.
-So when I recently rediscovered the original OpenOffice document containing the paper, I figured I should make it available again.
+I recently rediscovered the original OpenOffice document containing the paper, and figured I could make it available again.
 Remembering how much I struggled to get the formatting right (I should have learned LaTeX!), making a markdown version seemed like the natural next step.
 
 I've made a few minor changes in this 2025 version: I've lightly anonymized the torrent tracker in the case study as "Tracker X". I've moved the footnotes to sidenotes for increased legibility and changed the internal link structure ("see discussion on page X" doesn't make much sense online). Furthermore, I've also added some new images to help break up the text a bit, and fixed some typos and language here and there.
