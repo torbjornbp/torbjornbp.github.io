@@ -17,7 +17,7 @@ The text was twice as long as it should be and was far more theoretical than I h
 However, I was pleased about the result in the end, and I think I still am.
 The text is about many things, but consumption and collection theory in the context of file sharing is the primary topic.
 
-While not stated as clearly as it probably should have, I spend a lot of words examining what, I believe, is a false digital/analog dichotomy.
+While not stated as clearly as it probably should have been, I spend a lot of words examining what, I believe, is a false digital/analog dichotomy.
 I believe I demonstrate that it's more a case of same/same, but with different types of tangibility.
 This belief has informed my thinking about the digital/analog ever since.
 Perhaps my dropped chapter, that attempted to drag **Discourse networks 1800/1900** into the mix, would have enabled me to state those thoughts more clearly, but such is life.
