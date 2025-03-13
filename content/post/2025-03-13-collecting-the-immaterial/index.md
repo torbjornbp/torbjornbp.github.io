@@ -20,7 +20,7 @@ The text is about many things, but consumption and collection theory in the cont
 While not stated as clearly as it probably should have, I spend a lot of words examining what, I believe, is a false digital/analog dichotomy.
 I believe I demonstrate that it's more a case of same/same, but with different types of tangibility.
 This belief has informed my thinking about the digital/analog ever since.
-Perhaps my dropped chapter, attempting to drag **Discourse networks 1800/1900** into the mix, would have enabled me to state those thoughts more clearly, but such is life.
+Perhaps my dropped chapter, that attempted to drag **Discourse networks 1800/1900** into the mix, would have enabled me to state those thoughts more clearly, but such is life.
 
 The UvA scripties page, which used to host it, seems to have undergone some changes, and I can no longer find the thesis there.
 So when I recently rediscovered the original OpenOffice document containing the paper, I figured I should make it available again.
