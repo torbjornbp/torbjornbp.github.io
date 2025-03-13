@@ -7,7 +7,7 @@ jobs:
     name: Deploy Hugo Website
     runs-on: ubuntu-latest
     env:
-      HUGO_VERSION: 0.139.3
+      HUGO_VERSION: 0.145.0
     steps:
     - name: Install Hugo CLI
       run: |
