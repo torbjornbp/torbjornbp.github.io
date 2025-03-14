@@ -982,7 +982,7 @@ Indeed, the deletion of these NFO files and the renaming/retagging of downloaded
            .---------------------------------------------------.
           /    Killer Instinct (1987) aka Behind Enemy Lines    \
          /                                                       \
-.------------------------------- FILE INFOS -------------------------------.
+.-------------------------------  FILE INFOS  -------------------------------.
 |                                                                            |
 |  Filename:       Killer.Instinct.(1987).Xvid.VHSRip.PnX-[TRACKER X].avi    |
 |  Filesize:       780,699,648 bytes                                         |
