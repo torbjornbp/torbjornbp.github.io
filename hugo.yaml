@@ -7,6 +7,7 @@ date-format: 2006-01-02
 buildDrafts: false
 buildFuture: false
 buildExpired: false
+enableRobotsTXT: true
 
 deployment:
   targets:
