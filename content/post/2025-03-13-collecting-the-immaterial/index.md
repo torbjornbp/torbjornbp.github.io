@@ -343,7 +343,7 @@ I think the greatest example of non-function and avoidance, can be found in Kate
 
 At the end of the spectrum of utility and meaning, an object becomes so meaningful that it not only **is** not used, but actually **cannot** be used. This begs the question though: what **does** John do with his copy of **Mark of the Devil**? I believe I have identified what lies at the core of the phenomenon of collection and what drives the activity, I have not, however, explained **how** people actually collect. To do this we need to return the model of meaning transfer I discussed in the first chapter and propose some changes.
 
-![the title sequence from mark of the devil](markdevil.png "From the title sequence of **Mark of the Devil**")
+![VHS cover of mark of the devil](markdevil.jpg "VHS cover of **Mark of the Devil**")
 
 ## 4. Collection and meaning transfer
 
@@ -1108,9 +1108,10 @@ The application of the theoretical framework has, moreover, given credence to th
 - *Law Enforcement Guide to Satanic Cults* (1994)
 - *Nightmare on Elm Street* (Wes Craven, 1984)
 - *The Man With the Movie Camera* (Dziga Vertov, 1929)
+- *Mark of the Devil* (Michael Armstrong, 1970)
 - *The Mountain of the Cannibal God* (Sergio Martino, 1978)
 - *The Rider of the Skulls* (Alfredo Salazar, 1965)
 - *Suspiria* (Dario Argento, 1977)
 - *Visiting Hours* (Jean-Claude Lord, 1982)
 - *Zombi 2* (Lucio Fulci, 1979)
-[markdevil.png]: 
+
