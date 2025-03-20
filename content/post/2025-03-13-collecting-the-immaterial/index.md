@@ -1045,6 +1045,8 @@ It would seem that the transition of physical collection into the virtual sphere
 
 The application of the theoretical framework has, moreover, given credence to the theory. It is applicable to immaterial, virtual collecting. I have shown however, that some aspects of the model are less relevant in the virtual environment.
 
+---
+
 ## 8. References
 
 ### 8.1. Bibliography
