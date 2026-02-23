@@ -49,7 +49,7 @@ description: Torbjørn Bakken Pedersen's resume
 > 
 > - Sep 2013 -> Jun 2014
 > 
-> Part time cataloging and identification of a [collection of scanned photographies](https://digitaltmuseum.no/search/?aq=owner%3A%22NVE%22&q=NVE.UNV).
+> Part time cataloging and identification of a collection of scanned photographies.
 > 
 > Skills: `photo cataloging`.
 
