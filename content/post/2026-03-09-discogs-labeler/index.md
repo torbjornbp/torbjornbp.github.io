@@ -45,7 +45,7 @@ With the physical setup (mostly) sorted, I also wanted to find some clean way of
 It was also a good opportunity to check whether the vibe coding agents had gotten any better since I last played with them. They had (it's also become abundantly clear that the companies making these tools are spineless bootlickers)!
 
 ## Result: Discogs labeler
-Over a couple of late night sessions I had made a browser-based tool that lets you create printable labels based on the Avery 3448 template. It is fully vibe coded. I hope to add support for different labels, but the 3448 label sheets are the only label sheets I could walk out and buy at a store in this godforsaken town. 
+Over a couple of late night sessions I had made a browser-based tool that lets you create printable labels based on the Avery 3448 template. It is fully vibe coded. I hope to add support for different labels, but the 3448 label sheets are the only label sheets [I could walk out and buy](https://www.clasohlson.com/no/Selvheftende-etiketter/p/32-2618) at a store in this godforsaken town. 
 
 Currently the app allows you to:
   - Import your (public) collection via Discogs username (API) or CSV export
