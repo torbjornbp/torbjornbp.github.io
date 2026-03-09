@@ -60,6 +60,8 @@ I’m very happy with it and have started labelling my records. Now I have some 
 
 The application can be found [here](/discogs-labeler) and the source code can be found [here](https://github.com/torbjornbp/discogs-labeler)
 
+Some notes: The CSV import gives you access to more fields, and is much faster. Using the username/API fetch method will take a long time to fetch due to API ratelimiting. Tracklist fetching similarly can take a while, as it makes a call per release, and gets rate limited by the Discogs API.
+
 ![Screenshot of the label app in action](labeler.png "Screenshot of the label app in action")
 
 ![Printed labels](labels.jpg "Printed labels")
