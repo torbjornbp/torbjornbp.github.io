@@ -542,7 +542,7 @@
     artist: RM
     title: "Straight Outta Kampen"
     year: 2009
-    description: "Electro/Miami Bass/Techno"
+    genre: "Electro/Miami Bass/Techno"
     description: "Electro, miami bass, techno"
     cover: straightouttakampen.jpg
     tracklist:
@@ -612,7 +612,7 @@
     artist: RM
     title: "Un Robot tra i morti viventi"
     year: 2009
-    description: "Soundtrack"
+    genre: "Soundtrack"
     description: "Italian horror soundtracks."
   url: https://filehost.s3.nl-ams.scw.cloud/mix/Luca%20Canali%20-%20Un%20Robot%20tra%20i%20morti%20viventi.mp3
   duration: 1855
