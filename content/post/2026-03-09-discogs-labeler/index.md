@@ -1,5 +1,5 @@
 ---
-title: Making printable labels from your Discogs collection
+title: Making printable labels for your Discogs collection
 date: '2026-03-09'
 description: 
 categories: 
