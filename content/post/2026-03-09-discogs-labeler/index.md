@@ -67,6 +67,8 @@ The application can be found [here](/discogs-labeler) and the source code can be
 ## Next obsession?
 So why am I writing all this? Partly because I wanted to share the Discogs Labeler, maybe someone else will find it useful. But also to celebrate actually finishing something. It’s incredibly satisfying to finally see something through in a single burst of work! This site has been stale the last year, it has felt good to write something new.
 
-When I sat down to reflect on all of this, I realised some of my other projects have come together too. It's just happened gradually, and less visibly, than this labeler. While this cycle of obsessions has been draining, the turntable setup works and sounds good, and the shelf is on order. Things are moving, just not in a straight line. 
+Of course though, these obessions have not happened in an orderly succession and they have not been the only things I've been obsessing over. I’ve picked these project up and dropped them repeatedly over the past year, alongside other ventures (I restored an old La Pavoni espresso machine among other things.).
+
+When I sat down to reflect on all of this though, I realised some of my other projects have come together too. It's just happened gradually, and less visibly, than this labeler. While this cycle of obsessions has been draining, the turntable setup works and sounds good, and the shelf is on order. Things are moving, just not in a straight line. 
 
 Anyway, how does one set up a print server at home?
