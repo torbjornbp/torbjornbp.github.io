@@ -27,7 +27,7 @@ Pickups were another thing to read up on, I was pragmatic here and stuck to what
 
 I also needed to find a mixer. This was luckily a more straightforward affair, although I obviously spent way too much time on this too. I picked up a used DJM-250MK2 and another [ART DJPREII](https://www.audiosciencereview.com/forum/index.php?threads/review-and-measurements-of-u-turn-pluto-and-art-djpre-ii-phono-preamps.3457/) preamp. It is an excellent preamp for the money, that sounds way better than the one built into the DJM-250. 
 
-The DJM-250 feels cheap though, but it has a built in sound card that allows you to use rekordbox DVS without an exctra soundcard (neat!). If I was buying today though, I would definitely have bought the Allen & Heath Xone 24C, as the soundcard is supposed to be class compliant.
+The DJM-250 feels cheap though, but it has a built in sound card that allows you to use rekordbox DVS without an extra soundcard. Neat! If I was buying a mixer today though, I would definitely have bought the Allen & Heath Xone 24C, as the soundcard is supposed to be class compliant.
 
 ## Shelving and Fusion
 I also needed to find some new piece of furniture or shelving to hold my record collection and turntables. What I have was filled to capacity, buckling under the weight. It was never optimal (off-brand IKEA kallax).
