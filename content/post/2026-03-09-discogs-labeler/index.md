@@ -23,27 +23,27 @@ I wanted to brush up on mixing vinyl, so I set out to find a second turntable ag
 
 ![My new player after service](platespiller.jpg "My new player after service")
 
-Pickups were another thing to read up on, I was pragmatic here and stuck to what I knew - Ortofon Concordes. MK II Clubs seemed like a nice choice, although I’m not entirely happy with their tracking at 3g. There are some other options. Perhaps Audio Technica XP5s or XP7s would have been a better choice? Those [Jico/Shure](https://www.jico-stylus.com/) pickups seems nice too or [Taruyas](https://taruyajapan.com/) or [100sounds](https://www.100sounds.net/en)? Or perhaps an unorthodox choice of a Nagaoka mp-110 for nice sound (I doubt it tracks well)?
+Pickups were another thing to read up on, I was pragmatic here and stuck to what I knew - Ortofon Concordes. MK II Clubs seemed like a nice choice, although I’m not entirely happy with their tracking at 3g. There are some other options. Perhaps Audio Technica XP5s or XP7s would have been a better choice? Those [Jico/Shure](https://www.jico-stylus.com/) pickups seems nice too or [Taruyas](https://taruyajapan.com/) or [100sounds](https://www.100sounds.net/en) or perhaps an unorthodox choice of a Nagaoka mp-110 for nice sound (I doubt it tracks well)?
 
 I also needed to find a mixer. This was luckily a more straightforward affair, although I obviously spent way too much time on this too. I picked up a used DJM-250MK2 and another [ART DJPREII](https://www.audiosciencereview.com/forum/index.php?threads/review-and-measurements-of-u-turn-pluto-and-art-djpre-ii-phono-preamps.3457/) preamp. It is an excellent preamp for the money, that sounds way better than the one built into the DJM-250. 
 
-The DJM-250 feels cheap, but it has a built in sound card that allows for rekordbox DVS (neat!). If I was buying today I’d rather bought the Allen & Heath Xone 24C, as the soundcard is supposed to be class compliant.
+The DJM-250 feels cheap though, but it has a built in sound card that allows you to use rekordbox DVS without an exctra soundcard (neat!). If I was buying today though, I would definitely have bought the Allen & Heath Xone 24C, as the soundcard is supposed to be class compliant.
 
 ## Shelving and Fusion
-I also needed to find some new piece of furniture or shelving to hold my record collection and turntables. What I have was filled to the limit, buckling under the weight and was never optimal (off-brand IKEA kallax).
+I also needed to find some new piece of furniture or shelving to hold my record collection and turntables. What I have was filled to capacity, buckling under the weight. It was never optimal (off-brand IKEA kallax).
 
 This was a more time consuming goose chase... Sadly no pre-built solution looks nice, is affordable or fulfills my needs. I want it to hold most or all of my records as well as the amplifier, and it shouldn’t be excessively ugly. I got the idea that I should build a custom shelf by myself.
 
-Of course, I know next to nothing about woodworking, so I figured I should plan it very thoroughly. After some paper drawing and maths, I realized I could probably autogenerate a bill of materials if I used some software for the job. This meant learning autodesk Fusion... Which I did. I even made a nice mockup, before getting cold-feet about the actual woodworking and abandoning the idea. Time not well spent, unless I need to mock up something else in Fusion at some point...
+Of course, I know next to nothing about woodworking, so I figured I should plan it very thoroughly. After some paper drawing and maths, I realized I could probably autogenerate a bill of materials if I used some software for the job. This meant learning Fusion 360... Which I did. I even made a nice mockup, before getting cold-feet about the actual woodworking and abandoning the idea. Time not well spent... unless I need to mock up something else in Fusion at some point.
 
 ![Fusion mockup](fusion.jpeg "Fusion mockup")
 
 In the end though (this week), I decided on something else, that I’m more confident that I will be able to go through with. I’ve ordered some IKEA Ivar modules that I will “hack” slightly. It will fit all my stuff and even have some nice browsing sections! I'll add some pictures when it arrives.
 
 ## Labeling
-With the physical setup (mostly) sorted, I also wanted to find some clean way of adding notes to my records. BPMs and the like. Surely someone had already made some tool to make labels based on Discogs collection data? I could not find anything useful. The sensible thing would be to just write them by hand. My collection is not that big. But why go down that route, when I could spend time making some weird custom solution myself? 
+With the physical setup (mostly) sorted, I also wanted to find some clean way of adding notes to my records. BPMs and the like. Surely someone had already made some tool to make labels based on Discogs collection data? I could not find anything useful. The sensible thing would be to just write them by hand on postit notes or something. My collection is not that big. But why go down that route, when I could spend time making some weird custom solution myself? 
 
-It was also a good opportunity to check whether the vibe coding agents had gotten any better since I last played with them. They had (it's also become abundantly clear that the companies making these tools are spineless bootlickers)!
+It was also a good opportunity to check whether the vibe coding agents had gotten any better since I last played with them. They had! As a side note, it's also become abundantly clear that the companies making these tools are spineless bootlickers. Back to the free tiers!
 
 ## Result: Discogs labeler
 Over a couple of late night sessions I had made a browser-based tool that lets you create printable labels based on the Avery 3448 template. It is fully vibe coded. I hope to add support for different labels, but the 3448 label sheets are the only label sheets [I could walk out and buy](https://www.clasohlson.com/no/Selvheftende-etiketter/p/32-2618) at a store in this godforsaken town. 
@@ -61,7 +61,7 @@ I’m very happy with it and have started labelling my records. Now I have some 
 
 The application can be found [here](/discogs-labeler) and the source code can be found [here](https://github.com/torbjornbp/discogs-labeler)
 
-Some notes: The CSV import gives you access to more fields, and is much faster. Using the username/API fetch method will take a long time to fetch due to API ratelimiting. Tracklist fetching similarly can take a while, as it makes a call per release, and gets rate limited by the Discogs API.
+Some notes: The CSV import gives you access to more fields, and is much faster. Using the username/API fetch method will take a long time to fetch due to API rate limiting. Tracklist fetching similarly can take a while, as it makes a call per release, and gets rate limited by the Discogs API.
 
 ![Screenshot of the label app in action](labeler.png "Screenshot of the label app in action")
 
