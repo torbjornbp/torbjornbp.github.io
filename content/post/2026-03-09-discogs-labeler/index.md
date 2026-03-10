@@ -9,6 +9,7 @@ tags:
   - record collection
   - fusion
   - pickups
+aliases: "/post/2026/03/09/making-printable-labels-from-your-discogs-collection"
 ---
 
 Lately I've come to realise that I'm fairly scatterbrained. I obsess over ideas monomaniacally, only to move on before finishing them. When the stars align, this focus leads to quick, tangible results. But usually I just end up with a mental backlog of half-finished projects.
