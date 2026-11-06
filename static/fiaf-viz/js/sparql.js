@@ -6,6 +6,10 @@
 
 let config = null;
 const queryText = new Map();
+const queryResults = new Map();
+const pendingQueries = new Map();
+let resultCacheChars = 0;
+let cacheGeneration = 0;
 let activeRequests = 0;
 let activeQueries = 0;
 let cooldownUntil = 0;
@@ -640,12 +644,98 @@ async function executeQuery(query, label, signal, options = {}) {
   }
 }
 
+// Only bundled read-only queries use this cache; expert queries always run live.
+// The complete query includes scope, filters and pagination in the cache key.
+function rememberResult(key, payload, generation) {
+  const ttl = limit("queryCacheTtlMs", 60000);
+  const entries = limit("queryCacheEntries", 32);
+  const budget = limit("queryCacheChars", 2000000);
+  if (generation !== cacheGeneration || !ttl || !entries || !budget) return;
+  const chars = key.length + JSON.stringify(payload).length;
+  if (chars > budget) return;
+  const previous = queryResults.get(key);
+  if (previous) resultCacheChars -= previous.chars;
+  queryResults.delete(key);
+  queryResults.set(key, { payload, chars, expires: Date.now() + ttl });
+  resultCacheChars += chars;
+  while (queryResults.size > entries || resultCacheChars > budget) {
+    const oldest = queryResults.keys().next().value;
+    resultCacheChars -= queryResults.get(oldest).chars;
+    queryResults.delete(oldest);
+  }
+}
+
+function bundledQuery(query, name, options) {
+  const { signal } = options;
+  if (signal && signal.aborted) return Promise.reject(abortError());
+  if (options.cache === false) return executeQuery(query, name, signal, options);
+  const key = JSON.stringify([getConfig().endpoint, query]);
+  const cached = queryResults.get(key);
+  if (cached) {
+    if (cached.expires > Date.now()) {
+      queryResults.delete(key);
+      queryResults.set(key, cached);
+      return Promise.resolve(cached.payload);
+    }
+    resultCacheChars -= cached.chars;
+    queryResults.delete(key);
+  }
+  let entry = pendingQueries.get(key);
+  if (!entry) {
+    const controller = new AbortController();
+    const generation = cacheGeneration;
+    entry = { controller, listeners: new Set(), promise: null };
+    pendingQueries.set(key, entry);
+    entry.promise = Promise.resolve().then(() => executeQuery(query, name, controller.signal, {
+      onStatus(status) {
+        for (const listener of entry.listeners) {
+          try { listener(status); } catch (_) { /* Keep other subscribers running. */ }
+        }
+      }
+    })).then((payload) => {
+      if (!controller.signal.aborted) rememberResult(key, payload, generation);
+      return payload;
+    }).finally(() => {
+      if (pendingQueries.get(key) === entry) pendingQueries.delete(key);
+    });
+  }
+  // Each caller owns its cancellation. Abort the shared request only when its
+  // last subscriber leaves, including when the request is still queued.
+  return new Promise((resolve, reject) => {
+    const listener = typeof options.onStatus === "function" ? options.onStatus : () => {};
+    // Wrap callbacks so two callers using the same function remain independent.
+    const subscription = (status) => listener(status);
+    entry.listeners.add(subscription);
+    const cleanup = () => {
+      entry.listeners.delete(subscription);
+      if (signal) signal.removeEventListener("abort", onAbort);
+    };
+    const onAbort = () => {
+      cleanup();
+      if (!entry.listeners.size) {
+        if (pendingQueries.get(key) === entry) pendingQueries.delete(key);
+        entry.controller.abort();
+      }
+      reject(abortError());
+    };
+    if (signal) signal.addEventListener("abort", onAbort, { once: true });
+    entry.promise.then((payload) => {
+      cleanup();
+      if (signal && signal.aborted) reject(abortError());
+      else resolve(payload);
+    }, (error) => {
+      cleanup();
+      reject(error);
+    });
+  });
+}
+
 // Run queries/NAME.rq with {{PLACEHOLDER}} substitutions. An optional caller
 // signal cancels superseded UI requests without changing the timeout behaviour.
 export function runQuery(name, substitutions = {}, options = {}) {
   return loadQuery(name).then((text) => {
     const query = substitute(text, substitutions);
-    return executeQuery(query, name, options.signal, options).then((payload) => {
+    return bundledQuery(query, name, options).then((payload) => {
       const vars = (payload.head && payload.head.vars) || [];
       return ((payload.results && payload.results.bindings) || []).map((row) => {
         const out = {};
@@ -723,4 +813,9 @@ export function onQueryStatus(listener) {
 
 export function clearQueryCache() {
   queryText.clear();
+  queryResults.clear();
+  resultCacheChars = 0;
+  cacheGeneration += 1;
+  // Existing callers may finish, but new calls must not reuse old requests.
+  pendingQueries.clear();
 }

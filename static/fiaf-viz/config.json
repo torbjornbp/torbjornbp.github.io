@@ -35,6 +35,9 @@
     "maxConcurrentRequests": 3,
     "requestRetries": 1,
     "retryBaseMs": 1000,
-    "requestTimeoutMs": 120000
+    "requestTimeoutMs": 120000,
+    "queryCacheTtlMs": 60000,
+    "queryCacheEntries": 32,
+    "queryCacheChars": 2000000
   }
 }

@@ -5,15 +5,29 @@ PREFIX fiaf: <https://dev.fiafcore.org/>
 # Names are attached client-side from the agent page already in memory.
 SELECT ?a ?b (COUNT(DISTINCT ?work) AS ?shared)
 WHERE {
-  VALUES ?a { {{AGENT_IRIS}} }
-  VALUES ?b { {{AGENT_IRIS}} }
+  # Deduplicate each side before pairing. Repeated activities, event links and
+  # work types otherwise multiply each other before COUNT(DISTINCT ?work).
+  {
+    SELECT DISTINCT ?work ?a
+    WHERE {
+      VALUES ?a { {{AGENT_IRIS}} }
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      ?work a ?workType .
+      {{SCOPE_FILTER}}
+      ?work fiaf:hasEvent/fiaf:hasActivity/fiaf:hasAgent ?a .
+    }
+  }
+  {
+    SELECT DISTINCT ?work ?b
+    WHERE {
+      VALUES ?b { {{AGENT_IRIS}} }
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      ?work a ?workType .
+      {{SCOPE_FILTER}}
+      ?work fiaf:hasEvent/fiaf:hasActivity/fiaf:hasAgent ?b .
+    }
+  }
   FILTER(STR(?a) < STR(?b))
-  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
-  ?work a ?workType .
-  {{SCOPE_FILTER}}
-  ?work fiaf:hasEvent/fiaf:hasActivity ?activityA, ?activityB .
-  ?activityA fiaf:hasAgent ?a .
-  ?activityB fiaf:hasAgent ?b .
 }
 GROUP BY ?a ?b
 HAVING (COUNT(DISTINCT ?work) >= {{MIN_SHARED}})

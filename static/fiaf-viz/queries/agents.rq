@@ -15,9 +15,9 @@ SELECT ?agent ?name ?works
         ) AS ?roleCounts)
 WHERE {
   {
-    # A stable lexical label keeps alternative/language labels from consuming
-    # several rows of the name limit. Counts remain per entity, not per label.
-    SELECT ?agent (MIN(STR(?agentLabel)) AS ?name) (COUNT(DISTINCT ?work) AS ?works)
+    # Count credits before joining labels: alternative labels must not multiply
+    # the large activity intermediate result.
+    SELECT ?agent (COUNT(DISTINCT ?work) AS ?works)
     WHERE {
       VALUES ?workType { fiaf:MonographicWork fiaf:Work }
       ?work a ?workType .
@@ -26,8 +26,6 @@ WHERE {
       ?event fiaf:hasActivity ?activity .
       ?activity a ?role ;
                 fiaf:hasAgent ?agent .
-      ?agent rdfs:label ?agentLabel .
-      FILTER(STRLEN(STR(?agentLabel)) > 0)
       {{ROLE_FILTER}}
     }
     GROUP BY ?agent
@@ -45,6 +43,16 @@ WHERE {
       {{ROLE_FILTER}}
     }
     GROUP BY ?agent ?role
+  }
+  {
+    # One stable, nonempty label per entity also prevents labels from repeating
+    # the per-role GROUP_CONCAT entries. Unlabelled agents remain excluded.
+    SELECT ?agent (MIN(STR(?agentLabel)) AS ?name)
+    WHERE {
+      ?agent rdfs:label ?agentLabel .
+      FILTER(STRLEN(STR(?agentLabel)) > 0)
+    }
+    GROUP BY ?agent
   }
 }
 GROUP BY ?agent ?name ?works
