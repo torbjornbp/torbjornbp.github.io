@@ -105,13 +105,16 @@ export function create(ctx, root, legendElement, statsElement) {
     });
   selection.call(zoom).on("dblclick.zoom", null);
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  selection.on("dblclick", () => {
+  selection.on("dblclick", fitView);
+
+  function fitView() {
+    selection.interrupt();
     if (reduceMotion.matches) {
       selection.call(zoom.transform, d3.zoomIdentity);
       return;
     }
     selection.transition().duration(250).call(zoom.transform, d3.zoomIdentity);
-  });
+  }
 
   canvas.addEventListener("mousemove", (event) => {
     const bubble = pick(event);
@@ -455,6 +458,7 @@ export function create(ctx, root, legendElement, statsElement) {
   return {
     load,
     select,
+    fit: fitView,
     kinds: new Set(["agent"]),
     hasNode(id) {
       return bubbleAgents.has(id);
