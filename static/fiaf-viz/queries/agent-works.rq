@@ -1,0 +1,32 @@
+# Works credited to one agent (the click-through drawer).
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?work (SAMPLE(?candidateTitle) AS ?title) ?role
+WHERE {
+  {
+    # Cap distinct works, not work/role pairs. Exact totals are in agent-summary.
+    SELECT DISTINCT ?work
+    WHERE {
+      VALUES ?agent { {{AGENT}} }
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      ?work a ?workType .
+      {{SCOPE_FILTER}}
+      ?work fiaf:hasEvent ?event .
+      ?event fiaf:hasActivity ?activity .
+      ?activity a ?role ;
+                fiaf:hasAgent ?agent .
+    }
+    ORDER BY ?work
+    LIMIT 500
+  }
+  VALUES ?agent { {{AGENT}} }
+  ?work fiaf:hasEvent/fiaf:hasActivity ?creditActivity .
+  ?creditActivity a ?role ; fiaf:hasAgent ?agent .
+  OPTIONAL { ?work rdfs:label ?label }
+  OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+  BIND(COALESCE(?label, ?titleValue) AS ?candidateTitle)
+}
+GROUP BY ?work ?role
+ORDER BY ?title

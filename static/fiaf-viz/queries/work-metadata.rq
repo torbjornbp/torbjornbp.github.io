@@ -1,0 +1,189 @@
+# One row of summary metadata for a Work (the drawer Overview tab).
+#
+# Every multi-valued field is aggregated in its own OPTIONAL subquery. Each
+# subquery repeats the VALUES clause so independent fields join on the work
+# instead of multiplying into a Cartesian product. Counts use DISTINCT.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?work ?label ?year ?countries ?forms ?genres ?titles ?languages
+       ?ratings ?identifiers ?sourceDatasets ?manifestations ?items ?carriers
+       ?digitalItems
+WHERE {
+  VALUES ?work { {{WORK}} }
+
+  # Title used in the drawer heading. Public works often have no rdfs:label,
+  # so fall back to the identifying title.
+  OPTIONAL {
+    SELECT ?work (SAMPLE(?candidateLabel) AS ?label)
+    WHERE {
+      VALUES ?work { {{WORK}} }
+      OPTIONAL { ?work rdfs:label ?workLabel }
+      OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+      BIND(COALESCE(?workLabel, ?titleValue) AS ?candidateLabel)
+    }
+    GROUP BY ?work
+  }
+
+  # Production year from ProductionEvent dates, reduced to four digits.
+  OPTIONAL {
+    SELECT ?work (MIN(SUBSTR(STR(?date), 1, 4)) AS ?year)
+    WHERE {
+      VALUES ?work { {{WORK}} }
+      ?work fiaf:hasEvent ?event .
+      ?event a fiaf:ProductionEvent ;
+             fiaf:hasDate ?date .
+      FILTER(REGEX(SUBSTR(STR(?date), 1, 4), "^[0-9]{4}$"))
+    }
+    GROUP BY ?work
+  }
+
+  OPTIONAL {
+    SELECT ?work (GROUP_CONCAT(DISTINCT STR(?country); separator="|") AS ?countries)
+    WHERE {
+      VALUES ?work { {{WORK}} }
+      ?work fiaf:hasCountry ?country .
+    }
+    GROUP BY ?work
+  }
+
+  OPTIONAL {
+    SELECT ?work (GROUP_CONCAT(DISTINCT STR(?form); separator="|") AS ?forms)
+    WHERE {
+      VALUES ?work { {{WORK}} }
+      ?work fiaf:hasForm ?form .
+    }
+    GROUP BY ?work
+  }
+
+  OPTIONAL {
+    SELECT ?work (GROUP_CONCAT(DISTINCT STR(?genre); separator="|") AS ?genres)
+    WHERE {
+      VALUES ?work { {{WORK}} }
+      ?work fiaf:hasGenre ?genre .
+    }
+    GROUP BY ?work
+  }
+
+  OPTIONAL {
+    SELECT ?work (GROUP_CONCAT(DISTINCT ?titleText; separator="|") AS ?titles)
+    WHERE {
+      VALUES ?work { {{WORK}} }
+      ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleText .
+    }
+    GROUP BY ?work
+  }
+
+  # Work-level and manifestation-level language usages, as
+  # language~UsageType so the client can show both halves.
+  OPTIONAL {
+    SELECT ?work (GROUP_CONCAT(DISTINCT CONCAT(
+             STR(?language), "~",
+             STRAFTER(STR(?usageType), "https://dev.fiafcore.org/")
+           ); separator="|") AS ?languages)
+    WHERE {
+      VALUES ?work { {{WORK}} }
+      {
+        ?work fiaf:hasLanguageUsage ?usage .
+        ?usage a ?usageType ;
+               fiaf:hasLanguage ?language .
+      }
+      UNION
+      {
+        ?work fiaf:hasManifestation ?manifestation .
+        ?manifestation fiaf:hasLanguageUsage ?usage .
+        ?usage a ?usageType ;
+               fiaf:hasLanguage ?language .
+      }
+    }
+    GROUP BY ?work
+  }
+
+  # Ratings can hang off the work or one of its manifestations.
+  OPTIONAL {
+    SELECT ?work (GROUP_CONCAT(DISTINCT STR(?verdict); separator="|") AS ?ratings)
+    WHERE {
+      VALUES ?work { {{WORK}} }
+      {
+        ?work fiaf:hasEvent ?ratingEvent .
+      }
+      UNION
+      {
+        ?work fiaf:hasManifestation ?manifestation .
+        ?manifestation fiaf:hasEvent ?ratingEvent .
+      }
+      ?ratingEvent a fiaf:RatingEvent ;
+                   fiaf:hasVerdict ?verdict .
+    }
+    GROUP BY ?work
+  }
+
+  OPTIONAL {
+    SELECT ?work (GROUP_CONCAT(DISTINCT ?identifierValue; separator="|") AS ?identifiers)
+    WHERE {
+      VALUES ?work { {{WORK}} }
+      ?work fiaf:hasIdentifier ?identifier .
+      OPTIONAL { ?identifier fiaf:hasIdentifierValue ?rawIdentifier }
+      BIND(COALESCE(?rawIdentifier, ?identifier) AS ?identifierValue)
+    }
+    GROUP BY ?work
+  }
+
+  # Source dataset: the identifier authority behind the work. This is the same
+  # marker the dataset picker uses in scopes.rq. Prefer its label, but fall back
+  # to the IRI so a new dataset without rdfs:label still appears.
+  OPTIONAL {
+    SELECT ?work (GROUP_CONCAT(DISTINCT ?sourceDatasetName; separator="|") AS ?sourceDatasets)
+    WHERE {
+      VALUES ?work { {{WORK}} }
+      ?work fiaf:hasIdentifier ?identifier .
+      ?identifier fiaf:hasIdentifierAuthority ?authority .
+      FILTER(isIRI(?authority))
+      OPTIONAL { ?authority rdfs:label ?authorityLabel }
+      BIND(COALESCE(?authorityLabel, STR(?authority)) AS ?sourceDatasetName)
+    }
+    GROUP BY ?work
+  }
+
+  OPTIONAL {
+    SELECT ?work (COUNT(DISTINCT ?manifestation) AS ?manifestations)
+    WHERE {
+      VALUES ?work { {{WORK}} }
+      ?work fiaf:hasManifestation ?manifestation .
+    }
+    GROUP BY ?work
+  }
+
+  OPTIONAL {
+    SELECT ?work (COUNT(DISTINCT ?item) AS ?items)
+    WHERE {
+      VALUES ?work { {{WORK}} }
+      ?work fiaf:hasManifestation/fiaf:hasItem ?item .
+    }
+    GROUP BY ?work
+  }
+
+  OPTIONAL {
+    SELECT ?work (COUNT(DISTINCT ?carrier) AS ?carriers)
+    WHERE {
+      VALUES ?work { {{WORK}} }
+      ?work fiaf:hasManifestation/fiaf:hasItem/fiaf:hasCarrier ?carrier .
+    }
+    GROUP BY ?work
+  }
+
+  # Digital formats in the public profile. Keep this allowlist in step with the
+  # endpoint's item formats (AVI, DPX, MOV, MP4, MXF).
+  OPTIONAL {
+    SELECT ?work (COUNT(DISTINCT ?digitalItem) AS ?digitalItems)
+    WHERE {
+      VALUES ?work { {{WORK}} }
+      VALUES ?digitalFormat { fiaf:AVI fiaf:DPX fiaf:MOV fiaf:MP4 fiaf:MXF }
+      ?work fiaf:hasManifestation/fiaf:hasItem ?digitalItem .
+      ?digitalItem fiaf:hasFormat ?digitalFormat .
+    }
+    GROUP BY ?work
+  }
+}
+LIMIT 1

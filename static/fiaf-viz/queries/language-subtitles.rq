@@ -1,0 +1,58 @@
+# Spoken language against subtitle languages.
+#
+# Public data attaches language usages at different levels: works may carry
+# spoken usages directly, while subtitles usually hang off a manifestation or
+# one of its items. Resolve each side independently and join on the work so a
+# usage at any of those levels is found. Keeping the two sides as subqueries
+# also stops the public endpoint from expanding every usage into a cross
+# product.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?spoken ?subtitles
+       (COUNT(DISTINCT ?manif) AS ?items)
+       (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  {
+    SELECT DISTINCT ?work ?manif ?subtitles
+    WHERE {
+      ?subtitleUsage a fiaf:Subtitles ;
+                     fiaf:hasLanguage ?subtitles .
+      {
+        ?manif fiaf:hasLanguageUsage ?subtitleUsage .
+      }
+      UNION
+      {
+        ?manif fiaf:hasItem/fiaf:hasLanguageUsage ?subtitleUsage .
+      }
+      ?work fiaf:hasManifestation ?manif .
+    }
+  }
+
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType .
+  {{SCOPE_FILTER}}
+
+  {
+    SELECT DISTINCT ?work ?spoken
+    WHERE {
+      ?spokenUsage a fiaf:SpokenLanguage ;
+                   fiaf:hasLanguage ?spoken .
+      {
+        ?work fiaf:hasLanguageUsage ?spokenUsage .
+      }
+      UNION
+      {
+        ?work fiaf:hasManifestation ?manifestation .
+        ?manifestation fiaf:hasLanguageUsage ?spokenUsage .
+      }
+      UNION
+      {
+        ?work fiaf:hasManifestation/fiaf:hasItem ?item .
+        ?item fiaf:hasLanguageUsage ?spokenUsage .
+      }
+    }
+  }
+}
+GROUP BY ?spoken ?subtitles
+ORDER BY ?spoken ?subtitles

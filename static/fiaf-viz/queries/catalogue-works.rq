@@ -1,0 +1,30 @@
+# One page of works for the catalogue table.
+#
+# The text and facet filters are composed in js/sparql.js and substituted as
+# CATALOGUE_FILTER. CATALOGUE_ORDER is an allowlisted ORDER BY expression, so
+# the query text is never built from raw user input.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?work (SAMPLE(?candidateTitle) AS ?title) (MIN(?rawYear) AS ?year)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType .
+  {{SCOPE_FILTER}}
+  {{CATALOGUE_FILTER}}
+  OPTIONAL { ?work rdfs:label ?workLabel }
+  OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+  BIND(COALESCE(?workLabel, ?titleValue) AS ?candidateTitle)
+  OPTIONAL {
+    ?work fiaf:hasEvent ?event .
+    ?event a fiaf:ProductionEvent ;
+           fiaf:hasDate ?date .
+    BIND(SUBSTR(STR(?date), 1, 4) AS ?rawYear)
+    FILTER(REGEX(?rawYear, "^[0-9]{4}$"))
+  }
+}
+GROUP BY ?work
+ORDER BY {{CATALOGUE_ORDER}}
+LIMIT {{LIMIT}}
+OFFSET {{OFFSET}}

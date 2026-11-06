@@ -1,0 +1,14 @@
+# Works per form.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?value (COUNT(DISTINCT ?work) AS ?n)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasForm ?value .
+  {{SCOPE_FILTER}}
+}
+GROUP BY ?value
+ORDER BY DESC(?n)
+LIMIT {{LIMIT}}

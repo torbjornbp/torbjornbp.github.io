@@ -1,0 +1,49 @@
+# Find names and works by label substring. Used by the search box in the
+# cloud, both networks and the role view.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?type ?id (SAMPLE(?candidateLabel) AS ?label)
+WHERE {
+  {
+    # Match the label first so the scope join only touches the matching names;
+    # joining every credit in a large dataset before filtering is much slower.
+    {
+      SELECT DISTINCT ?id ?candidateLabel
+      WHERE {
+        ?id a ?agentType ;
+            rdfs:label ?candidateLabel .
+        FILTER(?agentType IN (fiaf:Person, fiaf:Organisation, fiaf:Agent))
+        FILTER(CONTAINS(LCASE(STR(?candidateLabel)), LCASE({{TERM}})))
+      }
+    }
+    VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+    {{SCOPE_AGENT_FILTER}}
+    BIND("agent" AS ?type)
+  }
+  UNION
+  {
+    VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+    ?work a ?workType ;
+          fiaf:hasTitle/fiaf:hasTitleValue ?candidateLabel .
+    FILTER(CONTAINS(LCASE(STR(?candidateLabel)), LCASE({{TERM}})))
+    {{SCOPE_FILTER}}
+    BIND(?work AS ?id)
+    BIND("work" AS ?type)
+  }
+  UNION
+  {
+    # NLN works without a title group still carry a derived rdfs:label.
+    VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+    ?work a ?workType ;
+          rdfs:label ?candidateLabel .
+    FILTER(CONTAINS(LCASE(STR(?candidateLabel)), LCASE({{TERM}})))
+    {{SCOPE_FILTER}}
+    BIND(?work AS ?id)
+    BIND("work" AS ?type)
+  }
+}
+GROUP BY ?type ?id
+ORDER BY ?type ?label
+LIMIT {{LIMIT}}

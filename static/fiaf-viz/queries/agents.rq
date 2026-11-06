@@ -1,0 +1,53 @@
+# Credited agents, distinct work counts and per-role counts (the bubble cloud).
+#
+# One row per agent. ?roleCounts is "LocalName N|LocalName N" so the UI can pick
+# the dominant role without a second query or a huge VALUES list.
+# {{ROLE_FILTER}} is an optional FILTER clause over ?role; {{SCOPE_FILTER}}
+# is an optional work-scope graph pattern (an identifier authority).
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?agent ?name ?works
+       (GROUP_CONCAT(
+          CONCAT(STRAFTER(STR(?role), "https://dev.fiafcore.org/"), " ", STR(?roleWorks));
+          separator="|"
+        ) AS ?roleCounts)
+WHERE {
+  {
+    # A stable lexical label keeps alternative/language labels from consuming
+    # several rows of the name limit. Counts remain per entity, not per label.
+    SELECT ?agent (MIN(STR(?agentLabel)) AS ?name) (COUNT(DISTINCT ?work) AS ?works)
+    WHERE {
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      ?work a ?workType .
+      {{SCOPE_FILTER}}
+      ?work fiaf:hasEvent ?event .
+      ?event fiaf:hasActivity ?activity .
+      ?activity a ?role ;
+                fiaf:hasAgent ?agent .
+      ?agent rdfs:label ?agentLabel .
+      FILTER(STRLEN(STR(?agentLabel)) > 0)
+      {{ROLE_FILTER}}
+    }
+    GROUP BY ?agent
+  }
+  {
+    SELECT ?agent ?role (COUNT(DISTINCT ?work) AS ?roleWorks)
+    WHERE {
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      ?work a ?workType .
+      {{SCOPE_FILTER}}
+      ?work fiaf:hasEvent ?event .
+      ?event fiaf:hasActivity ?activity .
+      ?activity a ?role ;
+                fiaf:hasAgent ?agent .
+      {{ROLE_FILTER}}
+    }
+    GROUP BY ?agent ?role
+  }
+}
+GROUP BY ?agent ?name ?works
+HAVING (?works > 0)
+ORDER BY DESC(?works) ?name ?agent
+LIMIT {{LIMIT}}

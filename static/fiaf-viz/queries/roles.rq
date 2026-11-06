@@ -1,0 +1,20 @@
+# Role classes actually used as credit activities, with volumes.
+# Used for the role filter, the colour legend and the role view.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?role
+       (COUNT(DISTINCT ?activity) AS ?activities)
+       (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType .
+  {{SCOPE_FILTER}}
+  ?work fiaf:hasEvent ?event .
+  ?event fiaf:hasActivity ?activity .
+  ?activity a ?role .
+  FILTER(STRSTARTS(STR(?role), "https://dev.fiafcore.org/"))
+  FILTER(?role != fiaf:Activity)
+}
+GROUP BY ?role
+ORDER BY DESC(?activities)

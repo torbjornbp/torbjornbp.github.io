@@ -1,0 +1,46 @@
+# Works for one spoken-language/subtitle-language heatmap cell.
+#
+# Keep the usage resolution in step with language-subtitles.rq: spoken usages
+# may sit on the work, a manifestation or an item, and subtitle usages on a
+# manifestation or an item.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?work (SAMPLE(?candidateTitle) AS ?title)
+WHERE {
+  VALUES ?spoken { {{SPOKEN}} }
+  VALUES ?subtitles { {{SUBTITLES}} }
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasManifestation ?manif .
+  {{SCOPE_FILTER}}
+  OPTIONAL { ?work rdfs:label ?label }
+  OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+  BIND(COALESCE(?label, ?titleValue) AS ?candidateTitle)
+  {
+    ?manif fiaf:hasLanguageUsage ?subtitleUsage .
+  }
+  UNION
+  {
+    ?manif fiaf:hasItem/fiaf:hasLanguageUsage ?subtitleUsage .
+  }
+  ?subtitleUsage a fiaf:Subtitles ;
+                 fiaf:hasLanguage ?subtitles .
+  {
+    ?work fiaf:hasLanguageUsage ?spokenUsage .
+  }
+  UNION
+  {
+    ?work fiaf:hasManifestation/fiaf:hasLanguageUsage ?spokenUsage .
+  }
+  UNION
+  {
+    ?work fiaf:hasManifestation/fiaf:hasItem/fiaf:hasLanguageUsage ?spokenUsage .
+  }
+  ?spokenUsage a fiaf:SpokenLanguage ;
+               fiaf:hasLanguage ?spoken .
+}
+GROUP BY ?work
+ORDER BY ?title ?work
+LIMIT {{LIMIT}}

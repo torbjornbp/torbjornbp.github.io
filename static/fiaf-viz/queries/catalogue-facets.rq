@@ -1,0 +1,84 @@
+# Facet values and work counts for the catalogue filter pickers.
+#
+# One query keeps the dropdowns consistent with a single pass over the scoped
+# works. Facets are independent of the current catalogue text/facet filters, so
+# a selected value never disappears from its own picker.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?facet ?value ?label (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+
+  {
+    BIND("decade" AS ?facet)
+    ?work a ?workType .
+    {{SCOPE_FILTER}}
+    ?work fiaf:hasEvent ?facetEvent .
+    ?facetEvent a fiaf:ProductionEvent ;
+                fiaf:hasDate ?facetDate .
+    BIND(SUBSTR(STR(?facetDate), 1, 4) AS ?facetYear)
+    FILTER(REGEX(?facetYear, "^[0-9]{4}$"))
+    BIND(CONCAT(SUBSTR(?facetYear, 1, 3), "0") AS ?value)
+    BIND(?value AS ?label)
+  }
+  UNION
+  {
+    BIND("country" AS ?facet)
+    ?work a ?workType .
+    {{SCOPE_FILTER}}
+    ?work fiaf:hasCountry ?country .
+    BIND(STR(?country) AS ?value)
+    BIND(?value AS ?label)
+  }
+  UNION
+  {
+    BIND("form" AS ?facet)
+    ?work a ?workType .
+    {{SCOPE_FILTER}}
+    ?work fiaf:hasForm ?form .
+    BIND(STR(?form) AS ?value)
+    BIND(?value AS ?label)
+  }
+  UNION
+  {
+    BIND("genre" AS ?facet)
+    ?work a ?workType .
+    {{SCOPE_FILTER}}
+    ?work fiaf:hasGenre ?genre .
+    BIND(STR(?genre) AS ?value)
+    BIND(?value AS ?label)
+  }
+  UNION
+  {
+    BIND("format" AS ?facet)
+    ?work a ?workType .
+    {{SCOPE_FILTER}}
+    {
+      ?work fiaf:hasManifestation/fiaf:hasItem/fiaf:hasFormat ?rawFormat .
+    }
+    UNION
+    {
+      ?work fiaf:hasManifestation ?formatManifestation .
+      ?formatManifestation fiaf:hasItem ?formatItem ; fiaf:hasFormat ?rawFormat .
+    }
+    OPTIONAL { ?rawFormat a ?formatType . FILTER(isBlank(?rawFormat)) }
+    FILTER(!isBlank(?rawFormat) || BOUND(?formatType))
+    BIND(IF(isBlank(?rawFormat), ?formatType, ?rawFormat) AS ?format)
+    BIND(STR(?format) AS ?value)
+    BIND(?value AS ?label)
+  }
+  UNION
+  {
+    BIND("institution" AS ?facet)
+    ?work a ?workType .
+    {{SCOPE_FILTER}}
+    ?work fiaf:hasManifestation/fiaf:hasItem/fiaf:hasHoldingInstitution ?institution .
+    BIND(STR(?institution) AS ?value)
+    OPTIONAL { ?institution rdfs:label ?institutionLabel }
+    BIND(COALESCE(?institutionLabel, ?value) AS ?label)
+  }
+}
+GROUP BY ?facet ?value ?label
+ORDER BY ?facet DESC(?works) ?label

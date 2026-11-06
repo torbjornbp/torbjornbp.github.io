@@ -1,0 +1,31 @@
+# Preservation copies by production country.
+#
+# One row per country and metric. Co-productions count once under each
+# production country. "works" is the denominator for all works with that
+# country; "items" is the denominator for those with at least one recorded item.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?country ?metric (COUNT(DISTINCT ?work) AS ?n)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasCountry ?country .
+  {{SCOPE_FILTER}}
+  {
+    BIND("works" AS ?metric)
+  }
+  UNION
+  {
+    BIND("items" AS ?metric)
+    ?work fiaf:hasManifestation/fiaf:hasItem ?itemsItem .
+  }
+  UNION
+  {
+    BIND("preservation" AS ?metric)
+    ?work fiaf:hasManifestation/fiaf:hasItem ?preservationItem .
+    ?preservationItem fiaf:hasStatus fiaf:Preservation .
+  }
+}
+GROUP BY ?country ?metric
+ORDER BY ?country ?metric

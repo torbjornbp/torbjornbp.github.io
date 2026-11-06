@@ -1,0 +1,34 @@
+# Works for one country/items-per-work heatmap cell.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?work ?title
+WHERE {
+  {
+    SELECT ?work (SAMPLE(?candidateTitle) AS ?title) (COUNT(DISTINCT ?item) AS ?itemCount)
+    WHERE {
+      VALUES ?country { {{COUNTRY}} }
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      ?work a ?workType ;
+            fiaf:hasCountry ?country .
+      {{SCOPE_FILTER}}
+      OPTIONAL { ?work rdfs:label ?label }
+      OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+      BIND(COALESCE(?label, ?titleValue) AS ?candidateTitle)
+      OPTIONAL { ?work fiaf:hasManifestation/fiaf:hasItem ?item }
+    }
+    GROUP BY ?work
+  }
+  BIND(
+    IF(?itemCount = 0, "0",
+    IF(?itemCount = 1, "1",
+    IF(?itemCount <= 3, "2-3",
+    IF(?itemCount <= 5, "4-5",
+    IF(?itemCount <= 10, "6-10",
+    IF(?itemCount <= 20, "11-20", "21+")))))) AS ?bucket
+  )
+  FILTER(?bucket = {{BUCKET}})
+}
+ORDER BY ?title ?work
+LIMIT {{LIMIT}}

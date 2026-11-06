@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FIAF Knowledge Graph</title>
+  <script>
+    // Apply a saved theme before the stylesheet paints to avoid a light flash.
+    try {
+      const theme = localStorage.getItem("fiaf-viz:theme");
+      if (theme === "light" || theme === "dark") {
+        document.documentElement.dataset.theme = theme;
+      }
+    } catch (_) {}
+  </script>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div class="app-shell">
+  <header class="app-header">
+    <div class="brand">
+      <h1>FIAF <span>Knowledge Graph</span></h1>
+    </div>
+    <div class="header-meta">
+      <span id="endpoint" class="endpoint" title="SPARQL endpoint">endpoint</span>
+      <span id="busy" class="busy" role="status" aria-live="polite" hidden>Querying QLever…</span>
+      <button type="button" id="theme-toggle" class="theme-toggle"
+              aria-label="Switch to dark mode" title="Switch to dark mode">
+        <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401Z" fill="currentColor"/>
+        </svg>
+        <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+                fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="tabs" aria-label="Views">
+      <a href="#worldmap" data-view="worldmap">World map</a>
+      <a href="#catalogue" data-view="catalogue">Catalogue</a>
+      <a href="#cloud" data-view="cloud">Name cloud</a>
+      <a href="#network" data-view="network">Names &amp; works</a>
+      <a href="#co-credits" data-view="co-credits">Co-credits</a>
+      <a href="#timeline" data-view="timeline">Timeline</a>
+      <a href="#geography" data-view="geography">Heatmaps</a>
+      <a href="#breakdowns" data-view="breakdowns">Breakdowns</a>
+      <a href="#preservation" data-view="preservation">Preservation</a>
+      <a href="#roles" data-view="roles">Roles</a>
+    </nav>
+  </header>
+
+  <section class="filters" aria-label="Filters">
+    <div class="filter" data-scope-control>
+      <details class="role-picker">
+        <summary>Datasets: <span id="scope-summary">All works</span></summary>
+        <div class="role-picker-body">
+          <div class="role-actions">
+            <button type="button" id="scopes-all">All datasets</button>
+            <button type="button" id="scopes-clear">Clear</button>
+          </div>
+          <div id="scope-list" class="role-list" role="group" aria-label="Datasets"></div>
+          <p class="scope-note">No selection shows all works.</p>
+        </div>
+      </details>
+    </div>
+    <div class="filter" data-filter="agents" hidden>
+      <details class="role-picker">
+        <summary>Roles: <span id="role-summary">all</span></summary>
+        <div class="role-picker-body">
+          <div class="role-actions">
+            <button type="button" id="roles-all">All</button>
+            <button type="button" id="roles-none">None</button>
+          </div>
+          <div id="role-list" class="role-list"></div>
+        </div>
+      </details>
+    </div>
+    <label class="filter" data-filter="agents" hidden>
+      <span>Names</span>
+      <select id="top-limit">
+        <option value="500">500</option>
+        <option value="1000" selected>1,000</option>
+        <option value="2000">2,000</option>
+        <option value="5000">5,000</option>
+        <option value="10000">10,000</option>
+        <option value="20000">20,000</option>
+        <option value="all">All</option>
+      </select>
+    </label>
+    <label class="filter" data-filter="agents" hidden>
+      <span>Min. works</span>
+      <select id="min-works">
+        <option value="0" selected>Any</option>
+        <option value="2">2+</option>
+        <option value="3">3+</option>
+        <option value="5">5+</option>
+        <option value="10">10+</option>
+      </select>
+    </label>
+    <div class="filter filter-search" data-filter="search" hidden>
+      <label for="search">Search names and works</label>
+      <input id="search" type="search" placeholder="e.g. Chaplin or Metropolis" autocomplete="off"
+             aria-controls="search-results" aria-expanded="false">
+      <div id="search-results" class="search-results" role="listbox" hidden></div>
+    </div>
+    <p class="filter-note" data-filter="dataset">
+      Role and name filters do not apply.
+    </p>
+    <button type="button" id="reset-filters" class="reset">Reset</button>
+  </section>
+
+  <main>
+    <p id="status" role="status" aria-live="polite"></p>
+
+    <section id="view-cloud" class="view" data-view="cloud" hidden>
+      <div class="view-head">
+        <div>
+          <h2>Name cloud</h2>
+          <p>Bubble area = distinct works. Click a name; scroll to zoom.</p>
+        </div>
+        <button type="button" class="export" data-export="cloud">Download PNG</button>
+      </div>
+      <div id="cloud-legend" class="legend" aria-label="Role colours"></div>
+      <p id="cloud-stats" class="stats"></p>
+      <div id="cloud-chart" class="chart chart-cloud"></div>
+    </section>
+
+    <section id="view-network" class="view" data-view="network" hidden>
+      <div class="view-head">
+        <div>
+          <h2>Names &amp; works</h2>
+          <p>Names and their credited works. Click a node to highlight; drag to reposition.</p>
+        </div>
+        <div class="view-actions">
+          <div class="segmented" id="network-links" role="group" aria-label="Relationship lines">
+            <button type="button" data-link-scope="all" class="active">All lines</button>
+            <button type="button" data-link-scope="selected">Selected only</button>
+          </div>
+          <button type="button" class="fit" data-fit="network">Fit view</button>
+          <button type="button" class="export" data-export="network">Download SVG</button>
+        </div>
+      </div>
+      <p id="network-stats" class="stats"></p>
+      <div id="network-legend" class="legend" aria-label="Node colours">
+        <span class="legend-item"><span class="legend-swatch name"></span>Names</span>
+        <span class="legend-item"><span class="legend-swatch work"></span>Works</span>
+      </div>
+      <div id="network-chart" class="chart chart-network"></div>
+    </section>
+
+    <section id="view-co-credits" class="view" data-view="co-credits" hidden>
+      <div class="view-head">
+        <div>
+          <h2>Co-credits</h2>
+          <p>Names sharing works. Edge width = shared works.</p>
+        </div>
+        <div class="view-actions">
+          <label class="inline-control">
+            <span>Min shared works: <output id="shared-value">2</output></span>
+            <input id="shared-threshold" type="range" min="2" max="10" step="1" value="2">
+          </label>
+          <div class="segmented" id="co-credits-links" role="group" aria-label="Relationship lines">
+            <button type="button" data-link-scope="all" class="active">All lines</button>
+            <button type="button" data-link-scope="selected">Selected only</button>
+          </div>
+          <button type="button" id="co-credits-ego" class="fit" hidden>Isolate selected name</button>
+          <button type="button" class="fit" data-fit="co-credits">Fit view</button>
+          <button type="button" class="export" data-export="co-credits">Download SVG</button>
+        </div>
+      </div>
+      <p id="co-credits-stats" class="stats"></p>
+      <div id="co-credits-chart" class="chart chart-network chart-co-credits"></div>
+    </section>
+
+    <section id="view-timeline" class="view" data-view="timeline" hidden>
+      <div class="view-head">
+        <div>
+          <h2>Timeline</h2>
+          <p id="timeline-description">Works by production year. Four-digit years only. Click a bar for titles.</p>
+        </div>
+        <div class="view-actions">
+          <div class="segmented" role="group" aria-label="Granularity">
+            <button type="button" data-granularity="year" class="active">Year</button>
+            <button type="button" data-granularity="decade">Decade</button>
+          </div>
+          <button type="button" class="export" data-export="timeline">Download SVG</button>
+        </div>
+      </div>
+      <p id="timeline-stats" class="stats"></p>
+      <div id="timeline-chart" class="chart chart-timeline"></div>
+    </section>
+
+    <section id="view-worldmap" class="view" data-view="worldmap" hidden>
+      <div class="view-head">
+        <div>
+          <h2>World map</h2>
+          <p id="worldmap-description">Works by production country. Colour intensity follows the heat ramp; click a country for titles. Co-productions count once for each country.</p>
+        </div>
+        <div class="view-actions">
+          <button type="button" class="fit" data-fit="worldmap">Fit view</button>
+          <button type="button" class="export" data-export="worldmap">Download SVG</button>
+        </div>
+      </div>
+      <dl id="worldmap-overview" class="stat-grid" aria-label="Dataset overview">
+        <div class="stat-card">
+          <dt class="stat-label">Works</dt>
+          <dd class="stat-value" data-stat="works">—</dd>
+        </div>
+        <div class="stat-card">
+          <dt class="stat-label">Production countries</dt>
+          <dd class="stat-value" data-stat="countries">—</dd>
+        </div>
+        <div class="stat-card">
+          <dt class="stat-label">Credited names</dt>
+          <dd class="stat-value" data-stat="names">—</dd>
+        </div>
+        <div class="stat-card">
+          <dt class="stat-label">Production years</dt>
+          <dd class="stat-value" data-stat="years">—</dd>
+        </div>
+      </dl>
+      <p id="worldmap-stats" class="stats"></p>
+      <div id="worldmap-chart" class="chart chart-worldmap"></div>
+    </section>
+
+    <section id="view-catalogue" class="view" data-view="catalogue" hidden>
+      <div class="view-head">
+        <div>
+          <h2>Catalogue</h2>
+          <p>Search titles, identifiers and credited names separately, then narrow by country, decade and holdings. Switch to SPARQL mode to run your own queries against the same endpoint.</p>
+        </div>
+        <div class="view-actions">
+          <div class="segmented" id="catalogue-mode" role="group" aria-label="Catalogue mode">
+            <button type="button" class="active" data-catalogue-mode="faceted" aria-pressed="true">Faceted</button>
+            <button type="button" data-catalogue-mode="sparql" aria-pressed="false">SPARQL</button>
+          </div>
+          <button type="button" class="export" id="catalogue-export">Download page CSV</button>
+        </div>
+      </div>
+      <div id="catalogue-filters" class="catalogue-filters" role="search" aria-label="Catalogue filters">
+        <label class="catalogue-field catalogue-field-search">
+          <span>Search titles</span>
+          <input id="catalogue-title" type="search" placeholder="e.g. Wochenschau" autocomplete="off">
+        </label>
+        <label class="catalogue-field catalogue-field-search catalogue-field-id">
+          <span>Search identifiers</span>
+          <input id="catalogue-identifier" type="search" placeholder="e.g. BA-1" autocomplete="off">
+        </label>
+        <label class="catalogue-field catalogue-field-search catalogue-field-name">
+          <span>Search names</span>
+          <input id="catalogue-name" type="search" placeholder="e.g. Riefenstahl or UFA" autocomplete="off">
+        </label>
+        <label class="catalogue-field">
+          <span>Country</span>
+          <select id="catalogue-country"></select>
+        </label>
+        <label class="catalogue-field">
+          <span>Decade</span>
+          <select id="catalogue-decade"></select>
+        </label>
+        <label class="catalogue-field">
+          <span>Form</span>
+          <select id="catalogue-form"></select>
+        </label>
+        <label class="catalogue-field">
+          <span>Genre</span>
+          <select id="catalogue-genre"></select>
+        </label>
+        <label class="catalogue-field">
+          <span>Item format</span>
+          <select id="catalogue-format"></select>
+        </label>
+        <label class="catalogue-field">
+          <span>Holding institution</span>
+          <select id="catalogue-institution"></select>
+        </label>
+        <label class="catalogue-field">
+          <span>Sort by</span>
+          <select id="catalogue-sort">
+            <option value="title">Title (A–Z)</option>
+            <option value="year-asc">Year (oldest first)</option>
+            <option value="year-desc">Year (newest first)</option>
+          </select>
+        </label>
+        <button type="button" id="catalogue-reset" class="reset catalogue-reset">Clear filters</button>
+      </div>
+      <div id="catalogue-sparql-panel" class="catalogue-sparql" hidden>
+        <div class="catalogue-sparql-editor">
+          <label class="catalogue-field catalogue-field-query" for="catalogue-sparql">
+            <span>SPARQL query</span>
+            <textarea id="catalogue-sparql" rows="12" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="catalogue-query-hint"></textarea>
+          </label>
+          <div class="catalogue-sparql-actions">
+            <button type="button" id="catalogue-run" class="catalogue-run">Run query (Ctrl+Enter)</button>
+            <button type="button" id="catalogue-clear" class="fit">Clear</button>
+          </div>
+          <p id="catalogue-query-hint" class="catalogue-hint">Ctrl+Enter or ⌘+Enter runs the query. Click any IRI in the results to open the record.</p>
+          <p id="catalogue-query-status" class="catalogue-query-status" role="status" aria-live="polite"></p>
+        </div>
+        <div class="catalogue-sparql-templates">
+          <span class="catalogue-templates-label">Templates</span>
+          <div id="catalogue-templates" class="catalogue-templates" role="group" aria-label="Query templates">
+            <button type="button" data-catalogue-template="filters">Current filters</button>
+            <button type="button" data-catalogue-template="works">Works</button>
+            <button type="button" data-catalogue-template="names">Names</button>
+            <button type="button" data-catalogue-template="holdings">Manifestations &amp; items</button>
+            <button type="button" data-catalogue-template="carriers">Carriers</button>
+            <button type="button" data-catalogue-template="predicates">Predicates</button>
+          </div>
+        </div>
+      </div>
+      <div id="catalogue-agent-filter" class="catalogue-chip" hidden>
+        <span>Credited name: <strong id="catalogue-agent-name"></strong></span>
+        <button type="button" id="catalogue-agent-clear" aria-label="Clear credited name filter">×</button>
+      </div>
+      <div class="catalogue-meta">
+        <p id="catalogue-stats" class="stats" role="status" aria-live="polite"></p>
+        <div class="catalogue-pager" aria-label="Result pages">
+          <button type="button" id="catalogue-prev" class="fit" disabled>‹ Previous</button>
+          <span id="catalogue-page" class="catalogue-page"></span>
+          <button type="button" id="catalogue-next" class="fit" disabled>Next ›</button>
+        </div>
+      </div>
+      <div id="catalogue-table" class="catalogue-table-wrap"></div>
+    </section>
+
+    <section id="view-geography" class="view" data-view="geography" hidden>
+      <div class="view-head">
+        <div>
+          <h2>Heatmaps</h2>
+          <p id="geography-description">Production countries by decade. Click a cell for titles.</p>
+        </div>
+        <div class="view-actions">
+          <label class="inline-control">
+            <span>Matrix</span>
+            <select id="heatmap-kind"></select>
+          </label>
+          <label class="inline-control">
+            <span>Max categories</span>
+            <select id="heatmap-limit" aria-label="Maximum heatmap categories"></select>
+          </label>
+          <div class="segmented" id="heatmap-mode" role="group" aria-label="Cell values">
+            <button type="button" data-heatmap-mode="count" class="active">Count</button>
+            <button type="button" data-heatmap-mode="column">% of column</button>
+            <button type="button" data-heatmap-mode="row">% of row</button>
+          </div>
+          <button type="button" class="export" data-export="geography">Download SVG</button>
+        </div>
+      </div>
+      <p id="geography-stats" class="stats"></p>
+      <div id="geography-chart" class="chart chart-geography"></div>
+    </section>
+
+    <section id="view-breakdowns" class="view" data-view="breakdowns" hidden>
+      <div class="view-head">
+        <div>
+          <h2>Breakdowns</h2>
+          <p>Work and item distributions for format, element type, base material, colour, sound, film stock, genre, form and holding institution.</p>
+        </div>
+      </div>
+      <div id="breakdown-chart" class="breakdown-grid"></div>
+    </section>
+
+    <section id="view-preservation" class="view" data-view="preservation" hidden>
+      <div class="view-head">
+        <div>
+          <h2>Recorded preservation coverage</h2>
+          <p id="preservation-description">Works with at least one item explicitly marked for preservation. This view describes recorded holdings, not whether a work survives.</p>
+        </div>
+        <div class="view-actions preservation-view-actions">
+          <label class="inline-control">
+            <span>Within</span>
+            <select id="preservation-within">
+              <option value="all">All works</option>
+              <option value="nitrate">Works with nitrate holdings recorded</option>
+            </select>
+          </label>
+          <div class="inline-control">
+            <span>Group by</span>
+            <div class="segmented" id="preservation-group" role="group" aria-label="Group preservation copies by">
+              <button type="button" data-preservation-group="decade" class="active" aria-pressed="true">Decade</button>
+              <button type="button" data-preservation-group="country" aria-pressed="false">Country</button>
+            </div>
+          </div>
+          <label class="inline-control" id="preservation-measure-control">
+            <span>Measure</span>
+            <select id="preservation-measure">
+              <option value="count" selected>Work counts</option>
+              <option value="all">100% coverage</option>
+            </select>
+          </label>
+          <label class="inline-control">
+            <span>Country order</span>
+            <select id="preservation-sort" disabled>
+              <option value="total">Total works</option>
+              <option value="coverage">Preservation coverage</option>
+              <option value="name">Country name</option>
+            </select>
+          </label>
+          <label class="inline-control">
+            <span>Countries shown</span>
+            <select id="preservation-limit" disabled>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="all">All</option>
+            </select>
+          </label>
+          <div class="inline-control">
+            <span>Export</span>
+            <button type="button" class="export" data-export="preservation">Download SVG</button>
+          </div>
+        </div>
+      </div>
+      <div id="preservation-overview" class="preservation-overview" role="region" aria-label="Preservation copy overview"></div>
+      <p id="preservation-within-note" class="preservation-note">Preservation status can belong to any item of a work.</p>
+      <p id="preservation-stats" class="stats"></p>
+      <div id="preservation-chart" class="chart chart-preservation"></div>
+    </section>
+
+    <section id="view-roles" class="view" data-view="roles" hidden>
+      <div class="view-head">
+        <div>
+          <h2>Roles</h2>
+          <p>Roles sized by works; outer ring shows the busiest names per role. Click a role to filter the cloud.</p>
+        </div>
+        <button type="button" class="export" data-export="roles">Download SVG</button>
+      </div>
+      <p id="roles-stats" class="stats"></p>
+      <div id="roles-chart" class="chart chart-roles"></div>
+    </section>
+  </main>
+  </div>
+
+  <div id="drawer-resizer" class="drawer-resizer" role="separator"
+       aria-orientation="vertical" aria-label="Resize details panel"
+       aria-controls="drawer" tabindex="0" hidden></div>
+
+  <aside id="drawer" class="drawer" hidden aria-label="Details">
+    <header>
+      <div>
+        <h2 id="drawer-title">Details</h2>
+        <p id="drawer-subtitle">Select a name or work</p>
+      </div>
+      <div class="drawer-header-actions">
+        <div id="drawer-nav" class="drawer-nav" hidden>
+          <button type="button" id="drawer-prev" aria-label="Previous record" title="Previous record" disabled>‹</button>
+          <span id="drawer-position" class="drawer-position"></span>
+          <button type="button" id="drawer-next" aria-label="Next record" title="Next record" disabled>›</button>
+        </div>
+        <button type="button" id="drawer-close" aria-label="Close details and clear selection" title="Close details and clear selection">×</button>
+      </div>
+    </header>
+    <div id="drawer-context" class="drawer-context" role="status" hidden></div>
+    <div id="drawer-body"></div>
+  </aside>
+
+  <div id="tooltip" role="tooltip" hidden></div>
+
+  <noscript>
+    <p class="chart-message error">These views need JavaScript and the FIAF SPARQL endpoint.</p>
+  </noscript>
+
+  <script>
+    (() => {
+      const view = (location.hash || "").slice(1);
+      const agentViews = new Set(["cloud", "network", "co-credits", "roles"]);
+      const searchViews = agentViews;
+      for (const element of document.querySelectorAll('[data-filter="agents"]')) {
+        element.hidden = !agentViews.has(view);
+      }
+      for (const element of document.querySelectorAll('[data-filter="search"]')) {
+        element.hidden = !searchViews.has(view);
+      }
+      for (const element of document.querySelectorAll('[data-filter="dataset"]')) {
+        element.hidden = agentViews.has(view);
+      }
+    })();
+  </script>
+
+  <script src="vendor/d3.v7.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

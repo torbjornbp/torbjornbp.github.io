@@ -1,0 +1,92 @@
+# Summary metadata for the works on one catalogue page.
+#
+# The page query only resolves titles and years; this second query enriches
+# just the returned work IRIs. Each field aggregates in its own subquery so the
+# multi-valued fields do not multiply into a Cartesian product.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?work ?countries ?forms ?genres ?identifiers ?sourceDatasets
+       ?manifestations ?items ?carriers
+WHERE {
+  VALUES ?work { {{WORK_IRIS}} }
+
+  OPTIONAL {
+    SELECT ?work (GROUP_CONCAT(DISTINCT STR(?country); separator="|") AS ?countries)
+    WHERE {
+      VALUES ?work { {{WORK_IRIS}} }
+      ?work fiaf:hasCountry ?country .
+    }
+    GROUP BY ?work
+  }
+
+  OPTIONAL {
+    SELECT ?work (GROUP_CONCAT(DISTINCT STR(?form); separator="|") AS ?forms)
+    WHERE {
+      VALUES ?work { {{WORK_IRIS}} }
+      ?work fiaf:hasForm ?form .
+    }
+    GROUP BY ?work
+  }
+
+  OPTIONAL {
+    SELECT ?work (GROUP_CONCAT(DISTINCT STR(?genre); separator="|") AS ?genres)
+    WHERE {
+      VALUES ?work { {{WORK_IRIS}} }
+      ?work fiaf:hasGenre ?genre .
+    }
+    GROUP BY ?work
+  }
+
+  OPTIONAL {
+    SELECT ?work (GROUP_CONCAT(DISTINCT ?identifierValue; separator="|") AS ?identifiers)
+    WHERE {
+      VALUES ?work { {{WORK_IRIS}} }
+      ?work fiaf:hasIdentifier ?identifier .
+      OPTIONAL { ?identifier fiaf:hasIdentifierValue ?rawIdentifier }
+      BIND(COALESCE(?rawIdentifier, STR(?identifier)) AS ?identifierValue)
+    }
+    GROUP BY ?work
+  }
+
+  OPTIONAL {
+    SELECT ?work (GROUP_CONCAT(DISTINCT ?sourceDatasetName; separator="|") AS ?sourceDatasets)
+    WHERE {
+      VALUES ?work { {{WORK_IRIS}} }
+      ?work fiaf:hasIdentifier ?identifier .
+      ?identifier fiaf:hasIdentifierAuthority ?authority .
+      FILTER(isIRI(?authority))
+      OPTIONAL { ?authority rdfs:label ?authorityLabel }
+      BIND(COALESCE(?authorityLabel, STR(?authority)) AS ?sourceDatasetName)
+    }
+    GROUP BY ?work
+  }
+
+  OPTIONAL {
+    SELECT ?work (COUNT(DISTINCT ?manifestation) AS ?manifestations)
+    WHERE {
+      VALUES ?work { {{WORK_IRIS}} }
+      ?work fiaf:hasManifestation ?manifestation .
+    }
+    GROUP BY ?work
+  }
+
+  OPTIONAL {
+    SELECT ?work (COUNT(DISTINCT ?item) AS ?items)
+    WHERE {
+      VALUES ?work { {{WORK_IRIS}} }
+      ?work fiaf:hasManifestation/fiaf:hasItem ?item .
+    }
+    GROUP BY ?work
+  }
+
+  OPTIONAL {
+    SELECT ?work (COUNT(DISTINCT ?carrier) AS ?carriers)
+    WHERE {
+      VALUES ?work { {{WORK_IRIS}} }
+      ?work fiaf:hasManifestation/fiaf:hasItem/fiaf:hasCarrier ?carrier .
+    }
+    GROUP BY ?work
+  }
+}

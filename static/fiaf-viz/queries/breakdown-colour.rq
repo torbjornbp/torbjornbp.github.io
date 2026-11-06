@@ -1,0 +1,31 @@
+# Items per colour characteristic.
+#
+# The characteristic can be attached to the item or to its manifestation.
+# Resolve a nested colour standard first, then the blank-node type, then an IRI.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?value (COUNT(DISTINCT ?item) AS ?n)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType .
+  {{SCOPE_FILTER}}
+  {
+    ?work fiaf:hasManifestation/fiaf:hasItem ?item .
+    ?item fiaf:hasColourCharacteristic ?characteristic .
+  }
+  UNION
+  {
+    ?work fiaf:hasManifestation ?manif .
+    ?manif fiaf:hasColourCharacteristic ?characteristic ;
+           fiaf:hasItem ?item .
+  }
+  ?item a fiaf:Item .
+  OPTIONAL { ?characteristic fiaf:hasColourStandard ?standard }
+  OPTIONAL { ?characteristic a ?type . FILTER(isBlank(?characteristic)) }
+  FILTER(!isBlank(?characteristic) || BOUND(?standard) || BOUND(?type))
+  BIND(COALESCE(?standard, IF(isBlank(?characteristic), ?type, ?characteristic)) AS ?value)
+}
+GROUP BY ?value
+ORDER BY DESC(?n)
+LIMIT {{LIMIT}}

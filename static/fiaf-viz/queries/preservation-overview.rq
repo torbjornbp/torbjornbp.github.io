@@ -1,0 +1,40 @@
+# Dataset-wide preservation-copy totals.
+#
+# One row per metric, counting distinct works. "items" counts works with at
+# least one recorded item; "preservation" counts works with at least one item
+# marked fiaf:hasStatus fiaf:Preservation. "access" is shown only as context.
+#
+# FIAFcore records preservation at item level. There is no separate
+# preservation-manifestation class: a preservation manifestation is represented
+# by the preservation-status items attached to it.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?metric (COUNT(DISTINCT ?work) AS ?n)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType .
+  {{SCOPE_FILTER}}
+  {
+    BIND("works" AS ?metric)
+  }
+  UNION
+  {
+    BIND("items" AS ?metric)
+    ?work fiaf:hasManifestation/fiaf:hasItem ?itemsItem .
+  }
+  UNION
+  {
+    BIND("preservation" AS ?metric)
+    ?work fiaf:hasManifestation/fiaf:hasItem ?preservationItem .
+    ?preservationItem fiaf:hasStatus fiaf:Preservation .
+  }
+  UNION
+  {
+    BIND("access" AS ?metric)
+    ?work fiaf:hasManifestation/fiaf:hasItem ?accessItem .
+    ?accessItem fiaf:hasStatus fiaf:Access .
+  }
+}
+GROUP BY ?metric
+ORDER BY ?metric

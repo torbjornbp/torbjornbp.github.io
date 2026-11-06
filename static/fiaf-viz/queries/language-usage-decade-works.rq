@@ -1,0 +1,49 @@
+# Works for one language-usage-type/decade heatmap cell.
+#
+# Keep the usage resolution in step with language-usage-decades.rq: usages may
+# sit on the work, one of its manifestations or one of its items. The inner
+# subquery finds the matching works before titles are joined, which keeps the
+# drill-down cheap on the public endpoint.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?work (SAMPLE(?candidateTitle) AS ?title)
+WHERE {
+  {
+    SELECT DISTINCT ?work
+    WHERE {
+      VALUES ?usageType { {{USAGE}} }
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      ?work a ?workType ;
+            fiaf:hasEvent ?event .
+      {{SCOPE_FILTER}}
+      ?event a fiaf:ProductionEvent ;
+             fiaf:hasDate ?date .
+      {
+        ?work fiaf:hasLanguageUsage ?usage .
+      }
+      UNION
+      {
+        ?work fiaf:hasManifestation ?manif .
+        ?manif fiaf:hasLanguageUsage ?usage .
+      }
+      UNION
+      {
+        ?work fiaf:hasManifestation/fiaf:hasItem ?item .
+        ?item fiaf:hasLanguageUsage ?usage .
+      }
+      ?usage a ?usageType .
+      BIND(SUBSTR(STR(?date), 1, 4) AS ?year)
+      FILTER(REGEX(?year, "^[0-9]{4}$"))
+      BIND(CONCAT(SUBSTR(?year, 1, 3), "0") AS ?decade)
+      FILTER(?decade = {{DECADE}})
+    }
+  }
+  OPTIONAL { ?work rdfs:label ?label }
+  OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+  BIND(COALESCE(?label, ?titleValue) AS ?candidateTitle)
+}
+GROUP BY ?work
+ORDER BY ?title ?work
+LIMIT {{LIMIT}}

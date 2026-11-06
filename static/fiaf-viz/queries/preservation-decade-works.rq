@@ -1,0 +1,31 @@
+# Works behind one recorded-data category for a production decade.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?work
+       (SAMPLE(?candidateTitle) AS ?title)
+       (MIN(?rawYear) AS ?year)
+       (COUNT(DISTINCT ?preservationItem) AS ?preservationItems)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasEvent ?event .
+  ?event a fiaf:ProductionEvent ;
+         fiaf:hasDate ?date .
+  BIND(SUBSTR(STR(?date), 1, 4) AS ?rawYear)
+  FILTER(REGEX(?rawYear, "^[0-9]{4}$"))
+  FILTER(STRSTARTS(?rawYear, {{YEAR_PREFIX}}))
+  {{SCOPE_FILTER}}
+  {{STATUS_FILTER}}
+  OPTIONAL {
+    ?work fiaf:hasManifestation/fiaf:hasItem ?preservationItem .
+    ?preservationItem fiaf:hasStatus fiaf:Preservation .
+  }
+  OPTIONAL { ?work rdfs:label ?label }
+  OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+  BIND(COALESCE(?label, ?titleValue) AS ?candidateTitle)
+}
+GROUP BY ?work
+ORDER BY ?title ?work
+LIMIT {{LIMIT}}

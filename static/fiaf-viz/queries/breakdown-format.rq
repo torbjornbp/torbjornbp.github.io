@@ -1,0 +1,24 @@
+# Items per format.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?value (COUNT(DISTINCT ?item) AS ?n)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasManifestation/fiaf:hasItem ?item .
+  {{SCOPE_FILTER}}
+  ?item a fiaf:Item .
+  { ?item fiaf:hasFormat ?rawValue }
+  UNION
+  {
+    ?work fiaf:hasManifestation ?manif .
+    ?manif fiaf:hasItem ?item ; fiaf:hasFormat ?rawValue .
+  }
+  OPTIONAL { ?rawValue a ?type . FILTER(isBlank(?rawValue)) }
+  FILTER(!isBlank(?rawValue) || BOUND(?type))
+  BIND(IF(isBlank(?rawValue), ?type, ?rawValue) AS ?value)
+}
+GROUP BY ?value
+ORDER BY DESC(?n)
+LIMIT {{LIMIT}}

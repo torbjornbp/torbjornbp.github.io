@@ -1,0 +1,34 @@
+# Dated works per production decade and number of attached items.
+# Zero-item works are included so catalogue coverage is visible.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?decade ?bucket (COUNT(*) AS ?works)
+WHERE {
+  {
+    SELECT ?decade ?work (COUNT(DISTINCT ?item) AS ?itemCount)
+    WHERE {
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      ?work a ?workType ;
+            fiaf:hasEvent ?event .
+      {{SCOPE_FILTER}}
+      ?event a fiaf:ProductionEvent ;
+             fiaf:hasDate ?date .
+      OPTIONAL { ?work fiaf:hasManifestation/fiaf:hasItem ?item }
+      BIND(SUBSTR(STR(?date), 1, 4) AS ?year)
+      FILTER(REGEX(?year, "^[0-9]{4}$"))
+      BIND(CONCAT(SUBSTR(?year, 1, 3), "0") AS ?decade)
+    }
+    GROUP BY ?decade ?work
+  }
+  BIND(
+    IF(?itemCount = 0, "0",
+    IF(?itemCount = 1, "1",
+    IF(?itemCount <= 3, "2-3",
+    IF(?itemCount <= 5, "4-5",
+    IF(?itemCount <= 10, "6-10",
+    IF(?itemCount <= 20, "11-20", "21+")))))) AS ?bucket
+  )
+}
+GROUP BY ?decade ?bucket
+ORDER BY ?decade ?bucket

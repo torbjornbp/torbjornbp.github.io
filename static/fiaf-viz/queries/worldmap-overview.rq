@@ -1,0 +1,45 @@
+# Overall catalogue totals for the world map landing view.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?works ?countries ?agents ?firstYear ?lastYear
+WHERE {
+  {
+    SELECT (COUNT(DISTINCT ?work) AS ?works)
+           (COUNT(DISTINCT ?country) AS ?countries)
+    WHERE {
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      ?work a ?workType .
+      {{SCOPE_FILTER}}
+      OPTIONAL { ?work fiaf:hasCountry ?country }
+    }
+  }
+  {
+    SELECT (COUNT(DISTINCT ?agent) AS ?agents)
+    WHERE {
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      ?work a ?workType .
+      {{SCOPE_FILTER}}
+      ?work fiaf:hasEvent ?event .
+      ?event fiaf:hasActivity ?activity .
+      ?activity fiaf:hasAgent ?agent .
+      ?agent rdfs:label ?name .
+      FILTER(STRLEN(STR(?name)) > 0)
+    }
+  }
+  {
+    SELECT (MIN(?year) AS ?firstYear)
+           (MAX(?year) AS ?lastYear)
+    WHERE {
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      ?work a ?workType .
+      {{SCOPE_FILTER}}
+      ?work fiaf:hasEvent ?event .
+      ?event a fiaf:ProductionEvent ;
+             fiaf:hasDate ?date .
+      BIND(SUBSTR(STR(?date), 1, 4) AS ?year)
+      FILTER(REGEX(?year, "^[0-9]{4}$"))
+    }
+  }
+}

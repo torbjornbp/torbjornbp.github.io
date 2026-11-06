@@ -1,0 +1,25 @@
+# Co-credited names for one agent, with shared-work counts.
+#
+# Drives both the co-credit ego network and its sidebar. Unlike co-credits.rq
+# this is not restricted to the names currently loaded in the overview, so the
+# list stays useful for people outside the top-name slice.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?agent (MIN(STR(?agentLabel)) AS ?name) (COUNT(DISTINCT ?work) AS ?shared)
+WHERE {
+  VALUES ?selected { {{AGENT}} }
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType .
+  {{SCOPE_FILTER}}
+  ?work fiaf:hasEvent/fiaf:hasActivity ?selectedActivity, ?activity .
+  ?selectedActivity fiaf:hasAgent ?selected .
+  ?activity fiaf:hasAgent ?agent .
+  FILTER(STR(?agent) != STR(?selected))
+  ?agent rdfs:label ?agentLabel .
+  FILTER(STRLEN(STR(?agentLabel)) > 0)
+}
+GROUP BY ?agent
+ORDER BY DESC(?shared) ?name
+LIMIT {{LIMIT}}

@@ -1,0 +1,26 @@
+# Works for one country/decade heatmap cell (the click-through drawer).
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?work (SAMPLE(?candidateTitle) AS ?title)
+WHERE {
+  VALUES ?country { {{COUNTRY}} }
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasCountry ?country ;
+        fiaf:hasEvent ?event .
+  {{SCOPE_FILTER}}
+  OPTIONAL { ?work rdfs:label ?label }
+  OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+  BIND(COALESCE(?label, ?titleValue) AS ?candidateTitle)
+  ?event a fiaf:ProductionEvent ;
+         fiaf:hasDate ?date .
+  BIND(SUBSTR(STR(?date), 1, 4) AS ?year)
+  FILTER(REGEX(?year, "^[0-9]{4}$"))
+  BIND(CONCAT(SUBSTR(?year, 1, 3), "0") AS ?decade)
+  FILTER(?decade = {{DECADE}})
+}
+GROUP BY ?work
+ORDER BY ?title ?work
+LIMIT {{LIMIT}}

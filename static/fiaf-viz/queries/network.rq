@@ -1,0 +1,38 @@
+# Agent -> work edges for the bipartite network. The agent list is restricted
+# to the top names already loaded by agents.rq.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+# The browser already has agent labels; DISTINCT makes the row limit apply to
+# displayed edges rather than duplicate agent/work/role combinations.
+SELECT ?agent ?work (SAMPLE(?candidateTitle) AS ?title)
+WHERE {
+  {
+    # Select the capped agent/work edges before joining titles. The public
+    # index is much larger than a local run, and joining every title inside
+    # this pattern can exhaust its query budget.
+    SELECT DISTINCT ?agent ?work
+    WHERE {
+      VALUES ?agent { {{AGENT_IRIS}} }
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      ?work a ?workType .
+      {{SCOPE_FILTER}}
+      ?work fiaf:hasEvent ?event .
+      ?event fiaf:hasActivity ?activity .
+      ?activity a ?role ;
+                fiaf:hasAgent ?agent .
+      {{ROLE_FILTER}}
+    }
+    # Hash the edge rather than ordering by agent: a capped result then covers
+    # names across the whole slice instead of only the first few alphabetic
+    # agents (which would leave most names with no works in the network).
+    ORDER BY MD5(CONCAT(STR(?agent), STR(?work)))
+    LIMIT {{LIMIT}}
+  }
+  OPTIONAL { ?work rdfs:label ?label }
+  OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+  BIND(COALESCE(?label, ?titleValue) AS ?candidateTitle)
+}
+GROUP BY ?agent ?work
+ORDER BY ?agent ?work

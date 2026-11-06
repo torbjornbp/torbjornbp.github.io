@@ -1,0 +1,17 @@
+# Works per production year. Only four-digit date prefixes are used.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?year (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType .
+  {{SCOPE_FILTER}}
+  ?work fiaf:hasEvent ?event .
+  ?event a fiaf:ProductionEvent ;
+         fiaf:hasDate ?date .
+  BIND(SUBSTR(STR(?date), 1, 4) AS ?year)
+  FILTER(REGEX(?year, "^[0-9]{4}$"))
+}
+GROUP BY ?year
+ORDER BY ?year

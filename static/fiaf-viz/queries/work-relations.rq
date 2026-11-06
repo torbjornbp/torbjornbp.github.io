@@ -1,0 +1,31 @@
+# Linked works for the drawer: child/related works, parent works and see-also.
+#
+# fiaf:hasWork is directional in the data, so both directions are surfaced with
+# a readable relation type. The UI opens the related work in the same drawer.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?related ?relation (SAMPLE(?candidateTitle) AS ?title)
+WHERE {
+  VALUES ?work { {{WORK}} }
+  {
+    ?work fiaf:hasWork ?related .
+    BIND("hasWork" AS ?relation)
+  }
+  UNION
+  {
+    ?related fiaf:hasWork ?work .
+    BIND("parentWork" AS ?relation)
+  }
+  UNION
+  {
+    ?work fiaf:seeAlso ?related .
+    BIND("seeAlso" AS ?relation)
+  }
+  OPTIONAL { ?related rdfs:label ?label }
+  OPTIONAL { ?related fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+  BIND(COALESCE(?label, ?titleValue) AS ?candidateTitle)
+}
+GROUP BY ?related ?relation
+ORDER BY ?relation ?title

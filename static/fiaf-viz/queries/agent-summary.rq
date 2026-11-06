@@ -1,0 +1,16 @@
+# Exact credited-work and per-role totals, independent of the history page cap.
+# The empty role marks the distinct overall work count.
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?role (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?agent { {{AGENT}} }
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType .
+  {{SCOPE_FILTER}}
+  ?work fiaf:hasEvent/fiaf:hasActivity ?activity .
+  ?activity a ?activityType ; fiaf:hasAgent ?agent .
+  VALUES ?summaryType { "total" "role" }
+  BIND(IF(?summaryType = "total", "", ?activityType) AS ?role)
+}
+GROUP BY ?role

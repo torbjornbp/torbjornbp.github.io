@@ -1,0 +1,53 @@
+# Identity and parent work for any record IRI reached from an expert query.
+#
+# The record inspector uses this to decide whether the IRI is a Work (open the
+# full work drawer), a name (open the agent drawer) or another resource (show a
+# generic property inspector). Parent work links let items and carriers lead
+# back to their work.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?type ?label ?identifier ?authority ?authorityLabel
+       ?parentWork ?parentWorkLabel
+WHERE {
+  VALUES ?entity { {{ENTITY}} }
+
+  OPTIONAL { ?entity a ?type }
+
+  OPTIONAL { ?entity rdfs:label ?entityLabel }
+  OPTIONAL { ?entity fiaf:hasTitle/fiaf:hasTitleValue ?entityTitle }
+  BIND(COALESCE(?entityLabel, ?entityTitle) AS ?label)
+
+  OPTIONAL {
+    ?entity fiaf:hasIdentifier ?identifierNode .
+    OPTIONAL { ?identifierNode fiaf:hasIdentifierValue ?identifierValue }
+    OPTIONAL {
+      ?identifierNode fiaf:hasIdentifierAuthority ?authority .
+      OPTIONAL { ?authority rdfs:label ?authorityLabel }
+    }
+    BIND(COALESCE(?identifierValue, STR(?identifierNode)) AS ?identifier)
+  }
+
+  OPTIONAL {
+    {
+      ?parentWork fiaf:hasManifestation ?entity .
+    }
+    UNION
+    {
+      ?parentWork fiaf:hasManifestation/fiaf:hasItem ?entity .
+    }
+    UNION
+    {
+      ?parentWork fiaf:hasManifestation/fiaf:hasItem/fiaf:hasCarrier ?entity .
+    }
+    UNION
+    {
+      ?parentWork fiaf:hasEvent ?entity .
+    }
+    OPTIONAL { ?parentWork rdfs:label ?parentLabel }
+    OPTIONAL { ?parentWork fiaf:hasTitle/fiaf:hasTitleValue ?parentTitle }
+    BIND(COALESCE(?parentLabel, ?parentTitle) AS ?parentWorkLabel)
+  }
+}
+LIMIT 100

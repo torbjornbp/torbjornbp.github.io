@@ -1,0 +1,23 @@
+# Outgoing statements for the generic record inspector in SPARQL mode.
+#
+# Labels are resolved for object IRIs so the drawer can show names instead of
+# local-name fragments. rdf:type is shown on the Overview tab instead, so it is
+# left out here.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?property ?value ?valueLabel ?valueIsIri ?valueIsBlank ?valueType ?valueTitle
+WHERE {
+  VALUES ?entity { {{ENTITY}} }
+  ?entity ?property ?value .
+  FILTER(?property != rdf:type)
+  OPTIONAL { ?value rdfs:label ?valueLabel }
+  OPTIONAL { ?value fiaf:hasTitleValue ?valueTitle }
+  OPTIONAL { ?value a ?valueType }
+  BIND(isIRI(?value) AS ?valueIsIri)
+  BIND(isBlank(?value) AS ?valueIsBlank)
+}
+ORDER BY ?property ?value
+LIMIT 300

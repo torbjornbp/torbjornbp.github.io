@@ -1,0 +1,19 @@
+# Items per holding institution.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?value (COUNT(DISTINCT ?item) AS ?n)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasManifestation/fiaf:hasItem ?item .
+  {{SCOPE_FILTER}}
+  ?item a fiaf:Item ;
+        fiaf:hasHoldingInstitution ?institution .
+  OPTIONAL { ?institution rdfs:label ?label }
+  BIND(COALESCE(?label, STR(?institution)) AS ?value)
+}
+GROUP BY ?value
+ORDER BY DESC(?n)
+LIMIT {{LIMIT}}

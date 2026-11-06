@@ -1,0 +1,39 @@
+# Works for one production-decade/items-per-work heatmap cell.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?work ?title
+WHERE {
+  {
+    SELECT ?work (SAMPLE(?candidateTitle) AS ?title) (COUNT(DISTINCT ?item) AS ?itemCount)
+    WHERE {
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      ?work a ?workType ;
+            fiaf:hasEvent ?event .
+      {{SCOPE_FILTER}}
+      OPTIONAL { ?work rdfs:label ?label }
+      OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+      BIND(COALESCE(?label, ?titleValue) AS ?candidateTitle)
+      ?event a fiaf:ProductionEvent ;
+             fiaf:hasDate ?date .
+      OPTIONAL { ?work fiaf:hasManifestation/fiaf:hasItem ?item }
+      BIND(SUBSTR(STR(?date), 1, 4) AS ?year)
+      FILTER(REGEX(?year, "^[0-9]{4}$"))
+      BIND(CONCAT(SUBSTR(?year, 1, 3), "0") AS ?decade)
+      FILTER(?decade = {{DECADE}})
+    }
+    GROUP BY ?work
+  }
+  BIND(
+    IF(?itemCount = 0, "0",
+    IF(?itemCount = 1, "1",
+    IF(?itemCount <= 3, "2-3",
+    IF(?itemCount <= 5, "4-5",
+    IF(?itemCount <= 10, "6-10",
+    IF(?itemCount <= 20, "11-20", "21+")))))) AS ?bucket
+  )
+  FILTER(?bucket = {{BUCKET}})
+}
+ORDER BY ?title ?work
+LIMIT {{LIMIT}}

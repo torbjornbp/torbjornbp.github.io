@@ -1,0 +1,37 @@
+# Works behind one recorded-data category for a production country.
+#
+# Production dates are optional because the country chart also counts undated
+# works, including those with no items recorded.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?work
+       (SAMPLE(?candidateTitle) AS ?title)
+       (MIN(?rawYear) AS ?year)
+       (COUNT(DISTINCT ?preservationItem) AS ?preservationItems)
+WHERE {
+  VALUES ?country { {{COUNTRY}} }
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasCountry ?country .
+  {{SCOPE_FILTER}}
+  {{STATUS_FILTER}}
+  OPTIONAL {
+    ?work fiaf:hasManifestation/fiaf:hasItem ?preservationItem .
+    ?preservationItem fiaf:hasStatus fiaf:Preservation .
+  }
+  OPTIONAL { ?work rdfs:label ?label }
+  OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+  BIND(COALESCE(?label, ?titleValue) AS ?candidateTitle)
+  OPTIONAL {
+    ?work fiaf:hasEvent ?event .
+    ?event a fiaf:ProductionEvent ;
+           fiaf:hasDate ?date .
+    BIND(SUBSTR(STR(?date), 1, 4) AS ?rawYear)
+    FILTER(REGEX(?rawYear, "^[0-9]{4}$"))
+  }
+}
+GROUP BY ?work
+ORDER BY ?title ?work
+LIMIT {{LIMIT}}

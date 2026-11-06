@@ -1,0 +1,43 @@
+# One item facet against production decade, with item and work counts.
+#
+# A facet can sit on the item or on its manifestation. Match both levels but
+# count the items below a manifestation, so the unit stays "items" for either
+# level.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?value ?decade
+       (COUNT(DISTINCT ?item) AS ?items)
+       (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?facet { {{FACET}} }
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasEvent ?event .
+  {{SCOPE_FILTER}}
+  ?event a fiaf:ProductionEvent ;
+         fiaf:hasDate ?date .
+  {
+    ?work fiaf:hasManifestation/fiaf:hasItem ?item .
+    ?item ?facet ?rawValue .
+  }
+  UNION
+  {
+    ?work fiaf:hasManifestation ?manif .
+    ?manif ?facet ?rawValue ;
+           fiaf:hasItem ?item .
+  }
+  # Keep this resolution in step with item-facet-countries.rq: prefer a nested
+  # colour or sound standard, then the blank-node type, then the raw IRI.
+  OPTIONAL { ?rawValue fiaf:hasSoundStandard ?soundStandard }
+  OPTIONAL { ?rawValue fiaf:hasColourStandard ?colourStandard }
+  OPTIONAL { ?rawValue a ?type . FILTER(isBlank(?rawValue)) }
+  FILTER(!isBlank(?rawValue) || BOUND(?soundStandard) || BOUND(?colourStandard) || BOUND(?type))
+  BIND(COALESCE(?soundStandard, ?colourStandard,
+                IF(isBlank(?rawValue), ?type, ?rawValue)) AS ?value)
+  BIND(SUBSTR(STR(?date), 1, 4) AS ?year)
+  FILTER(REGEX(?year, "^[0-9]{4}$"))
+  BIND(CONCAT(SUBSTR(?year, 1, 3), "0") AS ?decade)
+}
+GROUP BY ?value ?decade
+ORDER BY ?value ?decade

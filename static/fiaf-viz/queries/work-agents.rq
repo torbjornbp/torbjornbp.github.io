@@ -1,0 +1,20 @@
+# Credited names for one work (the click-through drawer).
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?agent (MIN(STR(?agentLabel)) AS ?name) ?role
+WHERE {
+  VALUES ?work { {{WORK}} }
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasEvent ?event .
+  ?event fiaf:hasActivity ?activity .
+  ?activity a ?role ;
+            fiaf:hasAgent ?agent .
+  ?agent rdfs:label ?agentLabel .
+  FILTER(STRLEN(STR(?agentLabel)) > 0)
+}
+GROUP BY ?agent ?role
+ORDER BY ?name
+LIMIT 1000

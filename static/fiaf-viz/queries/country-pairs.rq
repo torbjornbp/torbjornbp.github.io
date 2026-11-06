@@ -1,0 +1,15 @@
+# Country pairs that share works (co-productions), with distinct work counts.
+# Each unordered pair appears once.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?a ?b (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasCountry ?a, ?b .
+  {{SCOPE_FILTER}}
+  FILTER(STR(?a) < STR(?b))
+}
+GROUP BY ?a ?b
+ORDER BY ?a ?b

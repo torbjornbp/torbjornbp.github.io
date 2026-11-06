@@ -1,0 +1,40 @@
+{
+  "endpoint": "https://data.fiafcore.org",
+  "brand": {
+    "title": "FIAF",
+    "accent": "Knowledge Graph"
+  },
+  "defaultView": "worldmap",
+  "views": [
+    "worldmap", "catalogue", "cloud", "network", "co-credits", "timeline",
+    "geography", "breakdowns", "preservation", "roles"
+  ],
+  "features": {
+    "allowAllNames": true
+  },
+  "prefixes": {
+    "fiaf": "https://dev.fiafcore.org/"
+  },
+  "limits": {
+    "cloudAgents": 1000,
+    "cloudAllAgents": 100000,
+    "allAgents": 50000,
+    "networkAgents": 5000,
+    "networkRows": 10000,
+    "coCreditAgents": 100,
+    "coCreditRows": 3000,
+    "coCreditMinShared": 2,
+    "coCreditMaxThreshold": 10,
+    "heatmapCategories": 30,
+    "heatmapWorkRows": 200,
+    "preservationRows": 25,
+    "breakdownRows": 20,
+    "findRows": 20,
+    "catalogueRows": 100,
+    "expertRows": 2000,
+    "maxConcurrentRequests": 3,
+    "requestRetries": 1,
+    "retryBaseMs": 1000,
+    "requestTimeoutMs": 120000
+  }
+}

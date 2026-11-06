@@ -1,0 +1,13 @@
+# Distinct works per production country for the world map.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?country (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasCountry ?country .
+  {{SCOPE_FILTER}}
+}
+GROUP BY ?country
+ORDER BY DESC(?works)

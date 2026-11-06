@@ -1,0 +1,32 @@
+# Items per sound standard or characteristic.
+#
+# The characteristic can be attached to the item or to its manifestation.
+# Prefer a nested sound standard, then the type, then the raw IRI. A blank node
+# with neither has nothing to label, so drop it instead of printing its id.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?value (COUNT(DISTINCT ?item) AS ?n)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType .
+  {{SCOPE_FILTER}}
+  {
+    ?work fiaf:hasManifestation/fiaf:hasItem ?item .
+    ?item fiaf:hasSoundCharacteristic ?characteristic .
+  }
+  UNION
+  {
+    ?work fiaf:hasManifestation ?manif .
+    ?manif fiaf:hasSoundCharacteristic ?characteristic ;
+           fiaf:hasItem ?item .
+  }
+  ?item a fiaf:Item .
+  OPTIONAL { ?characteristic fiaf:hasSoundStandard ?standard }
+  OPTIONAL { ?characteristic a ?type }
+  FILTER(!isBlank(?characteristic) || BOUND(?standard) || BOUND(?type))
+  BIND(COALESCE(?standard, ?type, ?characteristic) AS ?value)
+}
+GROUP BY ?value
+ORDER BY DESC(?n)
+LIMIT {{LIMIT}}

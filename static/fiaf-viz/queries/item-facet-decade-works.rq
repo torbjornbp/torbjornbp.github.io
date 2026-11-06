@@ -1,0 +1,45 @@
+# Works for one item-facet/decade heatmap cell.
+#
+# Keep this resolution in step with item-facet-decades.rq: match the item
+# facet first, then the manifestation facet for its items.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?work (SAMPLE(?candidateTitle) AS ?title)
+WHERE {
+  VALUES ?facet { {{FACET}} }
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasEvent ?event .
+  {{SCOPE_FILTER}}
+  OPTIONAL { ?work rdfs:label ?label }
+  OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+  BIND(COALESCE(?label, ?titleValue) AS ?candidateTitle)
+  ?event a fiaf:ProductionEvent ;
+         fiaf:hasDate ?date .
+  {
+    ?work fiaf:hasManifestation/fiaf:hasItem ?item .
+    ?item ?facet ?rawValue .
+  }
+  UNION
+  {
+    ?work fiaf:hasManifestation ?manif .
+    ?manif ?facet ?rawValue ;
+           fiaf:hasItem ?item .
+  }
+  OPTIONAL { ?rawValue fiaf:hasSoundStandard ?soundStandard }
+  OPTIONAL { ?rawValue fiaf:hasColourStandard ?colourStandard }
+  OPTIONAL { ?rawValue a ?rawType . FILTER(isBlank(?rawValue)) }
+  FILTER(!isBlank(?rawValue) || BOUND(?soundStandard) || BOUND(?colourStandard) || BOUND(?rawType))
+  BIND(COALESCE(?soundStandard, ?colourStandard,
+                IF(isBlank(?rawValue), ?rawType, ?rawValue)) AS ?value)
+  FILTER(?value = {{FACET_VALUE}})
+  BIND(SUBSTR(STR(?date), 1, 4) AS ?year)
+  FILTER(REGEX(?year, "^[0-9]{4}$"))
+  BIND(CONCAT(SUBSTR(?year, 1, 3), "0") AS ?decade)
+  FILTER(?decade = {{DECADE}})
+}
+GROUP BY ?work
+ORDER BY ?title ?work
+LIMIT {{LIMIT}}

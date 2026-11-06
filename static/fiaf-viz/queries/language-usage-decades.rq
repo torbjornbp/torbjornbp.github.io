@@ -1,0 +1,40 @@
+# Language usage types by production decade.
+#
+# Usages may be attached to the work, one of its manifestations or one of its
+# items. Count each usage record and each work once per type and decade. The
+# generic fiaf:LanguageUsage superclass is excluded so only the concrete usage
+# types appear as rows.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?value ?decade
+       (COUNT(DISTINCT ?usage) AS ?usages)
+       (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasEvent ?event .
+  {{SCOPE_FILTER}}
+  ?event a fiaf:ProductionEvent ;
+         fiaf:hasDate ?date .
+  {
+    ?work fiaf:hasLanguageUsage ?usage .
+  }
+  UNION
+  {
+    ?work fiaf:hasManifestation ?manif .
+    ?manif fiaf:hasLanguageUsage ?usage .
+  }
+  UNION
+  {
+    ?work fiaf:hasManifestation/fiaf:hasItem ?item .
+    ?item fiaf:hasLanguageUsage ?usage .
+  }
+  ?usage a ?value .
+  FILTER(?value != fiaf:LanguageUsage)
+  BIND(SUBSTR(STR(?date), 1, 4) AS ?year)
+  FILTER(REGEX(?year, "^[0-9]{4}$"))
+  BIND(CONCAT(SUBSTR(?year, 1, 3), "0") AS ?decade)
+}
+GROUP BY ?value ?decade
+ORDER BY ?value ?decade

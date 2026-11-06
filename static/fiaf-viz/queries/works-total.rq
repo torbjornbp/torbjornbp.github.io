@@ -1,0 +1,17 @@
+# Total number of works, used for "dated / undated" notes.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT (COUNT(DISTINCT ?work) AS ?works)
+       (COUNT(DISTINCT ?datedWork) AS ?datedWorks)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType .
+  {{SCOPE_FILTER}}
+  OPTIONAL {
+    ?work fiaf:hasEvent ?event .
+    ?event a fiaf:ProductionEvent ; fiaf:hasDate ?date .
+    FILTER(REGEX(SUBSTR(STR(?date), 1, 4), "^[0-9]{4}$"))
+    BIND(?work AS ?datedWork)
+  }
+}

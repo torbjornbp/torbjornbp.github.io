@@ -1,0 +1,28 @@
+# Totals for the name cloud: distinct names, distinct credited works and
+# distinct name-work credit pairs. The inner SELECT DISTINCT is essential:
+# summing each name's work count would count a work once per credit and
+# inflate ?works.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT (COUNT(DISTINCT ?agent) AS ?agents)
+       (COUNT(DISTINCT ?work) AS ?works)
+       (COUNT(*) AS ?credits)
+WHERE {
+  {
+    SELECT DISTINCT ?work ?agent
+    WHERE {
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      ?work a ?workType .
+      {{SCOPE_FILTER}}
+      ?work fiaf:hasEvent ?event .
+      ?event fiaf:hasActivity ?activity .
+      ?activity a ?role ;
+                fiaf:hasAgent ?agent .
+      ?agent rdfs:label ?name .
+      FILTER(STRLEN(STR(?name)) > 0)
+      {{ROLE_FILTER}}
+    }
+  }
+}

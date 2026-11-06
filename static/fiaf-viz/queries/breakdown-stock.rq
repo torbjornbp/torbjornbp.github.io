@@ -1,0 +1,23 @@
+# Items per film-stock manufacturer (the stock node's label).
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?value (COUNT(DISTINCT ?item) AS ?n)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasManifestation/fiaf:hasItem ?item .
+  {{SCOPE_FILTER}}
+  ?item a fiaf:Item .
+  { ?item fiaf:hasStock ?stock }
+  UNION
+  {
+    ?work fiaf:hasManifestation ?manif .
+    ?manif fiaf:hasItem ?item ; fiaf:hasStock ?stock .
+  }
+  ?stock rdfs:label ?value .
+}
+GROUP BY ?value
+ORDER BY DESC(?n)
+LIMIT {{LIMIT}}

@@ -1,0 +1,21 @@
+# Agent <-> agent co-credit edges (shared works) among the top names.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+# Names are attached client-side from the agent page already in memory.
+SELECT ?a ?b (COUNT(DISTINCT ?work) AS ?shared)
+WHERE {
+  VALUES ?a { {{AGENT_IRIS}} }
+  VALUES ?b { {{AGENT_IRIS}} }
+  FILTER(STR(?a) < STR(?b))
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType .
+  {{SCOPE_FILTER}}
+  ?work fiaf:hasEvent/fiaf:hasActivity ?activityA, ?activityB .
+  ?activityA fiaf:hasAgent ?a .
+  ?activityB fiaf:hasAgent ?b .
+}
+GROUP BY ?a ?b
+HAVING (COUNT(DISTINCT ?work) >= {{MIN_SHARED}})
+ORDER BY DESC(?shared)
+LIMIT {{LIMIT}}

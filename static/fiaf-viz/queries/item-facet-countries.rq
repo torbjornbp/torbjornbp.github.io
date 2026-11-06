@@ -1,0 +1,38 @@
+# One item facet against production country, with item and work counts.
+#
+# A facet can sit on the item or on its manifestation. Match both levels but
+# count the items below a manifestation, so the unit stays "items" for either
+# level and a work is not counted once per manifestation match.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?value ?country
+       (COUNT(DISTINCT ?item) AS ?items)
+       (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?facet { {{FACET}} }
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasCountry ?country .
+  {{SCOPE_FILTER}}
+  {
+    ?work fiaf:hasManifestation/fiaf:hasItem ?item .
+    ?item ?facet ?rawValue .
+  }
+  UNION
+  {
+    ?work fiaf:hasManifestation ?manif .
+    ?manif ?facet ?rawValue ;
+           fiaf:hasItem ?item .
+  }
+  # Keep this resolution in step with item-facet-decades.rq: prefer a nested
+  # colour or sound standard, then the blank-node type, then the raw IRI.
+  OPTIONAL { ?rawValue fiaf:hasSoundStandard ?soundStandard }
+  OPTIONAL { ?rawValue fiaf:hasColourStandard ?colourStandard }
+  OPTIONAL { ?rawValue a ?type . FILTER(isBlank(?rawValue)) }
+  FILTER(!isBlank(?rawValue) || BOUND(?soundStandard) || BOUND(?colourStandard) || BOUND(?type))
+  BIND(COALESCE(?soundStandard, ?colourStandard,
+                IF(isBlank(?rawValue), ?type, ?rawValue)) AS ?value)
+}
+GROUP BY ?value ?country
+ORDER BY ?value ?country

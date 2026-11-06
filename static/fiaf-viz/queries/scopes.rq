@@ -1,0 +1,21 @@
+# Datasets discovered from the identifier authorities on works.
+#
+# A new dataset appears in the UI as soon as its work identifiers link to a
+# labelled authority; no config or code change is needed. Works whose
+# identifiers have no authority are still included in "All works".
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?scope (SAMPLE(?candidateLabel) AS ?label)
+       (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasIdentifier ?identifier .
+  ?identifier fiaf:hasIdentifierAuthority ?scope .
+  FILTER(isIRI(?scope))
+  OPTIONAL { ?scope rdfs:label ?candidateLabel }
+}
+GROUP BY ?scope
+ORDER BY DESC(?works) ?label

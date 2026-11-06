@@ -1,0 +1,5 @@
+# Connectivity check used by the page header.
+
+SELECT ?s
+WHERE { ?s ?p ?o }
+LIMIT 1
