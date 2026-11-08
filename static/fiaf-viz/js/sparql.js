@@ -113,13 +113,20 @@ export function datasetFilter(authorities) {
 export function catalogueFilter(options = {}) {
   const parts = [];
   const title = String(options.title || "").trim();
-  if (title) {
+  // Treat punctuation/spacing as separators, keeping Unicode letters, marks
+  // and numbers. Substring checks retain partial-word search without needing
+  // a text index or normalizing every title on the endpoint. Every term uses
+  // the same binding so terms cannot match across different title variants.
+  const titleTerms = [...new Set(title.toLowerCase().match(/[\p{L}\p{M}\p{N}]+/gu) || [])];
+  if (titleTerms.length) {
     parts.push(
       "?work (rdfs:label|fiaf:hasTitle/fiaf:hasTitleValue) ?catalogueTitleMatch ."
     );
-    parts.push(
-      `FILTER(CONTAINS(LCASE(STR(?catalogueTitleMatch)), LCASE(${sparqlLiteral(title)})))`
-    );
+    for (const term of titleTerms) {
+      parts.push(
+        `FILTER(CONTAINS(LCASE(STR(?catalogueTitleMatch)), LCASE(${sparqlLiteral(term)})))`
+      );
+    }
   }
   const identifier = String(options.identifier || "").trim();
   if (identifier) {
