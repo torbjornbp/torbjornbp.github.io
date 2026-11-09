@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ .Site.LanguageCode }}">
+<html lang="{{ .Site.Language.Locale }}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -50,7 +50,7 @@
     <meta property="og:url" content="{{ .Permalink }}" />
     <meta property="og:image" content="{{ with .Params.images }}{{ ($.Page.Resources.GetMatch (index . 0)).Permalink }}{{ else }}{{ .Site.Params.defaultImage | absURL }}{{ end }}" />    
     <meta property="og:site_name" content="{{ .Site.Title }}" />
-    <meta property="og:locale" content="{{ .Site.LanguageCode }}" />
+    <meta property="og:locale" content="{{ .Site.Language.Locale }}" />
 
     <!-- Twitter Card tags -->
     <meta name="twitter:card" content="summary_large_image">

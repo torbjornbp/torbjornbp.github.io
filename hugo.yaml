@@ -1,5 +1,5 @@
 baseurl: "https://torbjorn.no/"
-languageCode: "en-us"
+locale: "en-us"
 title: "Torbjørn Bakken Pedersen's home page"
 ignoreFiles: ["_cache$"]
 footnotereturnlinkcontents: "↩"
@@ -47,7 +47,12 @@ params:
   defaultImage: "/cover.png"
 
 imaging:
-  quality: 85
+  jpeg:
+    quality: 85
+  webp:
+    quality: 85
+  avif:
+    quality: 85
 
 minify:
   disableCSS: false
