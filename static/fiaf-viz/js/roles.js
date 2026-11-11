@@ -98,11 +98,11 @@ export function create(ctx, root, statsElement) {
   const containerSize = () => `${root.clientWidth}x${root.clientHeight}`;
 
   function draw() {
-    paint();
+    render();
     drawnSize = containerSize();
   }
 
-  function paint() {
+  function render() {
     if (!data || !data.children.length) {
       ui.empty(root, "No credited roles for the current filter.");
       statsElement.textContent = "";
