@@ -100,7 +100,8 @@ h2, h3, h4, h5, h6 { margin: 1.5em auto 0.5em; }
   padding-left: 4px;
 }
 
-.folder-tab-row label {
+.folder-tab-row label,
+.folder-tab-row .folder-tab {
   display: inline-flex;
   align-items: center;
   gap: 0.35em;
@@ -113,6 +114,7 @@ h2, h3, h4, h5, h6 { margin: 1.5em auto 0.5em; }
   font-size: var(--font-size-small);
   font-weight: bold;
   line-height: 1.2;
+  text-decoration: none;
 }
 
 .tab-icon {
@@ -149,9 +151,24 @@ h2, h3, h4, h5, h6 { margin: 1.5em auto 0.5em; }
   transform: rotate(-10deg) scale(1.1);
 }
 
-.folder-tab-row label:hover {
+.folder-tab-row label:hover,
+.folder-tab-row .folder-tab:hover {
   background: var(--hover-bg);
   color: var(--hover-text);
+}
+
+.folder-tab-row .folder-tab-active,
+.folder-tab-row .folder-tab-active:hover {
+  position: relative;
+  top: 1px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.folder-tab-row .folder-tab:focus-visible {
+  outline: 2px solid var(--link-color);
+  outline-offset: 2px;
 }
 
 #view-writing:checked ~ .folder-tab-row label[for="view-writing"],
@@ -182,6 +199,14 @@ h2, h3, h4, h5, h6 { margin: 1.5em auto 0.5em; }
   box-shadow: 2px 2px var(--shadow-color);
 }
 
+.folder-panel-static {
+  display: block;
+}
+
+.folder-panel-static .article-meta {
+  margin: 0.25em 0 1.25em;
+}
+
 #view-writing:checked ~ .folder-panel.panel-writing,
 #view-projects:checked ~ .folder-panel.panel-projects,
 #view-resume:checked ~ .folder-panel.panel-resume,
@@ -198,13 +223,15 @@ h2, h3, h4, h5, h6 { margin: 1.5em auto 0.5em; }
 }
 
 @media (max-width: 500px) {
-  .folder-tab-row label {
+  .folder-tab-row label,
+  .folder-tab-row .folder-tab {
     padding: 0.35em 0.7em;
   }
 }
 
 @media (max-width: 400px) {
-  .folder-tab-row label {
+  .folder-tab-row label,
+  .folder-tab-row .folder-tab {
     padding: 0.35em 0.55em;
   }
 }
@@ -931,6 +958,7 @@ thead, tfoot, tr:nth-child(even) { background: #eee; }
 
 @media print {
   .clown-container,
+  .folder-tab-row,
   nav,
   footer {
     display: none;
@@ -960,6 +988,12 @@ thead, tfoot, tr:nth-child(even) { background: #eee; }
   pre,
   details {
     background: none;
+    box-shadow: none;
+  }
+
+  .folder-panel-static {
+    padding: 0;
+    border: none;
     box-shadow: none;
   }
 

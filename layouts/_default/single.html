@@ -1,20 +1,24 @@
 {{ partial "header.html" . }}
 
-<div class="article-meta">
-<h1><span class="title">{{ .Title | markdownify }}</span></h1>
-<div class="article-meta-extra">
-{{ with .Params.author }}<p class="author">{{ . }}</p>{{ end }}
-{{ if (gt .Params.date 0) }}<p class="date">{{ .Date.Format "2006-01-02" }}</p>{{ end }}
-</div>
-</div>
+{{ $active := cond (eq .Section "projects") "projects" "writing" }}
+<div class="folder-tabs">
+  {{ partial "folder-tab-row.html" (dict "home" false "active" $active) }}
+  <div class="folder-panel folder-panel-static">
+    <div class="article-meta">
+    <h1><span class="title">{{ .Title | markdownify }}</span></h1>
+    <div class="article-meta-extra">
+    {{ with .Params.author }}<p class="author">{{ . }}</p>{{ end }}
+    {{ if (gt .Params.date 0) }}<p class="date">{{ .Date.Format "2006-01-02" }}</p>{{ end }}
+    </div>
+    </div>
 
-{{ if .Param "math" }}
-{{ partialCached "math.html" . }}
-{{ end }}
+    {{ if .Param "math" }}
+    {{ partialCached "math.html" . }}
+    {{ end }}
 
-<main>
-{{ .Content }}
-</main>
+    <main>
+    {{ .Content }}
+    </main>
+  </div>
+</div>
 {{ partial "footer.html" . }}
-
-

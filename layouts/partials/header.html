@@ -44,3 +44,9 @@
         {{ if .Site.Params.contact }}<span class="sep">·</span>{{ end }}<a href="{{ "index.xml" | relURL }}">RSS</a>
       </p>
     </header>
+    {{/* Keep the home page intro on every page so content aligns across navigation. */}}
+    {{ if not .IsHome }}
+    <div class="site-intro">
+      {{ with .Site.Home }}{{ .Content }}{{ end }}
+    </div>
+    {{ end }}

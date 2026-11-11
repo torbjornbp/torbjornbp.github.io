@@ -1,0 +1,18 @@
+{{- $home := .home -}}
+{{- $active := .active -}}
+{{- $tabs := slice
+  (dict "key" "writing" "label" "Writing" "icon" "pencil")
+  (dict "key" "projects" "label" "Projects" "icon" "hammer")
+  (dict "key" "mixtapes" "label" "Mixtapes" "icon" "note")
+  (dict "key" "resume" "label" "Resume" "icon" "star")
+  (dict "key" "mystery" "label" "???" "icon" "")
+-}}
+<div class="folder-tab-row">
+  {{- range $tabs }}
+  {{- if $home }}
+  <label for="view-{{ .key }}">{{ partial "folder-tab-icon.html" .icon }}{{ .label }}</label>
+  {{- else }}
+  <a class="folder-tab{{ if eq $active .key }} folder-tab-active{{ end }}" href="{{ site.Home.RelPermalink }}#{{ .key }}">{{ partial "folder-tab-icon.html" .icon }}{{ .label }}</a>
+  {{- end }}
+  {{- end }}
+</div>
