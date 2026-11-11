@@ -10,6 +10,4 @@ I'm tired of paying soundcloud for hosting files. Slowly moving all my stuff her
 
 {{< webamp tracks="sorted_tracks.yaml" >}}
 
-<br>
-
-{{< tracks-table >}}
+{{< tracks-list >}}

@@ -17,27 +17,7 @@ deployment:
 permalinks:
   note: "/note/:year/:month/:day/:slug/"
   post: "/post/:year/:month/:day/:slug/"
-
-menu:
-  main:
-    - name: Home
-      url: ""
-      weight: 1
-    - name: Resume
-      url: "resume/"
-      weight: 2
-    #- name: Categories
-    #  url: "categories/"
-    #  weight: 3
-    # - name: Tags
-    #   url: "tags/"
-    #   weight: 4
-    - name: Mixtapes
-      url: "mixtapes/"
-      weight: 3
-    - name: RSS
-      url: "index.xml"
-      weight: 4
+  projects: "/projects/:slug/"
 
 params:
   description: "Torbjørn Bakken Pedersen's personal web page"
@@ -45,6 +25,17 @@ params:
   goatcounter: "torbjorn888888"
   favicon: "/favicon.png"
   defaultImage: "/cover.png"
+  contact:
+    - label: email
+      url: mailto:tbp@tuta.io
+    - label: mastodon
+      url: https://digipres.club/@tbp
+    - label: linkedin
+      url: https://www.linkedin.com/in/torbjørn-pedersen-57617b227
+    - label: instagram
+      url: https://www.instagram.com/filmarkivar
+    - label: github
+      url: https://github.com/torbjornbp
 
 imaging:
   jpeg:

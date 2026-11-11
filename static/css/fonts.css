@@ -39,7 +39,7 @@ body, figcaption {
     font-family: "Iosevka Aile", "Arial", sans-serif;
 }
 
-code, .posts-list, table {
+code, .posts-list, table, .cv-when, .cv-contact, .cv-tags, .mixtape-duration, .mixtape-details summary, .mixtape-cover-fallback, .article-meta .date, .site-contact {
     font-family: "Iosevka Term Web", "Courier New", monospace;
 }
 
@@ -59,6 +59,17 @@ body.comic-sans code, body.comic-sans .posts-list {
     border: none;
     padding: 0;
     margin: 0;
+    width: 1em;
+    height: 1em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.font-change-smiley {
+    font-family: "Helvetica", "Arial", sans-serif;
+    font-size: 1.4em;
+    line-height: 1;
 }
 
 /* For small screen devices */
@@ -70,7 +81,7 @@ body.comic-sans code, body.comic-sans .posts-list {
         text-size-adjust: 100%;
         font-size: 13px;
     }
-    pre, code, blockquote {
+    pre, code {
         -webkit-text-size-adjust: 100%;
         -moz-text-size-adjust: 100%;
         -ms-text-size-adjust: 100%;

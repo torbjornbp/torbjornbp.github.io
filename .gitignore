@@ -15,6 +15,7 @@ hugo.linux
 
 # Temporary lock file while building
 /.hugo_build.lock
+/content/.hugo_build.lock
 /public
+/content/public
 /content/post/draft
-/public

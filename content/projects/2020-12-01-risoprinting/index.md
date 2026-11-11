@@ -9,7 +9,10 @@ tags:
   - stochaster
 images:
   - utsikten2.jpg
-aliases: "/risoprinting.html"
+cover: utsikten1.jpg
+aliases:
+  - "/risoprinting.html"
+  - "/post/2020/12/01/risoprint-utsikten/"
 ---
 
 Three layer risoprint of a photography processed using Stochaster.

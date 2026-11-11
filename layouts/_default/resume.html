@@ -1,0 +1,17 @@
+{{ partial "header.html" . }}
+
+<div class="article-meta">
+<h1><span class="title">{{ .Title | markdownify }}</span></h1>
+{{ with .Params.contact }}
+<div class="article-meta-extra">
+<p class="cv-contact">
+  {{ range $i, $item := . }}{{ if $i }}<span class="cv-sep">·</span>{{ end }}<a href="{{ $item.url }}">{{ $item.label }}</a>{{ end }}
+</p>
+</div>
+{{ end }}
+</div>
+
+<main class="resume">
+{{ partial "resume-sections.html" . }}
+</main>
+{{ partial "footer.html" . }}

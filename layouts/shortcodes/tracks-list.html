@@ -1,0 +1,55 @@
+{{ $tracks := .Page.Resources.GetMatch "sorted_tracks.yaml" | transform.Unmarshal }}
+<div class="mixtape-list">
+{{ $currentYear := "" }}
+{{ range $tracks }}
+  {{ $entry := . }}
+  {{ $year := printf "%v" $entry.metaData.year }}
+  {{ if ne $year $currentYear }}
+    {{ $currentYear = $year }}
+    <h2 class="mixtape-year">{{ $year }}</h2>
+  {{ end }}
+
+  {{ $duration := $entry.duration }}
+  {{ $hours := div $duration 3600 }}
+  {{ $minutes := div (mod $duration 3600) 60 }}
+  {{ $seconds := mod $duration 60 }}
+  {{ $time := printf "%d:%02d" $minutes $seconds }}
+  {{ if $hours }}{{ $time = printf "%d:%02d:%02d" $hours $minutes $seconds }}{{ end }}
+
+  <article class="mixtape">
+    <div class="mixtape-cover">
+      {{ with $entry.metaData.cover }}
+        {{ $src := . }}
+        {{ with $.Page.Resources.GetMatch $src }}
+          {{ $small := .Resize "120x webp" }}
+          {{ $large := .Resize "240x webp" }}
+          {{ $fallback := .Resize "240x jpg" }}
+          <a href="{{ .RelPermalink }}" target="_blank" rel="noopener">
+            <picture>
+              <source type="image/webp" srcset="{{ $small.RelPermalink }} 120w, {{ $large.RelPermalink }} 240w" sizes="120px">
+              <img src="{{ $fallback.RelPermalink }}" width="{{ $large.Width }}" height="{{ $large.Height }}" alt="{{ $entry.metaData.title }}" loading="lazy">
+            </picture>
+          </a>
+        {{ else }}
+          <span class="mixtape-cover-fallback" aria-hidden="true">RM</span>
+        {{ end }}
+      {{ else }}
+        <span class="mixtape-cover-fallback" aria-hidden="true">RM</span>
+      {{ end }}
+    </div>
+    <div class="mixtape-body">
+      <h3 class="mixtape-title">{{ $entry.metaData.title }}</h3>
+      <p class="mixtape-duration">{{ $time }}</p>
+      {{ with $entry.metaData.description }}<p class="mixtape-desc">{{ . }}</p>{{ end }}
+      {{ with $entry.metaData.tracklist }}
+      <details class="mixtape-details">
+        <summary>{{ len . }} tracks</summary>
+        <ol>
+          {{ range . }}<li>{{ if .artist }}{{ .artist }} – {{ end }}{{ .title }}</li>{{ end }}
+        </ol>
+      </details>
+      {{ end }}
+    </div>
+  </article>
+{{ end }}
+</div>

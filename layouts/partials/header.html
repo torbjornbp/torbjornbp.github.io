@@ -6,43 +6,6 @@
     <title>{{ .Title }} | {{ .Site.Title }}</title>
     <meta name="description" content="{{ .Description }}" />
 
-    <!-- Inline critical CSS -->
-    <style>
-      /* Essential styles for above-the-fold content */
-      html {font-size: 16px;} /* Base size for stability */
-      body {max-width: 800px; margin: auto; padding: 1em; overflow-y: scroll; font-size: 1rem;}
-      .menu, .article-meta, footer {text-align: center;}
-      .menu {padding: 0;}
-      .menu li {display: inline-block;}
-      .menu a {
-        text-decoration: none; 
-        background: #f9f9f9; 
-        border: 1px solid #aaa; 
-        box-shadow: 2px 2px #ddd;
-        padding: 5px; 
-        margin: 4px;
-      }
-      .clown-container {
-        text-align: center; 
-        font-size: 2em; 
-        margin: 0;
-      }
-      .font-change-button {
-        width: 1em;
-        height: 1em;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .site-title {text-align: center; font-size: 1em;}
-      h1 {font-size: 1.7em;}
-      hr {height: 1px; background-color: #aaa; border: none; width: 100%;}
-      .posts-list .post-item {margin: 0;}
-      .posts-list .date {margin-right: 0.5em;}
-      a {color: royalblue;}
-      a:hover {color: white; background-color: royalblue;}
-    </style>
-
     <!-- OpenGraph tags -->
     <meta property="og:title" content="{{ .Title }}" />
     <meta property="og:description" content="{{ .Description }}" />
@@ -71,13 +34,13 @@
     {{ end }}
   </head>
   <body>
-    <div class="clown-container">{{ partial "clown.html" . }}</div> 
-    <nav>
-      <h1 class="site-title">Torbjørn Bakken Pedersen's page</h1>
-      <ul class="menu">
-        {{ range .Site.Menus.main }}
-        <li><a href="{{ .URL | relURL }}">{{ .Name }}</a></li>
-        {{ end }}
-      </ul>
-      <hr>
-    </nav>
+    <header class="letterhead">
+      <div class="letterhead-brand">
+        <div class="clown-container">{{ partial "clown.html" . }}</div>
+        <h1 class="site-title"><a href="{{ .Site.Home.RelPermalink }}">Torbjørn Bakken Pedersen's page</a></h1>
+      </div>
+      <p class="site-contact">
+        {{ range $i, $item := .Site.Params.contact }}{{ if $i }}<span class="sep">·</span>{{ end }}<a href="{{ $item.url }}">{{ $item.label }}</a>{{ end }}
+        {{ if .Site.Params.contact }}<span class="sep">·</span>{{ end }}<a href="{{ "index.xml" | relURL }}">RSS</a>
+      </p>
+    </header>

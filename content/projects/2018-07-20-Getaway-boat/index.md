@@ -7,7 +7,12 @@ categories:
 tags:
   - glitch
   - video synthesis
-aliases: "/getaway-boat.html"
+images:
+  - cover.jpg
+cover: cover.jpg
+aliases:
+  - "/getaway-boat.html"
+  - "/post/2018/07/20/getaway-boat/"
 ---
 
 Music video/visuals for KEVINTHECREEP - Getaway boat.

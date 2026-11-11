@@ -10,7 +10,9 @@ tags:
   - mixtape
 images:
   - 0007597003_10.jpg
-aliases: "/cherokee93.html"
+aliases:
+  - "/cherokee93.html"
+  - "/post/2016/06/06/cherokee-93/"
 ---
 
 Mix of southern 90s rap, with an emphasis on Memphis.

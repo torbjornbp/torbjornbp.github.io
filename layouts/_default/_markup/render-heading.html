@@ -3,27 +3,3 @@
     {{ .Text | safeHTML }}
   </a>
 </h{{ .Level }}>
-
-<style>
-  /* CSS */
-  .heading-link {
-    color: inherit;
-    text-decoration: none;
-    position: relative;
-  }
-   .heading-link:hover {
-    color: inherit;
-    text-decoration: none;
-    background-color: transparent;
-  }
-  .heading-link::after {
-    content: '#';
-    position: absolute;
-    right: -1em;
-    color: #999;
-    opacity: 0;
-  }
-  .heading-link:hover::after {
-    opacity: 1;
-  }
-</style>

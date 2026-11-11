@@ -9,7 +9,9 @@ tags:
   - glitch
 images:
   - pleasuredome1.jpg
-aliases: "/pleasuredome-backdrops.html"
+aliases:
+  - "/pleasuredome-backdrops.html"
+  - "/post/2018/11/05/pleasuredome-backdrops/"
 ---
 
 Video backdrops for a club night at Lokal bar, Trondheim.

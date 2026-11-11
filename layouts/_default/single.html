@@ -2,8 +2,10 @@
 
 <div class="article-meta">
 <h1><span class="title">{{ .Title | markdownify }}</span></h1>
+<div class="article-meta-extra">
 {{ with .Params.author }}<p class="author">{{ . }}</p>{{ end }}
 {{ if (gt .Params.date 0) }}<p class="date">{{ .Date.Format "2006-01-02" }}</p>{{ end }}
+</div>
 </div>
 
 {{ if .Param "math" }}

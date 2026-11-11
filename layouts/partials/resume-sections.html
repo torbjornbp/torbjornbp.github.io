@@ -1,0 +1,23 @@
+{{ range .Params.sections }}
+<section class="cv-section">
+  <h2>{{ .heading }}</h2>
+  {{ range .entries }}
+  <article class="cv-entry">
+    <div class="cv-when">
+      <span class="cv-from">{{ .from }}</span>
+      {{ with .to }}<span class="cv-to">– {{ . }}</span>{{ end }}
+    </div>
+    <div class="cv-body">
+      <h3 class="cv-title">{{ .title }}</h3>
+      {{ with .org }}<p class="cv-org">{{ . }}</p>{{ end }}
+      {{ with .summary }}<div class="cv-summary">{{ . | markdownify }}</div>{{ end }}
+      {{ with .tags }}
+      <ul class="cv-tags">
+        {{ range . }}<li>{{ . }}</li>{{ end }}
+      </ul>
+      {{ end }}
+    </div>
+  </article>
+  {{ end }}
+</section>
+{{ end }}

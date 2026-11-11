@@ -1,0 +1,9 @@
+{{ $pages := .Pages }}
+{{ if .IsHome }}{{ $pages = where .Site.RegularPages "Section" "post" }}{{ end }}
+<div class="posts-list">
+  {{ range $pages }}
+  <div class="post-item">
+    <span class="date post-label"><strong>{{ .Date.Format "2006-01-02" }} -</strong></span><a href="{{ .RelPermalink }}">{{ .Title | markdownify }}</a>
+  </div>
+  {{ end }}
+</div>
