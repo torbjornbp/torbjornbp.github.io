@@ -1,20 +1,26 @@
 # Items per format.
+#
+# Each UNION branch carries its own path from the work to the item; see
+# breakdown-stock.rq.
 
 PREFIX fiaf: <https://dev.fiafcore.org/>
 
 SELECT ?value (COUNT(DISTINCT ?item) AS ?n)
 WHERE {
   VALUES ?workType { fiaf:MonographicWork fiaf:Work }
-  ?work a ?workType ;
-        fiaf:hasManifestation/fiaf:hasItem ?item .
+  ?work a ?workType .
   {{SCOPE_FILTER}}
-  ?item a fiaf:Item .
-  { ?item fiaf:hasFormat ?rawValue }
+  {
+    ?work fiaf:hasManifestation/fiaf:hasItem ?item .
+    ?item fiaf:hasFormat ?rawValue .
+  }
   UNION
   {
     ?work fiaf:hasManifestation ?manif .
-    ?manif fiaf:hasItem ?item ; fiaf:hasFormat ?rawValue .
+    ?manif fiaf:hasFormat ?rawValue ;
+           fiaf:hasItem ?item .
   }
+  ?item a fiaf:Item .
   OPTIONAL { ?rawValue a ?type . FILTER(isBlank(?rawValue)) }
   FILTER(!isBlank(?rawValue) || BOUND(?type))
   BIND(IF(isBlank(?rawValue), ?type, ?rawValue) AS ?value)

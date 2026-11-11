@@ -3039,8 +3039,12 @@ async function ping(endpoint) {
 async function init() {
   initTheme();
   window.addEventListener("fiaf-viz:theme-change", () => {
+    // Views that resolve theme colours in script expose restyle(); the others
+    // are styled through CSS variables and only need the size check.
     if (activeView && views && loaded.has(activeView)) {
-      views[activeView].resize();
+      const view = views[activeView];
+      if (view.restyle) view.restyle();
+      else view.resize();
     }
   });
   ui.initDrawer();

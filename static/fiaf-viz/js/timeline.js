@@ -66,7 +66,17 @@ export function create(ctx, root, statsElement, granularityButtons, descriptionE
     ui.setStatus("");
   }
 
+  // Remember the container size of the last draw so a tab revisit or a drawer
+  // toggle that leaves it unchanged does not rebuild the chart.
+  let drawnSize = "";
+  const containerSize = () => `${root.clientWidth}x${root.clientHeight}`;
+
   function draw() {
+    paint();
+    drawnSize = containerSize();
+  }
+
+  function paint() {
     if (!data) return;
     const rows = granularity === "decade" ? data.decades : data.rows;
     if (!rows.length) {
@@ -235,7 +245,7 @@ export function create(ctx, root, statsElement, granularityButtons, descriptionE
       data = null;
     },
     resize() {
-      if (data) draw();
+      if (data && containerSize() !== drawnSize) draw();
     },
     exportSvg() {
       return { element: svg.node(), name: "fiaf-timeline.svg" };

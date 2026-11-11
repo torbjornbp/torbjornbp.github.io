@@ -568,11 +568,15 @@ async function executeQuery(query, label, signal, options = {}) {
         });
         const response = await fetch(cfg.endpoint, {
           method: "POST",
+          // A form-encoded POST with only safelisted headers is a "simple"
+          // cross-origin request, so the browser sends no CORS preflight.
+          // application/sparql-query would cost an extra OPTIONS round trip
+          // per query, because the endpoint sets no Access-Control-Max-Age.
           headers: {
             Accept: "application/sparql-results+json",
-            "Content-Type": "application/sparql-query"
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
           },
-          body: query,
+          body: `query=${encodeURIComponent(query)}`,
           signal: controller.signal
         });
         const body = await response.text();

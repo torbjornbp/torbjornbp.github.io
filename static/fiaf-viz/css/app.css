@@ -871,6 +871,13 @@ main {
   cursor: grab;
 }
 
+/* The script pins this canvas's CSS size to its bitmap. */
+.network-canvas {
+  display: block;
+  touch-action: none;
+  cursor: grab;
+}
+
 .chart-message {
   margin: 0;
   padding: var(--space-10) var(--space-5);

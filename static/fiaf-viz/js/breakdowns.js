@@ -54,8 +54,13 @@ export function create(ctx, root) {
     ui.setStatus("");
   }
 
+  // Panel widths follow the container width, so remember it: a tab revisit or
+  // a drawer toggle that leaves it unchanged does not rebuild nine charts.
+  let renderedWidth = -1;
+
   function render() {
     if (!panels) return;
+    renderedWidth = root.clientWidth;
     root.replaceChildren();
     for (const panel of panels) {
       const card = ui.node("section", "breakdown-panel");
@@ -159,7 +164,7 @@ export function create(ctx, root) {
       panels = null;
     },
     resize() {
-      if (panels) render();
+      if (panels && root.clientWidth !== renderedWidth) render();
     },
     exportSvg() {
       return null;

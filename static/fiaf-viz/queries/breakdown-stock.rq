@@ -1,4 +1,8 @@
 # Items per film-stock manufacturer (the stock node's label).
+#
+# Each UNION branch carries its own path from the work to the item. Joining one
+# shared work/item pattern with the whole UNION made the public endpoint time
+# out on this query.
 
 PREFIX fiaf: <https://dev.fiafcore.org/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -6,16 +10,19 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ?value (COUNT(DISTINCT ?item) AS ?n)
 WHERE {
   VALUES ?workType { fiaf:MonographicWork fiaf:Work }
-  ?work a ?workType ;
-        fiaf:hasManifestation/fiaf:hasItem ?item .
+  ?work a ?workType .
   {{SCOPE_FILTER}}
-  ?item a fiaf:Item .
-  { ?item fiaf:hasStock ?stock }
+  {
+    ?work fiaf:hasManifestation/fiaf:hasItem ?item .
+    ?item fiaf:hasStock ?stock .
+  }
   UNION
   {
     ?work fiaf:hasManifestation ?manif .
-    ?manif fiaf:hasItem ?item ; fiaf:hasStock ?stock .
+    ?manif fiaf:hasStock ?stock ;
+           fiaf:hasItem ?item .
   }
+  ?item a fiaf:Item .
   ?stock rdfs:label ?value .
 }
 GROUP BY ?value

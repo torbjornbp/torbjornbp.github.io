@@ -392,7 +392,17 @@ export function create(ctx, root, statsElement, overviewElement, controls = {}) 
     updateStats();
   }
 
+  // Both charts derive their height from the width, so remember the width of
+  // the last draw: a tab revisit or a drawer toggle that leaves it unchanged
+  // does not rebuild the chart.
+  let drawnWidth = -1;
+
   function draw() {
+    paint();
+    drawnWidth = root.clientWidth;
+  }
+
+  function paint() {
     const rows = normaliseRows();
     lastRows = rows;
     if (!rows.length) {
@@ -833,7 +843,7 @@ export function create(ctx, root, statsElement, overviewElement, controls = {}) 
       cancelRequest();
     },
     resize() {
-      if (data && data.group === group) draw();
+      if (data && data.group === group && root.clientWidth !== drawnWidth) draw();
     },
     exportSvg() {
       return { element: svg.node(), name: "fiaf-preservation.svg" };

@@ -92,7 +92,17 @@ export function create(ctx, root, statsElement) {
     return { children, nameCount: agentData.rows.length, ringAgents };
   }
 
+  // Remember the container size of the last draw so a tab revisit or a drawer
+  // toggle that leaves it unchanged does not rebuild the chart.
+  let drawnSize = "";
+  const containerSize = () => `${root.clientWidth}x${root.clientHeight}`;
+
   function draw() {
+    paint();
+    drawnSize = containerSize();
+  }
+
+  function paint() {
     if (!data || !data.children.length) {
       ui.empty(root, "No credited roles for the current filter.");
       statsElement.textContent = "";
@@ -270,6 +280,10 @@ export function create(ctx, root, statsElement) {
       return Boolean(data && data.ringAgents.has(id));
     },
     resize() {
+      if (data && containerSize() !== drawnSize) draw();
+    },
+    // Label fills are resolved from the theme's colours at draw time.
+    restyle() {
       if (data) draw();
     },
     exportSvg() {

@@ -1,8 +1,19 @@
 // Co-credit network: names connected when they share at least one work.
+//
+// Drawn on one canvas, like the names & works network (see network.js), so
+// both force-directed views share one rendering approach: hit-testing, hover
+// and drag are done by hand, and the export is a PNG.
 
 import { iriList, limit, runQuery } from "./sparql.js";
-import { linkOpacity } from "./graph.js";
 import * as ui from "./ui.js";
+
+const FONT_FALLBACK =
+  'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+const NODE_MIN_RADIUS = 3;
+const NODE_MAX_RADIUS = 9.5;
+// Edge opacity of the earlier SVG version (its .link rule), kept so the mesh
+// reads the same on canvas.
+const LINK_ALPHA = 0.6;
 
 export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
   let data = null;
@@ -11,10 +22,20 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
   let focusIds = new Set();
   let nodeIndex = new Map();
   let lastSelection = null;
-  let repaint = () => {};
   let lastNodes = [];
+  let lastLinks = [];
+  let incident = new Map();
+  let widthScale = () => 0.5;
   let labelBoxes = [];
   let labelled = new Map();
+  let shownLabels = new Set();
+  let selectedId = null;
+  let highlighting = false;
+  let hovered = null;
+  let dragging = false;
+  let transform = d3.zoomIdentity;
+  let frame = null;
+  let ratio = 1;
   let viewportWidth = 0;
   let viewportHeight = 0;
   let ego = null;
@@ -22,8 +43,6 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
   let egoMode = false;
   let radiusScale = null;
   let linkMode = "all";
-  let linkBaseOpacity = 0.2;
-  let highlightHoverEdges = () => {};
   let renderedMode = "global";
   let renderedEgoId = null;
   let renderedStats = { nodes: 0, links: 0 };
@@ -45,7 +64,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       if (next === linkMode) return;
       linkMode = next;
       syncLinkButtons();
-      repaint();
+      scheduleDraw();
     });
   }
 
@@ -123,7 +142,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       draw();
       return;
     }
-    repaint();
+    refreshHighlight();
     updateEgoButton();
     updateStats();
   }
@@ -154,7 +173,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       return;
     }
     if (renderedMode !== "ego" || renderedEgoId !== agentId) draw();
-    else repaint();
+    else refreshHighlight();
     updateEgoButton();
   }
 
@@ -172,10 +191,29 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     }
   }
 
+  function dimensions() {
+    return {
+      width: Math.max(360, root.clientWidth || 1000),
+      height: Math.max(420, root.clientHeight || 600)
+    };
+  }
+
+  function resizeCanvas() {
+    const { width, height } = dimensions();
+    viewportWidth = width;
+    viewportHeight = height;
+    ratio = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    // Pin the CSS box to the bitmap: a percentage size would stretch the old
+    // picture between a container resize and the next repaint.
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+  }
+
   function fitGraph() {
     if (!lastNodes.length) return;
-    const width = Math.max(360, root.clientWidth || 1000);
-    const height = Math.max(420, root.clientHeight || 600);
+    const { width, height } = dimensions();
     const pad = 24;
     let minX = d3.min(lastNodes, (entry) => entry.x) - pad;
     let maxX = d3.max(lastNodes, (entry) => entry.x) + pad;
@@ -195,21 +233,100 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     );
     const tx = width / 2 - scale * ((minX + maxX) / 2);
     const ty = height / 2 - scale * ((minY + maxY) / 2);
-    svg.call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
+    selection.call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
   }
 
-  const svg = d3
-    .select(root)
-    .append("svg")
-    .attr("role", "img")
-    .attr("aria-label", "Co-credit network of names");
-  const layer = svg.append("g");
+  const canvas = document.createElement("canvas");
+  canvas.className = "network-canvas";
+  canvas.setAttribute("role", "img");
+  canvas.setAttribute("aria-label", "Co-credit network of names");
+  const painter = canvas.getContext("2d");
+  const selection = d3.select(root).append(() => canvas);
+
   const zoom = d3
     .zoom()
     .scaleExtent([0.05, 8])
-    .on("zoom", (event) => layer.attr("transform", event.transform));
-  svg.call(zoom).on("dblclick.zoom", null);
-  svg.on("dblclick", () => fitGraph());
+    .on("zoom", (event) => {
+      transform = event.transform;
+      scheduleDraw();
+    });
+
+  // The drag is registered before the zoom so a press on a node moves the node
+  // and a press on empty canvas pans. The simulation stays warm while a node
+  // is held, so its neighbours follow.
+  const drag = d3
+    .drag()
+    .subject((event) => {
+      const node = pickAt(event.x, event.y);
+      if (!node) return undefined;
+      return { node, x: transform.applyX(node.x), y: transform.applyY(node.y) };
+    })
+    .on("start", (event) => {
+      dragging = true;
+      hovered = null;
+      ui.hideTooltip();
+      const node = event.subject.node;
+      if (!event.active && simulation) simulation.alphaTarget(0.08).restart();
+      node.fx = node.x;
+      node.fy = node.y;
+    })
+    .on("drag", (event) => {
+      const node = event.subject.node;
+      node.fx = transform.invertX(event.x);
+      node.fy = transform.invertY(event.y);
+      scheduleDraw();
+    })
+    .on("end", (event) => {
+      dragging = false;
+      const node = event.subject.node;
+      if (!event.active && simulation) simulation.alphaTarget(0);
+      node.fx = null;
+      node.fy = null;
+    });
+
+  selection.call(drag).call(zoom).on("dblclick.zoom", null);
+
+  canvas.addEventListener("mousemove", (event) => {
+    if (dragging) return;
+    const node = pick(event);
+    if (node !== hovered) {
+      hovered = node;
+      canvas.style.cursor = node ? "pointer" : "";
+      scheduleDraw();
+      if (node) showNodeTooltip(event, node);
+      else ui.hideTooltip();
+      return;
+    }
+    if (node) ui.moveTooltip(event);
+  });
+
+  canvas.addEventListener("mouseleave", () => {
+    if (!hovered) return;
+    hovered = null;
+    canvas.style.cursor = "";
+    ui.hideTooltip();
+    scheduleDraw();
+  });
+
+  canvas.addEventListener("click", (event) => {
+    const node = pick(event);
+    if (node) ctx.openAgent(node.id, node.name);
+    else ui.closeDrawer();
+  });
+
+  canvas.addEventListener("dblclick", (event) => {
+    if (!pick(event)) fitGraph();
+  });
+
+  function showNodeTooltip(event, entry) {
+    const isEgo = renderedMode === "ego" && ego && ego.rows;
+    const body = isEgo
+      ? entry.id === ego.id
+        ? `${ui.formatNumber(ego.rows.length)} co-credited names · ${ui.formatNumber(entry.weight)} shared-work links`
+        : `${ui.formatNumber(entry.weight)} shared works with ${ego.label}`
+      : `${entry.degree} co-credit links · ${ui.formatNumber(entry.weight)} shared works`;
+    ui.showTooltip(event, entry.name, body);
+  }
 
   if (thresholdInput) {
     const thresholdOutput = document.getElementById("shared-value");
@@ -224,6 +341,21 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     // Physics is expensive; settle a new topology once, when the slider is
     // released, rather than on every pixel of pointer movement.
     thresholdInput.addEventListener("change", draw);
+  }
+
+  function dropGraph() {
+    if (simulation) simulation.stop();
+    nodeIndex = new Map();
+    lastNodes = [];
+    lastLinks = [];
+    incident = new Map();
+    labelled = new Map();
+    shownLabels = new Set();
+    labelBoxes = [];
+    hovered = null;
+    radiusScale = null;
+    renderedMode = "global";
+    renderedEgoId = null;
   }
 
   async function load({ signal } = {}) {
@@ -241,16 +373,10 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       .filter((row) => Number(row.works) >= ctx.state.minWorks)
       .slice(0, limit("coCreditAgents", 200));
     if (!agents.length) {
-      if (simulation) simulation.stop();
+      dropGraph();
       simulation = null;
       data = null;
-      nodeIndex = new Map();
-      lastNodes = [];
       focusIds = new Set();
-      repaint = () => {};
-      highlightHoverEdges = () => {};
-      renderedMode = "global";
-      renderedEgoId = null;
       renderedStats = { nodes: 0, links: 0 };
       updateEgoButton();
       ui.empty(root, "No names match the current filters.");
@@ -294,18 +420,15 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     };
   }
 
+  // Build and settle the layout for the current mode and threshold.
   function draw() {
     if (!data) return;
     const isEgo = lastSelection && lastSelection.kind === "agent" && ego;
     if (isEgo && !ego.rows) return;
 
-    const width = Math.max(360, root.clientWidth || 1000);
-    const height = Math.max(420, root.clientHeight || 600);
-    viewportWidth = width;
-    viewportHeight = height;
-    svg.attr("viewBox", `0 0 ${width} ${height}`);
-    svg.attr("width", width).attr("height", height);
-    layer.selectAll("*").remove();
+    resizeCanvas();
+    const width = viewportWidth;
+    const height = viewportHeight;
     if (simulation) simulation.stop();
 
     const visible = isEgo
@@ -318,13 +441,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
         }))
       : data.links.filter((link) => link.shared >= threshold);
     if (!visible.length && !isEgo) {
-      nodeIndex = new Map();
-      lastNodes = [];
-      radiusScale = null;
-      linkBaseOpacity = 0;
-      highlightHoverEdges = () => {};
-      renderedMode = "global";
-      renderedEgoId = null;
+      dropGraph();
       ui.empty(root, `No pairs share ${threshold} or more works in the loaded names.`);
       statsElement.textContent = `${ui.formatNumber(data.links.length)} pairs at ${limit("coCreditMinShared", 2)}+ shared works`;
       return;
@@ -348,14 +465,14 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     if (isEgo) {
       const selected = nodes.get(ego.id);
       selected.extra = true;
-      selected.dominantRole = ego.roles[0] || null;
       selected.fx = width / 2;
       selected.fy = height / 2;
     }
     const nodeList = [...nodes.values()];
-    lastNodes = nodeList;
+    hovered = null;
     nodeIndex = new Map(nodeList.map((entry) => [entry.id, entry]));
     radiusScale = makeRadiusScale(nodeList);
+    for (const entry of nodeList) entry.r = nodeRadius(entry);
     const links = visible.map((link) => ({
       source: link.source,
       target: link.target,
@@ -363,194 +480,17 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     }));
 
     const minimumShared = isEgo ? 1 : threshold;
-    const widthScale = d3
+    widthScale = d3
       .scaleSqrt()
       .domain([
         minimumShared,
         d3.max(links, (link) => link.shared) || minimumShared
       ])
       .range([0.5, 2.2]);
-    linkBaseOpacity = linkOpacity(links.length);
+    for (const link of links) link.width = widthScale(link.shared);
     renderedMode = isEgo ? "ego" : "global";
     renderedEgoId = isEgo ? ego.id : null;
-
-    const linkSelection = layer
-      .append("g")
-      .selectAll("line")
-      .data(links)
-      .join("line")
-      .attr("class", "link")
-      .attr("stroke-width", (link) => widthScale(link.shared))
-      .attr("stroke-opacity", linkBaseOpacity);
-
-    // Hovered edges are redrawn above the faint mesh, so a node's relations
-    // stand out without raising the opacity of the whole graph.
-    const hoverLinkGroup = layer.append("g").attr("class", "link-hover-layer");
-
-    highlightHoverEdges = (entry) => {
-      hoverLinkGroup.selectAll("*").remove();
-      if (!entry) return;
-      const incident = links.filter(
-        (link) => link.source.id === entry.id || link.target.id === entry.id
-      );
-      if (!incident.length) return;
-      hoverLinkGroup
-        .selectAll("line")
-        .data(incident)
-        .join("line")
-        .attr("class", "link link-hover")
-        .attr("stroke-opacity", 0.9)
-        .attr("stroke-width", (link) => Math.max(1, widthScale(link.shared)))
-        .attr("x1", (link) => link.source.x)
-        .attr("y1", (link) => link.source.y)
-        .attr("x2", (link) => link.target.x)
-        .attr("y2", (link) => link.target.y);
-    };
-
-    const nodeSelection = layer
-      .append("g")
-      .selectAll("g")
-      .data(nodeList)
-      .join("g")
-      .attr("class", "node")
-      .call(drag());
-
-    nodeSelection
-      .append("circle")
-      .attr("class", "node-agent")
-      .attr("r", (entry) => nodeRadius(entry))
-      .attr(
-        "fill",
-        (entry) => ctx.colorFor(entry.dominantRole || ctx.dominantRole(entry.id, data.roleMap))
-      )
-      .on("mouseenter", (event, entry) => {
-        highlightHoverEdges(entry);
-        const body = isEgo
-          ? entry.id === ego.id
-            ? `${ui.formatNumber(ego.rows.length)} co-credited names · ${ui.formatNumber(entry.weight)} shared-work links`
-            : `${ui.formatNumber(entry.weight)} shared works with ${ego.label}`
-          : `${entry.degree} co-credit links · ${ui.formatNumber(entry.weight)} shared works`;
-        ui.showTooltip(event, entry.name, body);
-      })
-      .on("mousemove", ui.moveTooltip)
-      .on("mouseleave", () => {
-        highlightHoverEdges(null);
-        ui.hideTooltip();
-      })
-      .on("click", (event, entry) => {
-        event.stopPropagation();
-        ctx.openAgent(entry.id, entry.name);
-      })
-      .on("dblclick", (event) => event.stopPropagation());
-
-    const haloSelection = nodeSelection
-      .append("circle")
-      .attr("class", "node-halo")
-      .attr("r", (entry) => nodeRadius(entry) + 5)
-      .attr("display", "none");
-
-    labelled = new Map();
-    labelBoxes = [];
-    const labelSelection = nodeSelection
-      .append("text")
-      .attr("class", "node-label")
-      .attr("x", (entry) => nodeRadius(entry) + 2)
-      .attr("y", 3)
-      .attr("display", "none")
-      .text((entry) => truncate(entry.name, 20));
-
-
-    function paintHighlight() {
-      const selectedId = isEgo
-        ? ego.id
-        : lastSelection && lastSelection.kind === "agent"
-          ? lastSelection.id
-          : null;
-      haloSelection.attr("display", (entry) =>
-        entry.id === selectedId ? null : "none"
-      );
-      if (isEgo) {
-        nodeSelection.attr("opacity", 1);
-        nodeSelection
-          .select("text")
-          .attr("display", (entry) => (labelled.has(entry.id) ? null : "none"));
-        nodeSelection
-          .select("circle")
-          .attr("stroke", null)
-          .attr("stroke-width", null);
-        linkSelection
-          .attr("display", null)
-          .attr("stroke-opacity", linkBaseOpacity)
-          .attr("stroke-width", (link) => widthScale(link.shared))
-          .attr("stroke", null);
-        return;
-      }
-      if (!focusIds.size) {
-        nodeSelection.attr("opacity", 1);
-        nodeSelection
-          .select("text")
-          .attr("display", (entry) => (labelled.has(entry.id) ? null : "none"));
-        nodeSelection
-          .select("circle")
-          .attr("stroke", null)
-          .attr("stroke-width", null);
-        linkSelection
-          .attr("display", linkMode === "selected" ? "none" : null)
-          .attr("stroke-opacity", linkBaseOpacity)
-          .attr("stroke-width", (link) => widthScale(link.shared))
-          .attr("stroke", null);
-        return;
-      }
-      const neighbours = new Set(focusIds);
-      for (const link of links) {
-        if (focusIds.has(link.source.id)) neighbours.add(link.target.id);
-        if (focusIds.has(link.target.id)) neighbours.add(link.source.id);
-      }
-      nodeSelection.attr("opacity", (entry) =>
-        neighbours.has(entry.id) ? 1 : 0.1
-      );
-      nodeSelection
-        .select("text")
-        .attr("display", (entry) => (neighbours.has(entry.id) ? null : "none"));
-      nodeSelection
-        .select("circle")
-        .attr("stroke", (entry) => (neighbours.has(entry.id) ? "var(--accent)" : null))
-        .attr("stroke-width", (entry) =>
-          entry.id === selectedId ? 2.4 : neighbours.has(entry.id) ? 1.3 : null
-        );
-      const touching = (link) =>
-        focusIds.has(link.source.id) || focusIds.has(link.target.id);
-      linkSelection
-        .attr("display", (link) =>
-          linkMode === "selected" && !touching(link) ? "none" : null
-        )
-        .attr("stroke-opacity", (link) =>
-          touching(link) ? 0.9 : Math.min(0.04, linkBaseOpacity)
-        )
-        .attr("stroke-width", (link) =>
-          touching(link)
-            ? Math.max(1.2, widthScale(link.shared))
-            : widthScale(link.shared)
-        )
-        .attr("stroke", (link) => (touching(link) ? "var(--accent)" : null));
-    }
-
-    svg.on("click", () => {
-      ui.closeDrawer();
-    });
-
-    repaint = paintHighlight;
-    paintHighlight();
     updateEgoButton();
-
-    const ticked = () => {
-      linkSelection
-        .attr("x1", (link) => link.source.x)
-        .attr("y1", (link) => link.source.y)
-        .attr("x2", (link) => link.target.x)
-        .attr("y2", (link) => link.target.y);
-      nodeSelection.attr("transform", (entry) => `translate(${entry.x},${entry.y})`);
-    };
 
     simulation = d3
       .forceSimulation(nodeList)
@@ -568,33 +508,181 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
         "collide",
         d3
           .forceCollide()
-          .radius((entry) => nodeRadius(entry) + 5)
+          .radius((entry) => entry.r + 5)
           .strength(0.95)
           .iterations(2)
       )
       .force("center", d3.forceCenter(width / 2, height / 2))
-      .on("tick", ticked);
+      // Only a drag restarts the simulation; each of its ticks is one repaint.
+      .on("tick", scheduleDraw);
 
     // Settle off-screen, then fit: the user never sees the initial collisions.
     simulation.stop();
     simulation.tick(420);
-    ticked();
+
+    // forceLink has replaced each link's source and target ids with the nodes.
+    incident = new Map();
+    for (const link of links) {
+      for (const end of [link.source, link.target]) {
+        if (!incident.has(end.id)) incident.set(end.id, []);
+        incident.get(end.id).push(link);
+      }
+    }
+    lastNodes = nodeList;
+    lastLinks = links;
     labelled = chooseLabels(nodeList);
-    labelSelection
-      .attr("display", (entry) => (labelled.has(entry.id) ? null : "none"))
-      .attr("x", (entry) => {
-        const label = labelled.get(entry.id);
-        return label ? label.x - entry.x : nodeRadius(entry) + 2;
-      })
-      .attr("y", (entry) => {
-        const label = labelled.get(entry.id);
-        return label ? label.y - entry.y : 3;
-      })
-      .attr("text-anchor", (entry) => labelled.get(entry.id)?.anchor || "start");
+    refreshHighlight();
     fitGraph();
     renderedStats = { nodes: nodeList.length, links: links.length };
     updateStats();
     ctx.refreshSelectionStatus?.();
+  }
+
+  // Work out once per selection which nodes, edges and labels are highlighted,
+  // so a repaint only reads flags.
+  function refreshHighlight() {
+    const isEgo = renderedMode === "ego";
+    selectedId = isEgo
+      ? renderedEgoId
+      : lastSelection && lastSelection.kind === "agent"
+        ? lastSelection.id
+        : null;
+    // The isolated view is already the selection, so nothing in it is dimmed.
+    highlighting = !isEgo && focusIds.size > 0;
+    const neighbours = new Set(focusIds);
+    if (highlighting) {
+      for (const link of lastLinks) {
+        if (focusIds.has(link.source.id)) neighbours.add(link.target.id);
+        if (focusIds.has(link.target.id)) neighbours.add(link.source.id);
+      }
+    }
+    for (const entry of lastNodes) entry.near = highlighting && neighbours.has(entry.id);
+    for (const link of lastLinks) {
+      link.touching =
+        highlighting && (focusIds.has(link.source.id) || focusIds.has(link.target.id));
+    }
+    shownLabels = highlighting ? neighbours : new Set(labelled.keys());
+    scheduleDraw();
+  }
+
+  function scheduleDraw() {
+    if (frame !== null) return;
+    frame = requestAnimationFrame(() => {
+      frame = null;
+      paint();
+    });
+  }
+
+  function paint() {
+    if (!painter) return;
+    painter.setTransform(ratio, 0, 0, ratio, 0, 0);
+    painter.clearRect(0, 0, viewportWidth, viewportHeight);
+    if (!lastNodes.length) return;
+
+    // Resolve the theme's colours once per frame, not once per mark.
+    const styles = getComputedStyle(document.documentElement);
+    const token = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
+    const border = token("--border", "#cccccc");
+    const accent = token("--accent", "#b0203a");
+    const surface = token("--surface", "#ffffff");
+    const text = token("--text", "#1a1a1a");
+    const nameColour = token("--name-colour", "#000000");
+    const font = token("--font", FONT_FALLBACK);
+    const fontSize = 0.6875 * (parseFloat(styles.fontSize) || 16);
+
+    const k = transform.k;
+    painter.translate(transform.x, transform.y);
+    painter.scale(k, k);
+
+    // Each edge is stroked on its own so overlapping edges still darken, and
+    // the width is divided by the zoom scale so it does not grow with the zoom.
+    const strokeLinks = (list, colour, alpha, minimumWidth, wanted) => {
+      painter.strokeStyle = colour;
+      painter.globalAlpha = alpha;
+      for (const link of list) {
+        if (wanted && !wanted(link)) continue;
+        painter.lineWidth = Math.max(minimumWidth, link.width) / k;
+        painter.beginPath();
+        painter.moveTo(link.source.x, link.source.y);
+        painter.lineTo(link.target.x, link.target.y);
+        painter.stroke();
+      }
+    };
+
+    // "Selected only" hides the background mesh in the global view; the
+    // isolated view has no background, so it always shows its edges.
+    if (renderedMode === "ego" || linkMode !== "selected") {
+      strokeLinks(lastLinks, border, LINK_ALPHA, 0, (link) => !link.touching);
+    }
+    if (highlighting) strokeLinks(lastLinks, accent, 0.9, 1.2, (link) => link.touching);
+    // Hovered edges are redrawn above the mesh, so a node's relations stand
+    // out without raising the opacity of the whole graph.
+    if (hovered) strokeLinks(incident.get(hovered.id) || [], accent, 0.9, 1);
+
+    for (const entry of lastNodes) {
+      painter.globalAlpha = highlighting && !entry.near ? 0.1 : 1;
+      painter.beginPath();
+      painter.arc(entry.x, entry.y, entry.r, 0, 2 * Math.PI);
+      painter.fillStyle = nameColour;
+      painter.fill();
+      if (entry.near) {
+        painter.strokeStyle = accent;
+        painter.lineWidth = entry.id === selectedId ? 2.4 : 1.3;
+      } else {
+        painter.strokeStyle = surface;
+        painter.lineWidth = 1;
+      }
+      painter.stroke();
+    }
+    painter.globalAlpha = 1;
+
+    const selectedNode = selectedId ? nodeIndex.get(selectedId) : null;
+    if (selectedNode) {
+      painter.beginPath();
+      painter.arc(selectedNode.x, selectedNode.y, selectedNode.r + 5, 0, 2 * Math.PI);
+      painter.strokeStyle = accent;
+      painter.lineWidth = 2;
+      painter.stroke();
+    }
+
+    // Labels sit in graph space, so they scale with the zoom like the nodes.
+    painter.font = `500 ${fontSize}px ${font}`;
+    painter.textBaseline = "alphabetic";
+    painter.lineJoin = "round";
+    painter.lineWidth = 3;
+    painter.strokeStyle = surface;
+    painter.fillStyle = text;
+    for (const id of shownLabels) {
+      const entry = nodeIndex.get(id);
+      if (!entry) continue;
+      const placement = labelled.get(id);
+      const x = entry.x + (placement ? placement.dx : entry.r + 2);
+      const y = entry.y + (placement ? placement.dy : 3);
+      const label = truncate(entry.name, 20);
+      painter.textAlign = placement && placement.anchor === "end" ? "right" : "left";
+      painter.strokeText(label, x, y);
+      painter.fillText(label, x, y);
+    }
+  }
+
+  // Exact hit-test in graph coordinates. Later nodes are painted on top, so
+  // scan from the end.
+  function pickAt(x, y) {
+    if (!lastNodes.length) return null;
+    const [gx, gy] = transform.invert([x, y]);
+    const slack = 2 / transform.k;
+    for (let index = lastNodes.length - 1; index >= 0; index -= 1) {
+      const entry = lastNodes[index];
+      const dx = entry.x - gx;
+      const dy = entry.y - gy;
+      if (dx * dx + dy * dy <= (entry.r + slack) ** 2) return entry;
+    }
+    return null;
+  }
+
+  function pick(event) {
+    const rect = canvas.getBoundingClientRect();
+    return pickAt(event.clientX - rect.left, event.clientY - rect.top);
   }
 
   function updateStats() {
@@ -621,9 +709,6 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       (data.capped ? " · pair limit reached, narrow the filters to see more" : "");
   }
 
-  const NODE_MIN_RADIUS = 3;
-  const NODE_MAX_RADIUS = 9.5;
-
   // Size by the number of co-credit links, not by the sum of shared works: one
   // very strong pair would otherwise produce a huge, colliding sphere. A
   // square-root scale over the current graph keeps the hub of a large ego
@@ -642,6 +727,8 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     return radiusScale(Math.max(1, entry.degree || 0));
   }
 
+  // Placements are stored as offsets from the node, so a label follows its
+  // node when the node is dragged.
   function chooseLabels(nodes) {
     const chosen = new Map();
     const boxes = [];
@@ -652,16 +739,18 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       const label = truncate(entry.name, 20);
       const labelWidth = Math.max(30, label.length * 5.8 + 10);
       const options = [
-        { x: entry.x + radius + 3, y: entry.y + 3, anchor: "start" },
-        { x: entry.x - radius - 3, y: entry.y + 3, anchor: "end" }
+        { dx: radius + 3, dy: 3, anchor: "start" },
+        { dx: -radius - 3, dy: 3, anchor: "end" }
       ];
       for (const option of options) {
-        const left = option.anchor === "start" ? option.x : option.x - labelWidth;
+        const x = entry.x + option.dx;
+        const y = entry.y + option.dy;
+        const left = option.anchor === "start" ? x : x - labelWidth;
         const box = {
           left: left - 3,
           right: left + labelWidth + 3,
-          top: option.y - 10,
-          bottom: option.y + 10
+          top: y - 10,
+          bottom: y + 10
         };
         const clear = boxes.every(
           (other) =>
@@ -686,27 +775,6 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     return value.length > length ? `${value.slice(0, length - 1)}…` : value;
   }
 
-  function drag() {
-    return d3
-      .drag()
-      .on("start", (event, node) => {
-        highlightHoverEdges(null);
-        if (!event.active) simulation.alphaTarget(0.08).restart();
-        node.fx = node.x;
-        node.fy = node.y;
-      })
-      .on("drag", (event, node) => {
-        highlightHoverEdges(null);
-        node.fx = event.x;
-        node.fy = event.y;
-      })
-      .on("end", (event, node) => {
-        if (!event.active) simulation.alphaTarget(0);
-        node.fx = null;
-        node.fy = null;
-      });
-  }
-
   return {
     load,
     select,
@@ -719,7 +787,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       if (linkMode === "all") return;
       linkMode = "all";
       syncLinkButtons();
-      repaint();
+      scheduleDraw();
     },
     pause() {
       if (simulation) simulation.stop();
@@ -729,17 +797,18 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     },
     resize() {
       if (!data || !lastNodes.length) return;
-      const width = Math.max(360, root.clientWidth || 1000);
-      const height = Math.max(420, root.clientHeight || 600);
+      const { width, height } = dimensions();
       if (width === viewportWidth && height === viewportHeight) return;
-      viewportWidth = width;
-      viewportHeight = height;
-      svg.attr("viewBox", `0 0 ${width} ${height}`);
-      svg.attr("width", width).attr("height", height);
+      resizeCanvas();
       fitGraph();
+      scheduleDraw();
+    },
+    // Colours are read from the theme on every repaint.
+    restyle() {
+      if (data && lastNodes.length) scheduleDraw();
     },
     exportSvg() {
-      return { element: svg.node(), name: "fiaf-co-credits.svg" };
+      return { canvas, name: "fiaf-co-credits.png" };
     }
   };
 }
