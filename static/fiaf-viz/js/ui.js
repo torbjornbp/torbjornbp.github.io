@@ -744,9 +744,21 @@ export function downloadSvg(svgElement, filename) {
   saveBlob(blob, filename || "fiaf-view.svg");
 }
 
-export function downloadCanvas(canvas, filename) {
+// The live canvas is transparent so the page shows through. A PNG has no page
+// behind it, so a background colour flattens it onto an opaque copy.
+export function downloadCanvas(canvas, filename, background) {
   if (!canvas || !canvas.toBlob) return;
-  canvas.toBlob((blob) => {
+  let source = canvas;
+  if (background) {
+    source = document.createElement("canvas");
+    source.width = canvas.width;
+    source.height = canvas.height;
+    const painter = source.getContext("2d");
+    painter.fillStyle = background;
+    painter.fillRect(0, 0, source.width, source.height);
+    painter.drawImage(canvas, 0, 0);
+  }
+  source.toBlob((blob) => {
     if (blob) saveBlob(blob, filename || "fiaf-view.png");
   }, "image/png");
 }

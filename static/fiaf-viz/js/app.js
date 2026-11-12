@@ -139,6 +139,9 @@ let scopeToken = 0;
 let scopeTimer = null;
 const roleCache = new Map();
 const agentRequests = new Map();
+// Top-N name slices for views that read only their first N names (see
+// ctx.agentData), keyed by N. Cleared whenever the shared slice is.
+const agentTopSlices = new Map();
 const agentTotals = new Map();
 const agentWorksCache = new Map();
 const workAgentsCache = new Map();
@@ -212,17 +215,22 @@ const ctx = {
     return list && list.length ? list[0].role : null;
   },
 
-  agentData(cloud = false) {
+  // `cap` is for a view that only reads the first `cap` rows (after the
+  // minimum-works filter). Rows are ordered by work count, so those rows are a
+  // prefix of the shared slice and the view can fetch just its top `cap`
+  // instead of waiting for, say, 50,000 names to arrive. A shared slice that is
+  // already loaded or in flight is reused rather than queried again.
+  agentData(cloud = false, { cap = 0 } = {}) {
     // The cloud gets a higher "All" ceiling because it is the only view that
     // draws every loaded name. The other name views keep their smaller shared
     // slice, and their own render caps, so selecting "All" in the cloud does
     // not force the network or role views to load the whole catalogue.
     const useCloudAll = cloud && state.topLimit === null;
     const baseKey = agentKey();
-    const key = `${baseKey}|${useCloudAll ? "cloud-all" : "shared"}`;
+    const sharedKey = `${baseKey}|${useCloudAll ? "cloud-all" : "shared"}`;
     const cache = useCloudAll ? cloudAgentCache : agentCache;
-    if (cache && cache.key === key) return Promise.resolve(cache);
-    if (agentRequests.has(key)) return agentRequests.get(key);
+    if (cache && cache.key === sharedKey) return Promise.resolve(cache);
+    if (agentRequests.has(sharedKey)) return agentRequests.get(sharedKey);
 
     const filter = ctx.roleFilter();
     const scopePattern = ctx.scopeFilter();
@@ -230,12 +238,21 @@ const ctx = {
     const allLimit = useCloudAll
       ? limit("cloudAllAgents", 500000) || 500000
       : limit("allAgents", 20000) || 20000;
+    const sharedLimit = all ? allLimit : state.topLimit;
+    const capped = !useCloudAll && cap > 0 && cap < sharedLimit;
+    if (capped) {
+      // Any top slice at least this long serves the view.
+      for (const [size, entry] of agentTopSlices) {
+        if (entry.baseKey === baseKey && size >= cap) return entry.promise;
+      }
+    }
+    const key = capped ? `${baseKey}|top-${cap}` : sharedKey;
     const request = (async () => {
       const [rows, totals] = await Promise.all([
         runQuery("agents", {
           SCOPE_FILTER: scopePattern,
           ROLE_FILTER: filter,
-          LIMIT: all ? allLimit : state.topLimit
+          LIMIT: capped ? cap : sharedLimit
         }),
         agentTotal(filter, scopePattern)
       ]);
@@ -252,12 +269,21 @@ const ctx = {
         credits: totals ? totals.credits : null
       };
       // A slower, superseded filter must never replace the current cache.
-      if (agentKey() === baseKey) {
+      if (agentKey() === baseKey && !capped) {
         if (useCloudAll) cloudAgentCache = result;
         else agentCache = result;
       }
       return result;
     })();
+    if (capped) {
+      // Kept until the filters change; a failed request is dropped so a retry
+      // queries again.
+      agentTopSlices.set(cap, { baseKey, promise: request });
+      request.catch(() => {
+        if (agentTopSlices.get(cap)?.promise === request) agentTopSlices.delete(cap);
+      });
+      return request;
+    }
     agentRequests.set(key, request);
     const forget = () => {
       if (agentRequests.get(key) === request) agentRequests.delete(key);
@@ -834,6 +860,7 @@ function invalidateAgentViews(refetch) {
   if (refetch) {
     agentCache = null;
     cloudAgentCache = null;
+    agentTopSlices.clear();
   }
   for (const name of AGENT_VIEWS) stale.add(name);
   if (activeView && AGENT_VIEWS.has(activeView)) scheduleLoad(activeView);
@@ -846,6 +873,7 @@ function invalidateAllViews(refetch) {
   if (refetch) {
     agentCache = null;
     cloudAgentCache = null;
+    agentTopSlices.clear();
   }
   for (const name of Object.keys(views || {})) {
     stale.add(name);
@@ -1318,7 +1346,7 @@ function wireExport() {
       if (!view || !view.exportSvg) return;
       const result = view.exportSvg();
       if (!result) return;
-      if (result.canvas) ui.downloadCanvas(result.canvas, result.name);
+      if (result.canvas) ui.downloadCanvas(result.canvas, result.name, result.background);
       else if (result.element) ui.downloadSvg(result.element, result.name);
     });
   }

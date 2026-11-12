@@ -7,6 +7,9 @@
 let config = null;
 const queryText = new Map();
 const queryResults = new Map();
+// Response text length per parsed payload, so the result cache can size an
+// entry without serialising a multi-megabyte result a second time.
+const payloadChars = new WeakMap();
 const pendingQueries = new Map();
 let resultCacheChars = 0;
 let cacheGeneration = 0;
@@ -582,7 +585,9 @@ async function executeQuery(query, label, signal, options = {}) {
         const body = await response.text();
         if (response.ok) {
           try {
-            return JSON.parse(body);
+            const payload = JSON.parse(body);
+            if (payload && typeof payload === "object") payloadChars.set(payload, body.length);
+            return payload;
           } catch (error) {
             throw new Error(`${label}: response was not SPARQL JSON. ${body.slice(0, 200)}`);
           }
@@ -662,7 +667,7 @@ function rememberResult(key, payload, generation) {
   const entries = limit("queryCacheEntries", 32);
   const budget = limit("queryCacheChars", 2000000);
   if (generation !== cacheGeneration || !ttl || !entries || !budget) return;
-  const chars = key.length + JSON.stringify(payload).length;
+  const chars = key.length + (payloadChars.get(payload) ?? JSON.stringify(payload).length);
   if (chars > budget) return;
   const previous = queryResults.get(key);
   if (previous) resultCacheChars -= previous.chars;

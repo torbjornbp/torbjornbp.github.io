@@ -367,11 +367,12 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       ego = null;
       egoToken += 1;
     }
-    const agentData = await ctx.agentData();
+    const maxAgents = limit("coCreditAgents", 200);
+    const agentData = await ctx.agentData(false, { cap: maxAgents });
     if (signal && signal.aborted) return;
     const agents = agentData.rows
       .filter((row) => Number(row.works) >= ctx.state.minWorks)
-      .slice(0, limit("coCreditAgents", 200));
+      .slice(0, maxAgents);
     if (!agents.length) {
       dropGraph();
       simulation = null;
@@ -808,7 +809,16 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       if (data && lastNodes.length) scheduleDraw();
     },
     exportSvg() {
-      return { canvas, name: "fiaf-co-credits.png" };
+      // Flush a pending repaint so the file matches the screen.
+      if (frame !== null) {
+        cancelAnimationFrame(frame);
+        frame = null;
+      }
+      paint();
+      const surface =
+        getComputedStyle(document.documentElement).getPropertyValue("--surface").trim() ||
+        "#ffffff";
+      return { canvas, name: "fiaf-co-credits.png", background: surface };
     }
   };
 }

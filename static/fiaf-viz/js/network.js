@@ -1,7 +1,7 @@
 // Bipartite force-directed network: loaded names <-> their works.
 //
-// The layout is computed once per data load: the simulation is pre-ticked
-// off-screen and then stopped, so browsing does not run physics in the browser.
+// The layout is computed once per data load: the simulation is pre-ticked in a
+// worker and then stopped, so browsing does not run physics in the browser.
 // Selecting a name or work only repaints and never rebuilds the graph. Entities
 // outside the loaded slice are not drawn; the sidebar dims rows the view cannot
 // show.
@@ -24,6 +24,109 @@ const WORK_RADIUS = 2.6;
 // Edge opacity of the earlier SVG version (its .link rule), kept so the mesh
 // reads the same on canvas.
 const LINK_ALPHA = 0.6;
+// Edges are stroked in this many interleaved paths rather than one call each.
+// Overlaps within one path do not darken, but a dense area holds edges from
+// many paths, so the mesh still darkens where it is dense, at a few dozen draw
+// calls a frame instead of one per edge.
+const LINK_BATCHES = 24;
+// Node outlines thinner than this on screen are invisible, so they are skipped.
+const OUTLINE_MIN_PX = 0.4;
+
+// Settle the force layout off-screen. This runs inside a worker, from its
+// source text, so it may only use its arguments. Nodes and links arrive as
+// typed arrays (links refer to node indices) and the result is the settled
+// positions.
+function settleLayout(d3, input) {
+  const { agents, radii, sources, targets, width, height, ticks } = input;
+  const nodes = Array.from(radii, (r, index) => ({ r, agent: agents[index] === 1 }));
+  const links = Array.from(sources, (source, index) => ({ source, target: targets[index] }));
+  const simulation = d3
+    .forceSimulation(nodes)
+    .velocityDecay(0.45)
+    .force("link", d3.forceLink(links).distance(52).strength(0.22))
+    .force(
+      "charge",
+      d3
+        .forceManyBody()
+        .strength((node) => (node.agent ? -220 : -90))
+        .distanceMax(700)
+    )
+    .force(
+      "collide",
+      d3
+        .forceCollide()
+        .radius((node) => node.r + 3.5)
+        .strength(0.9)
+        .iterations(nodes.length > 4000 ? 1 : 2)
+    )
+    .force("center", d3.forceCenter(width / 2, height / 2));
+  simulation.stop();
+  simulation.tick(ticks);
+  const x = new Float64Array(nodes.length);
+  const y = new Float64Array(nodes.length);
+  nodes.forEach((node, index) => {
+    x[index] = node.x;
+    y[index] = node.y;
+  });
+  return { x, y };
+}
+
+let layoutWorkerUrl = null;
+
+function workerUrl() {
+  if (!layoutWorkerUrl) {
+    const d3Url = new URL("../vendor/d3.v7.min.js", import.meta.url).href;
+    const source =
+      `importScripts(${JSON.stringify(d3Url)});\n` +
+      `const settleLayout = ${settleLayout.toString()};\n` +
+      "self.onmessage = (event) => {\n" +
+      "  const result = settleLayout(self.d3, event.data);\n" +
+      "  self.postMessage(result, [result.x.buffer, result.y.buffer]);\n" +
+      "};\n";
+    layoutWorkerUrl = URL.createObjectURL(new Blob([source], { type: "text/javascript" }));
+  }
+  return layoutWorkerUrl;
+}
+
+// Settling thousands of nodes takes seconds, so it runs in a worker to keep the
+// page responsive. Without worker support (or if the worker fails to start)
+// it runs here instead. Resolves to null when the load is cancelled.
+function runLayout(input, signal) {
+  const inline = () => settleLayout(d3, input);
+  if (typeof Worker !== "function" || typeof Blob !== "function") {
+    return Promise.resolve(inline());
+  }
+  return new Promise((resolve) => {
+    let worker;
+    try {
+      worker = new Worker(workerUrl());
+    } catch (_) {
+      resolve(inline());
+      return;
+    }
+    const finish = (result) => {
+      worker.terminate();
+      if (signal) signal.removeEventListener("abort", cancel);
+      resolve(result);
+    };
+    const cancel = () => finish(null);
+    worker.onmessage = (event) => finish(event.data);
+    worker.onerror = (event) => {
+      if (event && event.preventDefault) event.preventDefault();
+      worker.terminate();
+      if (signal) signal.removeEventListener("abort", cancel);
+      resolve(signal && signal.aborted ? null : inline());
+    };
+    if (signal) {
+      if (signal.aborted) {
+        finish(null);
+        return;
+      }
+      signal.addEventListener("abort", cancel, { once: true });
+    }
+    worker.postMessage(input);
+  });
+}
 
 export function create(ctx, root, statsElement, linkButtons) {
   let data = null;
@@ -46,6 +149,8 @@ export function create(ctx, root, statsElement, linkButtons) {
   let viewportWidth = 0;
   let viewportHeight = 0;
   let hasRendered = false;
+  let palette = null;
+  let loadSequence = 0;
 
   function syncLinkButtons() {
     for (const button of linkButtons || []) {
@@ -223,18 +328,21 @@ export function create(ctx, root, statsElement, linkButtons) {
   }
 
   async function load({ signal } = {}) {
+    const sequence = (loadSequence += 1);
+    const stale = () => sequence !== loadSequence || (signal && signal.aborted);
     if (!hasRendered) {
       ui.message(root, "Loading credits from QLever…");
     }
     ui.setStatus("Building the names and works network…");
-    const agentData = await ctx.agentData();
-    if (signal && signal.aborted) return;
+    // 0 (the default) draws every name in the loaded slice. A positive
+    // networkAgents limit is an optional safety cap, and then only that many
+    // names are fetched.
+    const maxAgents = limit("networkAgents", 0);
+    const agentData = await ctx.agentData(false, { cap: maxAgents });
+    if (stale()) return;
     const matching = agentData.rows.filter(
       (row) => Number(row.works) >= ctx.state.minWorks
     );
-    // 0 (the default) draws every name in the loaded slice. A positive
-    // networkAgents limit is an optional safety cap.
-    const maxAgents = limit("networkAgents", 0);
     const agents = maxAgents > 0 ? matching.slice(0, maxAgents) : matching;
     if (!agents.length) {
       data = null;
@@ -250,15 +358,18 @@ export function create(ctx, root, statsElement, linkButtons) {
       ROLE_FILTER: ctx.roleFilter(),
       LIMIT: limit("networkRows", 40000)
     }, { signal });
-    if (signal && signal.aborted) return;
-    data = build(
+    if (stale()) return;
+    const next = build(
       agents,
       rows,
       agentData.total,
-      maxAgents > 0 && matching.length > maxAgents,
+      // A capped fetch returns at most maxAgents rows, so a full slice of
+      // matching names out of a larger total means the cap cut names off.
+      maxAgents > 0 && matching.length >= maxAgents && agentData.total > maxAgents,
       agentData.roleMap
     );
-    if (!data.links.length) {
+    if (!next.links.length) {
+      data = next;
       dropGraph();
       radiusScale = null;
       ui.empty(root, "No works found for these names.");
@@ -266,7 +377,22 @@ export function create(ctx, root, statsElement, linkButtons) {
       hasRendered = true;
       return;
     }
-    render();
+    const graph = prepare(next);
+    ui.setStatus(`Laying out ${ui.formatNumber(graph.nodes.length)} nodes…`);
+    const { width, height } = dimensions();
+    const ticks = graph.nodes.length > 8000 ? 45 : graph.nodes.length > 4000 ? 70 : 110;
+    const layout = await runLayout({
+      agents: graph.agents,
+      radii: graph.radii,
+      sources: graph.sources,
+      targets: graph.targets,
+      width,
+      height,
+      ticks
+    }, signal);
+    if (!layout || stale()) return;
+    data = next;
+    render(graph, layout);
     hasRendered = true;
     select(lastSelection);
     ui.setStatus("");
@@ -302,67 +428,63 @@ export function create(ctx, root, statsElement, linkButtons) {
       nodes.get(row.agent).degree += 1;
       nodes.get(row.work).degree += 1;
     }
+    // When the link limit is reached, some loaded names keep no edge at all.
+    // As free nodes the layout pushes them to the rim, where they add nothing
+    // but cost layout time and force the fitted view far out.
+    const linked = [...nodes.values()].filter(
+      (node) => node.type !== "agent" || node.degree > 0
+    );
     return {
-      nodes: [...nodes.values()],
+      nodes: linked,
       links,
       roleMap,
       capped: rows.length >= limit("networkRows", 40000),
       nameCount: agents.length,
       nameTotal: total,
-      nameCapped: Boolean(nameCapped)
+      nameCapped: Boolean(nameCapped),
+      unlinked: nodes.size - linked.length
     };
   }
 
-  // Build the static layout: pre-tick off-screen, then never animate again.
-  function render() {
+  // Copy the nodes, size them, and encode the graph for the layout worker.
+  function prepare(graph) {
+    const nodes = graph.nodes.map((node) => ({ ...node }));
+    const scale = agentRadiusScale(nodes);
+    const agents = new Uint8Array(nodes.length);
+    const radii = new Float64Array(nodes.length);
+    const position = new Map();
+    nodes.forEach((node, index) => {
+      node.r = radius(node, scale);
+      agents[index] = node.type === "agent" ? 1 : 0;
+      radii[index] = node.r;
+      position.set(node.id, index);
+    });
+    const sources = new Uint32Array(graph.links.length);
+    const targets = new Uint32Array(graph.links.length);
+    graph.links.forEach((link, index) => {
+      sources[index] = position.get(link.source);
+      targets[index] = position.get(link.target);
+    });
+    return { nodes, scale, agents, radii, sources, targets };
+  }
+
+  // Place the settled layout; the graph is static from here on.
+  function render(graph, layout) {
     resizeCanvas();
-    const width = viewportWidth;
-    const height = viewportHeight;
     ui.clear(root);
-
-    const links = data.links.map((link) => ({ ...link }));
-    const nodes = data.nodes.map((node) => ({ ...node }));
+    const nodes = graph.nodes;
     hovered = null;
+    radiusScale = graph.scale;
+    nodes.forEach((node, index) => {
+      node.x = layout.x[index];
+      node.y = layout.y[index];
+    });
     nodeIndex = new Map(nodes.map((node) => [node.id, node]));
-    radiusScale = agentRadiusScale(nodes);
-    for (const node of nodes) node.r = radius(node);
+    const links = Array.from(graph.sources, (source, index) => ({
+      source: nodes[source],
+      target: nodes[graph.targets[index]]
+    }));
 
-    // Pre-settle: run the physics once, off-screen, then stop for good.
-    const simulation = d3
-      .forceSimulation(nodes)
-      .velocityDecay(0.45)
-      .force(
-        "link",
-        d3
-          .forceLink(links)
-          .id((node) => node.id)
-          .distance(52)
-          .strength(0.22)
-      )
-      .force(
-        "charge",
-        d3
-          .forceManyBody()
-          .strength((node) => (node.type === "agent" ? -220 : -90))
-          .distanceMax(700)
-      )
-      .force(
-        "collide",
-        d3
-          .forceCollide()
-          .radius((node) => node.r + 3.5)
-          .strength(0.9)
-          .iterations(nodes.length > 4000 ? 1 : 2)
-      )
-      .force("center", d3.forceCenter(width / 2, height / 2));
-    simulation.stop();
-    // ~110 ticks settle a small layout without visible overlaps. Large graphs
-    // (thousands of names plus works) get fewer ticks so the view stays
-    // responsive; the result is cached for the session.
-    const ticks = nodes.length > 8000 ? 45 : nodes.length > 4000 ? 70 : 110;
-    simulation.tick(ticks);
-
-    // forceLink has replaced each link's source and target ids with the nodes.
     incident = new Map();
     for (const link of links) {
       for (const end of [link.source, link.target]) {
@@ -400,6 +522,25 @@ export function create(ctx, root, statsElement, linkButtons) {
     });
   }
 
+  // Theme colours, resolved once and again only after a theme change: reading
+  // computed style on every zoom frame is wasted work.
+  function colours() {
+    if (palette) return palette;
+    const styles = getComputedStyle(document.documentElement);
+    const token = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
+    palette = {
+      border: token("--border", "#cccccc"),
+      accent: token("--accent", "#b0203a"),
+      surface: token("--surface", "#ffffff"),
+      text: token("--text", "#1a1a1a"),
+      nameColour: token("--name-colour", "#000000"),
+      workColour: token("--work-colour", "#9a6a2f"),
+      font: token("--font", FONT_FALLBACK),
+      fontSize: 0.6875 * (parseFloat(styles.fontSize) || 16)
+    };
+    return palette;
+  }
+
   function paint() {
     if (!painter) return;
     painter.setTransform(ratio, 0, 0, ratio, 0, 0);
@@ -407,17 +548,9 @@ export function create(ctx, root, statsElement, linkButtons) {
     const nodes = lastNodes;
     if (!nodes.length) return;
 
-    // Resolve the theme's colours once per frame, not once per mark.
-    const styles = getComputedStyle(document.documentElement);
-    const token = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
-    const border = token("--border", "#cccccc");
-    const accent = token("--accent", "#b0203a");
-    const surface = token("--surface", "#ffffff");
-    const text = token("--text", "#1a1a1a");
-    const nameColour = token("--name-colour", "#000000");
-    const workColour = token("--work-colour", "#9a6a2f");
-    const font = token("--font", FONT_FALLBACK);
-    const fontSize = 0.6875 * (parseFloat(styles.fontSize) || 16);
+    const {
+      border, accent, surface, text, nameColour, workColour, font, fontSize
+    } = colours();
 
     const k = transform.k;
     painter.translate(transform.x, transform.y);
@@ -438,17 +571,22 @@ export function create(ctx, root, statsElement, linkButtons) {
         (a.y > bottom && b.y > bottom)
       );
     };
-    // Each edge is stroked on its own so overlapping edges still darken, and
-    // the width is divided by the zoom scale so lines stay hairlines.
+    // Interleaved batches (see LINK_BATCHES); the width is divided by the zoom
+    // scale so lines stay hairlines.
     const strokeLinks = (list, colour, alpha, lineWidth, wanted) => {
+      const batches = Math.min(LINK_BATCHES, list.length);
+      if (!batches) return;
       painter.strokeStyle = colour;
       painter.globalAlpha = alpha;
       painter.lineWidth = lineWidth / k;
-      for (const link of list) {
-        if ((wanted && !wanted(link)) || linkHidden(link)) continue;
+      for (let batch = 0; batch < batches; batch += 1) {
         painter.beginPath();
-        painter.moveTo(link.source.x, link.source.y);
-        painter.lineTo(link.target.x, link.target.y);
+        for (let index = batch; index < list.length; index += batches) {
+          const link = list[index];
+          if ((wanted && !wanted(link)) || linkHidden(link)) continue;
+          painter.moveTo(link.source.x, link.source.y);
+          painter.lineTo(link.target.x, link.target.y);
+        }
         painter.stroke();
       }
     };
@@ -463,7 +601,15 @@ export function create(ctx, root, statsElement, linkButtons) {
     // click target stays readable even when the full graph is a faint hairball.
     if (hovered) strokeLinks(incident.get(hovered.id) || [], accent, 0.9, 1.2);
 
+    // Nodes are drawn as one path per style. Dimmed nodes go first so the
+    // highlighted ones sit on top of them.
     const reach = AGENT_MAX_RADIUS + 6;
+    const groups = {
+      dimAgents: [],
+      dimWorks: [],
+      agents: [],
+      works: []
+    };
     let selectedNode = null;
     for (const node of nodes) {
       if (node.id === selectedId) selectedNode = node;
@@ -475,26 +621,45 @@ export function create(ctx, root, statsElement, linkButtons) {
       ) {
         continue;
       }
-      const alpha = !focused || node.focused ? 1 : 0.1;
       const agent = node.type === "agent";
+      if (focused && !node.focused) (agent ? groups.dimAgents : groups.dimWorks).push(node);
+      else (agent ? groups.agents : groups.works).push(node);
+    }
+    const drawNodes = (list, fill, fillAlpha, outline, outlineAlpha, outlineWidth) => {
+      if (!list.length) return;
       painter.beginPath();
-      painter.arc(node.x, node.y, node.r, 0, 2 * Math.PI);
-      painter.globalAlpha = agent ? alpha : alpha * 0.9;
-      painter.fillStyle = agent ? nameColour : workColour;
-      painter.fill();
-      painter.globalAlpha = alpha;
-      if (focused && node.focused) {
-        painter.strokeStyle = accent;
-        painter.lineWidth = node.id === selectedId ? 2.4 : 1.3;
-      } else {
-        painter.strokeStyle = surface;
-        painter.lineWidth = agent ? 1 : 0.6;
+      for (const node of list) {
+        painter.moveTo(node.x + node.r, node.y);
+        painter.arc(node.x, node.y, node.r, 0, 2 * Math.PI);
       }
+      painter.globalAlpha = fillAlpha;
+      painter.fillStyle = fill;
+      painter.fill();
+      if (outlineWidth * k < OUTLINE_MIN_PX) return;
+      painter.globalAlpha = outlineAlpha;
+      painter.strokeStyle = outline;
+      painter.lineWidth = outlineWidth;
       painter.stroke();
+    };
+    drawNodes(groups.dimAgents, nameColour, 0.1, surface, 0.1, 1);
+    drawNodes(groups.dimWorks, workColour, 0.09, surface, 0.1, 0.6);
+    if (focused) {
+      drawNodes(groups.agents, nameColour, 1, accent, 1, 1.3);
+      drawNodes(groups.works, workColour, 0.9, accent, 1, 1.3);
+    } else {
+      drawNodes(groups.agents, nameColour, 1, surface, 1, 1);
+      drawNodes(groups.works, workColour, 0.9, surface, 1, 0.6);
     }
     painter.globalAlpha = 1;
 
     if (selectedNode) {
+      if (focused && selectedNode.focused) {
+        painter.beginPath();
+        painter.arc(selectedNode.x, selectedNode.y, selectedNode.r, 0, 2 * Math.PI);
+        painter.strokeStyle = accent;
+        painter.lineWidth = 2.4;
+        painter.stroke();
+      }
       painter.beginPath();
       painter.arc(selectedNode.x, selectedNode.y, selectedNode.r + 4, 0, 2 * Math.PI);
       painter.strokeStyle = accent;
@@ -588,9 +753,8 @@ export function create(ctx, root, statsElement, linkButtons) {
           if (nodeIndex.has(id)) focusIds.add(id);
         }
       } else if (inSlice) {
-        for (const link of data.links) {
-          if (link.source === selection.id) focusIds.add(link.target);
-          else if (link.target === selection.id) focusIds.add(link.source);
+        for (const link of incident.get(selection.id) || []) {
+          focusIds.add(link.source.id === selection.id ? link.target.id : link.source.id);
         }
       }
     }
@@ -606,14 +770,17 @@ export function create(ctx, root, statsElement, linkButtons) {
     const selectionStatus = ctx.selectionStatus?.();
     statsElement.textContent =
       `${ui.formatNumber(agentCount)} names` +
-      (data.nameTotal > data.nameCount
+      (data.nameTotal > agentCount
         ? ` of ${ui.formatNumber(data.nameTotal)}`
         : "") +
       ` · ${ui.formatNumber(workCount)} works · ` +
       `${ui.formatNumber(data.links.length)} links` +
       (selectionStatus?.short ? ` · ${selectionStatus.short}` : "") +
       (data.nameCapped ? " · name view limit reached" : "") +
-      (data.capped ? " · link limit reached, narrow the filters to see more" : "");
+      (data.capped ? " · link limit reached, narrow the filters to see more" : "") +
+      (data.unlinked
+        ? ` · ${ui.formatNumber(data.unlinked)} loaded names have no works within the link limit`
+        : "");
   }
 
   // Size by the number of works this name has *in view*. A square-root scale
@@ -631,10 +798,10 @@ export function create(ctx, root, statsElement, linkButtons) {
       .clamp(true);
   }
 
-  function radius(node) {
+  function radius(node, scale = radiusScale) {
     if (node.type === "agent") {
-      if (!radiusScale) return AGENT_MIN_RADIUS;
-      return radiusScale(Math.max(1, node.degree || 0));
+      if (!scale) return AGENT_MIN_RADIUS;
+      return scale(Math.max(1, node.degree || 0));
     }
     return WORK_RADIUS;
   }
@@ -643,7 +810,7 @@ export function create(ctx, root, statsElement, linkButtons) {
     const chosen = new Map();
     const boxes = [];
     for (const node of candidates) {
-      const r = radius(node);
+      const r = node.r;
       const text =
         node.type === "agent" ? truncate(node.name, 22) : truncate(node.title, 26);
       const labelWidth = Math.max(30, text.length * 5.8 + 10);
@@ -737,12 +904,18 @@ export function create(ctx, root, statsElement, linkButtons) {
       fitGraph();
       scheduleDraw();
     },
-    // Colours are read from the theme on every repaint.
     restyle() {
+      palette = null;
       if (data && lastNodes.length) scheduleDraw();
     },
     exportSvg() {
-      return { canvas, name: "fiaf-names-works.png" };
+      // Flush a pending repaint so the file matches the screen.
+      if (frame !== null) {
+        cancelAnimationFrame(frame);
+        frame = null;
+      }
+      paint();
+      return { canvas, name: "fiaf-names-works.png", background: colours().surface };
     }
   };
 }
