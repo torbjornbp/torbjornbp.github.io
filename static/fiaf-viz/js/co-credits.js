@@ -6,6 +6,7 @@
 
 import { iriList, limit, runQuery } from "./sparql.js";
 import * as ui from "./ui.js";
+import { runLayout } from "./layout.js";
 
 const FONT_FALLBACK =
   'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
@@ -14,6 +15,81 @@ const NODE_MAX_RADIUS = 9.5;
 // Edge opacity of the earlier SVG version (its .link rule), kept so the mesh
 // reads the same on canvas.
 const LINK_ALPHA = 0.6;
+// Edges are stroked in interleaved batches per width rather than one call
+// each; see network.js.
+const LINK_BATCHES = 24;
+// Names the view can draw, chosen in its own Names control.
+const NAME_OPTIONS = [100, 250, 500, 1000, 2500, 5000, 10000];
+// Above this many names, pairs sharing fewer than coCreditLargeMinShared works
+// are left out on the server: at two shared works, 10,000 names produce far
+// more pairs than the endpoint can return within its time budget.
+const LARGE_NAMES = 1000;
+// The pair budget grows with the names: coCreditRows is the floor and
+// coCreditRowsMax the ceiling (the strongest pairs are kept), so 100 names
+// keep their old budget.
+const PAIRS_PER_NAME = 20;
+
+// Settle the co-credit layout. In a worker it gets typed arrays (links refer
+// to node indices) and returns positions; on the main thread it can instead
+// take the drawn nodes and links and return a cool simulation for dragging.
+// It runs from its source text in the worker, so it may only use its
+// arguments.
+function settleCoCredits(d3, input, report) {
+  const nodes = input.nodes || Array.from(input.radii, (r) => ({ r }));
+  const links =
+    input.links ||
+    Array.from(input.sources, (source, index) => ({
+      source,
+      target: input.targets[index],
+      shared: input.shared[index]
+    }));
+  if (!input.nodes && input.fixed >= 0) {
+    nodes[input.fixed].fx = input.width / 2;
+    nodes[input.fixed].fy = input.height / 2;
+  }
+  const simulation = d3
+    .forceSimulation(nodes)
+    .velocityDecay(0.4)
+    .force(
+      "link",
+      d3
+        .forceLink(links)
+        .distance((link) => 100 + 50 / Math.sqrt(link.shared))
+        .strength(0.05)
+    )
+    .force("charge", d3.forceManyBody().strength(-800).distanceMax(1200))
+    .force(
+      "collide",
+      d3
+        .forceCollide()
+        .radius((entry) => entry.r + 5)
+        .strength(0.95)
+        .iterations(2)
+    )
+    .force("center", d3.forceCenter(input.width / 2, input.height / 2));
+  simulation.stop();
+  if (input.keep) return { simulation: simulation.alpha(input.alpha) };
+  const positions = () => {
+    const x = new Float64Array(nodes.length);
+    const y = new Float64Array(nodes.length);
+    nodes.forEach((entry, index) => {
+      x[index] = entry.x;
+      y[index] = entry.y;
+    });
+    return { x, y };
+  };
+  // Interim positions: the first after a few steps so the graph appears
+  // quickly, then every input.reportEvery steps.
+  for (let done = 0; done < input.ticks; ) {
+    const step = report && input.reportEvery
+      ? Math.min(done ? input.reportEvery : 5, input.ticks - done)
+      : input.ticks - done;
+    simulation.tick(step);
+    done += step;
+    if (report && done < input.ticks) report(positions());
+  }
+  return positions();
+}
 
 export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
   let data = null;
@@ -47,10 +123,60 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
   let renderedEgoId = null;
   let renderedStats = { nodes: 0, links: 0 };
   let hasRendered = false;
+  let drawSequence = 0;
+  // True while a layout settles: dragging waits for the final positions.
+  let settling = false;
+  // Refit as the layout settles until the user zooms or pans.
+  let autoFit = true;
+  // Cancels a layout still settling when a newer one starts.
+  let drawController = null;
+  let linkGroups = [];
+  let palette = null;
+  let nameCount = NAME_OPTIONS[0];
   const thresholdControl = thresholdInput
     ? thresholdInput.closest(".inline-control")
     : null;
   const egoButton = document.getElementById("co-credits-ego");
+  const namesSelect = document.getElementById("co-credits-names");
+  const limitsNote = document.getElementById("co-credits-limits");
+  if (limitsNote) {
+    const count = (value) => ui.formatNumber(value);
+    limitsNote.replaceChildren(
+      ...[
+        "Two names are linked when both are credited on the same work, in any " +
+          "role. A line's width is the number of distinct works they share, " +
+          "and a name counts once per work however many roles it holds there. " +
+          "A name's size follows how many names it is linked to.",
+        "Why the limits: every loaded name is paired with each other loaded name it shares a work " +
+          "with, so the possible pairs grow roughly with the square of the name " +
+          "count, not in step with it. 1,000 names give about 50,000 pairs at two " +
+          "shared works; 2,000 names already give about 130,000.",
+        "The public endpoint stops any query after 30 seconds, and it has to " +
+          "count every pair before it can pick the strongest. So above " +
+          `${count(LARGE_NAMES)} names only pairs sharing at least ` +
+          `${limit("coCreditLargeMinShared", 3)} works are fetched, and at most the ` +
+          `${count(limit("coCreditRowsMax", 50000))} strongest pairs are drawn.`,
+        "The layout settles in the background and is drawn as it goes, so a " +
+          "larger graph appears quickly but takes longer to come to rest."
+      ].map((text) => ui.node("p", "", text))
+    );
+  }
+  if (namesSelect) {
+    namesSelect.replaceChildren(
+      ...NAME_OPTIONS.map((count) => {
+        const option = document.createElement("option");
+        option.value = String(count);
+        option.textContent = ui.formatNumber(count);
+        return option;
+      })
+    );
+    namesSelect.value = String(nameCount);
+    namesSelect.addEventListener("change", () => {
+      nameCount = Number(namesSelect.value) || NAME_OPTIONS[0];
+      syncThreshold();
+      ctx.reload?.("co-credits");
+    });
+  }
 
   function syncLinkButtons() {
     for (const button of linkButtons || []) {
@@ -248,6 +374,9 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     .scaleExtent([0.05, 8])
     .on("zoom", (event) => {
       transform = event.transform;
+      // A user's own zoom or pan (not a programmatic fit) stops the refits
+      // that follow a settling layout.
+      if (event.sourceEvent) autoFit = false;
       scheduleDraw();
     });
 
@@ -257,6 +386,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
   const drag = d3
     .drag()
     .subject((event) => {
+      if (settling) return undefined;
       const node = pickAt(event.x, event.y);
       if (!node) return undefined;
       return { node, x: transform.applyX(node.x), y: transform.applyY(node.y) };
@@ -328,12 +458,30 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     ui.showTooltip(event, entry.name, body);
   }
 
+  // Fewest shared works a pair needs to be fetched at all, for the current
+  // name count (see LARGE_NAMES).
+  function minimumShared() {
+    return nameCount > LARGE_NAMES
+      ? Math.max(limit("coCreditMinShared", 2), limit("coCreditLargeMinShared", 3))
+      : limit("coCreditMinShared", 2);
+  }
+
+  // The slider cannot go below what was fetched; raising the floor raises the
+  // threshold with it.
+  function syncThreshold() {
+    const floor = minimumShared();
+    if (threshold < floor) threshold = floor;
+    if (!thresholdInput) return;
+    thresholdInput.min = String(floor);
+    thresholdInput.value = String(threshold);
+    const thresholdOutput = document.getElementById("shared-value");
+    if (thresholdOutput) thresholdOutput.textContent = String(threshold);
+  }
+
   if (thresholdInput) {
     const thresholdOutput = document.getElementById("shared-value");
-    thresholdInput.min = String(limit("coCreditMinShared", 2));
     thresholdInput.max = String(limit("coCreditMaxThreshold", 10));
-    thresholdInput.value = String(threshold);
-    if (thresholdOutput) thresholdOutput.textContent = String(threshold);
+    syncThreshold();
     thresholdInput.addEventListener("input", () => {
       threshold = Number(thresholdInput.value) || 1;
       if (thresholdOutput) thresholdOutput.textContent = String(threshold);
@@ -356,6 +504,10 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     radiusScale = null;
     renderedMode = "global";
     renderedEgoId = null;
+    linkGroups = [];
+    drawSequence += 1;
+    settling = false;
+    if (drawController) drawController.abort();
   }
 
   async function load({ signal } = {}) {
@@ -367,8 +519,8 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       ego = null;
       egoToken += 1;
     }
-    const maxAgents = limit("coCreditAgents", 200);
-    const agentData = await ctx.agentData(false, { cap: maxAgents });
+    const maxAgents = nameCount;
+    const agentData = await ctx.agentData(false, { top: maxAgents });
     if (signal && signal.aborted) return;
     const agents = agentData.rows
       .filter((row) => Number(row.works) >= ctx.state.minWorks)
@@ -385,24 +537,28 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       hasRendered = true;
       return;
     }
+    const pairLimit = Math.min(
+      limit("coCreditRowsMax", 20000) || Infinity,
+      Math.max(limit("coCreditRows", 3000), agents.length * PAIRS_PER_NAME)
+    );
     const rows = await runQuery("co-credits", {
       AGENT_IRIS: iriList(agents.map((row) => row.agent)),
       SCOPE_FILTER: ctx.scopeFilter(),
-      MIN_SHARED: limit("coCreditMinShared", 2),
-      LIMIT: limit("coCreditRows", 6000)
+      MIN_SHARED: minimumShared(),
+      LIMIT: pairLimit
     }, { signal });
     if (signal && signal.aborted) return;
-    data = build(rows, agentData.total, agents, agentData.roleMap);
+    data = build(rows, agentData.total, agents, agentData.roleMap, pairLimit, minimumShared());
     if (egoMode && lastSelection && lastSelection.kind === "agent") {
       selectEgo(lastSelection);
     } else {
-      draw();
+      await draw();
     }
     hasRendered = true;
     ui.setStatus("");
   }
 
-  function build(rows, total, agents, roleMap) {
+  function build(rows, total, agents, roleMap, pairLimit, minimum) {
     const names = new Map(agents.map((agent) => [agent.agent, agent.name]));
     const links = rows.map((row) => ({
       source: row.a,
@@ -416,20 +572,21 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       names,
       roleMap,
       agentIds: agents.map((agent) => agent.agent),
-      capped: rows.length >= limit("coCreditRows", 6000),
+      capped: rows.length >= pairLimit,
+      minimumShared: minimum,
       nameTotal: total
     };
   }
 
-  // Build and settle the layout for the current mode and threshold.
-  function draw() {
+  // Build and settle the layout for the current mode and threshold. A large
+  // graph settles in a worker; the old picture stays up until it is ready.
+  async function draw() {
     if (!data) return;
     const isEgo = lastSelection && lastSelection.kind === "agent" && ego;
     if (isEgo && !ego.rows) return;
+    const sequence = ++drawSequence;
 
-    resizeCanvas();
-    const width = viewportWidth;
-    const height = viewportHeight;
+    const { width, height } = dimensions();
     if (simulation) simulation.stop();
 
     const visible = isEgo
@@ -444,10 +601,9 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     if (!visible.length && !isEgo) {
       dropGraph();
       ui.empty(root, `No pairs share ${threshold} or more works in the loaded names.`);
-      statsElement.textContent = `${ui.formatNumber(data.links.length)} pairs at ${limit("coCreditMinShared", 2)}+ shared works`;
+      statsElement.textContent = `${ui.formatNumber(data.links.length)} pairs at ${data.minimumShared}+ shared works`;
       return;
     }
-    ui.clear(root);
 
     const nodes = new Map();
     const node = (id, name) => {
@@ -470,72 +626,110 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       selected.fy = height / 2;
     }
     const nodeList = [...nodes.values()];
-    hovered = null;
-    nodeIndex = new Map(nodeList.map((entry) => [entry.id, entry]));
-    radiusScale = makeRadiusScale(nodeList);
-    for (const entry of nodeList) entry.r = nodeRadius(entry);
+    const scale = makeRadiusScale(nodeList);
+    const position = new Map();
+    nodeList.forEach((entry, index) => {
+      entry.r = nodeRadius(entry, scale);
+      position.set(entry.id, index);
+    });
+
+    const ticks = nodeList.length > 300 ? 300 : 420;
+    const input = {
+      radii: Float64Array.from(nodeList, (entry) => entry.r),
+      sources: Uint32Array.from(visible, (link) => position.get(link.source)),
+      targets: Uint32Array.from(visible, (link) => position.get(link.target)),
+      shared: Float64Array.from(visible, (link) => link.shared),
+      fixed: isEgo ? position.get(ego.id) : -1,
+      width,
+      height,
+      ticks,
+      reportEvery: 25
+    };
     const links = visible.map((link) => ({
-      source: link.source,
-      target: link.target,
+      source: nodeList[position.get(link.source)],
+      target: nodeList[position.get(link.target)],
       shared: link.shared
     }));
-
     const minimumShared = isEgo ? 1 : threshold;
-    widthScale = d3
+    const widths = d3
       .scaleSqrt()
       .domain([
         minimumShared,
         d3.max(links, (link) => link.shared) || minimumShared
       ])
       .range([0.5, 2.2]);
-    for (const link of links) link.width = widthScale(link.shared);
-    renderedMode = isEgo ? "ego" : "global";
-    renderedEgoId = isEgo ? ego.id : null;
-    updateEgoButton();
+    // Widths are rounded to a few steps so edges can be stroked in batches.
+    for (const link of links) link.width = Math.round(widths(link.shared) * 4) / 4;
 
-    simulation = d3
-      .forceSimulation(nodeList)
-      .velocityDecay(0.4)
-      .force(
-        "link",
-        d3
-          .forceLink(links)
-          .id((entry) => entry.id)
-          .distance((link) => 100 + 50 / Math.sqrt(link.shared))
-          .strength(0.05)
-      )
-      .force("charge", d3.forceManyBody().strength(-800).distanceMax(1200))
-      .force(
-        "collide",
-        d3
-          .forceCollide()
-          .radius((entry) => entry.r + 5)
-          .strength(0.95)
-          .iterations(2)
-      )
-      .force("center", d3.forceCenter(width / 2, height / 2))
-      // Only a drag restarts the simulation; each of its ticks is one repaint.
-      .on("tick", scheduleDraw);
-
-    // Settle off-screen, then fit: the user never sees the initial collisions.
-    simulation.stop();
-    simulation.tick(420);
-
-    // forceLink has replaced each link's source and target ids with the nodes.
-    incident = new Map();
-    for (const link of links) {
-      for (const end of [link.source, link.target]) {
-        if (!incident.has(end.id)) incident.set(end.id, []);
-        incident.get(end.id).push(link);
+    // The old picture stays up until the first positions arrive. From then on
+    // the graph is drawn as it settles, refitted each time unless the user has
+    // zoomed or panned, and dragging waits for the final layout.
+    let shown = false;
+    const show = (positions) => {
+      if (sequence !== drawSequence) return;
+      nodeList.forEach((entry, index) => {
+        entry.x = positions.x[index];
+        entry.y = positions.y[index];
+        entry.vx = 0;
+        entry.vy = 0;
+      });
+      if (!shown) {
+        shown = true;
+        resizeCanvas();
+        ui.clear(root);
+        hovered = null;
+        autoFit = true;
+        nodeIndex = new Map(nodeList.map((entry) => [entry.id, entry]));
+        radiusScale = scale;
+        widthScale = widths;
+        linkGroups = d3.groups(links, (link) => link.width).sort((a, b) => a[0] - b[0]);
+        renderedMode = isEgo ? "ego" : "global";
+        renderedEgoId = isEgo ? ego.id : null;
+        incident = new Map();
+        for (const link of links) {
+          for (const end of [link.source, link.target]) {
+            if (!incident.has(end.id)) incident.set(end.id, []);
+            incident.get(end.id).push(link);
+          }
+        }
+        lastNodes = nodeList;
+        lastLinks = links;
+        renderedStats = { nodes: nodeList.length, links: links.length };
+        updateEgoButton();
+        updateStats();
       }
-    }
-    lastNodes = nodeList;
-    lastLinks = links;
-    labelled = chooseLabels(nodeList);
-    refreshHighlight();
-    fitGraph();
-    renderedStats = { nodes: nodeList.length, links: links.length };
-    updateStats();
+      labelled = chooseLabels(nodeList);
+      refreshHighlight();
+      if (autoFit) fitGraph();
+    };
+
+    // A worker's start-up costs more than settling a small graph here.
+    const small = nodeList.length + visible.length < 1500;
+    if (!small) ui.setStatus(`Laying out ${ui.formatNumber(nodeList.length)} names…`);
+    if (drawController) drawController.abort();
+    const controller = (drawController = new AbortController());
+    settling = true;
+    const layout = await runLayout(settleCoCredits, input, {
+      inline: small,
+      onProgress: show,
+      signal: controller.signal
+    });
+    if (sequence !== drawSequence || !layout) return;
+    settling = false;
+    if (!small) ui.setStatus("");
+    show(layout);
+
+    // The live simulation only runs while a node is dragged, so its neighbours
+    // follow. It starts as cool as the settled layout ended, so a drag nudges
+    // the graph instead of re-exploding it.
+    simulation = settleCoCredits(d3, {
+      nodes: nodeList,
+      links,
+      width,
+      height,
+      keep: true,
+      alpha: Math.pow(0.001, ticks / 300)
+    }).simulation.on("tick", scheduleDraw);
     ctx.refreshSelectionStatus?.();
   }
 
@@ -574,68 +768,116 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     });
   }
 
+  // Theme colours, resolved once and again only after a theme change.
+  function colours() {
+    if (palette) return palette;
+    const styles = getComputedStyle(document.documentElement);
+    const token = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
+    palette = {
+      border: token("--border", "#cccccc"),
+      accent: token("--accent", "#b0203a"),
+      surface: token("--surface", "#ffffff"),
+      text: token("--text", "#1a1a1a"),
+      nameColour: token("--name-colour", "#000000"),
+      font: token("--font", FONT_FALLBACK),
+      fontSize: 0.6875 * (parseFloat(styles.fontSize) || 16)
+    };
+    return palette;
+  }
+
   function paint() {
     if (!painter) return;
     painter.setTransform(ratio, 0, 0, ratio, 0, 0);
     painter.clearRect(0, 0, viewportWidth, viewportHeight);
     if (!lastNodes.length) return;
 
-    // Resolve the theme's colours once per frame, not once per mark.
-    const styles = getComputedStyle(document.documentElement);
-    const token = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
-    const border = token("--border", "#cccccc");
-    const accent = token("--accent", "#b0203a");
-    const surface = token("--surface", "#ffffff");
-    const text = token("--text", "#1a1a1a");
-    const nameColour = token("--name-colour", "#000000");
-    const font = token("--font", FONT_FALLBACK);
-    const fontSize = 0.6875 * (parseFloat(styles.fontSize) || 16);
+    const { border, accent, surface, text, nameColour, font, fontSize } = colours();
 
     const k = transform.k;
     painter.translate(transform.x, transform.y);
     painter.scale(k, k);
 
-    // Each edge is stroked on its own so overlapping edges still darken, and
-    // the width is divided by the zoom scale so it does not grow with the zoom.
-    const strokeLinks = (list, colour, alpha, minimumWidth, wanted) => {
+    // Visible part of the graph, in graph coordinates.
+    const left = -transform.x / k;
+    const top = -transform.y / k;
+    const right = left + viewportWidth / k;
+    const bottom = top + viewportHeight / k;
+    const hidden = (link) => {
+      const a = link.source;
+      const b = link.target;
+      return (
+        (a.x < left && b.x < left) ||
+        (a.x > right && b.x > right) ||
+        (a.y < top && b.y < top) ||
+        (a.y > bottom && b.y > bottom)
+      );
+    };
+    // One width per group, stroked in interleaved batches: overlaps within a
+    // batch do not darken, but a dense area holds edges from many batches. The
+    // width is divided by the zoom scale so it does not grow with the zoom.
+    const strokeLinks = (groups, colour, alpha, minimumWidth, wanted) => {
       painter.strokeStyle = colour;
       painter.globalAlpha = alpha;
-      for (const link of list) {
-        if (wanted && !wanted(link)) continue;
-        painter.lineWidth = Math.max(minimumWidth, link.width) / k;
-        painter.beginPath();
-        painter.moveTo(link.source.x, link.source.y);
-        painter.lineTo(link.target.x, link.target.y);
-        painter.stroke();
+      for (const [width, list] of groups) {
+        const batches = Math.min(LINK_BATCHES, list.length);
+        painter.lineWidth = Math.max(minimumWidth, width) / k;
+        for (let batch = 0; batch < batches; batch += 1) {
+          painter.beginPath();
+          for (let index = batch; index < list.length; index += batches) {
+            const link = list[index];
+            if ((wanted && !wanted(link)) || hidden(link)) continue;
+            painter.moveTo(link.source.x, link.source.y);
+            painter.lineTo(link.target.x, link.target.y);
+          }
+          painter.stroke();
+        }
       }
     };
 
     // "Selected only" hides the background mesh in the global view; the
     // isolated view has no background, so it always shows its edges.
     if (renderedMode === "ego" || linkMode !== "selected") {
-      strokeLinks(lastLinks, border, LINK_ALPHA, 0, (link) => !link.touching);
+      strokeLinks(linkGroups, border, LINK_ALPHA, 0, highlighting ? (link) => !link.touching : null);
     }
-    if (highlighting) strokeLinks(lastLinks, accent, 0.9, 1.2, (link) => link.touching);
+    if (highlighting) strokeLinks(linkGroups, accent, 0.9, 1.2, (link) => link.touching);
     // Hovered edges are redrawn above the mesh, so a node's relations stand
     // out without raising the opacity of the whole graph.
-    if (hovered) strokeLinks(incident.get(hovered.id) || [], accent, 0.9, 1);
+    if (hovered) {
+      strokeLinks(d3.groups(incident.get(hovered.id) || [], (link) => link.width), accent, 0.9, 1);
+    }
 
+    // Nodes as one path per style; dimmed ones first, so the highlighted
+    // nodes sit on top.
+    const groups = [[], [], []];
     for (const entry of lastNodes) {
-      painter.globalAlpha = highlighting && !entry.near ? 0.1 : 1;
+      groups[highlighting && !entry.near ? 0 : entry.near ? 2 : 1].push(entry);
+    }
+    const drawNodes = (list, alpha, outline, outlineWidth) => {
+      if (!list.length) return;
       painter.beginPath();
-      painter.arc(entry.x, entry.y, entry.r, 0, 2 * Math.PI);
+      for (const entry of list) {
+        painter.moveTo(entry.x + entry.r, entry.y);
+        painter.arc(entry.x, entry.y, entry.r, 0, 2 * Math.PI);
+      }
+      painter.globalAlpha = alpha;
       painter.fillStyle = nameColour;
       painter.fill();
-      if (entry.near) {
-        painter.strokeStyle = accent;
-        painter.lineWidth = entry.id === selectedId ? 2.4 : 1.3;
-      } else {
-        painter.strokeStyle = surface;
-        painter.lineWidth = 1;
-      }
+      painter.strokeStyle = outline;
+      painter.lineWidth = outlineWidth;
+      painter.stroke();
+    };
+    drawNodes(groups[0], 0.1, surface, 1);
+    drawNodes(groups[1], 1, surface, 1);
+    drawNodes(groups[2], 1, accent, 1.3);
+    painter.globalAlpha = 1;
+    const selectedEntry = selectedId ? nodeIndex.get(selectedId) : null;
+    if (selectedEntry && selectedEntry.near) {
+      painter.beginPath();
+      painter.arc(selectedEntry.x, selectedEntry.y, selectedEntry.r, 0, 2 * Math.PI);
+      painter.strokeStyle = accent;
+      painter.lineWidth = 2.4;
       painter.stroke();
     }
-    painter.globalAlpha = 1;
 
     const selectedNode = selectedId ? nodeIndex.get(selectedId) : null;
     if (selectedNode) {
@@ -723,9 +965,9 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       .clamp(true);
   }
 
-  function nodeRadius(entry) {
-    if (!radiusScale) return NODE_MIN_RADIUS;
-    return radiusScale(Math.max(1, entry.degree || 0));
+  function nodeRadius(entry, scale = radiusScale) {
+    if (!scale) return NODE_MIN_RADIUS;
+    return scale(Math.max(1, entry.degree || 0));
   }
 
   // Placements are stored as offsets from the node, so a label follows its
@@ -804,8 +1046,8 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       fitGraph();
       scheduleDraw();
     },
-    // Colours are read from the theme on every repaint.
     restyle() {
+      palette = null;
       if (data && lastNodes.length) scheduleDraw();
     },
     exportSvg() {
@@ -815,10 +1057,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
         frame = null;
       }
       paint();
-      const surface =
-        getComputedStyle(document.documentElement).getPropertyValue("--surface").trim() ||
-        "#ffffff";
-      return { canvas, name: "fiaf-co-credits.png", background: surface };
+      return { canvas, name: "fiaf-co-credits.png", background: colours().surface };
     }
   };
 }

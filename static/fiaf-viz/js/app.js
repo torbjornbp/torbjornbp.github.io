@@ -220,7 +220,18 @@ const ctx = {
   // prefix of the shared slice and the view can fetch just its top `cap`
   // instead of waiting for, say, 50,000 names to arrive. A shared slice that is
   // already loaded or in flight is reused rather than queried again.
-  agentData(cloud = false, { cap = 0 } = {}) {
+  // Whether agentData(cloud) would resolve from memory without a query.
+  agentDataReady(cloud = false) {
+    const useCloudAll = cloud && state.topLimit === null;
+    const key = `${agentKey()}|${useCloudAll ? "cloud-all" : "shared"}`;
+    const cache = useCloudAll ? cloudAgentCache : agentCache;
+    return Boolean(cache && cache.key === key);
+  },
+
+  //
+  // `top` is for a view with its own name count, independent of the Names
+  // setting: it always gets (at least) the top `top` names.
+  agentData(cloud = false, { cap = 0, top = 0 } = {}) {
     // The cloud gets a higher "All" ceiling because it is the only view that
     // draws every loaded name. The other name views keep their smaller shared
     // slice, and their own render caps, so selecting "All" in the cloud does
@@ -228,31 +239,36 @@ const ctx = {
     const useCloudAll = cloud && state.topLimit === null;
     const baseKey = agentKey();
     const sharedKey = `${baseKey}|${useCloudAll ? "cloud-all" : "shared"}`;
+    const all = state.topLimit === null;
+    const allLimit = useCloudAll
+      ? cloudAllLimit()
+      : limit("allAgents", 20000) || 20000;
+    const sharedLimit = all ? allLimit : state.topLimit;
+    // A shared slice shorter than `top` cannot serve that view.
+    const sharedServes = !top || sharedLimit >= top;
     const cache = useCloudAll ? cloudAgentCache : agentCache;
-    if (cache && cache.key === sharedKey) return Promise.resolve(cache);
-    if (agentRequests.has(sharedKey)) return agentRequests.get(sharedKey);
+    if (sharedServes && cache && cache.key === sharedKey) return Promise.resolve(cache);
+    if (sharedServes && agentRequests.has(sharedKey)) return agentRequests.get(sharedKey);
 
     const filter = ctx.roleFilter();
     const scopePattern = ctx.scopeFilter();
-    const all = state.topLimit === null;
-    const allLimit = useCloudAll
-      ? limit("cloudAllAgents", 500000) || 500000
-      : limit("allAgents", 20000) || 20000;
-    const sharedLimit = all ? allLimit : state.topLimit;
-    const capped = !useCloudAll && cap > 0 && cap < sharedLimit;
+    const size = top || cap;
+    const capped = top > 0 || (cap > 0 && cap < sharedLimit);
+    // Top slices depend on scope and roles only, not on the Names setting.
+    const sliceKey = `${scopeKey()}|${roleKey()}`;
     if (capped) {
       // Any top slice at least this long serves the view.
-      for (const [size, entry] of agentTopSlices) {
-        if (entry.baseKey === baseKey && size >= cap) return entry.promise;
+      for (const [length, entry] of agentTopSlices) {
+        if (entry.sliceKey === sliceKey && length >= size) return entry.promise;
       }
     }
-    const key = capped ? `${baseKey}|top-${cap}` : sharedKey;
+    const key = capped ? `${sliceKey}|top-${size}` : sharedKey;
     const request = (async () => {
       const [rows, totals] = await Promise.all([
         runQuery("agents", {
           SCOPE_FILTER: scopePattern,
           ROLE_FILTER: filter,
-          LIMIT: capped ? cap : sharedLimit
+          LIMIT: capped ? size : Number.isFinite(sharedLimit) ? sharedLimit : EVERY_ROW
         }),
         agentTotal(filter, scopePattern)
       ]);
@@ -278,9 +294,9 @@ const ctx = {
     if (capped) {
       // Kept until the filters change; a failed request is dropped so a retry
       // queries again.
-      agentTopSlices.set(cap, { baseKey, promise: request });
+      agentTopSlices.set(size, { sliceKey, promise: request });
       request.catch(() => {
-        if (agentTopSlices.get(cap)?.promise === request) agentTopSlices.delete(cap);
+        if (agentTopSlices.get(size)?.promise === request) agentTopSlices.delete(size);
       });
       return request;
     }
@@ -319,7 +335,12 @@ const ctx = {
   onlyRole,
   selectionStatus,
   refreshSelectionStatus: updateDrawerContext,
-  refreshDrawerOutside
+  refreshDrawerOutside,
+  // Refetch one view, for a control that lives inside that view.
+  reload(name) {
+    stale.add(name);
+    if (activeView === name) scheduleLoad(name);
+  }
 };
 
 function selectionSupportedByView(name, selected = selection) {
@@ -348,6 +369,13 @@ function outsideSliceMessage(name, workCount) {
     );
   }
   if (name === "network") {
+    const ceiling = nameCeiling("network");
+    if (state.topLimit === null || state.topLimit >= ceiling) {
+      return (
+        `${workText} in the current dataset, but outside the ${ui.formatNumber(ceiling)} ` +
+        "busiest names Names & works can draw. Use Search to open it."
+      );
+    }
     return (
       `${workText} in the current dataset, but outside the loaded Names & works slice. ` +
       "Increase “Names loaded” to include it."
@@ -530,6 +558,15 @@ function updateDrawerContext() {
 function roleKey() {
   return [...state.selectedRoles].sort().join(",");
 }
+
+// The name cloud's "All" ceiling. 0 (or unset) loads every credited name.
+function cloudAllLimit() {
+  const value = limit("cloudAllAgents", 0);
+  return value > 0 ? value : Infinity;
+}
+
+// LIMIT for a query that should return every row.
+const EVERY_ROW = 100000000;
 
 function agentKey() {
   return `${scopeKey()}|${state.topLimit === null ? "all" : state.topLimit}|${roleKey()}`;
@@ -939,8 +976,7 @@ function wireFilters() {
     state.topLimit = defaultLimit > 0 ? defaultLimit : null;
     state.minWorks = 0;
     resetSearch();
-    document.getElementById("top-limit").value =
-      state.topLimit === null ? "all" : String(state.topLimit);
+    syncNameOptions();
     document.getElementById("min-works").value = "0";
     const shared = document.getElementById("shared-threshold");
     if (shared) {
@@ -1228,13 +1264,46 @@ function cancelLoad(name) {
   loadTokens.set(name, (loadTokens.get(name) || 0) + 1);
 }
 
-function updateAllNamesCap() {
-  const allOption = document.querySelector('#top-limit option[value="all"]');
-  if (!allOption) return;
-  const cap = activeView === "cloud"
-    ? limit("cloudAllAgents", 500000) || 500000
-    : limit("allAgents", 20000) || 20000;
-  allOption.textContent = `All (up to ${ui.formatNumber(cap)})`;
+// Most names a view loads or draws, whatever "Names" is set to.
+function nameCeiling(view) {
+  if (view === "cloud") return cloudAllLimit();
+  const shared = limit("allAgents", 20000) || 20000;
+  if (view === "network") return Math.min(shared, limit("networkAgents", 0) || Infinity);
+  return shared;
+}
+
+// The Names dropdown follows the active view: options above what the view can
+// show are hidden, and the last option says what it really loads ("All" only
+// where that is every name). The shared setting itself is not changed, so
+// switching views keeps the user's choice.
+function syncNameOptions() {
+  const select = document.getElementById("top-limit");
+  if (!select) return;
+  const ceiling = nameCeiling(activeView);
+  const options = [...select.options];
+  const allOption = options.find((option) => option.value === "all");
+  let largest = null;
+  for (const option of options) {
+    if (option === allOption) continue;
+    const value = Number(option.value);
+    // The "all" option stands for the ceiling, so an option at the ceiling
+    // would repeat it.
+    const hide = value > ceiling || (allOption && value >= ceiling);
+    option.hidden = hide;
+    option.disabled = hide;
+    if (!hide && (largest === null || value > Number(largest.value))) largest = option;
+  }
+  if (allOption) {
+    allOption.textContent = !Number.isFinite(ceiling)
+      ? "All"
+      : activeView === "network"
+        ? `Max (${ui.formatNumber(ceiling)})`
+        : `Top ${ui.formatNumber(ceiling)}`;
+  }
+  const atCeiling = state.topLimit === null || state.topLimit >= ceiling;
+  if (!atCeiling) select.value = String(state.topLimit);
+  else if (allOption) select.value = "all";
+  else if (largest) select.value = largest.value;
 }
 
 function showView(name) {
@@ -1260,6 +1329,10 @@ function showView(name) {
   for (const element of document.querySelectorAll('[data-filter="agents"]')) {
     element.hidden = !agentView;
   }
+  // Co-credits sets its name count with its own control.
+  for (const element of document.querySelectorAll("[data-names-filter]")) {
+    element.hidden = !agentView || name === "co-credits";
+  }
   for (const element of document.querySelectorAll('[data-filter="search"]')) {
     element.hidden = !SEARCH_VIEWS.has(name);
   }
@@ -1268,7 +1341,7 @@ function showView(name) {
   }
   activeView = name;
   document.body.dataset.activeView = name;
-  updateAllNamesCap();
+  syncNameOptions();
   hideSearchResults();
   ui.hideTooltip();
   if (previousView && previousView !== name) {
@@ -3126,7 +3199,7 @@ async function init() {
         state.topLimit = limit("cloudAgents", 5000) || 1000;
       }
       limitSelect.value = state.topLimit === null ? "all" : String(state.topLimit);
-      updateAllNamesCap();
+      syncNameOptions();
     }
     renderScopeOptions();
     wireFilters();

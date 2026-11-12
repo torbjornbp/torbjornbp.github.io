@@ -27,7 +27,11 @@ WHERE {
       ?work fiaf:hasEvent/fiaf:hasActivity/fiaf:hasAgent ?b .
     }
   }
-  FILTER(STR(?a) < STR(?b))
+  # Keep each unordered pair once. QLever orders IRIs natively; comparing
+  # STR(?a) < STR(?b) instead builds two strings per candidate pair and was 5x
+  # slower, timing out past ~3,000 names. Standard SPARQL leaves IRI order
+  # undefined, so the rdflib tests substitute the STR() form.
+  FILTER(?a < ?b)
 }
 GROUP BY ?a ?b
 HAVING (COUNT(DISTINCT ?work) >= {{MIN_SHARED}})

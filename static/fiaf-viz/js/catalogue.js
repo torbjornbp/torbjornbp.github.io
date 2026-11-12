@@ -19,6 +19,7 @@ import {
 } from "./sparql.js";
 import { FIAF_NS, humanize, localName } from "./labels.js";
 import * as ui from "./ui.js";
+import { attachSparqlHighlight } from "./sparql-highlight.js";
 
 const SORT_ORDERS = {
   title: "?title ?work",
@@ -248,6 +249,7 @@ export function create(ctx, controls) {
     nextButton,
     pageElement
   } = controls;
+  const refreshHighlight = attachSparqlHighlight(sparqlInput);
 
   let mode = "faceted";
   let facets = null;
@@ -1106,6 +1108,9 @@ export function create(ctx, controls) {
     }
     if (filterPanel) filterPanel.hidden = mode === "sparql";
     if (sparqlPanel) sparqlPanel.hidden = mode !== "sparql";
+    // The counting note describes the faceted table, not a user's own query.
+    const countingNote = document.getElementById("catalogue-counting");
+    if (countingNote) countingNote.hidden = mode === "sparql";
     syncAgentChip();
     if (exportButton) {
       exportButton.textContent =
@@ -1205,6 +1210,8 @@ export function create(ctx, controls) {
         const start = sparqlInput.selectionStart;
         const end = sparqlInput.selectionEnd;
         sparqlInput.setRangeText("  ", start, end, "end");
+        // setRangeText fires no input event.
+        refreshHighlight();
       }
     });
     sparqlInput.addEventListener("input", () => {

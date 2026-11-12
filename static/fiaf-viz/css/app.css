@@ -15,6 +15,15 @@
   --name-colour: #000000;
   --work-colour: #9a6a2f;
   --error: #a03123;
+  /* SPARQL highlighting; each passes 4.5:1 on --surface. */
+  --code-keyword: #a3182c;
+  --code-function: #7a3d00;
+  --code-variable: #1f5f9e;
+  --code-iri: #2f6b2f;
+  --code-pname: #6f3a96;
+  --code-string: #8a5a00;
+  --code-number: #7a3d00;
+  --code-comment: #6b6b70;
   --role-1: #b51f32;
   --role-2: #3e5c76;
   --role-3: #6d597a;
@@ -107,6 +116,14 @@
   --name-colour: #f1f1f3;
   --work-colour: #d9a45d;
   --error: #f08d7e;
+  --code-keyword: #f0788b;
+  --code-function: #e8a868;
+  --code-variable: #7ab6f2;
+  --code-iri: #8fd18f;
+  --code-pname: #c9a0ec;
+  --code-string: #e6c07b;
+  --code-number: #e8a868;
+  --code-comment: #9c9ca3;
   --role-1: #f0788b;
   --role-2: #7f9dbb;
   --role-3: #a58fb8;
@@ -145,6 +162,14 @@
     --name-colour: #f1f1f3;
     --work-colour: #d9a45d;
     --error: #f08d7e;
+    --code-keyword: #f0788b;
+    --code-function: #e8a868;
+    --code-variable: #7ab6f2;
+    --code-iri: #8fd18f;
+    --code-pname: #c9a0ec;
+    --code-string: #e6c07b;
+    --code-number: #e8a868;
+    --code-comment: #9c9ca3;
     --role-1: #f0788b;
     --role-2: #7f9dbb;
     --role-3: #a58fb8;
@@ -949,6 +974,14 @@ main {
   font-size: var(--font-size-body);
   font-weight: var(--font-bold);
 }
+.view-details {
+  margin: var(--space-2) 0 var(--space-3);
+  font-size: var(--font-size-small);
+  color: var(--muted);
+  max-width: 94ch;
+}
+.view-details summary { cursor: pointer; }
+.view-details p { margin: var(--space-2) 0 0; }
 .preservation-details { margin-top: var(--space-2); font-size: var(--font-size-small); }
 .preservation-details summary { cursor: pointer; color: var(--muted); }
 
@@ -1407,6 +1440,60 @@ main {
 .catalogue-field-query textarea:focus {
   border-color: var(--accent);
 }
+
+/* The highlighted copy sits under the textarea, which keeps only its caret
+   and selection visible (see js/sparql-highlight.js). Both share font,
+   padding, border width and wrapping so the text lines up exactly; no token
+   changes weight, since bold glyphs can be wider and shift the caret. */
+.sparql-editor {
+  position: relative;
+  width: 100%;
+}
+
+.sparql-highlight {
+  position: absolute;
+  inset: 0 0 auto 0;
+  margin: 0;
+  padding: var(--space-3);
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-regular);
+  line-height: var(--leading-body);
+  letter-spacing: 0;
+  /* The surrounding label uppercases its text; the copy must not. */
+  text-transform: none;
+  tab-size: 2;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  pointer-events: none;
+}
+
+.catalogue-field-query textarea.sparql-input {
+  position: relative;
+  display: block;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.catalogue-field-query textarea.sparql-input::placeholder { color: var(--muted); }
+.catalogue-field-query textarea.sparql-input::selection { background: var(--accent-soft); color: transparent; }
+
+.sq-keyword { color: var(--code-keyword); }
+.sq-function { color: var(--code-function); }
+.sq-variable { color: var(--code-variable); }
+.sq-iri { color: var(--code-iri); }
+.sq-pname { color: var(--code-pname); }
+.sq-string { color: var(--code-string); }
+.sq-number { color: var(--code-number); }
+.sq-comment { color: var(--code-comment); }
 
 .catalogue-sparql-actions {
   display: flex;

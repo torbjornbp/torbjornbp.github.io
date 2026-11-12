@@ -15,6 +15,7 @@
 import { iriList, limit, runQuery } from "./sparql.js";
 import { roleLabel } from "./labels.js";
 import * as ui from "./ui.js";
+import { runLayout } from "./layout.js";
 
 const FONT_FALLBACK =
   'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
@@ -31,13 +32,16 @@ const LINK_ALPHA = 0.6;
 const LINK_BATCHES = 24;
 // Node outlines thinner than this on screen are invisible, so they are skipped.
 const OUTLINE_MIN_PX = 0.4;
+// The link budget grows with the names drawn: networkRows is the floor and
+// networkRowsMax the ceiling. Up to 5,000 names the floor applies.
+const LINKS_PER_NAME = 2;
 
 // Settle the force layout off-screen. This runs inside a worker, from its
 // source text, so it may only use its arguments. Nodes and links arrive as
 // typed arrays (links refer to node indices) and the result is the settled
 // positions.
-function settleLayout(d3, input) {
-  const { agents, radii, sources, targets, width, height, ticks } = input;
+function settleLayout(d3, input, report) {
+  const { agents, radii, sources, targets, width, height } = input;
   const nodes = Array.from(radii, (r, index) => ({ r, agent: agents[index] === 1 }));
   const links = Array.from(sources, (source, index) => ({ source, target: targets[index] }));
   const simulation = d3
@@ -61,71 +65,26 @@ function settleLayout(d3, input) {
     )
     .force("center", d3.forceCenter(width / 2, height / 2));
   simulation.stop();
-  simulation.tick(ticks);
-  const x = new Float64Array(nodes.length);
-  const y = new Float64Array(nodes.length);
-  nodes.forEach((node, index) => {
-    x[index] = node.x;
-    y[index] = node.y;
-  });
-  return { x, y };
-}
-
-let layoutWorkerUrl = null;
-
-function workerUrl() {
-  if (!layoutWorkerUrl) {
-    const d3Url = new URL("../vendor/d3.v7.min.js", import.meta.url).href;
-    const source =
-      `importScripts(${JSON.stringify(d3Url)});\n` +
-      `const settleLayout = ${settleLayout.toString()};\n` +
-      "self.onmessage = (event) => {\n" +
-      "  const result = settleLayout(self.d3, event.data);\n" +
-      "  self.postMessage(result, [result.x.buffer, result.y.buffer]);\n" +
-      "};\n";
-    layoutWorkerUrl = URL.createObjectURL(new Blob([source], { type: "text/javascript" }));
+  const positions = () => {
+    const x = new Float64Array(nodes.length);
+    const y = new Float64Array(nodes.length);
+    nodes.forEach((entry, index) => {
+      x[index] = entry.x;
+      y[index] = entry.y;
+    });
+    return { x, y };
+  };
+  // Interim positions: the first after a few steps so the graph appears
+  // quickly, then every input.reportEvery steps.
+  for (let done = 0; done < input.ticks; ) {
+    const step = report && input.reportEvery
+      ? Math.min(done ? input.reportEvery : 5, input.ticks - done)
+      : input.ticks - done;
+    simulation.tick(step);
+    done += step;
+    if (report && done < input.ticks) report(positions());
   }
-  return layoutWorkerUrl;
-}
-
-// Settling thousands of nodes takes seconds, so it runs in a worker to keep the
-// page responsive. Without worker support (or if the worker fails to start)
-// it runs here instead. Resolves to null when the load is cancelled.
-function runLayout(input, signal) {
-  const inline = () => settleLayout(d3, input);
-  if (typeof Worker !== "function" || typeof Blob !== "function") {
-    return Promise.resolve(inline());
-  }
-  return new Promise((resolve) => {
-    let worker;
-    try {
-      worker = new Worker(workerUrl());
-    } catch (_) {
-      resolve(inline());
-      return;
-    }
-    const finish = (result) => {
-      worker.terminate();
-      if (signal) signal.removeEventListener("abort", cancel);
-      resolve(result);
-    };
-    const cancel = () => finish(null);
-    worker.onmessage = (event) => finish(event.data);
-    worker.onerror = (event) => {
-      if (event && event.preventDefault) event.preventDefault();
-      worker.terminate();
-      if (signal) signal.removeEventListener("abort", cancel);
-      resolve(signal && signal.aborted ? null : inline());
-    };
-    if (signal) {
-      if (signal.aborted) {
-        finish(null);
-        return;
-      }
-      signal.addEventListener("abort", cancel, { once: true });
-    }
-    worker.postMessage(input);
-  });
+  return positions();
 }
 
 export function create(ctx, root, statsElement, linkButtons) {
@@ -151,6 +110,10 @@ export function create(ctx, root, statsElement, linkButtons) {
   let hasRendered = false;
   let palette = null;
   let loadSequence = 0;
+  // True while a layout settles: dragging waits for the final positions.
+  let settling = false;
+  // Refit as the layout settles until the user zooms or pans.
+  let autoFit = true;
 
   function syncLinkButtons() {
     for (const button of linkButtons || []) {
@@ -177,11 +140,52 @@ export function create(ctx, root, statsElement, linkButtons) {
   const painter = canvas.getContext("2d");
   const selection = d3.select(root).append(() => canvas);
 
+  // The size of the full graph comes from the loaded totals (names, works and
+  // credits under the current filters) once they are known.
+  const limitsNote = document.getElementById("network-limits");
+  function describeLimits(totals) {
+    if (!limitsNote) return;
+    const count = (value) => ui.formatNumber(value);
+    const maxNames = limit("networkAgents", 0) || 10000;
+    const floor = limit("networkRows", 10000);
+    const ceiling = limit("networkRowsMax", 20000);
+    const whole =
+      totals && totals.total && totals.works != null && totals.credits != null
+        ? `With the current filters that is ${count(totals.total + totals.works)} ` +
+          `nodes and ${count(totals.credits)} lines`
+        : "For the whole catalogue that is hundreds of thousands of nodes and " +
+          "over a million lines";
+    limitsNote.replaceChildren(
+      ...[
+        "A line links a name to each work it is credited on in the selected " +
+          "roles; several credits on one work give one line. A name's size " +
+          "follows its works in view, and selecting a node highlights only " +
+          "what it is directly linked to.",
+        "Why the limits: every name and every work is a node, and every credit a line between " +
+          `them. ${whole}; laying that out would take minutes and more memory ` +
+          `than a browser tab has. The busiest ${count(maxNames)} names with ` +
+          "their works come to about twice as many nodes and settle in a few " +
+          "seconds.",
+        "Busy names carry hundreds of credits each, so the lines are capped as " +
+          `well: two per name, at least ${count(floor)} and at most ` +
+          `${count(ceiling)}. The cap samples credits evenly across the names ` +
+          "rather than taking the busiest first, so a name can end up with no " +
+          "line within it; the stats line counts those names.",
+        "The layout settles in the background and is drawn as it goes. To see " +
+          "the credits of one name in full, click it or open it from Search."
+      ].map((text) => ui.node("p", "", text))
+    );
+  }
+  describeLimits(null);
+
   const zoom = d3
     .zoom()
     .scaleExtent([0.05, 8])
     .on("zoom", (event) => {
       transform = event.transform;
+      // A user's own zoom or pan (not a programmatic fit) stops the refits
+      // that follow a settling layout.
+      if (event.sourceEvent) autoFit = false;
       scheduleDraw();
     });
 
@@ -192,6 +196,7 @@ export function create(ctx, root, statsElement, linkButtons) {
   const drag = d3
     .drag()
     .subject((event) => {
+      if (settling) return undefined;
       const node = pickAt(event.x, event.y);
       if (!node) return undefined;
       return { node, x: transform.applyX(node.x), y: transform.applyY(node.y) };
@@ -340,6 +345,7 @@ export function create(ctx, root, statsElement, linkButtons) {
     const maxAgents = limit("networkAgents", 0);
     const agentData = await ctx.agentData(false, { cap: maxAgents });
     if (stale()) return;
+    describeLimits(agentData);
     const matching = agentData.rows.filter(
       (row) => Number(row.works) >= ctx.state.minWorks
     );
@@ -352,11 +358,15 @@ export function create(ctx, root, statsElement, linkButtons) {
       hasRendered = true;
       return;
     }
+    const rowLimit = Math.min(
+      limit("networkRowsMax", 20000) || Infinity,
+      Math.max(limit("networkRows", 10000), agents.length * LINKS_PER_NAME)
+    );
     const rows = await runQuery("network", {
       AGENT_IRIS: iriList(agents.map((row) => row.agent)),
       SCOPE_FILTER: ctx.scopeFilter(),
       ROLE_FILTER: ctx.roleFilter(),
-      LIMIT: limit("networkRows", 40000)
+      LIMIT: rowLimit
     }, { signal });
     if (stale()) return;
     const next = build(
@@ -366,7 +376,8 @@ export function create(ctx, root, statsElement, linkButtons) {
       // A capped fetch returns at most maxAgents rows, so a full slice of
       // matching names out of a larger total means the cap cut names off.
       maxAgents > 0 && matching.length >= maxAgents && agentData.total > maxAgents,
-      agentData.roleMap
+      agentData.roleMap,
+      rowLimit
     );
     if (!next.links.length) {
       data = next;
@@ -381,24 +392,46 @@ export function create(ctx, root, statsElement, linkButtons) {
     ui.setStatus(`Laying out ${ui.formatNumber(graph.nodes.length)} nodes…`);
     const { width, height } = dimensions();
     const ticks = graph.nodes.length > 8000 ? 45 : graph.nodes.length > 4000 ? 70 : 110;
-    const layout = await runLayout({
+    // Draw the graph as it settles: the first positions replace the old graph,
+    // later ones move it, refitted each time unless the user zoomed or panned.
+    // Dragging waits for the final layout.
+    let shown = false;
+    const show = (positions) => {
+      if (stale()) return;
+      if (!shown) {
+        shown = true;
+        data = next;
+        render(graph, positions);
+        hasRendered = true;
+        select(lastSelection);
+        return;
+      }
+      graph.nodes.forEach((node, index) => {
+        node.x = positions.x[index];
+        node.y = positions.y[index];
+      });
+      overviewLabels = chooseOverviewLabels(lastNodes);
+      refreshHighlight();
+      if (autoFit) fitGraph();
+    };
+    settling = true;
+    const layout = await runLayout(settleLayout, {
       agents: graph.agents,
       radii: graph.radii,
       sources: graph.sources,
       targets: graph.targets,
       width,
       height,
-      ticks
-    }, signal);
+      ticks,
+      reportEvery: 10
+    }, { signal, onProgress: show });
+    if (sequence === loadSequence) settling = false;
     if (!layout || stale()) return;
-    data = next;
-    render(graph, layout);
-    hasRendered = true;
-    select(lastSelection);
+    show(layout);
     ui.setStatus("");
   }
 
-  function build(agents, rows, total, nameCapped, roleMap) {
+  function build(agents, rows, total, nameCapped, roleMap, rowLimit) {
     const nodes = new Map();
     for (const agent of agents) {
       nodes.set(agent.agent, {
@@ -438,7 +471,7 @@ export function create(ctx, root, statsElement, linkButtons) {
       nodes: linked,
       links,
       roleMap,
-      capped: rows.length >= limit("networkRows", 40000),
+      capped: rows.length >= rowLimit,
       nameCount: agents.length,
       nameTotal: total,
       nameCapped: Boolean(nameCapped),
@@ -497,6 +530,7 @@ export function create(ctx, root, statsElement, linkButtons) {
 
     overviewLabels = chooseOverviewLabels(nodes);
     refreshHighlight();
+    autoFit = true;
     fitGraph();
   }
 

@@ -76,7 +76,7 @@
         </div>
       </details>
     </div>
-    <label class="filter" data-filter="agents" hidden>
+    <label class="filter" data-filter="agents" data-names-filter hidden>
       <span>Names</span>
       <select id="top-limit">
         <option value="500">500</option>
@@ -126,6 +126,12 @@
       </div>
       <div id="cloud-legend" class="legend" aria-label="Role colours"></div>
       <p id="cloud-stats" class="stats"></p>
+      <details class="view-details">
+        <summary>How is this counted?</summary>
+        <p>Each bubble is a credited name with a non-empty label. Its area is the number of distinct works the name is credited on, in any of the selected roles; several credits on one work count once. Its colour is the role with the most of those works.</p>
+        <p>Names loaded takes the names with the most works first. With All, the busiest 20,000 are packed exactly and drawn first, and the rest are placed in rings by work count around them as they arrive.</p>
+        <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
+      </details>
       <div id="cloud-chart" class="chart chart-cloud"></div>
     </section>
 
@@ -145,6 +151,10 @@
         </div>
       </div>
       <p id="network-stats" class="stats"></p>
+      <details class="view-details">
+        <summary>How is this counted?</summary>
+        <div id="network-limits"></div>
+      </details>
       <div id="network-legend" class="legend" aria-label="Node colours">
         <span class="legend-item"><span class="legend-swatch name"></span>Names</span>
         <span class="legend-item"><span class="legend-swatch work"></span>Works</span>
@@ -160,6 +170,10 @@
         </div>
         <div class="view-actions">
           <label class="inline-control">
+            <span>Names</span>
+            <select id="co-credits-names" aria-label="Busiest names to connect"></select>
+          </label>
+          <label class="inline-control">
             <span>Min shared works: <output id="shared-value">2</output></span>
             <input id="shared-threshold" type="range" min="2" max="10" step="1" value="2">
           </label>
@@ -173,6 +187,10 @@
         </div>
       </div>
       <p id="co-credits-stats" class="stats"></p>
+      <details class="view-details">
+        <summary>How is this counted?</summary>
+        <div id="co-credits-limits"></div>
+      </details>
       <div id="co-credits-chart" class="chart chart-network chart-co-credits"></div>
     </section>
 
@@ -191,6 +209,11 @@
         </div>
       </div>
       <p id="timeline-stats" class="stats"></p>
+      <details class="view-details">
+        <summary>How is this counted?</summary>
+        <p>Works per production year: the first four digits of each production event date. A work dated in several years counts once in each year, and once per decade in the decade view. Works with no four-digit production date are left out; the dated share above says how many.</p>
+        <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
+      </details>
       <div id="timeline-chart" class="chart chart-timeline"></div>
     </section>
 
@@ -224,6 +247,12 @@
         </div>
       </dl>
       <p id="worldmap-stats" class="stats"></p>
+      <details class="view-details">
+        <summary>How is this counted?</summary>
+        <p>Each country shows the distinct works that list it as a production country. A co-production counts once under each of its countries, so the country totals add up to more than the number of works, and works with no production country are in the Works total but not on the map.</p>
+        <p>Credited names are names with a non-empty label credited on a work in any role. Production years are the first four digits of production event dates; dates without a four-digit year are left out.</p>
+        <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
+      </details>
       <div id="worldmap-chart" class="chart chart-worldmap"></div>
     </section>
 
@@ -317,6 +346,12 @@
         <span>Credited name: <strong id="catalogue-agent-name"></strong></span>
         <button type="button" id="catalogue-agent-clear" aria-label="Clear credited name filter">×</button>
       </div>
+      <details class="view-details" id="catalogue-counting">
+        <summary>How is this counted?</summary>
+        <p>One row per work. The title is the work's label, or a title value when it has none; the year is its earliest four-digit production year. Manifestations and items are counted directly below each work.</p>
+        <p>Title search matches every word you type somewhere in the same title, in any order and ignoring case. Identifier and name searches match part of an identifier value or a credited name. The numbers in the filter pickers count works, across the selected datasets.</p>
+        <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
+      </details>
       <div class="catalogue-meta">
         <p id="catalogue-stats" class="stats" role="status" aria-live="polite"></p>
         <div class="catalogue-pager" aria-label="Result pages">
@@ -352,6 +387,12 @@
         </div>
       </div>
       <p id="geography-stats" class="stats"></p>
+      <details class="view-details">
+        <summary>How is this counted?</summary>
+        <p>Each matrix counts works or items, as its description says. Colour, sound, base, element and format can be recorded on an item or on its manifestation; both count as items. Decades are four-digit production years, and a co-production counts under each production country.</p>
+        <p>A work or item with several values counts once under each, so row and column totals can be larger than the distinct works or items. % of column and % of row divide each cell by its column or row total. Categories are ranked by their total, and Max categories keeps the top ones.</p>
+        <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
+      </details>
       <div id="geography-chart" class="chart chart-geography"></div>
     </section>
 
@@ -363,6 +404,11 @@
         </div>
       </div>
       <div id="breakdown-chart" class="breakdown-grid"></div>
+      <details class="view-details">
+        <summary>How is this counted?</summary>
+        <p>Item panels count distinct items per value, whether the value is recorded on the item or on its manifestation. Genre and Form count distinct works. An item or work with several values counts once under each, so a panel's bars can add up to more than its items or works. Each panel lists its most common values.</p>
+        <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
+      </details>
     </section>
 
     <section id="view-preservation" class="view" data-view="preservation" hidden>
@@ -418,6 +464,12 @@
       <div id="preservation-overview" class="preservation-overview" role="region" aria-label="Preservation copy overview"></div>
       <p id="preservation-within-note" class="preservation-note">Preservation status can belong to any item of a work.</p>
       <p id="preservation-stats" class="stats"></p>
+      <details class="view-details">
+        <summary>How is this counted?</summary>
+        <p>A work counts as preserved when at least one of its items is marked with preservation status (fiaf:hasStatus fiaf:Preservation). FIAFcore records preservation on items, not manifestations. This describes recorded holdings, not whether a work survives.</p>
+        <p>Coverage is preserved works as a share of all works, or of works with at least one recorded item. By decade, a work dated in several decades counts in each; by country, a co-production counts under each country. “Works with nitrate holdings recorded” keeps only works with a nitrate-base item or manifestation.</p>
+        <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
+      </details>
       <div id="preservation-chart" class="chart chart-preservation"></div>
     </section>
 
@@ -430,6 +482,12 @@
         <button type="button" class="export" data-export="roles">Download SVG</button>
       </div>
       <p id="roles-stats" class="stats"></p>
+      <details class="view-details">
+        <summary>How is this counted?</summary>
+        <p>The inner ring has one arc per credited role, sized by the distinct works with at least one credit in that role. The outer ring shows the 8 busiest loaded names in each role, sized by their works in that role; a name with several roles appears under each.</p>
+        <p>The outer ring only draws from the names loaded with Names, so a larger slice can change who appears there; the inner ring always counts every credit.</p>
+        <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
+      </details>
       <div id="roles-chart" class="chart chart-roles"></div>
     </section>
   </main>
@@ -471,6 +529,10 @@
       const searchViews = agentViews;
       for (const element of document.querySelectorAll('[data-filter="agents"]')) {
         element.hidden = !agentViews.has(view);
+      }
+      // Co-credits has its own Names control.
+      for (const element of document.querySelectorAll("[data-names-filter]")) {
+        element.hidden = !agentViews.has(view) || view === "co-credits";
       }
       for (const element of document.querySelectorAll('[data-filter="search"]')) {
         element.hidden = !searchViews.has(view);
