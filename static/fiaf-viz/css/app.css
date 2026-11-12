@@ -708,10 +708,19 @@ main {
   color: var(--text);
 }
 
-.inline-control select:hover {
+.inline-control select:hover:not(:disabled) {
   border-color: var(--border-strong);
   background: var(--surface);
 }
+
+/* A control that does not apply (such as country order while grouped by
+   decade) fades with its label, like the catalogue pager's disabled buttons. */
+.inline-control select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.inline-control:has(> select:disabled) > span { opacity: 0.45; }
 
 .segmented {
   display: flex;
@@ -982,8 +991,6 @@ main {
 }
 .view-details summary { cursor: pointer; }
 .view-details p { margin: var(--space-2) 0 0; }
-.preservation-details { margin-top: var(--space-2); font-size: var(--font-size-small); }
-.preservation-details summary { cursor: pointer; color: var(--muted); }
 
 .preservation-view-actions .segmented button { color: var(--text); }
 .preservation-view-actions .segmented button.active { color: var(--on-accent); }

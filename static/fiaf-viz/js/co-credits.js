@@ -6,11 +6,13 @@
 
 import { iriList, limit, runQuery } from "./sparql.js";
 import * as ui from "./ui.js";
-import { runLayout } from "./layout.js";
+import { maxRadiusFor, runLayout, zoomedRadiusFactor } from "./layout.js";
 
 const FONT_FALLBACK =
   'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
 const NODE_MIN_RADIUS = 3;
+// Largest name radius in a small graph; grows with the graph (see
+// maxRadiusFor in layout.js).
 const NODE_MAX_RADIUS = 9.5;
 // Edge opacity of the earlier SVG version (its .link rule), kept so the mesh
 // reads the same on canvas.
@@ -28,6 +30,20 @@ const LARGE_NAMES = 1000;
 // coCreditRowsMax the ceiling (the strongest pairs are kept), so 100 names
 // keep their old budget.
 const PAIRS_PER_NAME = 20;
+
+// Up to this many nodes the repulsion stops at a distance, which keeps a small
+// graph compact. Larger graphs need unlimited range: with a cutoff, thousands
+// of nodes pile up on visible circles at exactly that distance. Without one,
+// separate clusters drift far apart, so a gentle pull towards the centre
+// (LARGE_GRAPH_GRAVITY) holds them; that halved the spread of a 7,400-name
+// graph without blurring its clusters.
+const SMALL_GRAPH_NODES = 400;
+const LARGE_GRAPH_GRAVITY = 0.03;
+function repulsionRange(nodeCount) {
+  return nodeCount > SMALL_GRAPH_NODES ? Infinity : 1200;
+}
+// A fitted 10,000-name graph needs to zoom out well below the usual 5%.
+const MIN_ZOOM = 0.01;
 
 // Settle the co-credit layout. In a worker it gets typed arrays (links refer
 // to node indices) and returns positions; on the main thread it can instead
@@ -57,7 +73,9 @@ function settleCoCredits(d3, input, report) {
         .distance((link) => 100 + 50 / Math.sqrt(link.shared))
         .strength(0.05)
     )
-    .force("charge", d3.forceManyBody().strength(-800).distanceMax(1200))
+    // A repulsion cutoff piles thousands of nodes up on circles at the cutoff
+    // distance, so large graphs repel without one (see SMALL_GRAPH_NODES).
+    .force("charge", d3.forceManyBody().strength(-800).distanceMax(input.distanceMax))
     .force(
       "collide",
       d3
@@ -67,6 +85,11 @@ function settleCoCredits(d3, input, report) {
         .iterations(2)
     )
     .force("center", d3.forceCenter(input.width / 2, input.height / 2));
+  if (input.distanceMax === Infinity) {
+    simulation
+      .force("x", d3.forceX(input.width / 2).strength(input.gravity))
+      .force("y", d3.forceY(input.height / 2).strength(input.gravity));
+  }
   simulation.stop();
   if (input.keep) return { simulation: simulation.alpha(input.alpha) };
   const positions = () => {
@@ -354,7 +377,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     const dx = Math.max(1, maxX - minX);
     const dy = Math.max(1, maxY - minY);
     const scale = Math.max(
-      0.05,
+      MIN_ZOOM,
       Math.min(2, Math.min(width / dx, height / dy) * 0.92)
     );
     const tx = width / 2 - scale * ((minX + maxX) / 2);
@@ -371,7 +394,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
 
   const zoom = d3
     .zoom()
-    .scaleExtent([0.05, 8])
+    .scaleExtent([MIN_ZOOM, 8])
     .on("zoom", (event) => {
       transform = event.transform;
       // A user's own zoom or pan (not a programmatic fit) stops the refits
@@ -643,7 +666,9 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       width,
       height,
       ticks,
-      reportEvery: 25
+      reportEvery: 25,
+      distanceMax: repulsionRange(nodeList.length),
+      gravity: LARGE_GRAPH_GRAVITY
     };
     const links = visible.map((link) => ({
       source: nodeList[position.get(link.source)],
@@ -728,6 +753,8 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       width,
       height,
       keep: true,
+      distanceMax: repulsionRange(nodeList.length),
+      gravity: LARGE_GRAPH_GRAVITY,
       alpha: Math.pow(0.001, ticks / 300)
     }).simulation.on("tick", scheduleDraw);
     ctx.refreshSelectionStatus?.();
@@ -768,6 +795,12 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     });
   }
 
+  // Large graphs shrink nodes less than the zoom when zoomed out, so their hubs
+  // stay visible in a fitted view; small graphs draw nodes at their true size.
+  function nodeGrowth(k) {
+    return lastNodes.length > SMALL_GRAPH_NODES ? zoomedRadiusFactor(k) : 1;
+  }
+
   // Theme colours, resolved once and again only after a theme change.
   function colours() {
     if (palette) return palette;
@@ -794,6 +827,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     const { border, accent, surface, text, nameColour, font, fontSize } = colours();
 
     const k = transform.k;
+    const grow = nodeGrowth(k);
     painter.translate(transform.x, transform.y);
     painter.scale(k, k);
 
@@ -856,8 +890,8 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       if (!list.length) return;
       painter.beginPath();
       for (const entry of list) {
-        painter.moveTo(entry.x + entry.r, entry.y);
-        painter.arc(entry.x, entry.y, entry.r, 0, 2 * Math.PI);
+        painter.moveTo(entry.x + entry.r * grow, entry.y);
+        painter.arc(entry.x, entry.y, entry.r * grow, 0, 2 * Math.PI);
       }
       painter.globalAlpha = alpha;
       painter.fillStyle = nameColour;
@@ -873,7 +907,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     const selectedEntry = selectedId ? nodeIndex.get(selectedId) : null;
     if (selectedEntry && selectedEntry.near) {
       painter.beginPath();
-      painter.arc(selectedEntry.x, selectedEntry.y, selectedEntry.r, 0, 2 * Math.PI);
+      painter.arc(selectedEntry.x, selectedEntry.y, selectedEntry.r * grow, 0, 2 * Math.PI);
       painter.strokeStyle = accent;
       painter.lineWidth = 2.4;
       painter.stroke();
@@ -882,7 +916,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     const selectedNode = selectedId ? nodeIndex.get(selectedId) : null;
     if (selectedNode) {
       painter.beginPath();
-      painter.arc(selectedNode.x, selectedNode.y, selectedNode.r + 5, 0, 2 * Math.PI);
+      painter.arc(selectedNode.x, selectedNode.y, selectedNode.r * grow + 5, 0, 2 * Math.PI);
       painter.strokeStyle = accent;
       painter.lineWidth = 2;
       painter.stroke();
@@ -899,7 +933,8 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       const entry = nodeIndex.get(id);
       if (!entry) continue;
       const placement = labelled.get(id);
-      const x = entry.x + (placement ? placement.dx : entry.r + 2);
+      // Placements assume the undrawn radius; move out with the node.
+      const x = entry.x + (placement ? placement.dx + Math.sign(placement.dx) * entry.r * (grow - 1) : entry.r * grow + 2);
       const y = entry.y + (placement ? placement.dy : 3);
       const label = truncate(entry.name, 20);
       painter.textAlign = placement && placement.anchor === "end" ? "right" : "left";
@@ -914,11 +949,12 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     if (!lastNodes.length) return null;
     const [gx, gy] = transform.invert([x, y]);
     const slack = 2 / transform.k;
+    const grow = nodeGrowth(transform.k);
     for (let index = lastNodes.length - 1; index >= 0; index -= 1) {
       const entry = lastNodes[index];
       const dx = entry.x - gx;
       const dy = entry.y - gy;
-      if (dx * dx + dy * dy <= (entry.r + slack) ** 2) return entry;
+      if (dx * dx + dy * dy <= (entry.r * grow + slack) ** 2) return entry;
     }
     return null;
   }
@@ -961,7 +997,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     return d3
       .scaleSqrt()
       .domain([1, Math.max(2, maximum)])
-      .range([NODE_MIN_RADIUS, NODE_MAX_RADIUS])
+      .range([NODE_MIN_RADIUS, maxRadiusFor(nodeList.length, NODE_MAX_RADIUS)])
       .clamp(true);
   }
 

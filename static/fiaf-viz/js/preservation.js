@@ -654,8 +654,6 @@ export function create(ctx, root, statsElement, overviewElement, controls = {}) 
       bar.append(part);
     }
     overviewElement.append(bar);
-    const details = ui.node("details", "preservation-details");
-    details.append(ui.node("summary", "", "How this is counted and missing data"));
     const legend = ui.node("ul", "preservation-legend");
     for (const segment of segments) {
       const item = ui.node("li", "preservation-legend-item");
@@ -673,27 +671,15 @@ export function create(ctx, root, statsElement, overviewElement, controls = {}) 
     }
     overviewElement.append(legend);
 
-    const definition = ui.node(
-      "p",
-      "preservation-note",
-      "A work is counted once when at least one item hasStatus Preservation. " +
-        "Formats, codecs and element types do not imply preservation status."
-    );
-    details.append(definition);
-
-    const caveat = ui.node(
-      "p",
-      "preservation-note",
-      "Recorded data only. Neither missing preservation status nor missing item records " +
-        "means a work is unpreserved. Coverage reflects cataloguing as well as holdings."
-    );
-    if (overview.access) {
-      caveat.textContent +=
-        ` Access copies are recorded for ${ui.formatNumber(overview.access)} ` +
-        "works; they are not counted as preservation copies.";
+    // The counting rules are in the view's "How is this counted?" note; only
+    // the access-copy figure depends on the loaded data.
+    const accessNote = document.getElementById?.("preservation-access-note");
+    if (accessNote) {
+      accessNote.textContent = overview.access
+        ? ` Access copies are recorded for ${ui.formatNumber(overview.access)} ` +
+          "works; they are not counted as preservation copies."
+        : "";
     }
-    details.append(caveat);
-    overviewElement.append(details);
   }
 
   async function load({ signal } = {}) {

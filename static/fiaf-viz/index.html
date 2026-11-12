@@ -466,7 +466,8 @@
       <p id="preservation-stats" class="stats"></p>
       <details class="view-details">
         <summary>How is this counted?</summary>
-        <p>A work counts as preserved when at least one of its items is marked with preservation status (fiaf:hasStatus fiaf:Preservation). FIAFcore records preservation on items, not manifestations. This describes recorded holdings, not whether a work survives.</p>
+        <p>A work counts as preserved when at least one of its items is marked with preservation status (fiaf:hasStatus fiaf:Preservation). FIAFcore records preservation on items, not manifestations. Formats, codecs and element types do not imply preservation status.</p>
+        <p>Recorded data only. Neither missing preservation status nor missing item records means a work is unpreserved; coverage reflects cataloguing as well as holdings.<span id="preservation-access-note"></span></p>
         <p>Coverage is preserved works as a share of all works, or of works with at least one recorded item. By decade, a work dated in several decades counts in each; by country, a co-production counts under each country. “Works with nitrate holdings recorded” keeps only works with a nitrate-base item or manifestation.</p>
         <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
       </details>

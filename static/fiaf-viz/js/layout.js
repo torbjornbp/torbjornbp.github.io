@@ -9,6 +9,22 @@
 // worker support, or if the worker fails to start, it runs on the main thread
 // (without interim reports).
 
+// The largest radius grows with the graph. Credits are heavily skewed (in a
+// 10,000-name graph the median name has a handful of links and the busiest
+// hundreds), and a fixed 3x range left the busiest name barely larger than the
+// rest once thousands of nodes share the screen. From about 400 nodes the
+// ceiling rises with the square root of the node count, up to three times.
+export function maxRadiusFor(nodeCount, base) {
+  return base * Math.min(3, Math.max(1, Math.sqrt((Number(nodeCount) || 0) / 400)));
+}
+
+// Zoomed out, nodes shrink with the square root of the zoom instead of the
+// zoom itself, so the busiest names stay visible in a fitted view of thousands
+// of nodes. Multiply a node's radius (in graph units) by this to draw it.
+export function zoomedRadiusFactor(k) {
+  return k > 0 && k < 1 ? 1 / Math.sqrt(k) : 1;
+}
+
 const workerUrls = new Map();
 
 function workerUrl(settle) {

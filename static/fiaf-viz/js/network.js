@@ -15,11 +15,12 @@
 import { iriList, limit, runQuery } from "./sparql.js";
 import { roleLabel } from "./labels.js";
 import * as ui from "./ui.js";
-import { runLayout } from "./layout.js";
+import { maxRadiusFor, runLayout } from "./layout.js";
 
 const FONT_FALLBACK =
   'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
 const AGENT_MIN_RADIUS = 3;
+// Largest name radius in a small graph; see maxRadiusFor in layout.js.
 const AGENT_MAX_RADIUS = 10;
 const WORK_RADIUS = 2.6;
 // Edge opacity of the earlier SVG version (its .link rule), kept so the mesh
@@ -637,7 +638,7 @@ export function create(ctx, root, statsElement, linkButtons) {
 
     // Nodes are drawn as one path per style. Dimmed nodes go first so the
     // highlighted ones sit on top of them.
-    const reach = AGENT_MAX_RADIUS + 6;
+    const reach = (radiusScale ? radiusScale.range()[1] : AGENT_MAX_RADIUS) + 6;
     const groups = {
       dimAgents: [],
       dimWorks: [],
@@ -828,7 +829,7 @@ export function create(ctx, root, statsElement, linkButtons) {
     return d3
       .scaleSqrt()
       .domain([1, Math.max(2, maximum)])
-      .range([AGENT_MIN_RADIUS, AGENT_MAX_RADIUS])
+      .range([AGENT_MIN_RADIUS, maxRadiusFor(nodes.length, AGENT_MAX_RADIUS)])
       .clamp(true);
   }
 
