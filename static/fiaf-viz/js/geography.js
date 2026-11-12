@@ -117,6 +117,32 @@ const SPECS = [
     })
   },
   {
+    key: "language-usages",
+    label: "Languages by usage type",
+    description:
+      "Languages by how they are used: spoken, intertitles, subtitles or credits, on works, their manifestations or items.",
+    query: "language-usages",
+    drilldown: "language-usage-works",
+    count: "works",
+    rowNoun: "languages",
+    columnNoun: "usage types",
+    cellNote: "A work can use one language in several ways and appear under each.",
+    emptyMessage:
+      "No works in the current selection carry a language usage with a language " +
+      "(fiaf:hasLanguageUsage / fiaf:hasLanguage).",
+    params: () => ({}),
+    normalise: (row) => ({
+      rowValue: row.language,
+      columnValue: row.usage,
+      items: null,
+      works: Number(row.works) || 0,
+      drilldown: {
+        LANGUAGE: sparqlIri(row.language),
+        USAGE: sparqlIri(row.usage)
+      }
+    })
+  },
+  {
     key: "language-decades",
     label: "Language usage by decade",
     description:
@@ -480,6 +506,12 @@ const SPECS = [
 ];
 
 const SPEC_BY_KEY = new Map(SPECS.map((spec) => [spec.key, spec]));
+// Beyond this many countries the chord's arcs are slivers too thin to label.
+const CHORD_MAX = 40;
+// A mosaic draws at most this many rows as columns, and this many segment
+// colours; further segments are combined under Other.
+const MOSAIC_MAX = 20;
+const MOSAIC_SEGMENTS = 8;
 
 export function create(
   ctx,
@@ -504,6 +536,30 @@ export function create(
     Math.floor(limit("heatmapCategories", 30))
   );
   let rowLimit = defaultRowLimit;
+  // Besides the grid, a symmetric matrix (country pairs) can be drawn as a
+  // chord diagram and any other matrix as a mosaic. One choice covers both:
+  // "Chord" on a non-symmetric kind, or "Mosaic" on a symmetric one, falls
+  // back to the grid.
+  let pairLayout = "grid";
+  const layoutControl = document.getElementById("heatmap-layout");
+  const layoutButtons = layoutControl
+    ? layoutControl.querySelectorAll("[data-layout]")
+    : [];
+  for (const button of layoutButtons) {
+    button.addEventListener("click", () => {
+      const next = ["chord", "mosaic"].includes(button.dataset.layout)
+        ? button.dataset.layout
+        : "grid";
+      if (next === pairLayout) return;
+      pairLayout = next;
+      // Shares of a row or column have no chord or mosaic form; both show
+      // counts (the mosaic's heights are already shares of each row).
+      if (pairLayout !== "grid") setMode("count");
+      ui.hideTooltip();
+      updateChrome();
+      redrawIfLoaded();
+    });
+  }
   const svg = d3
     .select(root)
     .append("svg")
@@ -601,7 +657,37 @@ export function create(
   function updateChrome() {
     const spec = SPEC_BY_KEY.get(activeKey);
     if (descriptionElement) descriptionElement.textContent = spec.description;
-    svg.attr("aria-label", `Heatmap: ${spec.label.toLowerCase()}`);
+    const chord = chordActive(spec);
+    const mosaic = mosaicActive(spec);
+    svg.attr(
+      "aria-label",
+      chord
+        ? `Chord diagram: ${spec.label.toLowerCase()}`
+        : mosaic
+          ? `Mosaic: ${spec.label.toLowerCase()}`
+          : `Heatmap: ${spec.label.toLowerCase()}`
+    );
+    const shown = chord ? "chord" : mosaic ? "mosaic" : "grid";
+    for (const button of layoutButtons) {
+      const layout = button.dataset.layout;
+      button.hidden =
+        (layout === "chord" && !spec.symmetric) || (layout === "mosaic" && spec.symmetric);
+      const active = layout === shown;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", String(active));
+    }
+    for (const button of modeButtons || []) {
+      button.disabled =
+        (chord || mosaic) && (button.dataset.heatmapMode || "count") !== "count";
+    }
+  }
+
+  function chordActive(spec) {
+    return Boolean(spec.symmetric && pairLayout === "chord");
+  }
+
+  function mosaicActive(spec) {
+    return Boolean(!spec.symmetric && pairLayout === "mosaic");
   }
 
   async function load({ signal } = {}) {
@@ -765,6 +851,15 @@ export function create(
       lookup.set(`${cell.rowValue}\u0000${cell.columnValue}`, cell);
     }
 
+    if (chordActive(spec)) {
+      drawChord(spec, rows.slice(0, CHORD_MAX), lookup, allRows);
+      return;
+    }
+    if (mosaicActive(spec)) {
+      drawMosaic(spec, rows.slice(0, MOSAIC_MAX), columns, lookup, allRows);
+      return;
+    }
+
     const cells = [];
     for (const rowValue of rows) {
       for (const columnValue of columns) {
@@ -844,7 +939,7 @@ export function create(
           .tickFormat((value) =>
             spec.chronologicalColumns
               ? `${value}s`
-              : truncate(humanize(value), 16)
+              : ui.truncate(humanize(value), 16)
           )
       );
     if (longColumns) {
@@ -866,7 +961,7 @@ export function create(
       .attr("y", (value) => y(value) + y.bandwidth() / 2)
       .attr("dy", "0.35em")
       .attr("text-anchor", "end")
-      .text((value) => truncate(rowLabel(spec, value), compact ? 18 : 23));
+      .text((value) => ui.truncate(rowLabel(spec, value), compact ? 18 : 23));
 
     chart
       .append("g")
@@ -951,6 +1046,358 @@ export function create(
       ` · ${metric}`;
   }
 
+  // Chord diagram of a symmetric matrix: each country is an arc sized by its
+  // co-productions with the other countries shown, and each ribbon is a pair,
+  // as wide at each end as the works the two countries share. The busiest
+  // countries get the categorical palette and the rest share a neutral colour.
+  // Colours are resolved from the theme now, so the exported SVG keeps them.
+  function drawChord(spec, list, lookup, allRows) {
+    ui.clear(root);
+    svg.selectAll("*").remove();
+    updateChrome();
+    const n = list.length;
+    const pair = (a, b) =>
+      lookup.get(`${a}\u0000${b}`) || lookup.get(`${b}\u0000${a}`) || null;
+    const matrix = list.map((a) =>
+      list.map((b) => {
+        if (a === b) return 0;
+        const cell = pair(a, b);
+        return cell ? cell.count : 0;
+      })
+    );
+
+    const width = Math.max(360, root.clientWidth || 960);
+    const compact = width < 720;
+    const labelRoom = compact ? 90 : 120;
+    const size = Math.min(width, 900);
+    const outer = Math.max(120, size / 2 - labelRoom);
+    const inner = outer - 14;
+    const height = 2 * (outer + labelRoom) + 16;
+    root.style.height = `${height}px`;
+    svg.attr("viewBox", `0 0 ${width} ${height}`);
+    svg.attr("width", width).attr("height", height);
+
+    const styles = getComputedStyle(document.documentElement);
+    const token = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
+    const palette = d3.range(1, 9).map((index) => token(`--role-${index}`, "#888888"));
+    const other = token("--role-other", "#b8b8b8");
+    const colour = (index) => (index < palette.length ? palette[index] : other);
+
+    const chords = d3
+      .chord()
+      .padAngle(Math.min(0.04, 10 / inner))
+      .sortSubgroups(d3.descending)
+      .sortChords(d3.descending)(matrix);
+    const arc = d3.arc().innerRadius(inner).outerRadius(outer);
+    const ribbon = d3.ribbon().radius(inner - 1).padAngle(0.002);
+    const chart = svg
+      .append("g")
+      .attr("transform", `translate(${width / 2},${outer + labelRoom + 8})`);
+
+    const ribbons = chart
+      .append("g")
+      .attr("class", "chord-ribbons")
+      .selectAll("path")
+      .data(chords)
+      .join("path")
+      .attr("class", "chord-ribbon")
+      .attr("d", ribbon)
+      .attr("fill", (chord) => colour(chord.source.index))
+      .attr("fill-opacity", 0.72)
+      .attr("stroke", (chord) => colour(chord.source.index))
+      .attr("stroke-opacity", 0.9)
+      .attr("stroke-width", 0.5)
+      .attr("tabindex", 0)
+      .attr("role", "button")
+      .attr("aria-label", (chord) => {
+        const a = list[chord.source.index];
+        const b = list[chord.target.index];
+        return `${rowLabel(spec, a)} and ${rowLabel(spec, b)}: ${chord.source.value} works. Activate to list works.`;
+      });
+
+    const fade = (keep) => {
+      ribbons.attr("fill-opacity", (chord) => (keep(chord) ? 0.85 : 0.06));
+      ribbons.attr("stroke-opacity", (chord) => (keep(chord) ? 0.9 : 0.1));
+    };
+    const unfade = () => {
+      ribbons.attr("fill-opacity", 0.72).attr("stroke-opacity", 0.9);
+    };
+    const openPair = (chord) => {
+      const cell = pair(list[chord.source.index], list[chord.target.index]);
+      if (cell) openCell(spec, cell);
+    };
+
+    ribbons
+      .on("mouseenter", (event, chord) => {
+        fade((other) => other === chord);
+        const a = list[chord.source.index];
+        const b = list[chord.target.index];
+        const cell = pair(a, b);
+        ui.showTooltip(
+          event,
+          `${rowLabel(spec, a)} · ${rowLabel(spec, b)}`,
+          cell ? `${rawCellCountText(spec, cell)} · activate for titles` : "No data"
+        );
+      })
+      .on("mousemove", ui.moveTooltip)
+      .on("mouseleave", () => {
+        unfade();
+        ui.hideTooltip();
+      })
+      .on("click", (_event, chord) => openPair(chord))
+      .on("keydown", (event, chord) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openPair(chord);
+        }
+      });
+
+    const groups = chart
+      .append("g")
+      .attr("class", "chord-groups")
+      .selectAll("g")
+      .data(chords.groups)
+      .join("g");
+    groups
+      .append("path")
+      .attr("class", "chord-arc")
+      .attr("d", arc)
+      .attr("fill", (group) => colour(group.index))
+      .attr("stroke", token("--surface", "#ffffff"))
+      .attr("stroke-width", 1)
+      .on("mouseenter", (event, group) => {
+        fade((chord) => chord.source.index === group.index || chord.target.index === group.index);
+        const partners = matrix[group.index].filter(Boolean).length;
+        ui.showTooltip(
+          event,
+          rowLabel(spec, list[group.index]),
+          `${ui.formatNumber(group.value)} shared works with ${ui.formatNumber(partners)} ` +
+            `of the countries shown · a work with several partners counts once per pair`
+        );
+      })
+      .on("mousemove", ui.moveTooltip)
+      .on("mouseleave", () => {
+        unfade();
+        ui.hideTooltip();
+      });
+
+    // Labels run outwards from their arc and flip on the left half so they
+    // never read upside down. Arcs too thin for a label stay unlabelled.
+    const fontSize = compact ? 10 : 11;
+    groups
+      .filter((group) => (group.endAngle - group.startAngle) * outer >= fontSize * 0.9)
+      .append("text")
+      .attr("class", "heat-label chord-label")
+      .each((group) => {
+        group.angle = (group.startAngle + group.endAngle) / 2;
+      })
+      .attr("dy", "0.35em")
+      .attr(
+        "transform",
+        (group) =>
+          `rotate(${(group.angle * 180) / Math.PI - 90})` +
+          `translate(${outer + 6})` +
+          (group.angle > Math.PI ? "rotate(180)" : "")
+      )
+      .attr("text-anchor", (group) => (group.angle > Math.PI ? "end" : null))
+      .style("font-size", `${fontSize}px`)
+      .text((group) => ui.truncate(rowLabel(spec, list[group.index]), compact ? 14 : 20));
+
+    const capped = rowLimit === null || rowLimit > CHORD_MAX;
+    statsElement.textContent =
+      `${categorySummary(n, allRows.size, spec.rowNoun)} · ribbon width = works the ` +
+      "two countries share" +
+      (capped && allRows.size > n
+        ? ` · the chord shows at most ${CHORD_MAX} countries`
+        : "");
+  }
+
+  // Mosaic (Marimekko): each row category is a column whose width is its total
+  // and whose segments are its split by the column categories, so both the
+  // size of each language (say) and the mix of how it is used read at once.
+  // Decades keep their order and get a sequential ramp; other kinds keep the
+  // largest categories and fold the rest into Other.
+  function drawMosaic(spec, list, columns, lookup, allRows) {
+    ui.clear(root);
+    svg.selectAll("*").remove();
+    updateChrome();
+    const chronological = Boolean(spec.chronologicalColumns);
+    const kept =
+      chronological || columns.length <= MOSAIC_SEGMENTS
+        ? columns
+        : columns.slice(0, MOSAIC_SEGMENTS - 1);
+    const other = !chronological && columns.length > kept.length;
+    const segments = other ? [...kept, null] : kept;
+
+    const styles = getComputedStyle(document.documentElement);
+    const token = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
+    const surface = token("--surface", "#ffffff");
+    let colourOf;
+    if (chronological) {
+      const ramp = d3.interpolateRgbBasis(
+        d3.range(1, 6).map((index) => token(`--heat-${index}`, "#888888"))
+      );
+      colourOf = (segment) =>
+        ramp(kept.length > 1 ? kept.indexOf(segment) / (kept.length - 1) : 1);
+    } else {
+      const palette = d3.range(1, 9).map((index) => token(`--role-${index}`, "#888888"));
+      const otherColour = token("--role-other", "#b8b8b8");
+      colourOf = (segment) =>
+        segment === null ? otherColour : palette[kept.indexOf(segment) % palette.length];
+    }
+    const segmentLabel = (segment) =>
+      segment === null ? "Other" : columnLabel(spec, segment);
+
+    const width = Math.max(360, root.clientWidth || 960);
+    const compact = width < 720;
+    const legendColumns = compact ? 2 : 4;
+    const legendHeight = Math.ceil(segments.length / legendColumns) * 18 + 12;
+    const margin = { top: 12, right: 12, bottom: compact ? 104 : 124, left: 44 };
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = Math.round(Math.max(260, Math.min(440, width * 0.42)));
+    const height = margin.top + innerHeight + margin.bottom + legendHeight;
+    root.style.height = `${height}px`;
+    svg.attr("viewBox", `0 0 ${width} ${height}`);
+    svg.attr("width", width).attr("height", height);
+
+    const totals = list.map((row) => allRows.get(row) || 0);
+    const sum = d3.sum(totals) || 1;
+    const gap = list.length > 1 ? Math.min(3, innerWidth / list.length / 4) : 0;
+    const usable = innerWidth - gap * (list.length - 1);
+    const pair = (row, column) => lookup.get(`${row}\u0000${column}`) || null;
+    const bars = [];
+    let x = 0;
+    list.forEach((row, index) => {
+      const total = totals[index];
+      const barWidth = (usable * total) / sum;
+      let y = 0;
+      let counted = 0;
+      for (const segment of segments) {
+        let cell = null;
+        let count;
+        if (segment === null) {
+          count = Math.max(0, total - counted);
+        } else {
+          cell = pair(row, segment);
+          count = cell ? cell.count : 0;
+          counted += count;
+        }
+        if (!count || !total) continue;
+        const share = count / total;
+        bars.push({ row, segment, cell, count, share, total, x, y, width: barWidth, height: share * innerHeight });
+        y += share * innerHeight;
+      }
+      bars.push({ label: true, row, total, x, width: barWidth });
+      x += barWidth + gap;
+    });
+
+    const chart = svg
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+    const yScale = d3.scaleLinear().domain([0, 1]).range([0, innerHeight]);
+    chart
+      .append("g")
+      .attr("class", "axis")
+      .call(
+        d3
+          .axisLeft(d3.scaleLinear().domain([1, 0]).range([0, innerHeight]))
+          .ticks(5)
+          .tickFormat(d3.format(".0%"))
+      );
+
+    const openBar = (bar) => {
+      if (bar.cell) openCell(spec, bar.cell);
+    };
+    chart
+      .append("g")
+      .selectAll("rect")
+      .data(bars.filter((bar) => !bar.label))
+      .join("rect")
+      .attr("class", "mosaic-cell")
+      .attr("x", (bar) => bar.x)
+      .attr("y", (bar) => yScale(bar.y / innerHeight))
+      .attr("width", (bar) => Math.max(0.5, bar.width))
+      .attr("height", (bar) => Math.max(0.5, bar.height))
+      .attr("fill", (bar) => colourOf(bar.segment))
+      .attr("stroke", surface)
+      .attr("stroke-width", 0.75)
+      .attr("tabindex", (bar) => (bar.cell ? 0 : null))
+      .attr("role", (bar) => (bar.cell ? "button" : null))
+      .attr("aria-label", (bar) =>
+        `${rowLabel(spec, bar.row)}, ${segmentLabel(bar.segment)}: ` +
+        `${ui.formatNumber(bar.count)} works, ${percentText(100 * bar.share)} of the row.` +
+        (bar.cell ? " Activate to list works." : "")
+      )
+      .on("mouseenter", (event, bar) => {
+        ui.showTooltip(
+          event,
+          `${rowLabel(spec, bar.row)} · ${segmentLabel(bar.segment)}`,
+          `${ui.formatNumber(bar.count)} ${spec.count === "items" ? "items" : "works"} · ` +
+            `${percentText(100 * bar.share)} of ${rowLabel(spec, bar.row)}` +
+            (bar.cell ? " · activate for titles" : "")
+        );
+      })
+      .on("mousemove", ui.moveTooltip)
+      .on("mouseleave", ui.hideTooltip)
+      .on("click", (_event, bar) => openBar(bar))
+      .on("keydown", (event, bar) => {
+        if (bar.cell && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          openBar(bar);
+        }
+      });
+
+    // Row names under their columns, slanted; columns too narrow for a label
+    // are left unlabelled (the tooltip names them).
+    chart
+      .append("g")
+      .selectAll("text")
+      .data(bars.filter((bar) => bar.label && bar.width >= 9))
+      .join("text")
+      .attr("class", "heat-label")
+      .attr(
+        "transform",
+        (bar) => `translate(${bar.x + bar.width / 2},${innerHeight + 8})rotate(-40)`
+      )
+      .attr("text-anchor", "end")
+      .attr("dy", "0.7em")
+      .text((bar) => ui.truncate(rowLabel(spec, bar.row), compact ? 14 : 18));
+
+    const legend = svg
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top + innerHeight + margin.bottom})`);
+    const legendWidth = innerWidth / legendColumns;
+    const items = legend
+      .selectAll("g")
+      .data(segments)
+      .join("g")
+      .attr(
+        "transform",
+        (_segment, index) =>
+          `translate(${(index % legendColumns) * legendWidth},${Math.floor(index / legendColumns) * 18})`
+      );
+    items
+      .append("rect")
+      .attr("width", 11)
+      .attr("height", 11)
+      .attr("rx", 2)
+      .attr("fill", (segment) => colourOf(segment));
+    items
+      .append("text")
+      .attr("class", "heat-label")
+      .attr("x", 16)
+      .attr("y", 9)
+      .text((segment) => ui.truncate(segmentLabel(segment), compact ? 18 : 26));
+
+    statsElement.textContent =
+      `${categorySummary(list.length, allRows.size, spec.rowNoun)} · column width = ` +
+      `${spec.count === "items" ? "items" : "works"} · height = share by ${spec.columnNoun.replace(/s$/, "")}` +
+      (other ? ` · the ${kept.length} largest ${spec.columnNoun} have their own colour` : "") +
+      (allRows.size > list.length && (rowLimit === null || rowLimit > MOSAIC_MAX)
+        ? ` · the mosaic shows at most ${MOSAIC_MAX} ${spec.rowNoun}`
+        : "");
+  }
+
   function cellValue(cell) {
     if (activeMode === "column") return cell.columnPercent;
     if (activeMode === "row") return cell.rowPercent;
@@ -1021,10 +1468,6 @@ export function create(
     return `${number.toFixed(1)}%`;
   }
 
-  function truncate(text, length) {
-    const value = String(text || "");
-    return value.length > length ? `${value.slice(0, length - 1)}…` : value;
-  }
 
   async function openCell(spec, cell) {
     const token = ++drawerToken;
@@ -1103,6 +1546,11 @@ export function create(
     },
     resize() {
       if (dataByKind.has(cacheKey(activeKey)) && root.clientWidth !== previousWidth) draw();
+    },
+    // The chord and mosaic resolve their palettes from the theme when drawn.
+    restyle() {
+      const spec = SPEC_BY_KEY.get(activeKey);
+      if (chordActive(spec) || mosaicActive(spec)) redrawIfLoaded();
     },
     exportSvg() {
       return { element: svg.node(), name: `fiaf-${activeKey}.svg` };

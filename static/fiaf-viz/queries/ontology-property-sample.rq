@@ -1,0 +1,39 @@
+# What one property connects, from a sample of its triples: the subject's
+# type, and the object's class or kind. A full type-to-type count over every
+# triple is too heavy for the public endpoint; the client scales each sample
+# by the property's real triple count from ontology-properties.rq.
+#
+# objectKind is "literal", "class" (the value is itself a class, such as
+# fiaf:Germany or fiaf:35mmFilm), "instance" (a typed record) or "untyped".
+# For a class value objectClass is that class; for an instance it is its type.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?subjectType ?objectClass ?objectKind (COUNT(*) AS ?sampled)
+WHERE {
+  {
+    SELECT ?subject ?object
+    WHERE { ?subject {{PROPERTY}} ?object . }
+    LIMIT {{LIMIT}}
+  }
+  OPTIONAL { ?subject a ?subjectTypeValue }
+  OPTIONAL { ?object a ?objectTypeValue }
+  # Whether the value is itself a class. A distinct set, so a class with two
+  # parents (fiaf:Nauru) is not sampled twice.
+  OPTIONAL {
+    SELECT DISTINCT ?object (true AS ?objectIsClass)
+    WHERE { ?object rdfs:subClassOf ?objectParent . }
+  }
+  BIND(COALESCE(STR(?subjectTypeValue), "") AS ?subjectType)
+  BIND(
+    IF(isLiteral(?object), "literal",
+      IF(BOUND(?objectIsClass) || ?objectTypeValue = owl:Class, "class",
+        IF(BOUND(?objectTypeValue), "instance", "untyped")))
+    AS ?objectKind
+  )
+  BIND(IF(?objectKind = "class", STR(?object), COALESCE(STR(?objectTypeValue), "")) AS ?objectClass)
+}
+GROUP BY ?subjectType ?objectClass ?objectKind
+ORDER BY DESC(?sampled)

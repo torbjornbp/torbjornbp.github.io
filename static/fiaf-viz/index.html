@@ -46,7 +46,9 @@
       <a href="#geography" data-view="geography">Heatmaps</a>
       <a href="#breakdowns" data-view="breakdowns">Breakdowns</a>
       <a href="#preservation" data-view="preservation">Preservation</a>
+      <a href="#length" data-view="length">Length</a>
       <a href="#roles" data-view="roles">Roles</a>
+      <a href="#ontology" data-view="ontology">Ontology</a>
     </nav>
   </header>
 
@@ -142,6 +144,14 @@
           <p>Names and their credited works. Click a node to highlight; drag to reposition.</p>
         </div>
         <div class="view-actions">
+          <div class="inline-control time-control" id="network-time" hidden>
+            <span>Works up to: <output id="network-time-value" for="network-time-range">All</output></span>
+            <div class="time-control-row">
+              <button type="button" class="fit time-play" id="network-time-play" aria-pressed="false">Play</button>
+              <input id="network-time-range" type="range" min="0" max="1" step="1" value="1"
+                aria-label="Show works produced up to this decade">
+            </div>
+          </div>
           <div class="segmented" id="network-links" role="group" aria-label="Relationship lines">
             <button type="button" data-link-scope="all" class="active">All lines</button>
             <button type="button" data-link-scope="selected">Selected only</button>
@@ -158,6 +168,7 @@
       <div id="network-legend" class="legend" aria-label="Node colours">
         <span class="legend-item"><span class="legend-swatch name"></span>Names</span>
         <span class="legend-item"><span class="legend-swatch work"></span>Works</span>
+        <span class="legend-item" id="network-legend-fresh" hidden><span class="legend-swatch fresh"></span>Works from this decade</span>
       </div>
       <div id="network-chart" class="chart chart-network"></div>
     </section>
@@ -169,6 +180,19 @@
           <p>Names sharing works. Edge width = shared works.</p>
         </div>
         <div class="view-actions">
+          <div class="segmented" id="co-credits-mode" role="group" aria-label="Co-credit layout">
+            <button type="button" data-mode="network" class="active" aria-pressed="true">Network</button>
+            <button type="button" data-mode="matrix" aria-pressed="false">Matrix</button>
+          </div>
+          <label class="inline-control" id="co-credits-order-control" hidden>
+            <span>Order</span>
+            <select id="co-credits-order" aria-label="Matrix order">
+              <option value="cluster">Clusters</option>
+              <option value="shared">Shared works</option>
+              <option value="role">Role</option>
+              <option value="name">Name</option>
+            </select>
+          </label>
           <label class="inline-control">
             <span>Names</span>
             <select id="co-credits-names" aria-label="Busiest names to connect"></select>
@@ -191,7 +215,9 @@
         <summary>How is this counted?</summary>
         <div id="co-credits-limits"></div>
       </details>
+      <div id="co-credits-legend" class="legend" aria-label="Role colours" hidden></div>
       <div id="co-credits-chart" class="chart chart-network chart-co-credits"></div>
+      <div id="co-credits-matrix" class="chart chart-matrix" hidden></div>
     </section>
 
     <section id="view-timeline" class="view" data-view="timeline" hidden>
@@ -204,6 +230,27 @@
           <div class="segmented" role="group" aria-label="Granularity">
             <button type="button" data-granularity="year" class="active">Year</button>
             <button type="button" data-granularity="decade">Decade</button>
+            <button type="button" data-granularity="streams">Streams</button>
+          </div>
+          <label class="inline-control" data-stream-control hidden>
+            <span>Split by</span>
+            <select id="timeline-split" aria-label="Split the streams by">
+              <option value="genres">Genre</option>
+              <option value="forms">Form</option>
+              <option value="roles">Credited role</option>
+              <option value="countries">Production country</option>
+              <option value="languages">Language usage</option>
+              <optgroup label="Items">
+                <option value="colour">Colour</option>
+                <option value="base">Base material</option>
+                <option value="element">Element type</option>
+                <option value="format">Item format</option>
+              </optgroup>
+            </select>
+          </label>
+          <div class="segmented" id="timeline-stream-mode" role="group" aria-label="Stream scale" data-stream-control hidden>
+            <button type="button" data-stream-mode="streams" class="active" aria-pressed="true">Volume</button>
+            <button type="button" data-stream-mode="share" aria-pressed="false">Share</button>
           </div>
           <button type="button" class="export" data-export="timeline">Download SVG</button>
         </div>
@@ -212,8 +259,10 @@
       <details class="view-details">
         <summary>How is this counted?</summary>
         <p>Works per production year: the first four digits of each production event date. A work dated in several years counts once in each year, and once per decade in the decade view. Works with no four-digit production date are left out; the dated share above says how many.</p>
+        <p>Streams split the decade counts by genre, form, credited role, production country or language usage. Each stream is the number of dated works with that value in each decade; a work with several values counts under each, so the streams can add up to more than the decade's works. Colour, base material, element type and item format count items instead, as in the heatmaps: the items of works produced in that decade, whether the value is recorded on the item or on its manifestation. Item formats are grouped by their format class in the FIAFcore ontology (35mm film is a film format, MXF a digital format): each class has one hue, its formats are shades of it, and beyond four formats a class's smallest are combined.The largest seven values have their own stream and the rest are combined under Other. Volume centres the streams around a moving baseline; Share stacks each decade to 100%.</p>
         <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
       </details>
+      <div id="timeline-legend" class="legend" aria-label="Stream colours" hidden></div>
       <div id="timeline-chart" class="chart chart-timeline"></div>
     </section>
 
@@ -221,7 +270,7 @@
       <div class="view-head">
         <div>
           <h2>World map</h2>
-          <p id="worldmap-description">Works by production country. Colour intensity follows the heat ramp; click a country for titles. Co-productions count once for each country.</p>
+          <p id="worldmap-description">Works by production country. Colour intensity follows the heat ramp; click a country for titles. Co-productions count once for each country. Play the decades to watch the collections fill the map.</p>
         </div>
         <div class="view-actions">
           <button type="button" class="fit" data-fit="worldmap">Fit view</button>
@@ -252,8 +301,31 @@
         <p>Each country shows the distinct works that list it as a production country. A co-production counts once under each of its countries, so the country totals add up to more than the number of works, and works with no production country are in the Works total but not on the map.</p>
         <p>Credited names are names with a non-empty label credited on a work in any role. Production years are the first four digits of production event dates; dates without a four-digit year are left out.</p>
         <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
+        <p>Per decade shows the works with a production date in that decade; Cumulative adds up every decade so far, so a country keeps its colour once it has works. Only dated works take part, and the line under the overview says how many of the works that is. A work dated in two decades counts in both. The colour scale and circle sizes are fixed for the whole run, so a colour means the same number in every decade. The bars under the map show the dated works per decade; click or drag along them, or focus them and use the arrow keys, to pick a decade.</p>
+        <p>Circles size each country by its works at the centre of its largest landmass, so a large country does not look busier just because it covers more of the map.</p>
       </details>
       <div id="worldmap-chart" class="chart chart-worldmap"></div>
+      <div class="map-player" id="worldmap-player">
+        <div class="map-player-row">
+          <div class="segmented" id="worldmap-time-mode" role="group" aria-label="Time">
+            <button type="button" data-map-time="all" class="active" aria-pressed="true">All years</button>
+            <button type="button" data-map-time="decade" aria-pressed="false">Per decade</button>
+            <button type="button" data-map-time="cumulative" aria-pressed="false">Cumulative</button>
+          </div>
+          <div class="inline-control time-control" id="worldmap-time" hidden>
+            <span>Decade: <output id="worldmap-time-value" for="worldmap-track" aria-live="polite"></output></span>
+            <div class="time-control-row">
+              <button type="button" class="fit time-play" id="worldmap-time-play" aria-pressed="false">Play</button>
+            </div>
+          </div>
+          <div class="segmented map-marks" id="worldmap-marks" role="group" aria-label="Map marks">
+            <button type="button" data-map-marks="shade" class="active" aria-pressed="true">Shade</button>
+            <button type="button" data-map-marks="circles" aria-pressed="false">Circles</button>
+          </div>
+        </div>
+        <div id="worldmap-track" class="map-track-wrap" hidden></div>
+      </div>
+      <div id="worldmap-offmap" class="map-offmap" hidden></div>
     </section>
 
     <section id="view-catalogue" class="view" data-view="catalogue" hidden>
@@ -378,6 +450,11 @@
             <span>Max categories</span>
             <select id="heatmap-limit" aria-label="Maximum heatmap categories"></select>
           </label>
+          <div class="segmented" id="heatmap-layout" role="group" aria-label="Layout">
+            <button type="button" data-layout="grid" class="active" aria-pressed="true">Grid</button>
+            <button type="button" data-layout="chord" aria-pressed="false" hidden>Chord</button>
+            <button type="button" data-layout="mosaic" aria-pressed="false">Mosaic</button>
+          </div>
           <div class="segmented" id="heatmap-mode" role="group" aria-label="Cell values">
             <button type="button" data-heatmap-mode="count" class="active">Count</button>
             <button type="button" data-heatmap-mode="column">% of column</button>
@@ -391,6 +468,8 @@
         <summary>How is this counted?</summary>
         <p>Each matrix counts works or items, as its description says. Colour, sound, base, element and format can be recorded on an item or on its manifestation; both count as items. Decades are four-digit production years, and a co-production counts under each production country.</p>
         <p>A work or item with several values counts once under each, so row and column totals can be larger than the distinct works or items. % of column and % of row divide each cell by its column or row total. Categories are ranked by their total, and Max categories keeps the top ones.</p>
+        <p>Co-production countries can also be drawn as a chord: each arc is a country, sized by the works it shares with the other countries shown, and each ribbon is a pair, as wide as the works the two share. A work made by three countries counts once in each of its three pairs. The chord shows at most 40 countries.</p>
+        <p>The other matrices can be drawn as a mosaic: each row category becomes a column as wide as its total, split by height into its share of each column category. The mosaic shows at most 20 columns and eight colours; decades keep their order and are shaded from early to late, other categories beyond the seventh are combined under Other.</p>
         <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
       </details>
       <div id="geography-chart" class="chart chart-geography"></div>
@@ -400,12 +479,25 @@
       <div class="view-head">
         <div>
           <h2>Breakdowns</h2>
-          <p>Work and item distributions for format, element type, base material, colour, sound, film stock, genre, form and holding institution.</p>
+          <p>Work and item distributions for format, element type, base material, colour, sound, film stock, genre, form and holding institution. Flow follows the items across several of these at once.</p>
+        </div>
+        <div class="view-actions">
+          <div class="segmented" id="breakdown-layout" role="group" aria-label="Breakdown layout">
+            <button type="button" data-breakdown-layout="bars" class="active" aria-pressed="true">Bars</button>
+            <button type="button" data-breakdown-layout="flow" aria-pressed="false">Flow</button>
+          </div>
+          <button type="button" class="export" data-export="breakdowns" hidden>Download SVG</button>
         </div>
       </div>
       <div id="breakdown-chart" class="breakdown-grid"></div>
+      <section id="breakdown-flow" class="breakdown-flow" hidden aria-label="Material flow">
+        <div id="breakdown-flow-controls" class="flow-controls"></div>
+        <p id="breakdown-flow-stats" class="stats"></p>
+        <div id="breakdown-flow-chart" class="chart chart-flow"></div>
+      </section>
       <details class="view-details">
         <summary>How is this counted?</summary>
+        <p>Flow counts the same items across holding institution, format, element, base, colour and status at once. Each column shows its eight most common values, then Other and Not recorded; ribbons between two columns carry the items that share both values and are coloured by the first column. Hover or click a block to follow its items through every column. Format, element and colour fall back to the manifestation when the item has none. An item with two values on one column (two formats, say) counts under both, so the total can be slightly above the number of items.</p>
         <p>Item panels count distinct items per value, whether the value is recorded on the item or on its manifestation. Genre and Form count distinct works. An item or work with several values counts once under each, so a panel's bars can add up to more than its items or works. Each panel lists its most common values.</p>
         <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
       </details>
@@ -474,6 +566,34 @@
       <div id="preservation-chart" class="chart chart-preservation"></div>
     </section>
 
+    <section id="view-length" class="view" data-view="length" hidden>
+      <div class="view-head">
+        <div>
+          <h2>Kilometres of film</h2>
+          <p>How much physical film the collections hold, by production decade, base and element. Click a block to zoom in.</p>
+        </div>
+        <div class="view-actions">
+          <div class="segmented" id="length-order" role="group" aria-label="Group film length by">
+            <button type="button" data-length-order="decade" class="active" aria-pressed="true">Decade first</button>
+            <button type="button" data-length-order="base" aria-pressed="false">Base first</button>
+            <button type="button" data-length-order="element" aria-pressed="false">Element first</button>
+          </div>
+          <button type="button" class="fit" data-fit="length">Reset</button>
+          <button type="button" class="export" data-export="length">Download SVG</button>
+        </div>
+      </div>
+      <div id="length-headline" class="length-headline" aria-live="polite"></div>
+      <p id="length-stats" class="stats"></p>
+      <details class="view-details">
+        <summary>How is this counted?</summary>
+        <p>Lengths are recorded on manifestations (fiaf:hasExtent with a fiaf:Metre value), not on single prints or negatives. Each item of a manifestation is a complete element of the film, such as a release print, a duplicate negative or a sound negative, so each physical film item counts the manifestation's full length. An item counts as physical film when it has a base or a film format; digital files are left out.</p>
+        <p>Some manifestations repeat the same length on several extent records; it counts once. Extents recorded in minutes are durations and are left out, as is any length over 50 km, which would be a data error. A manifestation records one length, so a 16 mm copy of a film measured on 35 mm is an approximation.</p>
+        <p>The projection time assumes 35 mm at 24 frames a second (27.36 metres a minute). Decades come from the production date; works without one are under No production year. Today only the Bundesarchiv records lengths. The Datasets filter applies.</p>
+      </details>
+      <nav id="length-crumbs" class="length-crumbs" aria-label="Zoom path"></nav>
+      <div id="length-chart" class="chart chart-length"></div>
+    </section>
+
     <section id="view-roles" class="view" data-view="roles" hidden>
       <div class="view-head">
         <div>
@@ -490,6 +610,37 @@
         <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
       </details>
       <div id="roles-chart" class="chart chart-roles"></div>
+    </section>
+
+    <section id="view-ontology" class="view" data-view="ontology" hidden>
+      <div class="view-head">
+        <div>
+          <h2>Ontology</h2>
+          <p>The FIAFcore schema, read from the graph itself. The class tree shows every class and how many records use it; the schema graph shows what the properties connect. Click a class or a connection for details.</p>
+        </div>
+        <div class="view-actions">
+          <div class="segmented" id="ontology-mode" role="group" aria-label="Ontology view">
+            <button type="button" data-ontology-mode="tree" class="active" aria-pressed="true">Class tree</button>
+            <button type="button" data-ontology-mode="schema" aria-pressed="false">Schema graph</button>
+          </div>
+          <div class="segmented" id="ontology-size" role="group" aria-label="Size classes by">
+            <button type="button" data-ontology-size="classes" class="active" aria-pressed="true">Size by classes</button>
+            <button type="button" data-ontology-size="uses" aria-pressed="false">Size by use</button>
+          </div>
+          <button type="button" class="fit" data-fit="ontology">Reset</button>
+          <button type="button" class="export" data-export="ontology">Download SVG</button>
+        </div>
+      </div>
+      <p id="ontology-stats" class="stats"></p>
+      <details class="view-details">
+        <summary>How is this counted?</summary>
+        <p>Classes and their descriptions come from the FIAFcore ontology in the graph (owl:Class, rdfs:subClassOf, dc:description). A record counts for the class it is typed with and for every class above it, so Activity includes every Director and Cast Member. Records are typed with their most specific class only; the handful that carry two types count under both. Many classes are used as values rather than types: no record is typed fiaf:Germany, but works name it as their production country, so the tree also counts how often each class is used as a value. Classes used neither way are shown as faint outlines.</p>
+        <p>Size by classes gives every class the same height, so the whole ontology is visible; size by use sizes each class by its records plus its uses as a value, and unused classes disappear.</p>
+        <p>The schema graph groups classes under their top-level class (Cast Member under Activity, Germany under Country). Each arrow is one property between two top-level classes. Counting every triple's types is too heavy for the public endpoint, so the view samples up to 500 triples per property, reads the types at both ends, and scales the sample by the property's real triple count: arrow weights are estimates. Values that are classes themselves, such as a country or a film format, are drawn as dashed arrows. Properties with literal values (dates, title text, identifier values) are listed with their class instead of drawn.</p>
+        <p>Counts cover the whole public graph. The Datasets filter does not apply here.</p>
+      </details>
+      <div id="ontology-chart" class="chart chart-ontology"></div>
+      <section id="ontology-details" class="ontology-details" aria-live="polite" aria-label="Selected class or property"></section>
     </section>
   </main>
   </div>

@@ -1,4 +1,6 @@
 # Holdings hierarchy for one work: manifestations, their items and carriers.
+# Manifestations reached through a FIAF Variant are included; work-variants.rq
+# says which variant each belongs to.
 #
 # One row is returned per manifestation/item/carrier combination. Multi-valued
 # technical fields are aggregated into "|"-separated strings; the client groups
@@ -32,8 +34,11 @@ SELECT
 WHERE {
   VALUES ?work { {{WORK}} }
   VALUES ?workType { fiaf:MonographicWork fiaf:Work }
-  ?work a ?workType ;
-        fiaf:hasManifestation ?manifestation .
+  ?work a ?workType .
+  # A manifestation hangs off the work or off one of its Variants.
+  { ?work fiaf:hasManifestation ?manifestation }
+  UNION
+  { ?work fiaf:hasVariant/fiaf:hasManifestation ?manifestation }
 
   OPTIONAL { ?manifestation a ?manifestationTypeValue }
   OPTIONAL { ?manifestation rdfs:label ?manifestationLabelValue }

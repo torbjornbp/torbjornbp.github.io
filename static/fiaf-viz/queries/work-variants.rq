@@ -1,0 +1,27 @@
+# FIAF Variants of one work, for the drawer's record graph.
+#
+# A Variant (Work → fiaf:hasVariant → Variant) records a change to the content
+# that does not make a new work: dubbed, censored, restored and so on. A
+# Variant groups manifestations with fiaf:hasManifestation, the same property a
+# work uses. One row per variant; the subtype is preferred over fiaf:Variant and
+# the manifestations are "|"-separated IRIs.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT
+  ?variant
+  (SAMPLE(COALESCE(STR(?subtype), "")) AS ?variantType)
+  (SAMPLE(COALESCE(?labelValue, ?titleValue, "")) AS ?variantLabel)
+  (GROUP_CONCAT(DISTINCT STR(?manifestation); separator="|") AS ?manifestations)
+WHERE {
+  VALUES ?work { {{WORK}} }
+  ?work fiaf:hasVariant ?variant .
+  OPTIONAL { ?variant a ?subtype . FILTER(?subtype != fiaf:Variant) }
+  OPTIONAL { ?variant rdfs:label ?labelValue }
+  OPTIONAL { ?variant fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+  OPTIONAL { ?variant fiaf:hasManifestation ?manifestation }
+}
+GROUP BY ?variant
+ORDER BY ?variant
+LIMIT 500

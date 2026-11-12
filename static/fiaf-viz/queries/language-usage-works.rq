@@ -1,0 +1,32 @@
+# Works for one language and usage type (a cell of language-usages.rq). Keep
+# the usage resolution in step with that query.
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?work (SAMPLE(?candidateTitle) AS ?title)
+WHERE {
+  VALUES ?language { {{LANGUAGE}} }
+  VALUES ?usage { {{USAGE}} }
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType .
+  {{SCOPE_FILTER}}
+  {
+    ?work fiaf:hasLanguageUsage ?usageNode .
+  }
+  UNION
+  {
+    ?work fiaf:hasManifestation/fiaf:hasLanguageUsage ?usageNode .
+  }
+  UNION
+  {
+    ?work fiaf:hasManifestation/fiaf:hasItem/fiaf:hasLanguageUsage ?usageNode .
+  }
+  ?usageNode a ?usage ;
+             fiaf:hasLanguage ?language .
+  OPTIONAL { ?work rdfs:label ?label }
+  OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+  BIND(COALESCE(?label, ?titleValue) AS ?candidateTitle)
+}
+GROUP BY ?work
+ORDER BY ?title ?work
+LIMIT {{LIMIT}}

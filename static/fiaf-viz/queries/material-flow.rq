@@ -1,0 +1,75 @@
+# Items by every combination of holding institution, format, element, base,
+# colour and status, for the Breakdowns flow (parallel sets). The client sums
+# these rows over whichever dimensions are shown, in whatever order, so one
+# query serves every arrangement.
+#
+# Format, element and colour can be recorded on the item or on its
+# manifestation; the item's own value wins. Blank-node formats and colours
+# resolve to their type (or a nested colour standard), as in the breakdown
+# queries. An empty string means "not recorded". An item with two values on
+# one dimension (rare) counts under both, so rows can add up to slightly more
+# than the items.
+#
+# Measured on the public endpoint (2026-11-12): about 5 s for all works, ~475
+# rows. The view loads it only when the Flow layout is opened.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?institution ?format ?element ?base ?colour ?status (COUNT(DISTINCT ?item) AS ?items)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasManifestation ?manifestation .
+  {{SCOPE_FILTER}}
+  ?manifestation fiaf:hasItem ?item .
+
+  OPTIONAL { ?item fiaf:hasHoldingInstitution/rdfs:label ?institutionValue }
+
+  OPTIONAL {
+    ?item fiaf:hasFormat ?itemFormat .
+    OPTIONAL { ?itemFormat a ?itemFormatType . FILTER(isBlank(?itemFormat)) }
+  }
+  OPTIONAL {
+    ?manifestation fiaf:hasFormat ?manifestationFormat .
+    OPTIONAL { ?manifestationFormat a ?manifestationFormatType . FILTER(isBlank(?manifestationFormat)) }
+  }
+
+  OPTIONAL { ?item fiaf:isElement ?itemElement }
+  OPTIONAL { ?manifestation fiaf:isElement ?manifestationElement }
+
+  OPTIONAL { ?item fiaf:hasBase ?baseValue }
+
+  OPTIONAL {
+    ?item fiaf:hasColourCharacteristic ?itemColour .
+    OPTIONAL { ?itemColour fiaf:hasColourStandard ?itemColourStandard }
+    OPTIONAL { ?itemColour a ?itemColourType . FILTER(isBlank(?itemColour)) }
+  }
+  OPTIONAL {
+    ?manifestation fiaf:hasColourCharacteristic ?manifestationColour .
+    OPTIONAL { ?manifestationColour fiaf:hasColourStandard ?manifestationColourStandard }
+    OPTIONAL { ?manifestationColour a ?manifestationColourType . FILTER(isBlank(?manifestationColour)) }
+  }
+
+  OPTIONAL { ?item fiaf:hasStatus ?statusValue }
+
+  BIND(COALESCE(?institutionValue, "") AS ?institution)
+  BIND(COALESCE(
+    IF(isBlank(?itemFormat), STR(?itemFormatType), STR(?itemFormat)),
+    IF(isBlank(?manifestationFormat), STR(?manifestationFormatType), STR(?manifestationFormat)),
+    ""
+  ) AS ?format)
+  BIND(COALESCE(STR(?itemElement), STR(?manifestationElement), "") AS ?element)
+  BIND(COALESCE(STR(?baseValue), "") AS ?base)
+  BIND(COALESCE(
+    STR(?itemColourStandard),
+    STR(?itemColourType),
+    IF(isIRI(?itemColour), STR(?itemColour), ?unbound),
+    STR(?manifestationColourStandard),
+    STR(?manifestationColourType),
+    IF(isIRI(?manifestationColour), STR(?manifestationColour), ?unbound),
+    ""
+  ) AS ?colour)
+  BIND(COALESCE(STR(?statusValue), "") AS ?status)
+}
+GROUP BY ?institution ?format ?element ?base ?colour ?status

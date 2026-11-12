@@ -1,0 +1,15 @@
+# Instances typed directly with each class, across the whole public graph.
+#
+# Records are typed with their most specific class only (a CastMember is not
+# also typed Activity), so the ontology view adds each class's subclasses to
+# get "this class or a subclass". There is deliberately no FILTER on the class
+# IRI: on QLever a string filter here turns a 0.1 s index scan into a 10 s+
+# query, so the client keeps the fiaf: classes instead.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?class (COUNT(?instance) AS ?instances)
+WHERE {
+  ?instance a ?class .
+}
+GROUP BY ?class

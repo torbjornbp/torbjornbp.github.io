@@ -3,6 +3,7 @@
 import { limit, runQuery } from "./sparql.js";
 import { humanize } from "./labels.js";
 import * as ui from "./ui.js";
+import * as materialFlow from "./material-flow.js";
 
 const SPECS = [
   { key: "format", query: "breakdown-format", title: "Item format", unit: "items", colour: "var(--role-1)" },
@@ -19,8 +20,52 @@ const SPECS = [
 export function create(ctx, root) {
   let panels = null;
   let hasRendered = false;
+  // "bars" (the panels) or "flow" (parallel sets across the item facets).
+  let layout = "bars";
+  const layoutButtons = [...document.querySelectorAll("[data-breakdown-layout]")];
+  const flowSection = document.getElementById("breakdown-flow");
+  const exportButton = document.querySelector('[data-export="breakdowns"]');
+  const flow = flowSection
+    ? materialFlow.create(
+        ctx,
+        document.getElementById("breakdown-flow-chart"),
+        document.getElementById("breakdown-flow-controls"),
+        document.getElementById("breakdown-flow-stats")
+      )
+    : null;
+
+  function syncLayout() {
+    for (const button of layoutButtons) {
+      const active = button.dataset.breakdownLayout === layout;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    }
+    root.hidden = layout !== "bars";
+    if (flowSection) flowSection.hidden = layout !== "flow";
+    if (exportButton) exportButton.hidden = layout !== "flow";
+  }
+
+  for (const button of layoutButtons) {
+    button.addEventListener("click", () => {
+      if (button.dataset.breakdownLayout === layout) return;
+      layout = button.dataset.breakdownLayout;
+      syncLayout();
+      load().catch((error) => {
+        if (error.name !== "AbortError") ui.setStatus(error.message, "error");
+      });
+    });
+  }
+  syncLayout();
 
   async function load({ signal } = {}) {
+    if (layout === "flow" && flow) {
+      await flow.load({ signal });
+      return;
+    }
+    if (panels) {
+      if (root.clientWidth !== renderedWidth) render();
+      return;
+    }
     if (!hasRendered) {
       ui.message(root, "Loading distributions…");
     }
@@ -144,7 +189,7 @@ export function create(ctx, root) {
       .attr("x", -6)
       .attr("y", rowHeight / 2 + 3)
       .attr("text-anchor", "end")
-      .text((row) => truncate(humanize(row.value), 24));
+      .text((row) => ui.truncate(humanize(row.value), 24));
 
     bar
       .append("text")
@@ -154,9 +199,6 @@ export function create(ctx, root) {
       .text((row) => ui.formatNumber(row.count));
   }
 
-  function truncate(text, length) {
-    return text.length > length ? `${text.slice(0, length - 1)}…` : text;
-  }
 
   return {
     load,
@@ -164,10 +206,14 @@ export function create(ctx, root) {
       panels = null;
     },
     resize() {
-      if (panels && root.clientWidth !== renderedWidth) render();
+      if (layout === "flow" && flow) flow.resize();
+      else if (panels && root.clientWidth !== renderedWidth) render();
+    },
+    restyle() {
+      if (layout === "flow" && flow) flow.redraw();
     },
     exportSvg() {
-      return null;
+      return layout === "flow" && flow ? flow.exportSvg() : null;
     }
   };
 }

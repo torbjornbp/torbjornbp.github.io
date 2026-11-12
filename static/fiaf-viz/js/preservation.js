@@ -60,10 +60,6 @@ function formatPercent(value) {
   return `${number.toFixed(1)}%`;
 }
 
-function truncate(text, length) {
-  const value = String(text || "");
-  return value.length > length ? `${value.slice(0, length - 1)}…` : value;
-}
 
 export function create(ctx, root, statsElement, overviewElement, controls = {}) {
   const { groupButtons, measureSelect, sortSelect, limitSelect, withinSelect, withinNote } = controls;
@@ -556,7 +552,7 @@ export function create(ctx, root, statsElement, overviewElement, controls = {}) 
       .attr("y", (row, index) => index * rowHeight + rowHeight / 2)
       .attr("dy", "0.35em")
       .attr("text-anchor", "end")
-      .text((row) => truncate(row.label, Math.round(margin.left / 7)));
+      .text((row) => ui.truncate(row.label, Math.round(margin.left / 7)));
 
     attachBar(
       chart

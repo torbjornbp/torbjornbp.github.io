@@ -1318,6 +1318,24 @@ export function create(ctx, controls) {
       }
     },
     select,
+    // Load a ready-made query (from the ontology view) into the SPARQL box.
+    // It is not run: the reader sees it first and presses Run query.
+    openQuery(text) {
+      // A query still running must not land its rows under the new text.
+      cancelExpert();
+      page = 0;
+      if (mode !== "sparql") setMode("sparql", { run: false });
+      if (sparqlInput) {
+        sparqlInput.value = text;
+        refreshHighlight();
+      }
+      sparqlResult = null;
+      expertError = null;
+      items = [];
+      total = 0;
+      if (queryStatusElement) queryStatusElement.textContent = "Press Run query to execute.";
+      render();
+    },
     filterByAgent(agent, name) {
       agentFilter = agent
         ? { id: agent, name: name || localName(agent) || agent }

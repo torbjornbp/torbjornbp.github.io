@@ -7,7 +7,7 @@
   "defaultView": "worldmap",
   "views": [
     "worldmap", "catalogue", "cloud", "network", "co-credits", "timeline",
-    "geography", "breakdowns", "preservation", "roles"
+    "geography", "breakdowns", "preservation", "length", "roles", "ontology"
   ],
   "features": {
     "allowAllNames": true
@@ -35,6 +35,7 @@
     "findRows": 20,
     "catalogueRows": 100,
     "expertRows": 2000,
+    "ontologySample": 500,
     "maxConcurrentRequests": 3,
     "requestRetries": 1,
     "retryBaseMs": 1000,

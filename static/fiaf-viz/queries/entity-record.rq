@@ -2,8 +2,8 @@
 #
 # The record inspector uses this to decide whether the IRI is a Work (open the
 # full work drawer), a name (open the agent drawer) or another resource (show a
-# generic property inspector). Parent work links let items and carriers lead
-# back to their work.
+# generic property inspector). Parent work links let variants, manifestations,
+# items and carriers lead back to their work.
 
 PREFIX fiaf: <https://dev.fiafcore.org/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -30,21 +30,19 @@ WHERE {
   }
 
   OPTIONAL {
-    {
-      ?parentWork fiaf:hasManifestation ?entity .
-    }
-    UNION
-    {
-      ?parentWork fiaf:hasManifestation/fiaf:hasItem ?entity .
-    }
-    UNION
-    {
-      ?parentWork fiaf:hasManifestation/fiaf:hasItem/fiaf:hasCarrier ?entity .
-    }
-    UNION
-    {
-      ?parentWork fiaf:hasEvent ?entity .
-    }
+    # A manifestation may hang off a Variant of the work, so each path has a
+    # variant twin. Explicit branches (not an optional hasVariant? step) and a
+    # work-type check (not FILTER NOT EXISTS) keep this fast on QLever.
+    VALUES ?parentType { fiaf:MonographicWork fiaf:Work }
+    { ?parentWork fiaf:hasManifestation ?entity . }
+    UNION { ?parentWork fiaf:hasManifestation/fiaf:hasItem ?entity . }
+    UNION { ?parentWork fiaf:hasManifestation/fiaf:hasItem/fiaf:hasCarrier ?entity . }
+    UNION { ?parentWork fiaf:hasEvent ?entity . }
+    UNION { ?parentWork fiaf:hasVariant ?entity . }
+    UNION { ?parentWork fiaf:hasVariant/fiaf:hasManifestation ?entity . }
+    UNION { ?parentWork fiaf:hasVariant/fiaf:hasManifestation/fiaf:hasItem ?entity . }
+    UNION { ?parentWork fiaf:hasVariant/fiaf:hasManifestation/fiaf:hasItem/fiaf:hasCarrier ?entity . }
+    ?parentWork a ?parentType .
     OPTIONAL { ?parentWork rdfs:label ?parentLabel }
     OPTIONAL { ?parentWork fiaf:hasTitle/fiaf:hasTitleValue ?parentTitle }
     BIND(COALESCE(?parentLabel, ?parentTitle) AS ?parentWorkLabel)

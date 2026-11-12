@@ -1,0 +1,12 @@
+# Each format and its format class, from the ontology: the parent directly
+# below fiaf:Format (fiaf:35mmFilm -> fiaf:FilmFormat). The timeline uses it to
+# show the formats within one class.
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?format ?class
+WHERE {
+  ?class rdfs:subClassOf fiaf:Format .
+  ?format rdfs:subClassOf ?class .
+}
+ORDER BY ?class ?format

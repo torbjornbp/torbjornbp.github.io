@@ -1,0 +1,18 @@
+# Works per production country and production decade, for the timeline's
+# streams. A co-production counts once under each of its countries.
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?value ?decade (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasCountry ?value ;
+        fiaf:hasEvent ?event .
+  {{SCOPE_FILTER}}
+  ?event a fiaf:ProductionEvent ; fiaf:hasDate ?date .
+  BIND(SUBSTR(STR(?date), 1, 4) AS ?year)
+  FILTER(REGEX(?year, "^[0-9]{4}$"))
+  BIND(CONCAT(SUBSTR(?year, 1, 3), "0") AS ?decade)
+}
+GROUP BY ?value ?decade
+ORDER BY ?value ?decade

@@ -1,0 +1,22 @@
+# The FIAFcore class hierarchy, read from the graph itself: every class with
+# its label, description and direct parents ("|"-separated IRIs). The ontology
+# view builds the class tree from these rows.
+#
+# The ontology is not dataset-specific, so there is no scope filter.
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+
+SELECT ?class
+       (SAMPLE(?labelValue) AS ?label)
+       (SAMPLE(?descriptionValue) AS ?description)
+       (GROUP_CONCAT(DISTINCT STR(?parent); separator="|") AS ?parents)
+WHERE {
+  { ?class a owl:Class } UNION { ?class rdfs:subClassOf ?anyParent }
+  FILTER(isIRI(?class))
+  OPTIONAL { ?class rdfs:label ?labelValue }
+  OPTIONAL { ?class dc:description ?descriptionValue }
+  OPTIONAL { ?class rdfs:subClassOf ?parent . FILTER(isIRI(?parent)) }
+}
+GROUP BY ?class

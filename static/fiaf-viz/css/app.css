@@ -39,6 +39,16 @@
   --heat-4: #c33b50;
   --heat-5: #8e1526;
   --map-empty: #efeff1;
+  --map-heat-1: #f6d0d6;
+  --map-heat-2: #f0b8c1;
+  --map-heat-3: #e89aa6;
+  --map-heat-4: #de7b8b;
+  --map-heat-5: #d15d6d;
+  --map-heat-6: #c33b50;
+  --map-heat-7: #a8293a;
+  --map-heat-8: #8e1526;
+  --map-heat-9: #76111f;
+  --map-heat-10: #5e0d19;
   --role-5-text: #76500f;
   --radius-sm: 4px;
   --radius: 8px;
@@ -139,6 +149,16 @@
   --heat-4: #c7526a;
   --heat-5: #f58b9d;
   --map-empty: #262629;
+  --map-heat-1: #46222b;
+  --map-heat-2: #5d2735;
+  --map-heat-3: #762f40;
+  --map-heat-4: #90374b;
+  --map-heat-5: #ac455b;
+  --map-heat-6: #c9556c;
+  --map-heat-7: #e07185;
+  --map-heat-8: #f58c9e;
+  --map-heat-9: #fba7b5;
+  --map-heat-10: #ffc2cc;
   --role-5-text: #e5b968;
   --shadow: 0 10px 30px rgb(0 0 0 / 45%);
   --shadow-selected: inset 2px 0 0 var(--accent);
@@ -185,6 +205,16 @@
     --heat-4: #c7526a;
     --heat-5: #f58b9d;
     --map-empty: #262629;
+    --map-heat-1: #46222b;
+    --map-heat-2: #5d2735;
+    --map-heat-3: #762f40;
+    --map-heat-4: #90374b;
+    --map-heat-5: #ac455b;
+    --map-heat-6: #c9556c;
+    --map-heat-7: #e07185;
+    --map-heat-8: #f58c9e;
+    --map-heat-9: #fba7b5;
+    --map-heat-10: #ffc2cc;
     --role-5-text: #e5b968;
     --shadow: 0 10px 30px rgb(0 0 0 / 45%);
     --shadow-selected: inset 2px 0 0 var(--accent);
@@ -722,6 +752,14 @@ main {
 
 .inline-control:has(> select:disabled) > span { opacity: 0.45; }
 
+/* View buttons that do not apply in the current mode, such as Fit view under
+   the co-credit matrix. */
+.view-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .segmented {
   display: flex;
   gap: var(--space-0_5);
@@ -779,6 +817,16 @@ main {
 
 .legend-swatch.name { background: var(--name-colour); }
 .legend-swatch.work { background: var(--work-colour); }
+.legend-swatch.fresh { background: var(--accent); }
+
+.time-control-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.time-control .time-play { min-width: 4.5em; }
+.time-control output { color: var(--text); font-variant-numeric: tabular-nums; }
 
 .stat-grid {
   display: grid;
@@ -828,6 +876,100 @@ main {
 .chart-cloud { min-height: min(72vh, 720px); }
 .chart-network { height: min(74vh, 720px); min-height: 460px; }
 .chart-co-credits { height: min(82vh, 880px); min-height: 520px; }
+
+/* Timeline streams. */
+.legend-group { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-right: var(--space-4); }
+.legend-group-title { font-weight: 600; color: var(--text); }
+.stream-layer { transition: fill-opacity 120ms ease; }
+.stream-marker { stroke: var(--text); stroke-width: 1; stroke-dasharray: 2 3; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .stream-layer { transition: none; } }
+
+/* Career strip in the name drawer. */
+.career-strip { display: block; max-width: 100%; height: auto; overflow: visible; }
+.career-grid line { stroke: var(--border); stroke-dasharray: 2 3; }
+.career-axis text, .career-lane-label {
+  fill: var(--muted);
+  font-family: var(--font);
+  font-size: 10.5px;
+}
+.career-lane-label { fill: var(--text); }
+.career-dot { stroke: var(--surface); stroke-width: 0.8; cursor: pointer; }
+.career-dot:hover, .career-dot:focus-visible { stroke: var(--text); stroke-width: 1.4; outline: none; }
+
+/* Record graph: the Holdings tab's Graph layout. Kind colours match the
+   W/M/I/C badges in the tree. */
+.work-graph-controls { margin-bottom: var(--space-1); }
+.work-graph-hint { margin: 0 0 var(--space-2); }
+.work-graph-svg { display: block; width: 100%; height: auto; max-height: 80vh; border: 1px solid var(--border); border-radius: var(--radius); cursor: grab; touch-action: none; }
+.work-graph-svg:active { cursor: grabbing; }
+.work-graph-role-arcs path { opacity: 0.85; }
+.work-graph-link { fill: none; stroke: var(--border-strong); stroke-width: 1; transition: opacity var(--duration-fast) var(--ease-standard); }
+.work-graph-link-credit { stroke-width: 1; stroke-dasharray: 3 2; stroke-opacity: 0.7; }
+.work-graph-link-institution { stroke: var(--muted); stroke-opacity: 0.16; stroke-width: 0.8; }
+.work-graph-link-relation { stroke: var(--work-colour); stroke-dasharray: 1 2; }
+.work-graph-link-variant-also { stroke: var(--role-6); stroke-dasharray: 4 3; }
+.work-graph-node { transition: opacity var(--duration-fast) var(--ease-standard); outline: none; }
+.work-graph-node circle { stroke: var(--surface); stroke-width: 1; }
+.work-graph-node.is-clickable { cursor: pointer; }
+.work-graph-node:hover circle, .work-graph-node:focus-visible circle { stroke: var(--text); stroke-width: 1.6; }
+.work-graph-node.is-dim, .work-graph-link.is-dim { opacity: 0.15; }
+.work-graph-svg.has-focus .work-graph-link:not(.is-dim) { stroke-opacity: 0.9; }
+.work-graph-work circle { fill: var(--work-colour); stroke-width: 2; }
+.work-graph-related circle { fill: var(--surface); stroke: var(--work-colour); stroke-width: 1.6; }
+.work-graph-variant circle { fill: var(--role-6); }
+.work-graph-manifestation circle { fill: var(--role-2); }
+.work-graph-item circle { fill: var(--role-5); }
+.work-graph-carrier circle { fill: var(--role-3); }
+.work-graph-institution circle { fill: var(--surface-2); stroke: var(--text); stroke-width: 1.2; }
+.work-graph-more circle { fill-opacity: 0.3; stroke: var(--muted); stroke-dasharray: 2 1.5; }
+.work-graph-label {
+  fill: var(--text);
+  font-size: var(--font-size-chart);
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.work-graph-work .work-graph-label { font-weight: var(--font-semibold); }
+.work-graph-more .work-graph-label, .work-graph-institution .work-graph-label { fill: var(--muted); }
+.work-graph-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: var(--font-size-chart);
+}
+.work-graph-legend li { display: inline-flex; align-items: center; gap: var(--space-1); }
+.work-graph-swatch { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
+.work-graph-swatch-work { background: var(--work-colour); }
+.work-graph-swatch-related { border: 1.5px solid var(--work-colour); }
+.work-graph-swatch-variant { background: var(--role-6); }
+.work-graph-swatch-manifestation { background: var(--role-2); }
+.work-graph-swatch-item { background: var(--role-5); }
+.work-graph-swatch-carrier { background: var(--role-3); }
+.work-graph-swatch-institution { background: var(--surface-2); border: 1.2px solid var(--text); }
+.work-graph-swatch-role { width: 14px; height: 3px; border-radius: 1px; }
+
+/* Co-credit matrix: sized by its cells, scrolls sideways on narrow screens. */
+.chart-matrix { overflow-x: auto; }
+.chart-matrix svg { display: block; max-width: none; }
+.matrix-background { fill: var(--surface-2); }
+.matrix-grid { stroke: var(--surface); stroke-width: 1; }
+.matrix-self { fill-opacity: 0.35; }
+.matrix-cell { cursor: pointer; }
+.matrix-cell:hover { stroke: var(--text); stroke-width: 1; }
+.matrix-band { fill: var(--accent-soft); pointer-events: none; }
+.matrix-label {
+  fill: var(--muted);
+  font-family: var(--font);
+  cursor: pointer;
+}
+.is-hovered > .matrix-label { fill: var(--text); font-weight: 600; }
+.is-selected > .matrix-label { fill: var(--accent); font-weight: 600; }
 .chart-timeline { height: min(58vh, 520px); min-height: 360px; }
 .chart-roles { height: min(74vh, 720px); min-height: 460px; }
 .chart-geography {
@@ -897,6 +1039,56 @@ main {
 .map-offmap-item:focus-visible {
   outline: none;
 }
+.map-country.is-empty.has-works { fill: var(--map-has-works, var(--surface-2)); }
+.map-circle {
+  fill: var(--accent);
+  fill-opacity: 0.55;
+  stroke: var(--surface);
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+}
+.map-circle:hover, .map-circle:focus-visible { fill-opacity: 0.85; stroke: var(--text); outline: none; }
+.map-circle-legend { cursor: default; }
+.map-legend-box { fill: var(--surface); fill-opacity: 0.88; stroke: var(--border); }
+
+/* Player under the map: time mode, play and marks, then the decade track. */
+.map-player {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+.map-player-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-2) var(--space-2_5);
+}
+.map-marks { margin-left: auto; }
+.map-track-wrap { width: 100%; }
+.map-track { display: block; width: 100%; height: auto; cursor: ew-resize; touch-action: none; border-radius: var(--radius); }
+.map-track:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+.map-track-axis text { fill: var(--muted); font-size: var(--font-size-chart); pointer-events: none; }
+.map-track-axis text.is-minor { display: none; }
+.map-track-bar { fill: var(--border-strong); }
+.map-track-bar.is-before { fill: var(--muted); fill-opacity: 0.55; }
+.map-track-bar.is-current { fill: var(--accent); }
+
+/* Countries without a map polygon, listed under the player. */
+.map-offmap { margin-top: var(--space-3); }
+.map-offmap .map-offmap-title { margin: 0 0 var(--space-1); color: var(--muted); font-size: var(--font-size-chart); font-weight: var(--font-semibold); }
+.map-offmap-list { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); margin: 0; padding: 0; list-style: none; }
+.map-offmap-list .map-offmap-item {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font-size: var(--font-size-chart);
+  cursor: pointer;
+}
+.map-offmap-list .map-offmap-item:hover:not(:disabled) { color: var(--accent-strong); text-decoration: underline; }
+.map-offmap-list .map-offmap-item:disabled { color: var(--muted); cursor: default; }
 
 .cloud-canvas {
   display: block;
@@ -2496,3 +2688,92 @@ body.drawer-resizing * {
     animation: spin 0.25s linear infinite !important;
   }
 }
+
+/* Ontology explorer */
+.chart-ontology svg { display: block; width: 100%; height: auto; }
+.ontology-cell rect { stroke: var(--surface); stroke-width: 1; cursor: pointer; }
+.ontology-cell rect:hover, .ontology-cell rect:focus-visible { stroke: var(--text); stroke-width: 1.5; outline: none; }
+.ontology-cell.is-unused rect { fill: var(--surface); stroke: var(--border-strong); stroke-dasharray: 3 2; }
+.ontology-cell.is-selected rect { stroke: var(--accent-strong); stroke-width: 2; }
+.ontology-label { pointer-events: none; font-size: var(--font-size-chart); fill: var(--text); }
+/* Filled cells pick their text colour from the fill, not the theme. */
+.ontology-cell.is-on-dark .ontology-label, .ontology-cell.is-on-dark .ontology-count { fill: #fff; }
+.ontology-cell.is-on-light .ontology-label { fill: #17171a; }
+.ontology-cell.is-on-light .ontology-count { fill: #3d3d42; }
+.ontology-label tspan:first-child { font-weight: var(--font-semibold); }
+.ontology-cell.is-unused .ontology-label { fill: var(--muted); }
+.ontology-count { fill: var(--muted); font-weight: normal; }
+.ontology-edge { fill: none; stroke: var(--muted); stroke-opacity: 0.55; transition: opacity var(--duration-fast) var(--ease-standard); }
+.ontology-edge.is-class-value { stroke-dasharray: 5 3; }
+.ontology-edge.is-literal { stroke: var(--border-strong); }
+.ontology-edge-hit { fill: none; stroke: transparent; stroke-width: 12; cursor: pointer; }
+.ontology-edge-hit:focus-visible { stroke: var(--accent); stroke-opacity: 0.3; outline: none; }
+.ontology-arrow { fill: var(--muted); }
+.ontology-edge-label { font-size: 10px; fill: var(--muted); paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; transition: opacity var(--duration-fast) var(--ease-standard); }
+.ontology-node circle { fill: var(--accent); fill-opacity: 0.85; stroke: var(--surface); stroke-width: 1.5; cursor: pointer; }
+.ontology-node rect { fill: var(--surface-2); stroke: var(--muted); stroke-dasharray: 2 2; }
+.ontology-node:hover circle, .ontology-node:focus-visible circle { stroke: var(--text); stroke-width: 2; }
+.ontology-node:focus-visible { outline: none; }
+.ontology-node-label { font-size: var(--font-size-chart); font-weight: var(--font-semibold); fill: var(--text); paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
+.ontology-node.is-dim, .ontology-edge.is-dim, .ontology-edge-label.is-dim { opacity: 0.12; }
+.ontology-details {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  max-width: 72rem;
+}
+.ontology-details:empty { display: none; }
+.ontology-details-title { margin: 0 0 var(--space-1); font-size: var(--font-size-ui); }
+.ontology-subtitle { margin: var(--space-3) 0 var(--space-1); color: var(--muted); font-size: var(--font-size-chart); text-transform: uppercase; letter-spacing: 0.04em; }
+.ontology-iri { color: var(--muted); font-size: var(--font-size-chart); font-family: var(--font-mono, monospace); }
+.ontology-description { margin: var(--space-2) 0; max-width: 60rem; }
+.ontology-facts { margin: var(--space-2) 0; padding-left: var(--space-4); color: var(--text); }
+.ontology-crumbs { margin-bottom: var(--space-1); color: var(--muted); font-size: var(--font-size-chart); }
+.ontology-actions { margin: var(--space-2) 0 0; }
+.ontology-pairs { border-collapse: collapse; font-size: var(--font-size-chart); }
+.ontology-pairs th, .ontology-pairs td { padding: var(--space-0_5) var(--space-3) var(--space-0_5) 0; text-align: left; border-bottom: 1px solid var(--border); }
+.ontology-pairs td:last-child, .ontology-pairs th:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+.ontology-example-list { margin: 0; padding-left: var(--space-4); font-size: var(--font-size-chart); }
+.ontology-example-list li { margin: var(--space-0_5) 0; }
+.ontology-blank { color: var(--muted); font-style: italic; }
+
+/* Material flow (Breakdowns → Flow) */
+.flow-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-1) var(--space-3); margin-bottom: var(--space-2); }
+.flow-controls-hint { margin: 0; }
+.flow-columns { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-3); margin: 0; padding: 0; border: 0; }
+.flow-columns legend { float: left; margin-right: var(--space-1); padding: 0; color: var(--muted); font-size: var(--font-size-small); }
+.flow-column { display: inline-flex; align-items: center; gap: var(--space-1); font-size: var(--font-size-ui); cursor: pointer; }
+.flow-column:has(input:disabled) { cursor: not-allowed; opacity: 0.6; }
+.chart-flow svg { display: block; width: 100%; height: auto; }
+.flow-link { fill-opacity: 0.38; stroke: none; transition: fill-opacity var(--duration-fast) var(--ease-standard); }
+.flow-link.is-dim { fill-opacity: 0.08; }
+.flow-link-highlight { fill-opacity: 0.85; pointer-events: none; }
+.flow-node rect { stroke: var(--surface); stroke-width: 0.5; cursor: pointer; }
+.flow-node:focus-visible { outline: none; }
+.flow-node:focus-visible rect, .flow-node.is-pinned rect { stroke: var(--accent-strong); stroke-width: 2; }
+.flow-node.is-dim { opacity: 0.35; }
+.flow-node-label { font-size: var(--font-size-chart); fill: var(--text); paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
+.flow-node-count { fill: var(--muted); }
+.flow-heading { cursor: grab; }
+.flow-heading.is-dragging { cursor: grabbing; }
+.flow-heading:focus-visible { outline: none; }
+.flow-heading-label { font-size: var(--font-size-ui); font-weight: var(--font-semibold); fill: var(--text); }
+.flow-heading:focus-visible .flow-heading-label { fill: var(--accent-strong); text-decoration: underline; }
+
+/* Kilometres of film */
+.length-headline .stat-grid { margin-bottom: var(--space-1); }
+.length-comparisons { margin-top: 0; }
+.length-crumbs { margin: var(--space-2) 0 var(--space-1); font-size: var(--font-size-ui); color: var(--muted); }
+.length-crumb-current { color: var(--text); font-weight: var(--font-semibold); }
+.chart-length svg { display: block; width: 100%; height: auto; }
+.length-cell { fill-opacity: 0.35; stroke: var(--surface); stroke-width: 1; }
+.length-tile { fill-opacity: 0.9; stroke: var(--surface); stroke-width: 1; }
+.length-group.is-zoomable { cursor: zoom-in; }
+.length-group:focus-visible { outline: none; }
+.length-group:focus-visible .length-cell { stroke: var(--text); stroke-width: 2; }
+.length-tile:hover { stroke: var(--text); stroke-width: 1.5; }
+.length-label { font-size: var(--font-size-chart); font-weight: var(--font-semibold); fill: var(--text); pointer-events: none; }
+.length-tile-label { font-size: 10.5px; fill: #fff; pointer-events: none; paint-order: stroke; stroke: rgb(0 0 0 / 35%); stroke-width: 2px; stroke-linejoin: round; }
+.length-tile-value { fill-opacity: 0.85; }

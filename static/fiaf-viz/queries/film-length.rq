@@ -1,0 +1,73 @@
+# Physical film length, for the Length view: metres of film on the shelves by
+# holding institution, production decade, base and element.
+#
+# Extents hang on manifestations, not items (checked 2026-11-12: 57k extents,
+# all on manifestations, all from the Bundesarchiv). A manifestation can carry
+# the same extent several times, so its length is the single value it records
+# (MAX guards against the duplicates; no manifestation has two different
+# metre values). Items are complete elements of the film (a release print, a
+# sound negative), so each physical film item counts its manifestation's full
+# length. An item is physical film when it has a base or a film format;
+# digital files are left out. Extents in minutes are durations and are left
+# out too, as are lengths over 50 km, which would be data errors.
+#
+# Each item is reduced to one row first (its earliest production decade and
+# one base, element and institution), so a work with two dates in a decade or
+# an item with two film formats still adds its length once.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?institution ?decade ?base ?element
+       (COUNT(?item) AS ?items)
+       (SUM(?metres) AS ?length)
+WHERE {
+  {
+    SELECT ?item
+           (SAMPLE(?manifestationMetres) AS ?metres)
+           (MIN(?yearValue) AS ?year)
+           (SAMPLE(COALESCE(?institutionValue, "")) AS ?institution)
+           (MIN(COALESCE(STR(?baseValue), "")) AS ?base)
+           (MIN(COALESCE(STR(?elementValue), "")) AS ?element)
+    WHERE {
+      {
+        SELECT ?manifestation (MAX(xsd:decimal(?value)) AS ?manifestationMetres)
+        WHERE {
+          ?manifestation fiaf:hasExtent ?extent .
+          ?extent a fiaf:Metre ;
+                  fiaf:hasExtentValue ?value .
+        }
+        GROUP BY ?manifestation
+      }
+      FILTER(?manifestationMetres > 0 && ?manifestationMetres <= 50000)
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      ?work a ?workType ;
+            fiaf:hasManifestation ?manifestation .
+      {{SCOPE_FILTER}}
+      ?manifestation fiaf:hasItem ?item .
+
+      OPTIONAL { ?item fiaf:hasBase ?baseValue }
+      OPTIONAL {
+        ?item fiaf:hasFormat ?format .
+        ?format rdfs:subClassOf fiaf:FilmFormat .
+      }
+      FILTER(BOUND(?baseValue) || BOUND(?format))
+
+      OPTIONAL { ?item fiaf:hasHoldingInstitution/rdfs:label ?institutionValue }
+      OPTIONAL { ?item fiaf:isElement ?elementValue }
+      OPTIONAL {
+        ?work fiaf:hasEvent ?event .
+        ?event a fiaf:ProductionEvent ;
+               fiaf:hasDate ?date .
+        BIND(SUBSTR(STR(?date), 1, 4) AS ?yearValue)
+        FILTER(REGEX(?yearValue, "^[0-9]{4}$"))
+      }
+    }
+    GROUP BY ?item
+  }
+  # An empty selection must give no rows, not one row of unbound totals.
+  FILTER(BOUND(?item))
+  BIND(IF(BOUND(?year), CONCAT(SUBSTR(?year, 1, 3), "0"), "") AS ?decade)
+}
+GROUP BY ?institution ?decade ?base ?element

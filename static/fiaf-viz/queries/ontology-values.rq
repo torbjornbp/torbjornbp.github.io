@@ -1,0 +1,22 @@
+# How often each class is used as a value rather than as a type: countries,
+# languages, formats, bases, statuses and the like are classes themselves, and
+# records point at them (?work fiaf:hasCountry fiaf:Germany). No record is
+# typed fiaf:Germany, so without this count those classes would look unused.
+#
+# The join starts from the ~900 subclass links and looks each class up in the
+# object index, which stays fast on QLever (under a second cold).
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?class (COUNT(?subject) AS ?uses)
+WHERE {
+  # One row per class, however many parents it has (fiaf:Nauru is both a
+  # Country and a Language); joining the parents directly counted its uses
+  # once per parent.
+  { SELECT DISTINCT ?class WHERE { ?class rdfs:subClassOf ?parent . } }
+  ?subject ?property ?class .
+  FILTER(?property NOT IN (rdf:type, rdfs:subClassOf))
+}
+GROUP BY ?class

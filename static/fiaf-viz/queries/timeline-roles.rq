@@ -1,0 +1,25 @@
+# Works per credited role and production decade, for the timeline's streams.
+#
+# A work counts once under each role it has a credit in. The decade comes from
+# the work's production events, as in timeline-decades.rq; the credit itself
+# may sit on any of the work's events.
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?value ?decade (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasEvent ?event .
+  {{SCOPE_FILTER}}
+  ?event a fiaf:ProductionEvent ; fiaf:hasDate ?date .
+  ?work fiaf:hasEvent/fiaf:hasActivity ?activity .
+  ?activity a ?value .
+  # Every activity type is a FIAFcore role class. A STRSTARTS filter on the
+  # IRI here made the query about 40% slower on QLever for the same rows.
+  FILTER(?value != fiaf:Activity)
+  BIND(SUBSTR(STR(?date), 1, 4) AS ?year)
+  FILTER(REGEX(?year, "^[0-9]{4}$"))
+  BIND(CONCAT(SUBSTR(?year, 1, 3), "0") AS ?decade)
+}
+GROUP BY ?value ?decade
+ORDER BY ?value ?decade

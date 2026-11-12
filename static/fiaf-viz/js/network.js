@@ -36,6 +36,18 @@ const OUTLINE_MIN_PX = 0.4;
 // The link budget grows with the names drawn: networkRows is the floor and
 // networkRowsMax the ceiling. Up to 5,000 names the floor applies.
 const LINKS_PER_NAME = 2;
+// Time per decade while the scrubber plays.
+const PLAY_STEP_MS = 900;
+
+function decadeOf(year) {
+  return Math.floor(year / 10) * 10;
+}
+
+// A four-digit production year from the query, or null when the work has none.
+function parseYear(value) {
+  const year = Number.parseInt(value, 10);
+  return Number.isFinite(year) && year > 0 ? year : null;
+}
 
 // Settle the force layout off-screen. This runs inside a worker, from its
 // source text, so it may only use its arguments. Nodes and links arrive as
@@ -115,6 +127,115 @@ export function create(ctx, root, statsElement, linkButtons) {
   let settling = false;
   // Refit as the layout settles until the user zooms or pans.
   let autoFit = true;
+  // Decade scrubber. The layout is settled once for every work, so stepping
+  // through the decades only toggles visibility and nothing moves. decades
+  // lists the decades of the dated works; a step equal to decades.length is
+  // "All", which also shows undated works.
+  let decades = [];
+  let timeStep = 0;
+  let playTimer = null;
+  const timeControl = document.getElementById("network-time");
+  const timeRange = document.getElementById("network-time-range");
+  const timeValue = document.getElementById("network-time-value");
+  const timePlay = document.getElementById("network-time-play");
+  const freshLegend = document.getElementById("network-legend-fresh");
+
+  const timeFiltered = () => decades.length > 0 && timeStep < decades.length;
+
+  function stopPlaying() {
+    if (playTimer === null) return;
+    clearInterval(playTimer);
+    playTimer = null;
+    if (timePlay) {
+      timePlay.textContent = "Play";
+      timePlay.setAttribute("aria-pressed", "false");
+    }
+  }
+
+  function setTimeStep(step) {
+    timeStep = Math.max(0, Math.min(decades.length, step));
+    if (timeRange) timeRange.value = String(timeStep);
+    applyTime();
+  }
+
+  if (timeRange) {
+    timeRange.addEventListener("input", () => {
+      stopPlaying();
+      setTimeStep(Number(timeRange.value));
+    });
+  }
+
+  if (timePlay) {
+    timePlay.addEventListener("click", () => {
+      if (playTimer !== null) {
+        stopPlaying();
+        return;
+      }
+      if (!decades.length) return;
+      // Start from the first decade unless the scrubber is part-way through.
+      if (!timeFiltered()) setTimeStep(0);
+      timePlay.textContent = "Pause";
+      timePlay.setAttribute("aria-pressed", "true");
+      playTimer = setInterval(() => {
+        if (timeStep >= decades.length) {
+          stopPlaying();
+          return;
+        }
+        setTimeStep(timeStep + 1);
+        if (timeStep >= decades.length) stopPlaying();
+      }, PLAY_STEP_MS);
+    });
+  }
+
+  // Collect the decades of the drawn works and show the scrubber at "All".
+  function setupTime(nodes) {
+    stopPlaying();
+    const found = new Set();
+    for (const node of nodes) {
+      if (node.type === "work" && node.year != null) found.add(decadeOf(node.year));
+    }
+    decades = [...found].sort((a, b) => a - b);
+    timeStep = decades.length;
+    if (timeControl) timeControl.hidden = decades.length === 0;
+    if (timeRange) {
+      timeRange.max = String(decades.length);
+      timeRange.value = String(timeStep);
+    }
+    applyTime(false);
+  }
+
+  // Mark what the current decade shows: works dated up to the end of that
+  // decade, the names linked to them, and the lines between. Works from the
+  // decade itself are flagged as new so they are drawn in the accent colour.
+  function applyTime(redraw = true) {
+    const filtered = timeFiltered();
+    const decade = filtered ? decades[timeStep] : null;
+    if (timeValue) timeValue.textContent = filtered ? `${decade}s` : "All";
+    if (freshLegend) freshLegend.hidden = !filtered;
+    for (const node of lastNodes) {
+      if (node.type !== "work") continue;
+      node.visible = !filtered || (node.year != null && decadeOf(node.year) <= decade);
+      node.fresh = filtered && node.year != null && decadeOf(node.year) === decade;
+    }
+    for (const node of lastNodes) {
+      if (node.type === "agent") node.shown = 0;
+    }
+    for (const link of lastLinks) {
+      link.visible = link.target.visible !== false;
+      if (link.visible) link.source.shown += 1;
+    }
+    for (const node of lastNodes) {
+      if (node.type === "agent") node.visible = node.shown > 0;
+    }
+    if (hovered && hovered.visible === false) {
+      hovered = null;
+      ui.hideTooltip();
+    }
+    if (!redraw) return;
+    overviewLabels = chooseOverviewLabels(lastNodes);
+    refreshHighlight();
+    updateStats();
+  }
 
   function syncLinkButtons() {
     for (const button of linkButtons || []) {
@@ -452,6 +573,7 @@ export function create(ctx, root, statsElement, linkButtons) {
           id: row.work,
           type: "work",
           title: row.title || row.work,
+          year: parseYear(row.year),
           degree: 0
         });
       }
@@ -528,6 +650,7 @@ export function create(ctx, root, statsElement, linkButtons) {
     }
     lastNodes = nodes;
     lastLinks = links;
+    setupTime(nodes);
 
     overviewLabels = chooseOverviewLabels(nodes);
     refreshHighlight();
@@ -618,7 +741,7 @@ export function create(ctx, root, statsElement, linkButtons) {
         painter.beginPath();
         for (let index = batch; index < list.length; index += batches) {
           const link = list[index];
-          if ((wanted && !wanted(link)) || linkHidden(link)) continue;
+          if (link.visible === false || (wanted && !wanted(link)) || linkHidden(link)) continue;
           painter.moveTo(link.source.x, link.source.y);
           painter.lineTo(link.target.x, link.target.y);
         }
@@ -643,10 +766,12 @@ export function create(ctx, root, statsElement, linkButtons) {
       dimAgents: [],
       dimWorks: [],
       agents: [],
-      works: []
+      works: [],
+      fresh: []
     };
     let selectedNode = null;
     for (const node of nodes) {
+      if (node.visible === false) continue;
       if (node.id === selectedId) selectedNode = node;
       if (
         node.x < left - reach ||
@@ -658,6 +783,7 @@ export function create(ctx, root, statsElement, linkButtons) {
       }
       const agent = node.type === "agent";
       if (focused && !node.focused) (agent ? groups.dimAgents : groups.dimWorks).push(node);
+      else if (!agent && node.fresh && !focused) groups.fresh.push(node);
       else (agent ? groups.agents : groups.works).push(node);
     }
     const drawNodes = (list, fill, fillAlpha, outline, outlineAlpha, outlineWidth) => {
@@ -684,6 +810,18 @@ export function create(ctx, root, statsElement, linkButtons) {
     } else {
       drawNodes(groups.agents, nameColour, 1, surface, 1, 1);
       drawNodes(groups.works, workColour, 0.9, surface, 1, 0.6);
+      // Works from the scrubber's current decade, slightly larger than the rest.
+      if (groups.fresh.length) {
+        painter.beginPath();
+        for (const node of groups.fresh) {
+          const r = node.r + 0.8;
+          painter.moveTo(node.x + r, node.y);
+          painter.arc(node.x, node.y, r, 0, 2 * Math.PI);
+        }
+        painter.globalAlpha = 1;
+        painter.fillStyle = accent;
+        painter.fill();
+      }
     }
     painter.globalAlpha = 1;
 
@@ -715,10 +853,10 @@ export function create(ctx, root, statsElement, linkButtons) {
     painter.font = `500 ${fontSize}px ${font}`;
     for (const [id, placement] of activeLabels) {
       const node = nodeIndex.get(id);
-      if (!node) continue;
+      if (!node || node.visible === false) continue;
       painter.textAlign = placement.anchor === "end" ? "right" : "left";
       drawLabel(
-        node.type === "agent" ? truncate(node.name, 22) : truncate(node.title, 26),
+        node.type === "agent" ? ui.truncate(node.name, 22) : ui.truncate(node.title, 26),
         node.x + placement.dx,
         node.y + 3
       );
@@ -730,7 +868,7 @@ export function create(ctx, root, statsElement, linkButtons) {
       painter.font = `600 ${fontSize}px ${font}`;
       painter.textAlign = "left";
       drawLabel(
-        hovered.type === "agent" ? truncate(hovered.name, 30) : truncate(hovered.title, 34),
+        hovered.type === "agent" ? ui.truncate(hovered.name, 30) : ui.truncate(hovered.title, 34),
         hovered.x + hovered.r + 3,
         hovered.y + 3
       );
@@ -745,6 +883,7 @@ export function create(ctx, root, statsElement, linkButtons) {
     const slack = 2 / transform.k;
     for (let index = lastNodes.length - 1; index >= 0; index -= 1) {
       const node = lastNodes[index];
+      if (node.visible === false) continue;
       const dx = node.x - gx;
       const dy = node.y - gy;
       if (dx * dx + dy * dy <= (node.r + slack) ** 2) return node;
@@ -815,7 +954,28 @@ export function create(ctx, root, statsElement, linkButtons) {
       (data.capped ? " · link limit reached, narrow the filters to see more" : "") +
       (data.unlinked
         ? ` · ${ui.formatNumber(data.unlinked)} loaded names have no works within the link limit`
-        : "");
+        : "") +
+      timeStatus();
+  }
+
+  // "Up to the 1950s: 420 of 1,850 works", plus how many works have no date at
+  // all and so only appear under All.
+  function timeStatus() {
+    if (!timeFiltered()) return "";
+    let shown = 0;
+    let total = 0;
+    let undated = 0;
+    for (const node of lastNodes) {
+      if (node.type !== "work") continue;
+      total += 1;
+      if (node.visible !== false) shown += 1;
+      if (node.year == null) undated += 1;
+    }
+    return (
+      ` · up to the ${decades[timeStep]}s: ${ui.formatNumber(shown)} of ` +
+      `${ui.formatNumber(total)} works` +
+      (undated ? `, ${ui.formatNumber(undated)} undated shown only under All` : "")
+    );
   }
 
   // Size by the number of works this name has *in view*. A square-root scale
@@ -847,7 +1007,7 @@ export function create(ctx, root, statsElement, linkButtons) {
     for (const node of candidates) {
       const r = node.r;
       const text =
-        node.type === "agent" ? truncate(node.name, 22) : truncate(node.title, 26);
+        node.type === "agent" ? ui.truncate(node.name, 22) : ui.truncate(node.title, 26);
       const labelWidth = Math.max(30, text.length * 5.8 + 10);
       const options = [
         { dx: r + 3, anchor: "start" },
@@ -882,9 +1042,11 @@ export function create(ctx, root, statsElement, linkButtons) {
   }
 
   function chooseOverviewLabels(nodes) {
+    // Under the decade scrubber, label the names busiest in what is shown.
+    const weight = (node) => (timeFiltered() ? node.shown || 0 : node.degree);
     const agents = nodes
-      .filter((node) => node.type === "agent")
-      .sort((a, b) => b.degree - a.degree);
+      .filter((node) => node.type === "agent" && node.visible !== false)
+      .sort((a, b) => weight(b) - weight(a));
     const { chosen, boxes } = placeLabels(agents, 40);
     labelBoxes = boxes;
     return chosen;
@@ -899,6 +1061,7 @@ export function create(ctx, root, statsElement, linkButtons) {
       .filter(
         (node) =>
           focused.has(node.id) &&
+          node.visible !== false &&
           (node.type === "agent" || includeWorks || node.id === selectedId)
       )
       .sort((a, b) => {
@@ -910,10 +1073,6 @@ export function create(ctx, root, statsElement, linkButtons) {
     return placeLabels(candidates, 40).chosen;
   }
 
-  function truncate(text, length) {
-    const value = String(text || "");
-    return value.length > length ? `${value.slice(0, length - 1)}…` : value;
-  }
 
   return {
     load,
@@ -923,7 +1082,9 @@ export function create(ctx, root, statsElement, linkButtons) {
       return nodeIndex.has(id);
     },
     fit: fitGraph,
-    pause() {},
+    pause() {
+      stopPlaying();
+    },
     resume() {},
     resetLinks() {
       if (linkMode === "all") return;

@@ -3,7 +3,7 @@
 PREFIX fiaf: <https://dev.fiafcore.org/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?works ?countries ?agents ?firstYear ?lastYear
+SELECT ?works ?countries ?agents ?firstYear ?lastYear ?datedWorks
 WHERE {
   {
     SELECT (COUNT(DISTINCT ?work) AS ?works)
@@ -29,8 +29,10 @@ WHERE {
     }
   }
   {
+    # datedWorks is the denominator the map's time modes report against.
     SELECT (MIN(?year) AS ?firstYear)
            (MAX(?year) AS ?lastYear)
+           (COUNT(DISTINCT ?work) AS ?datedWorks)
     WHERE {
       VALUES ?workType { fiaf:MonographicWork fiaf:Work }
       ?work a ?workType .

@@ -1,0 +1,28 @@
+# Every property in the graph with its triple count, plus the label and
+# description of the FIAFcore properties. As in ontology-usage.rq, the client
+# keeps the fiaf: properties; a string filter here is very slow on QLever.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+
+SELECT ?property ?triples ?label ?description
+WHERE {
+  {
+    SELECT ?property (COUNT(*) AS ?triples)
+    WHERE { ?subject ?property ?object . }
+    GROUP BY ?property
+  }
+  OPTIONAL {
+    SELECT ?property (SAMPLE(?labelValue) AS ?label) (SAMPLE(?descriptionValue) AS ?description)
+    WHERE {
+      VALUES ?propertyType { owl:ObjectProperty owl:DatatypeProperty }
+      ?property a ?propertyType .
+      OPTIONAL { ?property rdfs:label ?labelValue }
+      OPTIONAL { ?property dc:description ?descriptionValue }
+    }
+    GROUP BY ?property
+  }
+}
+ORDER BY DESC(?triples)

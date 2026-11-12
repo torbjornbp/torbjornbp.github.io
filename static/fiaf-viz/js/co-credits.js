@@ -7,6 +7,7 @@
 import { iriList, limit, runQuery } from "./sparql.js";
 import * as ui from "./ui.js";
 import { maxRadiusFor, runLayout, zoomedRadiusFactor } from "./layout.js";
+import { MAX_NAMES as MATRIX_MAX_NAMES, createMatrix } from "./co-credit-matrix.js";
 
 const FONT_FALLBACK =
   'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
@@ -159,6 +160,19 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
   const thresholdControl = thresholdInput
     ? thresholdInput.closest(".inline-control")
     : null;
+  // Network or matrix. The matrix reads the same loaded pairs, so switching
+  // modes never queries again.
+  let mode = "network";
+  const matrixRoot = document.getElementById("co-credits-matrix");
+  const matrix = matrixRoot ? createMatrix(ctx, matrixRoot) : null;
+  const modeButtons = document.querySelectorAll("#co-credits-mode [data-mode]");
+  const orderControl = document.getElementById("co-credits-order-control");
+  const orderSelect = document.getElementById("co-credits-order");
+  const legendElement = document.getElementById("co-credits-legend");
+  const networkOnly = document.querySelectorAll(
+    "#co-credits-links button, [data-fit='co-credits']"
+  );
+  const exportButton = document.querySelector("[data-export='co-credits']");
   const egoButton = document.getElementById("co-credits-ego");
   const namesSelect = document.getElementById("co-credits-names");
   const limitsNote = document.getElementById("co-credits-limits");
@@ -180,7 +194,13 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
           `${limit("coCreditLargeMinShared", 3)} works are fetched, and at most the ` +
           `${count(limit("coCreditRowsMax", 50000))} strongest pairs are drawn.`,
         "The layout settles in the background and is drawn as it goes, so a " +
-          "larger graph appears quickly but takes longer to come to rest."
+          "larger graph appears quickly but takes longer to come to rest.",
+        `Matrix shows the same pairs as a grid: the ${MATRIX_MAX_NAMES} names with ` +
+          "the most shared works are rows and columns, and a filled cell is a pair. " +
+          "A cell takes the role colour when both names have the same main role " +
+          "and is grey otherwise; it is darker the more works the pair shares. " +
+          "Clusters places names who work together next to each other, so groups " +
+          "show up as blocks along the diagonal."
       ].map((text) => ui.node("p", "", text))
     );
   }
@@ -219,8 +239,89 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
 
   syncLinkButtons();
 
+  function syncMode() {
+    const isMatrix = mode === "matrix";
+    for (const button of modeButtons) {
+      const active = button.dataset.mode === mode;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", String(active));
+    }
+    root.hidden = isMatrix;
+    if (matrixRoot) matrixRoot.hidden = !isMatrix;
+    if (orderControl) orderControl.hidden = !isMatrix;
+    if (legendElement) legendElement.hidden = !isMatrix;
+    for (const button of networkOnly) button.disabled = isMatrix;
+    if (exportButton) exportButton.textContent = isMatrix ? "Download SVG" : "Download PNG";
+    updateEgoButton();
+  }
+
+  for (const button of modeButtons) {
+    button.addEventListener("click", () => {
+      const next = button.dataset.mode === "matrix" ? "matrix" : "network";
+      if (next === mode) return;
+      mode = next;
+      ui.hideTooltip();
+      if (mode === "matrix") {
+        // The isolated ego network has no matrix form; leave it.
+        egoMode = false;
+        if (ego) {
+          ego = null;
+          egoToken += 1;
+        }
+        if (thresholdControl) thresholdControl.hidden = false;
+        if (simulation) simulation.stop();
+      }
+      syncMode();
+      draw();
+      // hasNode answers from the matrix or the network, so the drawer's
+      // "shown in this view" note may change with the mode.
+      if (ctx.refreshSelectionStatus) ctx.refreshSelectionStatus();
+    });
+  }
+
+  if (orderSelect && matrix) {
+    orderSelect.addEventListener("change", () => matrix.setOrder(orderSelect.value));
+  }
+
+  // Draw the strongest names as a matrix from the loaded pairs at the current
+  // threshold.
+  function drawMatrix() {
+    if (!matrix || !data) return;
+    const visible = data.links.filter((link) => link.shared >= threshold);
+    if (!visible.length) {
+      matrix.clear();
+      if (legendElement) legendElement.replaceChildren();
+      matrixRoot.append(
+        ui.node("p", "chart-message", `No pairs share ${threshold} or more works in the loaded names.`)
+      );
+      statsElement.textContent = `${ui.formatNumber(data.links.length)} pairs at ${data.minimumShared}+ shared works`;
+      return;
+    }
+    const shown = matrix.render(visible, data.names, data.roleMap);
+    if (orderSelect) matrix.setOrder(orderSelect.value);
+    matrix.select(lastSelection);
+    if (legendElement) {
+      const present = new Set(
+        data.agentIds.map((id) => ctx.dominantRole(id, data.roleMap)).filter(Boolean)
+      );
+      ui.renderLegend(
+        legendElement,
+        ctx.topRoles().filter((role) => present.has(role.iri)),
+        ctx.colorFor
+      );
+    }
+    statsElement.textContent =
+      `Strongest ${ui.formatNumber(shown.shown)} of ${ui.formatNumber(shown.total)} connected names · ` +
+      `${ui.formatNumber(shown.pairs)} pairs among them · min ${threshold} shared works` +
+      (data.capped ? " · pair limit reached, narrow the filters to see more" : "");
+  }
+
   function updateEgoButton() {
     if (!egoButton) return;
+    if (mode === "matrix") {
+      egoButton.hidden = true;
+      return;
+    }
     const agentSelected =
       lastSelection && lastSelection.kind === "agent" ? lastSelection : null;
     egoButton.hidden = !agentSelected;
@@ -261,6 +362,12 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       return;
     }
     lastSelection = selection;
+    // The matrix has its own highlight and stats; the network's highlight,
+    // ego view and stats would only overwrite them.
+    if (mode === "matrix") {
+      if (matrix) matrix.select(selection);
+      return;
+    }
 
     if (egoMode && selection && selection.kind === "agent") {
       selectEgo(selection);
@@ -516,6 +623,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
 
   function dropGraph() {
     if (simulation) simulation.stop();
+    if (matrix) matrix.clear();
     nodeIndex = new Map();
     lastNodes = [];
     lastLinks = [];
@@ -605,6 +713,10 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
   // graph settles in a worker; the old picture stays up until it is ready.
   async function draw() {
     if (!data) return;
+    if (mode === "matrix") {
+      drawMatrix();
+      return;
+    }
     const isEgo = lastSelection && lastSelection.kind === "agent" && ego;
     if (isEgo && !ego.rows) return;
     const sequence = ++drawSequence;
@@ -936,7 +1048,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       // Placements assume the undrawn radius; move out with the node.
       const x = entry.x + (placement ? placement.dx + Math.sign(placement.dx) * entry.r * (grow - 1) : entry.r * grow + 2);
       const y = entry.y + (placement ? placement.dy : 3);
-      const label = truncate(entry.name, 20);
+      const label = ui.truncate(entry.name, 20);
       painter.textAlign = placement && placement.anchor === "end" ? "right" : "left";
       painter.strokeText(label, x, y);
       painter.fillText(label, x, y);
@@ -965,7 +1077,8 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
   }
 
   function updateStats() {
-    if (!data) return;
+    // In matrix mode the stats line describes the matrix (see drawMatrix).
+    if (!data || mode === "matrix") return;
     if (renderedMode === "ego" && ego && ego.rows) {
       const rowLimit = limit("coCreditAgents", 200);
       statsElement.textContent =
@@ -1015,7 +1128,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       (a, b) => (b.extra ? 1 : 0) - (a.extra ? 1 : 0) || b.weight - a.weight
     )) {
       const radius = nodeRadius(entry);
-      const label = truncate(entry.name, 20);
+      const label = ui.truncate(entry.name, 20);
       const labelWidth = Math.max(30, label.length * 5.8 + 10);
       const options = [
         { dx: radius + 3, dy: 3, anchor: "start" },
@@ -1049,17 +1162,13 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
     return chosen;
   }
 
-  function truncate(text, length) {
-    const value = String(text || "");
-    return value.length > length ? `${value.slice(0, length - 1)}…` : value;
-  }
 
   return {
     load,
     select,
     kinds: new Set(["agent"]),
     hasNode(id) {
-      return nodeIndex.has(id);
+      return mode === "matrix" && matrix ? matrix.has(id) : nodeIndex.has(id);
     },
     fit: fitGraph,
     resetLinks() {
@@ -1075,6 +1184,10 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       if (simulation && simulation.alpha() > simulation.alphaMin()) simulation.restart();
     },
     resize() {
+      if (mode === "matrix") {
+        if (matrix && data) matrix.redraw();
+        return;
+      }
       if (!data || !lastNodes.length) return;
       const { width, height } = dimensions();
       if (width === viewportWidth && height === viewportHeight) return;
@@ -1087,6 +1200,7 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       if (data && lastNodes.length) scheduleDraw();
     },
     exportSvg() {
+      if (mode === "matrix") return matrix ? matrix.exportSvg() : null;
       // Flush a pending repaint so the file matches the screen.
       if (frame !== null) {
         cancelAnimationFrame(frame);

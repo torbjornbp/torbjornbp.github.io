@@ -10,6 +10,11 @@ export const HEAT_RAMP = [
   "var(--heat-5)"
 ];
 
+// The world map has room for a finer ramp: ten steps from the palest data
+// colour to the deepest, so neighbouring countries with different counts can
+// still be told apart. Values come from the --map-heat-* theme tokens.
+export const MAP_HEAT_RAMP = Array.from({ length: 10 }, (_, index) => `var(--map-heat-${index + 1})`);
+
 // Counts are long-tailed: space thresholds evenly in log space, rounded to one
 // significant digit.
 export function heatScale(maximum, ramp = HEAT_RAMP) {
@@ -84,7 +89,9 @@ export function drawHeatLegend(svg, options) {
     isPercent = false,
     zeroFill = "var(--surface)",
     zeroLabel = isPercent ? "0%" : "0",
-    stepWidth = 34
+    stepWidth = 34,
+    // Label every nth swatch (the first and last always), for long ramps.
+    labelEvery = 1
   } = options;
   const bounds = isPercent ? [0, ...edges] : [1, ...edges];
   const legend = svg
@@ -120,9 +127,12 @@ export function drawHeatLegend(svg, options) {
     .attr("width", stepWidth + 0.5)
     .attr("height", 12)
     .attr("fill", (swatch) => swatch.fill);
+  const labelled = swatches.filter(
+    (swatch, index) => index % labelEvery === 0 || index === swatches.length - 1
+  );
   legend.append("g").selectAll("text")
-    .data(swatches).join("text")
-    .attr("x", (swatch, index) => index * stepWidth + stepWidth / 2)
+    .data(labelled).join("text")
+    .attr("x", (swatch) => swatches.indexOf(swatch) * stepWidth + stepWidth / 2)
     .attr("y", 26)
     .attr("text-anchor", "middle")
     .text((swatch) => swatch.label);

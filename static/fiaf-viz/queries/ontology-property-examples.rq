@@ -1,0 +1,22 @@
+# A few example triples for one property, with readable labels where the
+# subject or object has one (a label, or a title for works).
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?subject (SAMPLE(?subjectName) AS ?subjectLabel)
+       ?object (SAMPLE(?objectName) AS ?objectLabel)
+WHERE {
+  {
+    SELECT ?subject ?object
+    WHERE { ?subject {{PROPERTY}} ?object . }
+    LIMIT {{LIMIT}}
+  }
+  OPTIONAL { ?subject rdfs:label ?subjectLabelValue }
+  OPTIONAL { ?subject fiaf:hasTitle/fiaf:hasTitleValue ?subjectTitle }
+  BIND(COALESCE(?subjectLabelValue, ?subjectTitle) AS ?subjectName)
+  OPTIONAL { ?object rdfs:label ?objectLabelValue }
+  OPTIONAL { ?object fiaf:hasTitle/fiaf:hasTitleValue ?objectTitle }
+  BIND(IF(isLiteral(?object), STR(?object), COALESCE(?objectLabelValue, ?objectTitle)) AS ?objectName)
+}
+GROUP BY ?subject ?object

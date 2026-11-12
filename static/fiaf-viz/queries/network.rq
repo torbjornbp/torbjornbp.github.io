@@ -3,10 +3,15 @@
 
 PREFIX fiaf: <https://dev.fiafcore.org/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 # The browser already has agent labels; DISTINCT makes the row limit apply to
 # displayed edges rather than duplicate agent/work/role combinations.
-SELECT ?agent ?work (SAMPLE(?candidateTitle) AS ?title)
+#
+# ?year is the earliest four-digit production-event year of the work, or unbound
+# when it has none; the decade scrubber uses it. It is joined after the edge cap
+# like the title, so it does not change which edges are returned.
+SELECT ?agent ?work (SAMPLE(?candidateTitle) AS ?title) (MIN(?productionYear) AS ?year)
 WHERE {
   {
     # Select the capped agent/work edges before joining titles. The public
@@ -33,6 +38,14 @@ WHERE {
   OPTIONAL { ?work rdfs:label ?label }
   OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
   BIND(COALESCE(?label, ?titleValue) AS ?candidateTitle)
+  OPTIONAL {
+    ?work fiaf:hasEvent ?productionEvent .
+    ?productionEvent a fiaf:ProductionEvent ;
+                     fiaf:hasDate ?productionDate .
+    BIND(SUBSTR(STR(?productionDate), 1, 4) AS ?productionYearText)
+    FILTER(REGEX(?productionYearText, "^[0-9]{4}$"))
+    BIND(xsd:integer(?productionYearText) AS ?productionYear)
+  }
 }
 GROUP BY ?agent ?work
 ORDER BY ?agent ?work

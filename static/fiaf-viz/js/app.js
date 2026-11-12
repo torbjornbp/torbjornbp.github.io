@@ -28,11 +28,12 @@ import * as breakdowns from "./breakdowns.js";
 import * as preservation from "./preservation.js";
 import * as rolesView from "./roles.js";
 import * as catalogue from "./catalogue.js";
+import * as ontologyView from "./ontology.js";
+import * as filmLength from "./film-length.js";
+import { renderCareer } from "./career.js";
+import { renderWorkGraph } from "./work-graph.js";
 
-const PALETTE = [
-  "var(--role-1)", "var(--role-2)", "var(--role-3)", "var(--role-4)",
-  "var(--role-5)", "var(--role-6)", "var(--role-7)", "var(--role-8)"
-];
+const PALETTE = ui.ROLE_PALETTE;
 const OTHER_COLOUR = "var(--role-other)";
 const AGENT_VIEWS = new Set(["cloud", "network", "co-credits", "roles"]);
 const SEARCH_VIEWS = new Set(["cloud", "network", "co-credits", "roles"]);
@@ -148,6 +149,7 @@ const workAgentsCache = new Map();
 const workMetadataCache = new Map();
 const workHoldingsCache = new Map();
 const workRelationsCache = new Map();
+const workVariantsCache = new Map();
 const agentCoCreditCache = new Map();
 const entityRecordCache = new Map();
 const entityPropertiesCache = new Map();
@@ -167,7 +169,9 @@ const CHART_ROOT = {
   geography: "geography-chart",
   breakdowns: "breakdown-chart",
   preservation: "preservation-chart",
-  roles: "roles-chart"
+  roles: "roles-chart",
+  ontology: "ontology-chart",
+  length: "length-chart"
 };
 
 // -- shared context ---------------------------------------------------------
@@ -336,6 +340,12 @@ const ctx = {
   selectionStatus,
   refreshSelectionStatus: updateDrawerContext,
   refreshDrawerOutside,
+  // Put a query in the catalogue's SPARQL box and switch to the catalogue.
+  openCatalogueQuery(text) {
+    if (!views || !views.catalogue || !views.catalogue.openQuery) return;
+    views.catalogue.openQuery(text);
+    location.hash = "#catalogue";
+  },
   // Refetch one view, for a control that lives inside that view.
   reload(name) {
     stale.add(name);
@@ -1243,6 +1253,19 @@ function createViews() {
       ctx,
       document.getElementById("roles-chart"),
       document.getElementById("roles-stats")
+    ),
+    length: filmLength.create(
+      ctx,
+      document.getElementById("length-chart"),
+      document.getElementById("length-stats"),
+      document.getElementById("length-headline"),
+      document.getElementById("length-crumbs")
+    ),
+    ontology: ontologyView.create(
+      ctx,
+      document.getElementById("ontology-chart"),
+      document.getElementById("ontology-stats"),
+      document.getElementById("ontology-details")
     )
   };
 }
@@ -1550,6 +1573,18 @@ function loadWorkRelations(work, signal) {
 
 // Keep a failed holdings/relations query inside its drawer tab instead of
 // replacing the whole record.
+function loadWorkVariants(work, signal) {
+  if (workVariantsCache.has(work)) {
+    return Promise.resolve(workVariantsCache.get(work));
+  }
+  return runQuery("work-variants", { WORK: sparqlIri(work) }, { signal }).then(
+    (rows) => {
+      workVariantsCache.set(work, rows);
+      return rows;
+    }
+  );
+}
+
 function optionalRows(promise) {
   return promise.then(
     (rows) => ({ rows, error: null }),
@@ -1567,10 +1602,14 @@ function agentWorkItems(rows) {
       works.set(row.work, {
         work: row.work,
         title: row.title || row.work,
+        year: null,
         roles: new Set()
       });
     }
-    if (row.role) works.get(row.work).roles.add(row.role);
+    const item = works.get(row.work);
+    if (row.role) item.roles.add(row.role);
+    const year = Number.parseInt(row.year, 10);
+    if (Number.isFinite(year) && (item.year === null || year < item.year)) item.year = year;
   }
   return [...works.values()].sort((a, b) => a.title.localeCompare(b.title));
 }
@@ -1755,6 +1794,17 @@ function renderAgentOverview(panel, agent, name, state, tabs) {
   }
 
   ui.drawerMeta(panel, groups);
+
+  // Career strip above the facts: works by year, one lane per role.
+  if (state.workItems && state.workItems.length) {
+    const strip = ui.node("div", "career-wrapper");
+    panel.prepend(strip);
+    renderCareer(strip, state.workItems, {
+      colorFor: ctx.colorFor,
+      capped: state.works > state.workItems.length,
+      onSelect: (dot) => openWork(dot.work, dot.title)
+    });
+  }
 
   if (!state.record) {
     if (state.recordError) {
@@ -2855,7 +2905,7 @@ function renderWorkRelations(relations) {
   return section;
 }
 
-function renderWorkHoldings(panel, state) {
+function renderWorkHoldings(panel, state, tabs) {
   if (state.holdingsError) {
     ui.panelMessage(panel, state.holdingsError.message, "error");
     return;
@@ -2969,6 +3019,79 @@ function renderWorkHoldings(panel, state) {
   workNode.append(body);
   panel.append(workNode, inspector);
   showInspector();
+
+  // A record picked in the graph may sit inside a collapsed item.
+  const picked = selectedToken && nodes.get(selectedToken);
+  if (picked) {
+    for (let branch = picked.element.closest("details"); branch; ) {
+      branch.open = true;
+      branch = branch.parentElement && branch.parentElement.closest("details");
+    }
+    requestAnimationFrame(() => picked.element.scrollIntoView({ block: "center" }));
+  }
+}
+
+// The work's credits, variants, holdings and related works as one graph.
+function renderWorkGraphTab(panel, state, tabs) {
+  if (state.holdingsError) {
+    ui.panelMessage(panel, state.holdingsError.message, "error");
+    return;
+  }
+  if (!state.holdings || !state.agents) {
+    ui.panelMessage(panel, "Loading the record graph…");
+    return;
+  }
+  panel.replaceChildren();
+  if (state.variantsError) {
+    panel.append(ui.node("p", "drawer-message error", state.variantsError.message));
+  }
+  const metadata = state.metadata || {};
+  const holdingDetail = (data) =>
+    joined([
+      formatHumanized(data.formats || []),
+      formatHumanized(data.elements || []),
+      formatHumanized(data.bases || [])
+    ]);
+  renderWorkGraph(
+    panel,
+    {
+      work: state.work,
+      title: metadata.label || localName(state.work) || state.work,
+      agents: state.agents ? state.agents.items : [],
+      variants: state.variants || [],
+      manifestations: groupHoldings(state.holdings || []),
+      relations: state.relationsError ? [] : state.relations || [],
+      titles: {
+        manifestation: manifestationTitle,
+        item: itemTitle,
+        carrier: carrierTitle
+      }
+    },
+    {
+      colorFor: ctx.colorFor,
+      exportName: `fiaf-record-graph-${localName(state.work) || "work"}.svg`,
+      describe: (node) => {
+        if (node.kind === "variant") return node.type ? humanize(node.type) : "";
+        if (node.kind === "item") return holdingDetail(node.data);
+        if (node.kind === "manifestation" && node.data.type) return humanize(node.data.type);
+        if (node.kind === "related") {
+          return RELATION_LABELS[node.relation] || humanize(node.relation);
+        }
+        return "";
+      },
+      onSelect: (node) => {
+        if (node.kind === "agent") openAgent(node.iri, node.label);
+        else if (node.kind === "related") openWork(node.iri, node.label);
+        else if (node.kind === "variant") openRecord(node.iri, node.label);
+        else if (node.kind === "more") tabs.activate("credits");
+        else if (HOLDINGS_KINDS[node.kind]) {
+          // Show the record in the tree, where the inspector lists its fields.
+          holdingsSelection = { work: state.work, kind: node.kind, id: node.data.id };
+          tabs.activate("holdings");
+        }
+      }
+    }
+  );
 }
 
 async function openWork(work, title, options = {}) {
@@ -2992,7 +3115,7 @@ async function openWork(work, title, options = {}) {
   }
 
   const requestedTab = options.tab || "credits";
-  const validTabs = ["credits", "holdings", "overview"];
+  const validTabs = ["credits", "holdings", "graph", "overview"];
   const defaultTab = validTabs.includes(requestedTab) ? requestedTab : "credits";
   const nav = options.nav || null;
   selection = {
@@ -3015,7 +3138,9 @@ async function openWork(work, title, options = {}) {
     holdings: null,
     holdingsError: null,
     relations: null,
-    relationsError: null
+    relationsError: null,
+    variants: null,
+    variantsError: null
   };
   workDrawerState = { work, token, controller, state: drawerState };
 
@@ -3030,7 +3155,12 @@ async function openWork(work, title, options = {}) {
       {
         id: "holdings",
         label: "Holdings",
-        render: (panel) => renderWorkHoldings(panel, drawerState)
+        render: (panel) => renderWorkHoldings(panel, drawerState, tabs)
+      },
+      {
+        id: "graph",
+        label: "Graph",
+        render: (panel) => renderWorkGraphTab(panel, drawerState, tabs)
       },
       {
         id: "overview",
@@ -3050,12 +3180,13 @@ async function openWork(work, title, options = {}) {
   );
 
   try {
-    const [metadata, agentRows, holdingsResult, relationsResult] =
+    const [metadata, agentRows, holdingsResult, relationsResult, variantsResult] =
       await Promise.all([
         loadWorkMetadata(work, controller.signal),
         loadWorkAgents(work, controller.signal),
         optionalRows(loadWorkHoldings(work, controller.signal)),
-        optionalRows(loadWorkRelations(work, controller.signal))
+        optionalRows(loadWorkRelations(work, controller.signal)),
+        optionalRows(loadWorkVariants(work, controller.signal))
       ]);
     if (
       token !== drawerToken ||
@@ -3072,6 +3203,8 @@ async function openWork(work, title, options = {}) {
     drawerState.holdingsError = holdingsResult.error;
     drawerState.relations = relationsResult.rows;
     drawerState.relationsError = relationsResult.error;
+    drawerState.variants = variantsResult.rows;
+    drawerState.variantsError = variantsResult.error;
     ui.setDrawerTitle(resolvedTitle, work);
     selection = {
       kind: "work",

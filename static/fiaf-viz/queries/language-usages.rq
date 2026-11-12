@@ -1,0 +1,30 @@
+# Languages by usage type (spoken, intertitles, subtitles, credits …).
+#
+# A usage may sit on the work, one of its manifestations or one of its items,
+# as in language-usage-decades.rq. Each work counts once per language and usage
+# type. The generic fiaf:LanguageUsage superclass is left out so only concrete
+# usage types appear.
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?language ?usage (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType .
+  {{SCOPE_FILTER}}
+  {
+    ?work fiaf:hasLanguageUsage ?usageNode .
+  }
+  UNION
+  {
+    ?work fiaf:hasManifestation/fiaf:hasLanguageUsage ?usageNode .
+  }
+  UNION
+  {
+    ?work fiaf:hasManifestation/fiaf:hasItem/fiaf:hasLanguageUsage ?usageNode .
+  }
+  ?usageNode a ?usage ;
+             fiaf:hasLanguage ?language .
+  FILTER(?usage != fiaf:LanguageUsage)
+}
+GROUP BY ?language ?usage
+ORDER BY ?language ?usage

@@ -2,8 +2,11 @@
 
 PREFIX fiaf: <https://dev.fiafcore.org/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-SELECT ?work (SAMPLE(?candidateTitle) AS ?title) ?role
+# ?year is the work's earliest four-digit production-event year, or unbound
+# when it has none; the drawer's career strip places works by it.
+SELECT ?work (SAMPLE(?candidateTitle) AS ?title) ?role (MIN(?productionYear) AS ?year)
 WHERE {
   {
     # Cap distinct works, not work/role pairs. Exact totals are in agent-summary.
@@ -27,6 +30,14 @@ WHERE {
   OPTIONAL { ?work rdfs:label ?label }
   OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
   BIND(COALESCE(?label, ?titleValue) AS ?candidateTitle)
+  OPTIONAL {
+    ?work fiaf:hasEvent ?productionEvent .
+    ?productionEvent a fiaf:ProductionEvent ;
+                     fiaf:hasDate ?productionDate .
+    BIND(SUBSTR(STR(?productionDate), 1, 4) AS ?productionYearText)
+    FILTER(REGEX(?productionYearText, "^[0-9]{4}$"))
+    BIND(xsd:integer(?productionYearText) AS ?productionYear)
+  }
 }
 GROUP BY ?work ?role
 ORDER BY ?title

@@ -8,6 +8,19 @@ export function formatNumber(value) {
   return number.toLocaleString("en-GB");
 }
 
+// Shorten a label to at most `length` characters, ending with an ellipsis.
+export function truncate(text, length) {
+  const value = String(text || "");
+  return value.length > length ? `${value.slice(0, length - 1)}…` : value;
+}
+
+// The categorical palette for roles and other unordered categories; the
+// colours are theme tokens, so both themes work.
+export const ROLE_PALETTE = [
+  "var(--role-1)", "var(--role-2)", "var(--role-3)", "var(--role-4)",
+  "var(--role-5)", "var(--role-6)", "var(--role-7)", "var(--role-8)"
+];
+
 export function escapeHtml(value) {
   return String(value)
     .replace(/&/g, "&amp;")
@@ -698,6 +711,52 @@ const EXPORT_STYLE = `
   .map-country.is-empty { fill: var(--map-empty); }
   .map-offmap-title { fill: var(--muted); font-family: var(--font); font-size: 11px; font-weight: 600; }
   .map-offmap-item text { fill: var(--text); font-family: var(--font); font-size: 11px; }
+  .map-legend-box { fill: var(--surface); fill-opacity: .88; stroke: var(--border); }
+  .map-circle { fill: var(--accent); fill-opacity: .55; stroke: var(--surface); stroke-width: .8; }
+  .work-graph-link, .ontology-edge, .ontology-edge-hit { fill: none; }
+  .work-graph-link { stroke: var(--border-strong); stroke-width: 1; }
+  .work-graph-link-credit { stroke-width: 1; stroke-dasharray: 3 2; stroke-opacity: .7; }
+  .work-graph-link-institution { stroke: var(--muted); stroke-opacity: .16; stroke-width: .8; }
+  .work-graph-link-relation { stroke: var(--work-colour); stroke-dasharray: 1 2; }
+  .work-graph-link-variant-also { stroke: var(--role-6); stroke-dasharray: 4 3; }
+  .work-graph-node circle { stroke: var(--surface); stroke-width: 1; }
+  .work-graph-work circle { fill: var(--work-colour); stroke-width: 2; }
+  .work-graph-related circle { fill: var(--surface); stroke: var(--work-colour); stroke-width: 1.6; }
+  .work-graph-variant circle { fill: var(--role-6); }
+  .work-graph-manifestation circle { fill: var(--role-2); }
+  .work-graph-item circle { fill: var(--role-5); }
+  .work-graph-carrier circle { fill: var(--role-3); }
+  .work-graph-institution circle { fill: var(--surface-2); stroke: var(--text); stroke-width: 1.2; }
+  .work-graph-more circle { fill-opacity: .3; stroke: var(--muted); stroke-dasharray: 2 1.5; }
+  .work-graph-label, .ontology-label, .ontology-node-label, .ontology-edge-label, .flow-node-label, .flow-heading-label, .length-label, .length-tile-label { font-family: var(--font); }
+  .work-graph-label { fill: var(--text); font-size: 11px; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+  .ontology-cell rect { stroke: var(--surface); stroke-width: 1; }
+  .ontology-cell.is-unused rect { fill: var(--surface); stroke: var(--border-strong); stroke-dasharray: 3 2; }
+  .ontology-label { fill: var(--text); font-size: 11px; }
+  .ontology-cell.is-on-dark .ontology-label, .ontology-cell.is-on-dark .ontology-count { fill: #fff; }
+  .ontology-cell.is-on-light .ontology-label { fill: #17171a; }
+  .ontology-cell.is-on-light .ontology-count { fill: #3d3d42; }
+  .ontology-count { fill: var(--muted); }
+  .ontology-edge { stroke: var(--muted); stroke-opacity: .55; }
+  .ontology-edge.is-class-value { stroke-dasharray: 5 3; }
+  .ontology-edge.is-literal { stroke: var(--border-strong); }
+  .ontology-edge-hit { stroke: none; }
+  .ontology-arrow { fill: var(--muted); }
+  .ontology-edge-label { font-size: 10px; fill: var(--muted); }
+  .ontology-node circle { fill: var(--accent); fill-opacity: .85; stroke: var(--surface); stroke-width: 1.5; }
+  .ontology-node rect { fill: var(--surface-2); stroke: var(--muted); stroke-dasharray: 2 2; }
+  .ontology-node-label { font-size: 11px; font-weight: 600; fill: var(--text); }
+  .flow-link { fill-opacity: .38; stroke: none; }
+  .flow-link-highlight { fill-opacity: .85; }
+  .flow-node rect { stroke: var(--surface); stroke-width: .5; }
+  .flow-node-label { font-size: 11px; fill: var(--text); }
+  .flow-node-count { fill: var(--muted); }
+  .flow-heading-label { font-size: 13px; font-weight: 600; fill: var(--text); }
+  .length-cell { fill-opacity: .35; stroke: var(--surface); stroke-width: 1; }
+  .length-tile { fill-opacity: .9; stroke: var(--surface); stroke-width: 1; }
+  .length-label { font-size: 11px; font-weight: 600; fill: var(--text); }
+  .length-tile-label { font-size: 10.5px; fill: #fff; }
+  .is-dim { opacity: .15; }
 `;
 
 const EXPORT_VARS = [
@@ -706,7 +765,8 @@ const EXPORT_VARS = [
   "--work-colour", "--error", "--role-1", "--role-2", "--role-3",
   "--role-4", "--role-5", "--role-6", "--role-7", "--role-8",
   "--role-other", "--heat-1", "--heat-2", "--heat-3", "--heat-4",
-  "--heat-5", "--map-empty", "--font"
+  "--heat-5", "--map-empty", "--font", "--border-strong", "--role-other",
+  ...Array.from({ length: 10 }, (_, index) => `--map-heat-${index + 1}`)
 ];
 
 function resolvedStyle() {
