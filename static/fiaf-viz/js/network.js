@@ -18,7 +18,7 @@ import * as ui from "./ui.js";
 import { maxRadiusFor, runLayout } from "./layout.js";
 
 const FONT_FALLBACK =
-  'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+  '"Schibsted Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
 const AGENT_MIN_RADIUS = 3;
 // Largest name radius in a small graph; see maxRadiusFor in layout.js.
 const AGENT_MAX_RADIUS = 10;
@@ -239,7 +239,9 @@ export function create(ctx, root, statsElement, linkButtons) {
 
   function syncLinkButtons() {
     for (const button of linkButtons || []) {
-      button.classList.toggle("active", button.dataset.linkScope === linkMode);
+      const active = button.dataset.linkScope === linkMode;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
     }
   }
 
@@ -687,12 +689,12 @@ export function create(ctx, root, statsElement, linkButtons) {
     const styles = getComputedStyle(document.documentElement);
     const token = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
     palette = {
-      border: token("--border", "#cccccc"),
-      accent: token("--accent", "#b0203a"),
+      border: token("--border", "#e2e5e9"),
+      accent: token("--accent", "#a3202d"),
       surface: token("--surface", "#ffffff"),
-      text: token("--text", "#1a1a1a"),
-      nameColour: token("--name-colour", "#000000"),
-      workColour: token("--work-colour", "#9a6a2f"),
+      text: token("--text", "#111214"),
+      nameColour: token("--name-colour", "#111214"),
+      workColour: token("--work-colour", "#976b25"),
       font: token("--font", FONT_FALLBACK),
       fontSize: 0.6875 * (parseFloat(styles.fontSize) || 16)
     };

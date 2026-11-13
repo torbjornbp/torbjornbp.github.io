@@ -13,6 +13,8 @@
       }
     } catch (_) {}
   </script>
+  <link rel="preload" href="vendor/fonts/schibsted-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="vendor/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
@@ -23,7 +25,6 @@
     </div>
     <div class="header-meta">
       <span id="endpoint" class="endpoint" title="SPARQL endpoint">endpoint</span>
-      <span id="busy" class="busy" role="status" aria-live="polite" hidden>Querying QLever…</span>
       <button type="button" id="theme-toggle" class="theme-toggle"
               aria-label="Switch to dark mode" title="Switch to dark mode">
         <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -66,6 +67,9 @@
         </div>
       </details>
     </div>
+    <!-- Under 1000px the name filters fold behind this toggle (see css/app.css). -->
+    <button type="button" id="filters-toggle" class="filters-toggle" data-filter="agents"
+            aria-expanded="false" hidden>Name filters</button>
     <div class="filter" data-filter="agents" hidden>
       <details class="role-picker">
         <summary>Roles: <span id="role-summary">all</span></summary>
@@ -153,8 +157,8 @@
             </div>
           </div>
           <div class="segmented" id="network-links" role="group" aria-label="Relationship lines">
-            <button type="button" data-link-scope="all" class="active">All lines</button>
-            <button type="button" data-link-scope="selected">Selected only</button>
+            <button type="button" data-link-scope="all" class="active" aria-pressed="true">All lines</button>
+            <button type="button" data-link-scope="selected" aria-pressed="false">Selected only</button>
           </div>
           <button type="button" class="fit" data-fit="network">Fit view</button>
           <button type="button" class="export" data-export="network">Download PNG</button>
@@ -202,8 +206,8 @@
             <input id="shared-threshold" type="range" min="2" max="10" step="1" value="2">
           </label>
           <div class="segmented" id="co-credits-links" role="group" aria-label="Relationship lines">
-            <button type="button" data-link-scope="all" class="active">All lines</button>
-            <button type="button" data-link-scope="selected">Selected only</button>
+            <button type="button" data-link-scope="all" class="active" aria-pressed="true">All lines</button>
+            <button type="button" data-link-scope="selected" aria-pressed="false">Selected only</button>
           </div>
           <button type="button" id="co-credits-ego" class="fit" hidden>Isolate selected name</button>
           <button type="button" class="fit" data-fit="co-credits">Fit view</button>
@@ -228,9 +232,9 @@
         </div>
         <div class="view-actions">
           <div class="segmented" role="group" aria-label="Granularity">
-            <button type="button" data-granularity="year" class="active">Year</button>
-            <button type="button" data-granularity="decade">Decade</button>
-            <button type="button" data-granularity="streams">Streams</button>
+            <button type="button" data-granularity="year" class="active" aria-pressed="true">Year</button>
+            <button type="button" data-granularity="decade" aria-pressed="false">Decade</button>
+            <button type="button" data-granularity="streams" aria-pressed="false">Streams</button>
           </div>
           <label class="inline-control" data-stream-control hidden>
             <span>Split by</span>
@@ -456,9 +460,9 @@
             <button type="button" data-layout="mosaic" aria-pressed="false">Mosaic</button>
           </div>
           <div class="segmented" id="heatmap-mode" role="group" aria-label="Cell values">
-            <button type="button" data-heatmap-mode="count" class="active">Count</button>
-            <button type="button" data-heatmap-mode="column">% of column</button>
-            <button type="button" data-heatmap-mode="row">% of row</button>
+            <button type="button" data-heatmap-mode="count" class="active" aria-pressed="true">Count</button>
+            <button type="button" data-heatmap-mode="column" aria-pressed="false">% of column</button>
+            <button type="button" data-heatmap-mode="row" aria-pressed="false">% of row</button>
           </div>
           <button type="button" class="export" data-export="geography">Download SVG</button>
         </div>
@@ -489,18 +493,18 @@
           <button type="button" class="export" data-export="breakdowns" hidden>Download SVG</button>
         </div>
       </div>
-      <div id="breakdown-chart" class="breakdown-grid"></div>
-      <section id="breakdown-flow" class="breakdown-flow" hidden aria-label="Material flow">
-        <div id="breakdown-flow-controls" class="flow-controls"></div>
-        <p id="breakdown-flow-stats" class="stats"></p>
-        <div id="breakdown-flow-chart" class="chart chart-flow"></div>
-      </section>
       <details class="view-details">
         <summary>How is this counted?</summary>
         <p>Flow counts the same items across holding institution, format, element, base, colour and status at once. Each column shows its eight most common values, then Other and Not recorded; ribbons between two columns carry the items that share both values and are coloured by the first column. Hover or click a block to follow its items through every column. Format, element and colour fall back to the manifestation when the item has none. An item with two values on one column (two formats, say) counts under both, so the total can be slightly above the number of items.</p>
         <p>Item panels count distinct items per value, whether the value is recorded on the item or on its manifestation. Genre and Form count distinct works. An item or work with several values counts once under each, so a panel's bars can add up to more than its items or works. Each panel lists its most common values.</p>
         <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
       </details>
+      <div id="breakdown-chart" class="breakdown-grid"></div>
+      <section id="breakdown-flow" class="breakdown-flow" hidden aria-label="Material flow">
+        <div id="breakdown-flow-controls" class="flow-controls"></div>
+        <p id="breakdown-flow-stats" class="stats"></p>
+        <div id="breakdown-flow-chart" class="chart chart-flow"></div>
+      </section>
     </section>
 
     <section id="view-preservation" class="view" data-view="preservation" hidden>
@@ -547,10 +551,7 @@
               <option value="all">All</option>
             </select>
           </label>
-          <div class="inline-control">
-            <span>Export</span>
-            <button type="button" class="export" data-export="preservation">Download SVG</button>
-          </div>
+          <button type="button" class="export" data-export="preservation">Download SVG</button>
         </div>
       </div>
       <div id="preservation-overview" class="preservation-overview" role="region" aria-label="Preservation copy overview"></div>
@@ -600,7 +601,9 @@
           <h2>Roles</h2>
           <p>Roles sized by works; outer ring shows the busiest names per role. Click a role to filter the cloud.</p>
         </div>
-        <button type="button" class="export" data-export="roles">Download SVG</button>
+        <div class="view-actions">
+          <button type="button" class="export" data-export="roles">Download SVG</button>
+        </div>
       </div>
       <p id="roles-stats" class="stats"></p>
       <details class="view-details">
@@ -669,6 +672,10 @@
   </aside>
 
   <div id="tooltip" role="tooltip" hidden></div>
+
+  <!-- Outside .app-shell: the shell is a size container, which would trap this
+       fixed-position indicator inside it. -->
+  <span id="busy" class="busy" role="status" aria-live="polite" hidden>Querying QLever…</span>
 
   <noscript>
     <p class="chart-message error">These views need JavaScript and the FIAF SPARQL endpoint.</p>

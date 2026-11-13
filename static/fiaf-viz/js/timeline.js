@@ -122,7 +122,10 @@ export function create(ctx, root, statsElement, granularityButtons, descriptionE
   for (const button of granularityButtons || []) {
     button.addEventListener("click", () => {
       granularity = button.dataset.granularity || "year";
-      for (const other of granularityButtons) other.classList.toggle("active", other === button);
+      for (const other of granularityButtons) {
+        other.classList.toggle("active", other === button);
+        other.setAttribute("aria-pressed", other === button ? "true" : "false");
+      }
       ui.hideTooltip();
       syncStreamControls();
       if (granularity === "streams") loadStreams();

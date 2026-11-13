@@ -22,3 +22,21 @@ python3 scripts/build_world_map.py
 
 The script also accepts `--source` for a local source file and `--output` for a
 different destination.
+
+## `fonts/schibsted-grotesk-*.woff2`
+
+**Schibsted Grotesk** (variable: weight 400–900), the Latin and Latin Extended
+subsets as served by Google Fonts (v7). Self-hosted so the page has no font CDN
+dependency; other scripts fall back to the system UI font.
+
+- Source: <https://fonts.google.com/specimen/Schibsted+Grotesk>
+- Licence: SIL Open Font License 1.1, see `fonts/OFL.txt`.
+
+## `fonts/jetbrains-mono-*.woff2`
+
+**JetBrains Mono** (variable: weight 100–800), the Latin and Latin Extended
+subsets as served by Google Fonts. The data and display face: view titles,
+headline figures, labels, identifiers and table numbers.
+
+- Source: <https://www.jetbrains.com/lp/mono/>
+- Licence: SIL Open Font License 1.1, see `fonts/OFL-JetBrainsMono.txt`.

@@ -3270,9 +3270,25 @@ async function ping(endpoint) {
   }
 }
 
+// Under 1000px the name views fold their role, name and search filters
+// behind one toggle, so the filter bar is a single row in every view and
+// switching tabs does not move the page. CSS does the folding; this keeps
+// the state and the accessible name in step.
+function initFiltersToggle() {
+  const toggle = document.getElementById("filters-toggle");
+  const bar = toggle ? toggle.closest(".filters") : null;
+  if (!toggle || !bar) return;
+  toggle.addEventListener("click", () => {
+    const open = !bar.classList.contains("is-expanded");
+    bar.classList.toggle("is-expanded", open);
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    toggle.textContent = open ? "Hide name filters" : "Name filters";
+  });
+}
+
 async function init() {
   initTheme();
-  window.addEventListener("fiaf-viz:theme-change", () => {
+  const restyleActive = () => {
     // Views that resolve theme colours in script expose restyle(); the others
     // are styled through CSS variables and only need the size check.
     if (activeView && views && loaded.has(activeView)) {
@@ -3280,8 +3296,15 @@ async function init() {
       if (view.restyle) view.restyle();
       else view.resize();
     }
-  });
+  };
+  window.addEventListener("fiaf-viz:theme-change", restyleActive);
+  // Canvas labels drawn before the web font arrives use the fallback face;
+  // repaint once it has loaded.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(restyleActive, () => {});
+  }
   ui.initDrawer();
+  initFiltersToggle();
   onBusy((busy) => {
     const indicator = document.getElementById("busy");
     if (indicator) indicator.hidden = !busy;

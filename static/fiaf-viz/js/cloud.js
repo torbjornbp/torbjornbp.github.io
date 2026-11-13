@@ -7,7 +7,7 @@
 import { roleLabel } from "./labels.js";
 import * as ui from "./ui.js";
 
-const FONT = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+const FONT = '"Schibsted Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
 const MAX_ZOOM = 400;
 
 // d3.pack is exact but superlinear: ~0.25 s for 20k circles, ~6 s for 100k and
@@ -368,10 +368,19 @@ export function create(ctx, root, legendElement, statsElement) {
       (selectionStatus?.short ? ` · ${selectionStatus.short}` : "");
   }
 
+  // The canvas takes every touch for pan and zoom. On touch screens keep it
+  // well under the viewport so a strip of page stays free to scroll past it.
+  const coarsePointer =
+    typeof window.matchMedia === "function"
+      ? window.matchMedia("(pointer: coarse)")
+      : { matches: false };
+
   function dimensions() {
+    const share = coarsePointer.matches ? 0.55 : 0.72;
+    const floor = coarsePointer.matches ? 320 : 460;
     return {
       width: Math.max(1, root.clientWidth || 1000),
-      height: Math.max(460, Math.min(window.innerHeight * 0.72, 720))
+      height: Math.max(floor, Math.min(window.innerHeight * share, 720))
     };
   }
 
@@ -463,7 +472,7 @@ export function create(ctx, root, legendElement, statsElement) {
     };
     const accent = cssValue("var(--accent)", styles);
     const textColour =
-      styles.getPropertyValue("--text").trim() || "#1a1a1a";
+      styles.getPropertyValue("--text").trim() || "#111214";
     const surfaceColour =
       styles.getPropertyValue("--surface").trim() || "#ffffff";
 

@@ -622,10 +622,9 @@ export function create(
   function setMode(mode) {
     activeMode = mode === "row" || mode === "column" ? mode : "count";
     for (const button of modeButtons || []) {
-      button.classList.toggle(
-        "active",
-        (button.dataset.heatmapMode || "count") === activeMode
-      );
+      const active = (button.dataset.heatmapMode || "count") === activeMode;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
     }
   }
 
@@ -975,8 +974,6 @@ export function create(
       .attr("y", (cell) => y(cell.rowValue))
       .attr("width", x.bandwidth())
       .attr("height", y.bandwidth())
-      .attr("rx", 3)
-      .attr("ry", 3)
       .attr("fill", (cell) => (cell.count ? colour(cellValue(cell)) : null))
       .attr("fill-opacity", (cell) => (cell.count ? 1 : null))
       .attr("tabindex", (cell) => (cell.count ? 0 : null))
@@ -1380,7 +1377,6 @@ export function create(
       .append("rect")
       .attr("width", 11)
       .attr("height", 11)
-      .attr("rx", 2)
       .attr("fill", (segment) => colourOf(segment));
     items
       .append("text")

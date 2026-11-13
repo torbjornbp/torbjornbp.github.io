@@ -549,7 +549,7 @@ export function create(ctx, root, statsElement, detailsElement) {
       .each(function (node) {
         const shape = d3.select(this);
         if (node.kind === "class") shape.attr("r", nodeRadius(node));
-        else shape.attr("x", -9).attr("y", -9).attr("width", 18).attr("height", 18).attr("rx", 3);
+        else shape.attr("x", -9).attr("y", -9).attr("width", 18).attr("height", 18);
       });
     nodeGroups
       .append("text")

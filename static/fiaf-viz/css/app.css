@@ -1,64 +1,131 @@
+/* Schibsted Grotesk, vendored (SIL OFL 1.1, see vendor/fonts/OFL.txt). A
+   variable neo-grotesk: one file per script covers weights 400 to 900. */
+@font-face {
+  font-family: "Schibsted Grotesk";
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url("../vendor/fonts/schibsted-grotesk-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Schibsted Grotesk";
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url("../vendor/fonts/schibsted-grotesk-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* JetBrains Mono, vendored (SIL OFL 1.1, see vendor/fonts/OFL-JetBrainsMono.txt).
+   The data face: figures, identifiers, labels and the large display set. */
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("../vendor/fonts/jetbrains-mono-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("../vendor/fonts/jetbrains-mono-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 :root {
   color-scheme: light;
   --bg: #ffffff;
   --surface: #ffffff;
-  --surface-2: #f5f5f5;
-  --text: #000000;
-  --muted: #5c5c60;
-  --border: #e2e2e4;
-  --border-strong: #c5c5c9;
-  --rule: #000000;
-  --accent: #b51f32;
-  --accent-strong: #8e1526;
-  --accent-soft: #f9e8eb;
+  --surface-2: #f3f4f6;
+  --text: #111214;
+  --muted: #5b6270;
+  --border: #e2e5e9;
+  --border-strong: #c4cad2;
+  --rule: #111214;
+  --accent: #a3202d;
+  --accent-strong: #7e1722;
+  --accent-soft: #f7e9ea;
   --on-accent: #ffffff;
-  --name-colour: #000000;
-  --work-colour: #9a6a2f;
-  --error: #a03123;
+  --name-colour: #15171c;
+  --work-colour: #976b25;
+  --ok: #3f7a5a;
+  --error: #b2401f;
   /* SPARQL highlighting; each passes 4.5:1 on --surface. */
-  --code-keyword: #a3182c;
-  --code-function: #7a3d00;
-  --code-variable: #1f5f9e;
-  --code-iri: #2f6b2f;
-  --code-pname: #6f3a96;
-  --code-string: #8a5a00;
-  --code-number: #7a3d00;
-  --code-comment: #6b6b70;
-  --role-1: #b51f32;
-  --role-2: #3e5c76;
-  --role-3: #6d597a;
-  --role-4: #b56576;
-  --role-5: #b9791f;
-  --role-6: #ce5968;
-  --role-7: #8a6f4d;
-  --role-8: #4a4a4a;
-  --role-other: #b8b8b8;
-  --heat-1: #fbe9ec;
-  --heat-2: #f0b8c1;
-  --heat-3: #de7b8b;
-  --heat-4: #c33b50;
-  --heat-5: #8e1526;
-  --map-empty: #efeff1;
-  --map-heat-1: #f6d0d6;
-  --map-heat-2: #f0b8c1;
-  --map-heat-3: #e89aa6;
-  --map-heat-4: #de7b8b;
-  --map-heat-5: #d15d6d;
-  --map-heat-6: #c33b50;
-  --map-heat-7: #a8293a;
-  --map-heat-8: #8e1526;
-  --map-heat-9: #76111f;
-  --map-heat-10: #5e0d19;
-  --role-5-text: #76500f;
-  --radius-sm: 4px;
-  --radius: 8px;
-  --radius-lg: 12px;
-  --shadow: 0 10px 30px rgb(25 25 30 / 10%);
-  --shadow-selected: inset 2px 0 0 var(--accent);
+  --code-keyword: #a3202d;
+  --code-function: #7a4a12;
+  --code-variable: #2f5a85;
+  --code-iri: #3a6b4c;
+  --code-pname: #6a4a8c;
+  --code-string: #845c12;
+  --code-number: #7a4a12;
+  --code-comment: #6b7280;
+  --role-1: #a3202d;
+  --role-2: #3d5a7a;
+  --role-3: #6c5a8a;
+  --role-4: #c27c86;
+  --role-5: #c48a2c;
+  --role-6: #4e8580;
+  --role-7: #8a7356;
+  --role-8: #4a505c;
+  --role-other: #bdc2c9;
+  --heat-1: #f8ebec;
+  --heat-2: #edc2c6;
+  --heat-3: #d98790;
+  --heat-4: #b94653;
+  --heat-5: #7e1722;
+  --map-empty: #eceef1;
+  /* Ten-step ramp for the world map's choropleth and circles, interpolated
+     along the heat ramp; step 1 stays distinct from --map-empty. */
+  --map-heat-1: #f2d3d6;
+  --map-heat-2: #efcacd;
+  --map-heat-3: #ebbdc1;
+  --map-heat-4: #e09ea5;
+  --map-heat-5: #d27c85;
+  --map-heat-6: #c15a65;
+  --map-heat-7: #a83b47;
+  --map-heat-8: #86202b;
+  --map-heat-9: #70141e;
+  --map-heat-10: #5a1019;
+  --role-5-text: #7a5512;
+  /* Square corners and hard offset shadows: controls read as printed,
+     engineered objects rather than soft cards. */
+  --radius-sm: 0;
+  --radius: 0;
+  --radius-lg: 0;
+  --hard: #c9ced5;
+  --shadow: 3px 3px 0 var(--hard);
+  --shadow-raised: 2px 2px 0 var(--hard);
+  --shadow-selected: inset 3px 0 0 var(--accent);
+  --tonal: #f1f2f4;
+  --tonal-strong: #e4e6ea;
+  --button-primary: #a3202d;
+  --button-primary-hover: #861a25;
+  --on-button-primary: #ffffff;
+  --masthead: #ffffff;
+  --on-masthead: #111214;
+  --on-masthead-muted: #5b6270;
+  --toolbar: #ffffff;
+  --dot: #b9bec6;
+  --focus-ring: 0 0 0 2px var(--accent);
   --page: 1100px;
   --gutter: clamp(1rem, 4vw, 2.5rem);
-  --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  --font: "Schibsted Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --space-0: 0;
   --space-0_5: 0.125rem;
@@ -81,7 +148,9 @@
   --font-size-body: 1rem;
   --font-size-subtitle: 1.125rem;
   --font-size-title: 1.25rem;
-  --font-size-brand: 1.5rem;
+  --font-size-display: 2.5rem;
+  --font-size-stat: 2.25rem;
+
 
   --leading-solid: 1;
   --leading-tight: 1.2;
@@ -93,11 +162,10 @@
   --font-semibold: 600;
   --font-bold: 700;
 
-  --control-height: 2.5rem;
+  --control-height: 2.125rem;
   --control-height-compact: 2rem;
   --control-height-touch: 2.75rem;
 
-  --icon-dot: 0.5rem;
   --icon-swatch: 0.75rem;
   --icon-badge: 1.25rem;
 
@@ -111,113 +179,139 @@
    site follows the OS until the visitor makes an explicit choice. */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #141416;
-  --surface: #1b1b1e;
-  --surface-2: #252528;
-  --text: #f1f1f3;
-  --muted: #b0b0b7;
-  --border: #36363c;
-  --border-strong: #53535c;
-  --rule: #f1f1f3;
-  --accent: #f0788b;
-  --accent-strong: #ff9bac;
-  --accent-soft: #381d24;
-  --on-accent: #200d12;
-  --name-colour: #f1f1f3;
-  --work-colour: #d9a45d;
-  --error: #f08d7e;
-  --code-keyword: #f0788b;
-  --code-function: #e8a868;
-  --code-variable: #7ab6f2;
-  --code-iri: #8fd18f;
-  --code-pname: #c9a0ec;
-  --code-string: #e6c07b;
-  --code-number: #e8a868;
-  --code-comment: #9c9ca3;
-  --role-1: #f0788b;
-  --role-2: #7f9dbb;
-  --role-3: #a58fb8;
-  --role-4: #d98b98;
-  --role-5: #d9a93f;
-  --role-6: #de9ca7;
-  --role-7: #b59b78;
-  --role-8: #9d9da3;
-  --role-other: #6b6b73;
-  --heat-1: #321e25;
-  --heat-2: #592633;
-  --heat-3: #8c3549;
-  --heat-4: #c7526a;
-  --heat-5: #f58b9d;
-  --map-empty: #262629;
-  --map-heat-1: #46222b;
-  --map-heat-2: #5d2735;
-  --map-heat-3: #762f40;
-  --map-heat-4: #90374b;
-  --map-heat-5: #ac455b;
-  --map-heat-6: #c9556c;
-  --map-heat-7: #e07185;
-  --map-heat-8: #f58c9e;
-  --map-heat-9: #fba7b5;
-  --map-heat-10: #ffc2cc;
-  --role-5-text: #e5b968;
-  --shadow: 0 10px 30px rgb(0 0 0 / 45%);
-  --shadow-selected: inset 2px 0 0 var(--accent);
+  --bg: #111317;
+  --surface: #16191e;
+  --surface-2: #20242b;
+  --text: #eceef2;
+  --muted: #a3aab5;
+  --border: #2c3139;
+  --border-strong: #474e59;
+  --rule: #eceef2;
+  --accent: #ec7f8a;
+  --accent-strong: #f6a3ab;
+  --accent-soft: #3a1f24;
+  --on-accent: #1d0b0e;
+  --name-colour: #eceef2;
+  --work-colour: #d8a956;
+  --ok: #79c29a;
+  --error: #f0927f;
+  --code-keyword: #ec7f8a;
+  --code-function: #e3a86a;
+  --code-variable: #8db5df;
+  --code-iri: #8fc9a3;
+  --code-pname: #bea4e0;
+  --code-string: #dcbc78;
+  --code-number: #e3a86a;
+  --code-comment: #8f97a3;
+  --role-1: #ec7f8a;
+  --role-2: #87a3c2;
+  --role-3: #ab98c9;
+  --role-4: #dc9aa3;
+  --role-5: #dcae55;
+  --role-6: #7fbcb5;
+  --role-7: #bba184;
+  --role-8: #9aa1ac;
+  --role-other: #5d646f;
+  --heat-1: #2e1d22;
+  --heat-2: #55252f;
+  --heat-3: #873446;
+  --heat-4: #c25466;
+  --heat-5: #f491a0;
+  --map-empty: #23272e;
+  --map-heat-1: #4a242d;
+  --map-heat-2: #532630;
+  --map-heat-3: #602935;
+  --map-heat-4: #7a3040;
+  --map-heat-5: #973d4e;
+  --map-heat-6: #b74e60;
+  --map-heat-7: #d46d7d;
+  --map-heat-8: #ef8c9b;
+  --map-heat-9: #f8abb6;
+  --map-heat-10: #fcc6cd;
+  --role-5-text: #e6bd6b;
+  --hard: #000000;
+  --shadow: 3px 3px 0 var(--hard);
+  --shadow-raised: 2px 2px 0 var(--hard);
+  --shadow-selected: inset 3px 0 0 var(--accent);
+  --tonal: #20242b;
+  --tonal-strong: #2a2f37;
+  --button-primary: #b32a38;
+  --button-primary-hover: #c6394a;
+  --on-button-primary: #ffffff;
+  --masthead: #111317;
+  --on-masthead: #eceef2;
+  --on-masthead-muted: #a3aab5;
+  --toolbar: #111317;
+  --dot: #474e59;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --bg: #141416;
-    --surface: #1b1b1e;
-    --surface-2: #252528;
-    --text: #f1f1f3;
-    --muted: #b0b0b7;
-    --border: #36363c;
-    --border-strong: #53535c;
-    --rule: #f1f1f3;
-    --accent: #f0788b;
-    --accent-strong: #ff9bac;
-    --accent-soft: #381d24;
-    --on-accent: #200d12;
-    --name-colour: #f1f1f3;
-    --work-colour: #d9a45d;
-    --error: #f08d7e;
-    --code-keyword: #f0788b;
-    --code-function: #e8a868;
-    --code-variable: #7ab6f2;
-    --code-iri: #8fd18f;
-    --code-pname: #c9a0ec;
-    --code-string: #e6c07b;
-    --code-number: #e8a868;
-    --code-comment: #9c9ca3;
-    --role-1: #f0788b;
-    --role-2: #7f9dbb;
-    --role-3: #a58fb8;
-    --role-4: #d98b98;
-    --role-5: #d9a93f;
-    --role-6: #de9ca7;
-    --role-7: #b59b78;
-    --role-8: #9d9da3;
-    --role-other: #6b6b73;
-    --heat-1: #321e25;
-    --heat-2: #592633;
-    --heat-3: #8c3549;
-    --heat-4: #c7526a;
-    --heat-5: #f58b9d;
-    --map-empty: #262629;
-    --map-heat-1: #46222b;
-    --map-heat-2: #5d2735;
-    --map-heat-3: #762f40;
-    --map-heat-4: #90374b;
-    --map-heat-5: #ac455b;
-    --map-heat-6: #c9556c;
-    --map-heat-7: #e07185;
-    --map-heat-8: #f58c9e;
-    --map-heat-9: #fba7b5;
-    --map-heat-10: #ffc2cc;
-    --role-5-text: #e5b968;
-    --shadow: 0 10px 30px rgb(0 0 0 / 45%);
-    --shadow-selected: inset 2px 0 0 var(--accent);
+    --bg: #111317;
+    --surface: #16191e;
+    --surface-2: #20242b;
+    --text: #eceef2;
+    --muted: #a3aab5;
+    --border: #2c3139;
+    --border-strong: #474e59;
+    --rule: #eceef2;
+    --accent: #ec7f8a;
+    --accent-strong: #f6a3ab;
+    --accent-soft: #3a1f24;
+    --on-accent: #1d0b0e;
+    --name-colour: #eceef2;
+    --work-colour: #d8a956;
+    --ok: #79c29a;
+    --error: #f0927f;
+    --code-keyword: #ec7f8a;
+    --code-function: #e3a86a;
+    --code-variable: #8db5df;
+    --code-iri: #8fc9a3;
+    --code-pname: #bea4e0;
+    --code-string: #dcbc78;
+    --code-number: #e3a86a;
+    --code-comment: #8f97a3;
+    --role-1: #ec7f8a;
+    --role-2: #87a3c2;
+    --role-3: #ab98c9;
+    --role-4: #dc9aa3;
+    --role-5: #dcae55;
+    --role-6: #7fbcb5;
+    --role-7: #bba184;
+    --role-8: #9aa1ac;
+    --role-other: #5d646f;
+    --heat-1: #2e1d22;
+    --heat-2: #55252f;
+    --heat-3: #873446;
+    --heat-4: #c25466;
+    --heat-5: #f491a0;
+    --map-empty: #23272e;
+    --map-heat-1: #4a242d;
+    --map-heat-2: #532630;
+    --map-heat-3: #602935;
+    --map-heat-4: #7a3040;
+    --map-heat-5: #973d4e;
+    --map-heat-6: #b74e60;
+    --map-heat-7: #d46d7d;
+    --map-heat-8: #ef8c9b;
+    --map-heat-9: #f8abb6;
+    --map-heat-10: #fcc6cd;
+    --role-5-text: #e6bd6b;
+    --hard: #000000;
+    --shadow: 3px 3px 0 var(--hard);
+    --shadow-raised: 2px 2px 0 var(--hard);
+    --shadow-selected: inset 3px 0 0 var(--accent);
+    --tonal: #20242b;
+    --tonal-strong: #2a2f37;
+    --button-primary: #b32a38;
+    --button-primary-hover: #c6394a;
+    --on-button-primary: #ffffff;
+    --masthead: #111317;
+    --on-masthead: #eceef2;
+    --on-masthead-muted: #a3aab5;
+    --toolbar: #111317;
+    --dot: #474e59;
   }
 }
 
@@ -233,13 +327,25 @@ html, body {
   font-family: var(--font);
   font-size: var(--font-size-body);
   line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 html { scrollbar-gutter: stable; }
 
 body { padding-bottom: var(--space-16); }
 
-.app-shell { min-width: 0; }
+::selection { background: var(--accent-soft); color: var(--text); }
+
+/* The shell is the size container for the header and filters: with the
+   record drawer docked beside it, the column is narrower than the viewport,
+   so the navigation and filter breakpoints follow the shell, not the screen.
+   (A size container contains fixed descendants, so #busy lives outside.) */
+.app-shell {
+  min-width: 0;
+  container: shell / inline-size;
+}
 
 button, select, input { font: inherit; color: inherit; }
 
@@ -249,8 +355,11 @@ input[type="range"] { accent-color: var(--accent); }
 a {
   color: var(--accent);
   text-decoration: underline;
-  text-underline-offset: 0.15em;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
 }
+
+a:hover { color: var(--accent-strong); }
 
 button:focus-visible,
 select:focus-visible,
@@ -259,7 +368,7 @@ textarea:focus-visible,
 summary:focus-visible,
 a:focus-visible,
 [role="button"]:focus-visible {
-  outline: 2px solid var(--text);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -267,25 +376,48 @@ button:active:not(:disabled) { transform: translateY(1px); }
 
 /* -- header ---------------------------------------------------------------- */
 
+/* Full-width bands line their content up with the page column: --bleed is
+   the side padding that does it. */
+:root {
+  --bleed: max(var(--gutter), calc((100% - var(--page)) / 2 + var(--gutter)));
+  /* A halftone band of 1px dots: the rule that closes the filter area. */
+  --halftone: radial-gradient(circle at 1px 1px, var(--dot) 0.6px, transparent 0.9px) 0 0 / 3px 3px;
+}
+
 .app-header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: var(--space-2) var(--space-8);
-  align-items: start;
-  padding: var(--space-8) var(--gutter) 0;
-  max-width: var(--page);
-  margin: 0 auto;
+  gap: var(--space-2) var(--space-6);
+  align-items: center;
+  padding: var(--space-5) var(--bleed) 0;
+  background: var(--masthead);
+  color: var(--on-masthead);
+}
+
+/* Wordmark. */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
 }
 
 .brand h1 {
+  display: flex;
+  flex: none;
+  align-items: baseline;
+  gap: var(--space-2);
   margin: 0;
-  font-size: var(--font-size-brand);
-  font-weight: var(--font-bold);
+  font-size: var(--font-size-subtitle);
+  font-weight: 900;
   line-height: var(--leading-tight);
   letter-spacing: -0.01em;
 }
 
-.brand h1 span { font-weight: var(--font-regular); }
+.brand h1 span {
+  font-weight: var(--font-semibold);
+  letter-spacing: -0.01em;
+}
 
 .header-meta {
   display: flex;
@@ -293,9 +425,8 @@ button:active:not(:disabled) { transform: translateY(1px); }
   align-items: center;
   flex-wrap: wrap;
   justify-content: flex-end;
-  padding-top: var(--space-1);
   font-size: var(--font-size-small);
-  color: var(--muted);
+  color: var(--on-masthead-muted);
 }
 
 .theme-toggle {
@@ -309,7 +440,7 @@ button:active:not(:disabled) { transform: translateY(1px); }
   background: transparent;
   border: 1px solid transparent;
   border-radius: var(--radius);
-  color: var(--muted);
+  color: var(--on-masthead-muted);
   cursor: pointer;
   line-height: var(--leading-solid);
   transition:
@@ -319,9 +450,8 @@ button:active:not(:disabled) { transform: translateY(1px); }
 }
 
 .theme-toggle:hover {
-  border-color: var(--border-strong);
-  background: var(--surface-2);
-  color: var(--accent);
+  border-color: var(--on-masthead);
+  color: var(--on-masthead);
 }
 
 .theme-toggle svg {
@@ -340,25 +470,38 @@ button:active:not(:disabled) { transform: translateY(1px); }
   :root:not([data-theme="light"]) .theme-icon-sun { display: block; }
 }
 
+/* Endpoint status: a dotted mono tag. The dot is neutral while connecting,
+   green once the endpoint answers and the error colour when it does not. */
 .endpoint {
   display: inline-flex;
   align-items: center;
   min-width: 13.5rem;
   gap: var(--space-2);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  color: var(--muted);
+  padding: var(--space-0_5) var(--space-2);
+  border: 1px dotted var(--on-masthead-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-caption);
+  letter-spacing: 0;
+  color: var(--on-masthead-muted);
 }
 
 .endpoint::before {
   content: "";
   flex: none;
-  width: var(--icon-dot);
-  height: var(--icon-dot);
+  width: 0.4375rem;
+  height: 0.4375rem;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--on-masthead-muted);
+  transition: background var(--duration-panel) var(--ease-standard);
+}
+
+.endpoint[data-ok="true"]::before {
+  background: var(--ok);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 20%, transparent);
 }
 
 .endpoint[data-ok="false"] {
+  border-color: var(--error);
   color: var(--error);
   font-weight: var(--font-semibold);
 }
@@ -383,92 +526,208 @@ button:active:not(:disabled) { transform: translateY(1px); }
   line-height: var(--leading-label);
 }
 
+/* Activity light: a small red square that blinks once a second, like a
+   status lamp on an instrument, instead of a fast spinner. */
 .busy::before {
   content: "";
   display: inline-block;
   flex: none;
-  width: 0.6em;
-  height: 0.6em;
-  margin-right: 0.4em;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.25s linear infinite;
+  width: 0.5em;
+  height: 0.5em;
+  margin-right: 0.6em;
+  background: var(--accent);
+  animation: busy-blink 1s steps(2, jump-none) infinite;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes busy-blink {
+  from { opacity: 1; }
+  to { opacity: 0.2; }
+}
 
+/* Navigation: one ruled index strip, like the tab row of a catalogue drawer.
+   The views share a single ink border and are divided by 1px rules (the gap
+   shows the ink background through); labels are mono capitals. The current
+   view is set in reverse, ink with white type, the same selection the
+   segmented controls use. */
 .tabs {
   grid-column: 1 / -1;
   display: flex;
-  gap: 0 var(--space-6);
-  flex-wrap: wrap;
-  margin-top: var(--space-5);
-  border-bottom: 1px solid var(--rule);
+  gap: 1px;
+  margin-top: var(--space-4);
+  background: var(--on-masthead);
+  border: 1px solid var(--on-masthead);
+  box-shadow: var(--shadow-raised);
 }
 
 .tabs a {
-  display: inline-block;
-  margin-bottom: -1px;
-  padding: var(--space-2_5) 0 var(--space-2);
-  border-bottom: 2px solid transparent;
-  color: var(--muted);
+  display: inline-flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  height: 2.25rem;
+  padding: 0 var(--space-1_5);
+  background: var(--masthead);
+  color: var(--on-masthead);
   text-decoration: none;
-  font-size: var(--font-size-body);
-  font-weight: var(--font-regular);
-  transition: color var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard);
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
 }
 
-.tabs a:hover {
-  color: var(--text);
-  border-bottom-color: var(--border-strong);
+.tabs a:hover { background: var(--tonal); }
+
+.tabs a.active,
+.tabs a.active:hover {
+  background: var(--on-masthead);
+  color: var(--masthead);
+  font-weight: var(--font-bold);
 }
 
-.tabs a.active {
-  color: var(--text);
-  border-bottom-color: var(--text);
+.tabs a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -4px;
 }
 
 /* -- filters --------------------------------------------------------------- */
 
+/* Filters sit on the white page under the navigation, closed off by a
+   halftone band. */
+/* Every view's filter bar is one height: room for one label line and one
+   control row, controls on the bottom edge. Views with labelled filters and
+   views with only the dataset picker therefore start their content at the
+   same y, so switching tabs does not move the page. */
 .filters {
+  --filter-label: 1.375rem;
+  --filter-control: var(--control-height);
+  position: relative;
   display: flex;
   gap: var(--space-3) var(--space-4);
   flex-wrap: wrap;
   align-items: flex-end;
-  padding: var(--space-4) 0 var(--space-4);
-  width: min(calc(var(--page) - 2 * var(--gutter)), calc(100% - 2 * var(--gutter)));
-  margin: 0 auto;
-  border-bottom: 1px solid var(--border);
+  min-height: calc(var(--filter-label) + var(--filter-control) + 2 * var(--space-5));
+  padding: var(--space-5) var(--bleed) var(--space-5);
+  background: var(--toolbar);
+}
+
+/* Under 1000px the name views' extra filters fold behind this toggle. It is
+   a raised key like the dataset picker, with a triangle that turns over. */
+.filters-toggle {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-height);
+  padding: 0 var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--text);
+  box-shadow: var(--shadow-raised);
+  color: var(--text);
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-medium);
+  white-space: nowrap;
+}
+
+.filters-toggle::after {
+  content: "";
+  border-top: 0.3rem solid var(--text);
+  border-right: 0.25rem solid transparent;
+  border-left: 0.25rem solid transparent;
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.filters-toggle[aria-expanded="true"] {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+  background: var(--tonal);
+}
+
+.filters-toggle[aria-expanded="true"]::after { transform: rotate(180deg); }
+
+.filters-toggle:hover { background: var(--tonal); }
+
+.filters::after {
+  content: "";
+  position: absolute;
+  right: var(--bleed);
+  bottom: 0;
+  left: var(--bleed);
+  height: 0.5rem;
+  background: var(--halftone);
 }
 
 .filter {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-  font-size: var(--font-size-small);
-  font-weight: var(--font-semibold);
-  letter-spacing: 0.01em;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-chart);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
   color: var(--muted);
 }
 
+/* Fields: square recessed wells, an inset shadow on the top and left edges
+   (the inverse of a raised key). Focus draws an ink edge with a red ring. */
 .filter select,
-.filter input[type="search"] {
-  background: var(--surface-2);
-  border: 1px solid transparent;
+.filter input[type="search"],
+.inline-control select,
+.catalogue-field select,
+.catalogue-field input {
+  background-color: var(--surface);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius);
+  box-shadow: inset 1px 1px 0 var(--tonal-strong);
   padding: 0 var(--space-2_5);
   height: var(--control-height);
-  font-size: var(--font-size-ui);
+  font-family: var(--font);
+  font-size: var(--font-size-small);
   font-weight: var(--font-regular);
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--text);
+  transition: border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
 }
 
 .filter select:hover,
-.filter input[type="search"]:hover {
-  border-color: var(--border-strong);
-  background: var(--surface);
+.filter input[type="search"]:hover,
+.inline-control select:hover:not(:disabled),
+.catalogue-field select:hover,
+.catalogue-field input:hover {
+  border-color: var(--text);
 }
+
+.filter select:focus-visible,
+.filter input[type="search"]:focus-visible,
+.inline-control select:focus-visible,
+.catalogue-field select:focus-visible,
+.catalogue-field input:focus-visible,
+.catalogue-field-query textarea:focus-visible {
+  outline: none;
+  border-color: var(--text);
+  box-shadow: var(--focus-ring);
+}
+
+/* Selects carry a small solid triangle, drawn from two gradients. */
+select {
+  appearance: none;
+  padding-right: var(--space-8) !important;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text) 50%),
+    linear-gradient(135deg, var(--text) 50%, transparent 50%);
+  background-position:
+    right 0.95rem center,
+    right 0.7rem center;
+  background-size: 0.25rem 0.25rem, 0.25rem 0.25rem;
+  background-repeat: no-repeat;
+}
+
+input::placeholder,
+textarea::placeholder { color: var(--muted); opacity: 1; }
 
 .filter-search { flex: 1 1 220px; max-width: 340px; position: relative; }
 
@@ -483,9 +742,13 @@ button:active:not(:disabled) { transform: translateY(1px); }
   max-height: 320px;
   overflow: auto;
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--text);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  /* Names and titles are content: body face, not the mono filter labels. */
+  font-family: var(--font);
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .search-result {
@@ -510,15 +773,17 @@ button:active:not(:disabled) { transform: translateY(1px); }
   background: var(--surface-2);
 }
 
+/* Type tags: small dotted-border mono labels (NAME, WORK). */
 .search-result-type {
   flex: none;
-  padding: var(--space-0_5) var(--space-1_5);
-  border: 1px solid var(--border-strong);
+  padding: 0 var(--space-1);
+  border: 1px dotted var(--border-strong);
   border-radius: var(--radius-sm);
   color: var(--muted);
+  font-family: var(--font-mono);
   font-size: var(--font-size-chart);
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
 }
 
 .search-result-type.agent { color: var(--name-colour); border-color: currentColor; }
@@ -543,21 +808,44 @@ button:active:not(:disabled) { transform: translateY(1px); }
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  background: var(--surface-2);
-  border: 1px solid transparent;
+  background: var(--surface);
+  border: 1px solid var(--text);
   border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
   padding: 0 var(--space-3);
   height: var(--control-height);
-  font-weight: var(--font-medium);
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-regular);
+  letter-spacing: 0;
+  text-transform: none;
   list-style: none;
   white-space: nowrap;
+  transition: background var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
 }
+
+.role-picker summary span { color: var(--text); font-weight: var(--font-bold); }
+
+.role-picker summary::after {
+  content: "";
+  margin-left: var(--space-2);
+  border-top: 0.3rem solid var(--text);
+  border-right: 0.25rem solid transparent;
+  border-left: 0.25rem solid transparent;
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.role-picker[open] summary::after { transform: rotate(180deg); }
 
 .role-picker summary::-webkit-details-marker { display: none; }
 
+.role-picker summary:hover { background: var(--tonal); }
+
 .role-picker[open] summary {
-  border-color: var(--accent);
-  background: var(--surface);
+  transform: translate(2px, 2px);
+  box-shadow: none;
+  background: var(--tonal);
 }
 
 .role-picker-body {
@@ -569,10 +857,14 @@ button:active:not(:disabled) { transform: translateY(1px); }
   max-height: 360px;
   overflow: auto;
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--text);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
   padding: var(--space-3);
+  font-family: var(--font);
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: var(--font-regular);
 }
 
 .role-actions {
@@ -581,27 +873,74 @@ button:active:not(:disabled) { transform: translateY(1px); }
   margin-bottom: var(--space-2);
 }
 
+/* Buttons are square keys: a 1px ink border and a hard offset shadow that
+   collapses when pressed. Exports and Run query are the filled keys, in
+   FIAF red; everything else is a white key. */
 .role-actions button,
 .reset,
 .export,
-.fit {
-  background: var(--surface-2);
-  border: 1px solid transparent;
+.fit,
+.catalogue-run {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1_5);
+  background: var(--surface);
+  border: 1px solid var(--text);
   border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
   padding: 0 var(--space-3);
   height: var(--control-height);
+  color: var(--text);
   cursor: pointer;
-  font-size: var(--font-size-ui);
-  font-weight: var(--font-semibold);
-  transition: border-color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-medium);
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  transition: background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
 }
 
 .role-actions button:hover,
+.fit:hover:not(:disabled) {
+  background: var(--tonal);
+}
+
+.role-actions button:active,
+.reset:active,
+.export:active,
+.fit:active:not(:disabled),
+.catalogue-run:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.fit:disabled { box-shadow: none; border-color: var(--border-strong); }
+
+.export,
+.catalogue-run {
+  background: var(--button-primary);
+  border-color: var(--text);
+  color: var(--on-button-primary);
+  font-weight: var(--font-bold);
+}
+
 .export:hover,
-.fit:hover {
-  border-color: var(--accent);
-  background: var(--surface);
-  color: var(--accent);
+.catalogue-run:hover,
+.catalogue-run:focus-visible {
+  background: var(--button-primary-hover);
+  color: var(--on-button-primary);
+}
+
+/* Download buttons carry a small arrow so exports read at a glance. */
+.export::before {
+  content: "";
+  flex: none;
+  width: 0.8125rem;
+  height: 0.8125rem;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.5v9m0 0L4.5 7M8 10.5 11.5 7M2.5 14h11' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.5v9m0 0L4.5 7M8 10.5 11.5 7M2.5 14h11' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 .role-list {
@@ -625,22 +964,25 @@ button:active:not(:disabled) { transform: translateY(1px); }
 .role-list .role-count {
   margin-left: auto;
   color: var(--muted);
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums proportional-nums;
   font-size: var(--font-size-small);
 }
 
 .role-list .swatch {
   width: var(--icon-swatch);
   height: var(--icon-swatch);
-  border-radius: 50%;
+  border-radius: 0;
   flex: none;
 }
 
+/* Centred on the control row it sits in, not on the (taller) filter bar. */
 .filter-note {
+  display: flex;
+  align-items: center;
+  min-height: var(--filter-control, var(--control-height));
   margin: 0;
   color: var(--muted);
   font-size: var(--font-size-ui);
-  align-self: center;
 }
 
 .scope-note {
@@ -649,18 +991,9 @@ button:active:not(:disabled) { transform: translateY(1px); }
   font-size: var(--font-size-caption);
 }
 
-.reset {
-  margin-left: auto;
-  border-color: var(--text);
-  background: var(--text);
-  color: var(--on-accent);
-}
+.reset { margin-left: auto; }
 
-.reset:hover {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--on-accent);
-}
+.reset:hover { background: var(--tonal); }
 
 /* -- views ----------------------------------------------------------------- */
 
@@ -680,37 +1013,49 @@ main {
 #status[data-kind="error"] { color: var(--error); font-weight: var(--font-semibold); }
 
 .view {
-  padding-top: var(--space-8);
+  padding-top: var(--space-2);
   container-type: inline-size;
 }
 
+/* View head: a large light mono title in capitals (the display voice) over
+   a dashed rule. */
 .view-head {
   display: flex;
   gap: var(--space-4);
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: flex-end;
   flex-wrap: wrap;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px dashed var(--text);
 }
 
 .view-head h2 {
   margin: 0;
-  font-size: var(--font-size-title);
-  font-weight: var(--font-bold);
-  letter-spacing: -0.01em;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-display);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
 }
 
 .view-head p {
-  margin: var(--space-1_5) 0 0;
+  margin: var(--space-2_5) 0 0;
   color: var(--muted);
-  max-width: 72ch;
-  font-size: var(--font-size-ui);
+  max-width: 68ch;
+  font-size: var(--font-size-small);
+  line-height: var(--leading-body);
 }
 
+/* Actions always sit against the right edge of the column: beside the title
+   when they fit, on their own right-aligned row when they wrap. */
 .view-actions {
   display: flex;
   gap: var(--space-2_5);
-  align-items: center;
+  align-items: flex-end;
+  justify-content: flex-end;
   flex-wrap: wrap;
+  margin-left: auto;
 }
 
 .export { white-space: nowrap; }
@@ -719,28 +1064,28 @@ main {
 .inline-control {
   display: flex;
   flex-direction: column;
-  gap: var(--space-0_5);
-  font-size: var(--font-size-small);
+  gap: var(--space-1);
   color: var(--muted);
+}
+
+.inline-control > span {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-chart);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.inline-control output {
+  color: var(--text);
+  font-variant-numeric: lining-nums proportional-nums;
 }
 
 .inline-control input[type="range"] { width: 140px; }
 
 .inline-control select {
-  background: var(--surface-2);
-  border: 1px solid transparent;
-  border-radius: var(--radius);
-  padding: 0 var(--space-2_5);
-  height: var(--control-height);
   max-width: 220px;
   font-size: var(--font-size-small);
-  font-weight: var(--font-regular);
-  color: var(--text);
-}
-
-.inline-control select:hover:not(:disabled) {
-  border-color: var(--border-strong);
-  background: var(--surface);
 }
 
 /* A control that does not apply (such as country order while grouped by
@@ -760,40 +1105,39 @@ main {
   pointer-events: none;
 }
 
+/* Segmented control: a row of joined square keys under one hard shadow; the
+   chosen key is solid ink, the site-wide selection state. */
 .segmented {
   display: flex;
-  gap: var(--space-0_5);
-  padding: var(--space-0_5);
-  background: var(--surface-2);
-  border-radius: var(--radius);
+  border: 1px solid var(--text);
+  box-shadow: var(--shadow-raised);
+  background: var(--surface);
 }
 
 .segmented button {
   border: 0;
-  border-radius: calc(var(--radius) - 2px);
+  border-radius: 0;
   background: transparent;
   padding: 0 var(--space-3);
-  height: calc(var(--control-height) - 4px);
+  height: calc(var(--control-height) - 2px);
+  color: var(--text);
   cursor: pointer;
-  font-size: var(--font-size-ui);
-  font-weight: var(--font-semibold);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-medium);
   transition: background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
 }
 
-.segmented button:hover {
-  background: var(--surface);
-  color: var(--accent);
-}
+.segmented button + button { border-left: 1px solid var(--text); }
+
+.segmented button:hover { background: var(--tonal); }
 
 .segmented button.active {
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--text);
+  color: var(--bg);
+  font-weight: var(--font-bold);
 }
 
-.segmented button.active:hover {
-  background: var(--accent-strong);
-  color: var(--on-accent);
-}
+.segmented button.active:hover { background: var(--text); color: var(--bg); }
 
 .legend {
   display: flex;
@@ -812,7 +1156,7 @@ main {
 .legend-swatch {
   width: var(--icon-swatch);
   height: var(--icon-swatch);
-  border-radius: 50%;
+  border-radius: 0;
 }
 
 .legend-swatch.name { background: var(--name-colour); }
@@ -828,34 +1172,49 @@ main {
 .time-control .time-play { min-width: 4.5em; }
 .time-control output { color: var(--text); font-variant-numeric: tabular-nums; }
 
+/* Headline figures: one bordered sheet with a hard shadow, divided into
+   cells by hairlines; mono labels and large mono figures, read like an
+   instrument panel. */
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: var(--space-2_5);
-  margin: var(--space-4) 0 0;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1px;
+  margin: var(--space-5) 0 0;
   padding: 0;
+  background: var(--border-strong);
+  border: 1px solid var(--text);
+  box-shadow: var(--shadow);
 }
 
+/* The figure sits on the card's bottom edge, so a label that wraps to two
+   lines does not push its figure out of line with its neighbours. */
 .stat-card {
-  padding: var(--space-2_5) var(--space-3);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  background: var(--surface);
 }
+
+.stat-card .stat-value { margin-top: auto; padding-top: var(--space-2); }
 
 .stat-label {
   color: var(--muted);
-  font-size: var(--font-size-caption);
-  font-weight: var(--font-semibold);
-  letter-spacing: 0.04em;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-chart);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 
 .stat-value {
-  margin: var(--space-0_5) 0 0;
-  font-size: var(--font-size-title);
-  font-weight: var(--font-bold);
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-mono);
+  /* Scales with the view (a size container) so a year range never wraps. */
+  font-size: clamp(1.5rem, 3.3cqi, var(--font-size-stat));
+  font-weight: 300;
+  white-space: nowrap;
   line-height: var(--leading-tight);
+  letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -864,7 +1223,7 @@ main {
   min-height: 1.6em;
   color: var(--muted);
   font-size: var(--font-size-small);
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums proportional-nums;
 }
 
 .chart {
@@ -986,6 +1345,16 @@ main {
 .chart svg { display: block; width: 100%; height: 100%; }
 
 .chart-cloud svg { height: min(72vh, 720px); }
+
+/* Touch screens: the interactive canvases take every touch for pan and zoom,
+   so they stay well under the viewport and a strip of page remains free to
+   scroll past them. */
+@media (pointer: coarse) {
+  .chart-cloud { min-height: max(320px, min(55vh, 720px)); }
+  .chart-cloud svg { height: max(320px, min(55vh, 720px)); }
+  .chart-network,
+  .chart-co-credits { height: max(320px, 55vh); min-height: 320px; }
+}
 
 .chart-worldmap {
   /* Reserves the map plus one common off-map row before data arrives. */
@@ -1156,9 +1525,12 @@ main {
 }
 
 .breakdown-panel .panel-note {
-  margin: 0 0 var(--space-1_5);
+  margin: 0 0 var(--space-2);
   color: var(--muted);
-  font-size: var(--font-size-caption);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-chart);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .breakdown-panel svg { width: 100%; height: auto; display: block; }
@@ -1181,12 +1553,38 @@ main {
   color: var(--muted);
   max-width: 94ch;
 }
-.view-details summary { cursor: pointer; }
-.view-details p { margin: var(--space-2) 0 0; }
+.view-details summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1_5);
+  cursor: pointer;
+  list-style: none;
+  font-weight: var(--font-semibold);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
 
-.preservation-view-actions .segmented button { color: var(--text); }
-.preservation-view-actions .segmented button.active { color: var(--on-accent); }
-.preservation-view-actions .export { color: var(--text); }
+.view-details summary::-webkit-details-marker { display: none; }
+
+.view-details summary::before {
+  content: "";
+  width: 0.3rem;
+  height: 0.3rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.view-details[open] summary::before { transform: rotate(45deg); }
+.view-details summary:hover { color: var(--accent); }
+
+.view-details p {
+  margin: var(--space-2) 0 0;
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--border);
+  line-height: var(--leading-body);
+}
+
 
 .preservation-note {
   margin: var(--space-2) 0 0;
@@ -1197,10 +1595,13 @@ main {
 
 .chart-preservation { min-height: 380px; }
 
+/* The overview fills about a second after the view opens; reserve its
+   loaded height (headline, two lines, bar, legend) so nothing below moves. */
+/* No rule of its own: the view head's dashed rule already closes above it. */
 .preservation-overview {
+  min-height: var(--preservation-overview-height, 9.8rem);
   margin-top: var(--space-4);
   padding-top: var(--space-4);
-  border-top: 1px solid var(--border);
 }
 
 .preservation-composition {
@@ -1247,7 +1648,7 @@ main {
 .preservation-legend-value {
   margin-left: auto;
   color: var(--text);
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums proportional-nums;
   white-space: nowrap;
 }
 
@@ -1383,68 +1784,54 @@ main {
 .bar-value {
   font-size: var(--font-size-chart);
   fill: var(--muted);
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums proportional-nums;
 }
 
 /* -- catalogue ------------------------------------------------------------- */
 
+/* The filters sit on a grid of equal tracks, so how they wrap depends only on
+   the panel width, never on option text: the facet options arrive seconds
+   after the page and must not reflow it. Controls fill their track. */
 .catalogue-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2_5) var(--space-4);
-  align-items: flex-end;
-  margin-top: var(--space-4);
-  padding: var(--space-4) var(--space-4);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(11rem, 100%), 1fr));
+  gap: var(--space-3) var(--space-4);
+  align-items: end;
+  margin-top: var(--space-5);
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--text);
   border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
 }
 
 .catalogue-field {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-  min-width: 8.5rem;
+  min-width: 0;
   color: var(--muted);
-  font-size: var(--font-size-caption);
-  font-weight: var(--font-semibold);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-chart);
+  font-weight: var(--font-medium);
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 
-.catalogue-field select,
-.catalogue-field input {
-  height: var(--control-height);
-  padding: 0 var(--space-2_5);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text);
-  font-size: var(--font-size-ui);
-  font-weight: var(--font-regular);
-  letter-spacing: 0;
-  text-transform: none;
+.catalogue-field > select,
+.catalogue-field > input,
+.catalogue-field-query textarea { font-family: var(--font); }
+
+.catalogue-field > select,
+.catalogue-field > input { width: 100%; min-width: 0; }
+
+/* Title search takes two tracks; identifier and name searches one each. */
+.catalogue-field-search:not(.catalogue-field-id):not(.catalogue-field-name) {
+  grid-column: span 2;
 }
-
-.catalogue-field select:hover,
-.catalogue-field input:hover,
-.catalogue-field select:focus,
-.catalogue-field input:focus {
-  border-color: var(--accent);
-}
-
-.catalogue-field-search {
-  flex: 1 1 240px;
-  min-width: 200px;
-}
-
-.catalogue-field-id { flex: 0 1 220px; }
-
-.catalogue-field-name { flex: 0 1 220px; }
-
-.catalogue-field-search input { width: 100%; }
 
 .catalogue-reset {
+  justify-self: end;
   height: var(--control-height);
   margin-left: 0;
 }
@@ -1454,10 +1841,10 @@ main {
   align-items: center;
   gap: var(--space-2);
   margin-top: var(--space-3);
-  padding: var(--space-1) var(--space-1_5) var(--space-1) var(--space-3);
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-2_5);
   background: var(--accent-soft);
-  border: 1px solid var(--accent);
-  border-radius: 999px;
+  border: 1px dotted var(--accent);
+  border-radius: 0;
   color: var(--accent-strong);
   font-size: var(--font-size-small);
 }
@@ -1469,7 +1856,7 @@ main {
   height: var(--control-height-compact);
   padding: 0;
   border: 0;
-  border-radius: 50%;
+  border-radius: 0;
   background: transparent;
   color: var(--accent-strong);
   cursor: pointer;
@@ -1505,8 +1892,8 @@ main {
 
 .catalogue-page {
   color: var(--muted);
-  font-size: var(--font-size-small);
-  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-caption);
   white-space: nowrap;
 }
 
@@ -1518,16 +1905,18 @@ main {
 .catalogue-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--font-size-ui);
+  font-size: var(--font-size-small);
 }
 
 .catalogue-table th {
-  padding: var(--space-2_5) var(--space-2_5);
+  padding: var(--space-2) var(--space-2_5);
+  border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
-  color: var(--muted);
-  font-size: var(--font-size-caption);
-  font-weight: var(--font-semibold);
-  letter-spacing: 0.04em;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-chart);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.02em;
   text-align: left;
   text-transform: uppercase;
   white-space: nowrap;
@@ -1561,20 +1950,24 @@ main {
 
 .catalogue-title {
   display: block;
-  font-weight: var(--font-semibold);
+  font-weight: var(--font-bold);
   line-height: var(--leading-label);
 }
+
+.catalogue-row td:first-child { padding-left: var(--space-3); }
 
 .catalogue-sub {
   display: block;
   margin-top: var(--space-0_5);
   color: var(--muted);
+  font-family: var(--font-mono);
   font-size: var(--font-size-caption);
   word-break: break-word;
 }
 
 .catalogue-year {
-  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-caption);
   white-space: nowrap;
 }
 
@@ -1584,7 +1977,8 @@ main {
 }
 
 .catalogue-holdings {
-  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-caption);
   white-space: nowrap;
 }
 
@@ -1602,11 +1996,12 @@ main {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 220px;
   gap: var(--space-4);
-  margin-top: var(--space-4);
+  margin-top: var(--space-5);
   padding: var(--space-4) var(--space-4);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
+  background: var(--surface);
+  border: 1px solid var(--text);
   border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
 }
 
 .catalogue-sparql-editor {
@@ -1626,7 +2021,7 @@ main {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   color: var(--text);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-mono);
   font-size: var(--font-size-small);
   font-weight: var(--font-regular);
   line-height: var(--leading-body);
@@ -1659,7 +2054,7 @@ main {
   border: 1px solid transparent;
   border-radius: var(--radius);
   color: var(--text);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-mono);
   font-size: var(--font-size-small);
   font-weight: var(--font-regular);
   line-height: var(--leading-body);
@@ -1700,24 +2095,16 @@ main {
   gap: var(--space-2);
 }
 
+/* Colours come from the shared primary button rule above. */
 .catalogue-run {
   padding: 0 var(--space-4);
   height: var(--control-height);
-  background: var(--accent);
-  border: 1px solid var(--accent);
+  border: 1px solid transparent;
   border-radius: var(--radius);
-  color: var(--on-accent);
   cursor: pointer;
-  font-size: var(--font-size-ui);
-  font-weight: var(--font-semibold);
-  transition: background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard);
-}
-
-.catalogue-run:hover,
-.catalogue-run:focus-visible {
-  background: var(--accent-strong);
-  border-color: var(--accent-strong);
-  color: var(--on-accent);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-bold);
+  transition: background var(--duration-fast) var(--ease-standard);
 }
 
 .catalogue-run:disabled {
@@ -1752,8 +2139,9 @@ main {
   display: block;
   margin-bottom: var(--space-2);
   color: var(--muted);
-  font-size: var(--font-size-caption);
-  font-weight: var(--font-semibold);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-chart);
+  font-weight: var(--font-medium);
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
@@ -1764,20 +2152,29 @@ main {
   gap: var(--space-1_5);
 }
 
+/* Templates are keys too: they load a query into the editor. */
 .catalogue-templates button {
   padding: var(--space-1_5) var(--space-2_5);
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--text);
   border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
+  color: var(--text);
   cursor: pointer;
   font-size: var(--font-size-small);
+  font-weight: var(--font-medium);
   text-align: left;
+  transition: background var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
 }
 
 .catalogue-templates button:hover,
 .catalogue-templates button:focus-visible {
-  border-color: var(--accent);
-  color: var(--accent);
+  background: var(--tonal);
+}
+
+.catalogue-templates button:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
 
 .catalogue-row-query { cursor: default; }
@@ -1813,11 +2210,12 @@ main {
 .catalogue-term-tag {
   display: inline-block;
   margin-left: var(--space-1_5);
-  padding: 0 var(--space-1_5);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
+  padding: 0 var(--space-1);
+  background: transparent;
+  border: 1px dotted var(--border-strong);
   border-radius: var(--radius-sm);
   color: var(--muted);
+  font-family: var(--font-mono);
   font-size: var(--font-size-chart);
   vertical-align: baseline;
 }
@@ -1902,7 +2300,7 @@ main {
 .drawer-position {
   color: var(--muted);
   font-size: var(--font-size-caption);
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums proportional-nums;
   white-space: nowrap;
 }
 
@@ -1918,16 +2316,16 @@ main {
   padding: 0 var(--space-3);
   border: 1px solid transparent;
   border-radius: var(--radius);
-  background: var(--surface-2);
+  background: var(--tonal);
   cursor: pointer;
   font-size: var(--font-size-small);
-  font-weight: var(--font-semibold);
+  font-weight: var(--font-bold);
+  transition: background var(--duration-fast) var(--ease-standard);
 }
 
 .drawer-action:hover,
 .drawer-action:focus-visible {
-  border-color: var(--accent);
-  color: var(--accent);
+  background: var(--tonal-strong);
 }
 
 /* -- Work / Manifestation / Item / Carrier tree ---------------------------- */
@@ -2221,10 +2619,13 @@ body[data-active-view="catalogue"] {
   bottom: 0;
   width: var(--drawer-current-width);
   background: var(--surface);
-  border-left: 1px solid var(--border);
+  border-left: 1px solid var(--text);
   box-shadow: var(--shadow);
   padding: var(--space-5) var(--space-6) var(--space-8);
   overflow: auto;
+  /* Reaching the end of the drawer must not start scrolling the page under
+     it (the overlay covers most of a phone screen). */
+  overscroll-behavior: contain;
   scrollbar-gutter: stable;
   transform: translateX(100%);
   transition: transform var(--duration-panel) var(--ease-panel);
@@ -2324,28 +2725,39 @@ body.drawer-resizing * {
   overflow-wrap: anywhere;
 }
 
+/* The record's IRI, set like the identifiers in the catalogue table. */
 .drawer header p {
-  margin: var(--space-1) 0 0;
+  margin: var(--space-1_5) 0 0;
   color: var(--muted);
-  font-size: var(--font-size-small);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-chart);
   overflow-wrap: anywhere;
 }
 
+/* Record controls (previous, next, close) are square keys like every other
+   button on the site. */
 .drawer header button {
-  background: var(--surface-2);
-  border: 1px solid transparent;
+  background: var(--surface);
+  border: 1px solid var(--text);
   border-radius: var(--radius);
+  box-shadow: var(--shadow-raised);
   width: var(--control-height-compact);
   height: var(--control-height-compact);
+  color: var(--text);
   cursor: pointer;
   font-size: var(--font-size-subtitle);
   line-height: var(--leading-solid);
+  transition: background var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
 }
 
-.drawer header button:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+.drawer header button:hover:not(:disabled) { background: var(--tonal); }
+
+.drawer header button:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
+
+.drawer header button:disabled { box-shadow: none; border-color: var(--border-strong); }
 
 .drawer-list {
   list-style: none;
@@ -2411,43 +2823,49 @@ body.drawer-resizing * {
 
 /* -- work drawer tabs and metadata ----------------------------------------- */
 
+/* Drawer tabs repeat the main navigation in miniature: one ruled strip, mono
+   capitals, the open tab in reverse. */
 .drawer-tabs {
   position: sticky;
   top: 0;
   z-index: 2;
   display: flex;
-  gap: var(--space-4);
+  gap: 1px;
   margin: 0 0 var(--space-4);
   padding: 0;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: var(--text);
+  border: 1px solid var(--text);
 }
 
 .drawer-tab {
   appearance: none;
-  margin-bottom: -1px;
-  padding: var(--space-2) var(--space-0_5);
+  flex: 1 1 0;
+  padding: var(--space-2) var(--space-2);
   border: 0;
-  border-bottom: 2px solid transparent;
-  background: none;
-  color: var(--muted);
-  font: inherit;
-  font-size: var(--font-size-ui);
-  font-weight: var(--font-semibold);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-chart);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.04em;
   line-height: var(--leading-tight);
+  text-transform: uppercase;
   cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
 }
 
-.drawer-tab:hover { color: var(--text); }
+.drawer-tab:hover { background: var(--tonal); }
 
-.drawer-tab.active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
+.drawer-tab.active,
+.drawer-tab.active:hover {
+  background: var(--text);
+  color: var(--surface);
+  font-weight: var(--font-bold);
 }
 
 .drawer-tab:focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline-offset: -4px;
 }
 
 .drawer-tab-panel:focus-visible {
@@ -2470,16 +2888,22 @@ body.drawer-resizing * {
   font-size: var(--font-size-small);
 }
 
+/* A shared minimum label width keeps the value column aligned from one
+   section to the next (each section is its own grid). */
 .drawer-meta {
   display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
+  grid-template-columns: minmax(9rem, max-content) minmax(0, 1fr);
   gap: var(--space-1_5) var(--space-3);
   margin: 0;
 }
 
 .drawer-meta-label {
+  padding-top: 0.15em;
   color: var(--muted);
-  font-size: var(--font-size-small);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-chart);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .drawer-meta-value {
@@ -2530,7 +2954,7 @@ body.drawer-resizing * {
   max-width: 320px;
   pointer-events: none;
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--text);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: var(--space-2_5);
@@ -2542,7 +2966,7 @@ body.drawer-resizing * {
 .tooltip-body {
   color: var(--muted);
   margin-top: var(--space-0_5);
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums proportional-nums;
 }
 
 @media (min-width: 1100px) {
@@ -2580,7 +3004,7 @@ body.drawer-resizing * {
     width: auto;
     height: 100dvh;
     transform: none;
-    border-left: 1px solid var(--border);
+    border-left: 1px solid var(--text);
     border-top: 0;
     box-shadow: none;
     z-index: 10;
@@ -2633,6 +3057,36 @@ body.drawer-resizing * {
     width: var(--control-height-touch);
     height: var(--control-height-touch);
   }
+  .filters { --filter-control: var(--control-height-touch); }
+}
+
+/* Queried on the shell, not the viewport: a docked drawer narrows it. */
+/* The twelve views fit one row only at the full 1100px column. Below that,
+   an even 6 x 2 grid, so every cell is filled and the 1px rules stay intact.
+   (Phones get 2 x 6 further down.) Change the column count if the number of
+   views changes so the grid still divides evenly. */
+@container shell (max-width: 1100px) {
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@container shell (max-width: 1000px) {
+
+  /* The name views' filters no longer fit one row either. Fold them behind
+     a toggle so every view's filter bar keeps the same single row; opening
+     it is the visitor's own action, so the growth is expected. */
+  .filters-toggle { display: inline-flex; }
+  .filters-toggle[hidden] { display: none; }
+  .filters:not(.is-expanded) > [data-filter="agents"]:not(.filters-toggle),
+  .filters:not(.is-expanded) > [data-filter="search"] {
+    display: none;
+  }
+  .filters.is-expanded .filter-search { flex-basis: 100%; max-width: none; }
+
+  /* The legend wraps to more lines here; reserve its loaded height. */
+  .preservation-overview { --preservation-overview-height: 11.25rem; }
 }
 
 @media (max-width: 720px) {
@@ -2644,19 +3098,18 @@ body.drawer-resizing * {
     justify-content: flex-start;
     padding-top: 0;
   }
-  .tabs {
-    gap: 0 var(--space-4);
-  }
-  .tabs a {
-    padding: var(--space-2) 0 var(--space-2);
-    font-size: var(--font-size-ui);
-  }
+  .view-head h2 { font-size: 1.75rem; }
+  .stat-card { padding: var(--space-2) var(--space-3) var(--space-3); }
+  .stat-value { font-size: 1.5rem; }
+  .tabs { grid-template-columns: repeat(2, 1fr); }
+  .tabs a { padding: 0 var(--space-1_5); }
+  /* One-column legend: the loaded overview is about 257px tall. */
+  .preservation-overview { --preservation-overview-height: 16.125rem; }
   .filters {
     position: relative;
     align-items: flex-end;
   }
   .filter-search { max-width: none; flex-basis: 100%; }
-  .reset { margin-left: 0; }
   .role-picker { position: static; }
   .role-picker-body {
     top: calc(100% + var(--space-1));
@@ -2674,19 +3127,81 @@ body.drawer-resizing * {
   .chart-geography { min-height: 420px; }
   .view-actions { width: 100%; }
   .export, .fit { white-space: normal; }
+
+  /* Drawer header: the record controls take their own row above the title,
+     so a long title gets the full width instead of a narrow column. */
+  .drawer header { flex-direction: column-reverse; gap: var(--space-2); }
+  /* Clear the busy bar on the top edge, which sits above the drawer. */
+  .drawer { padding-top: var(--space-10); }
+  .drawer-header-actions { align-self: stretch; justify-content: flex-end; }
+
+  /* Work in progress shows as a thin bar on the top edge, where it covers
+     no controls, instead of a pill over the bottom of the view. */
+  .busy {
+    top: 0;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: auto;
+    padding: var(--space-1) var(--gutter);
+    border-width: 0 0 1px;
+    box-shadow: none;
+    font-size: var(--font-size-caption);
+  }
+
+  /* One line in either font, so the font swap cannot rewrap it. */
+  .filter-note { font-size: var(--font-size-small); }
 }
 
+/* Touch screens: fields at 16px, the size below which iOS Safari zooms the
+   page when a field takes focus. */
+@media (pointer: coarse) {
+  .filter select,
+  .filter input[type="search"],
+  .inline-control select,
+  .catalogue-field select,
+  .catalogue-field input,
+  .catalogue-field-query textarea,
+  .sparql-highlight,
+  .role-picker summary {
+    font-size: 1rem;
+  }
+}
+
+/* Reduced motion: no movement, but state still reads. Pressed keys keep
+   their collapsed shadow without shifting, chevrons and triangles flip
+   instantly, the drawer fades instead of sliding, and the activity light
+   stays lit. Colour and opacity transitions, which carry hover, selection
+   and focus, are left on. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  html { scroll-behavior: auto; }
+
+  button:active:not(:disabled),
+  .role-actions button:active,
+  .reset:active,
+  .export:active,
+  .fit:active:not(:disabled),
+  .catalogue-run:active:not(:disabled),
+  .catalogue-templates button:active,
+  .drawer header button:active:not(:disabled),
+  .role-picker[open] summary,
+  .filters-toggle[aria-expanded="true"] {
+    transform: none;
   }
 
-  .busy::before {
-    animation: spin 0.25s linear infinite !important;
+  .role-picker summary::after,
+  .filters-toggle::after,
+  .view-details summary::before {
+    transition: none;
   }
+
+  .drawer {
+    transition: opacity var(--duration-panel) var(--ease-standard);
+  }
+
+  .drawer:not(.open) { opacity: 0; }
+
+  .busy::before { animation: none; }
 }
 
 /* Ontology explorer */

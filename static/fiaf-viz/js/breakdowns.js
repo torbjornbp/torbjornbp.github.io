@@ -169,7 +169,6 @@ export function create(ctx, root) {
       .attr("y", 3)
       .attr("width", (row) => Math.max(1, x(row.count)))
       .attr("height", rowHeight - 6)
-      .attr("rx", 2)
       .attr("fill", panel.spec.colour)
       .attr("fill-opacity", 0.85)
       .on("mouseenter", (event, row) => {

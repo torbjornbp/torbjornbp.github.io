@@ -311,8 +311,7 @@ export function create(ctx, root, statsElement, overviewElement) {
         .attr("x", 10)
         .attr("y", boxTop)
         .attr("width", legendBox.width)
-        .attr("height", legendBox.height)
-        .attr("rx", 6);
+        .attr("height", legendBox.height);
     }
     const legendLeft = overlay ? 22 : 16;
     const legendTop = boxTop + 26;
