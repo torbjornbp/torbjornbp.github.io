@@ -1,0 +1,19 @@
+# Distinct works per production country and year, for the world map's time
+# modes. Only four-digit date prefixes are used.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?year ?country (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasCountry ?country ;
+        fiaf:hasEvent ?event .
+  {{SCOPE_FILTER}}
+  ?event a fiaf:ProductionEvent ;
+         fiaf:hasDate ?date .
+  BIND(SUBSTR(STR(?date), 1, 4) AS ?year)
+  FILTER(REGEX(?year, "^[0-9]{4}$"))
+}
+GROUP BY ?year ?country
+ORDER BY ?country ?year

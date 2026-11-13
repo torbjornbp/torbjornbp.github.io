@@ -82,13 +82,18 @@
   --role-7: #8a7356;
   --role-8: #4a505c;
   --role-other: #bdc2c9;
+  /* Roles outside the eight colours, where a chart must tell them apart
+     (the role chord): three greys, each at least 3:1 on the surface. */
+  --role-neutral-1: #666d7a;
+  --role-neutral-2: #7c838d;
+  --role-neutral-3: #8e949d;
   --heat-1: #f8ebec;
   --heat-2: #edc2c6;
   --heat-3: #d98790;
   --heat-4: #b94653;
   --heat-5: #7e1722;
   --map-empty: #eceef1;
-  /* Ten-step ramp for the world map's choropleth and circles, interpolated
+  /* Ten-step ramp for the world map's choropleth and spikes, interpolated
      along the heat ramp; step 1 stays distinct from --map-empty. */
   --map-heat-1: #f2d3d6;
   --map-heat-2: #efcacd;
@@ -171,6 +176,10 @@
 
   --duration-fast: 120ms;
   --duration-panel: 180ms;
+  /* The world map's afterglow: a country that loses its works fades out
+     over about three played years instead of snapping off. Keep in step
+     with AFTERGLOW_MS in js/worldmap.js. */
+  --duration-afterglow: 660ms;
   --ease-standard: ease;
   --ease-panel: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -212,6 +221,9 @@
   --role-7: #bba184;
   --role-8: #9aa1ac;
   --role-other: #5d646f;
+  --role-neutral-1: #c4c9d1;
+  --role-neutral-2: #7c838e;
+  --role-neutral-3: #6a717c;
   --heat-1: #2e1d22;
   --heat-2: #55252f;
   --heat-3: #873446;
@@ -281,6 +293,9 @@
     --role-7: #bba184;
     --role-8: #9aa1ac;
     --role-other: #5d646f;
+    --role-neutral-1: #c4c9d1;
+    --role-neutral-2: #7c838e;
+    --role-neutral-3: #6a717c;
     --heat-1: #2e1d22;
     --heat-2: #55252f;
     --heat-3: #873446;
@@ -1204,6 +1219,7 @@ main {
 }
 
 .time-control .time-play { min-width: 4.5em; }
+.time-control button:disabled { opacity: 0.45; cursor: not-allowed; }
 .time-control output { color: var(--text); font-variant-numeric: tabular-nums; }
 
 /* Headline figures: one bordered sheet with a hard shadow, divided into
@@ -1406,6 +1422,75 @@ main {
 .is-selected > .matrix-label { fill: var(--accent); font-weight: 600; }
 .chart-timeline { height: min(58vh, 520px); min-height: 360px; }
 .chart-roles { height: min(74vh, 720px); min-height: 460px; }
+
+/* Chord diagrams (js/chord.js, in Heatmaps and People › Roles): arcs and
+   ribbons take keyboard focus to show their counts; focus is an ink edge,
+   as on the map's marks. Only the heatmap's ribbons open anything. */
+.chord-arc,
+.chord-ribbon { cursor: default; }
+.chord-ribbon[role="button"] { cursor: pointer; }
+.chord-arc:focus-visible,
+.chord-ribbon:focus-visible {
+  outline: none;
+  stroke: var(--text);
+  stroke-width: 2px;
+}
+
+/* People › Roles, Most roles: the catalogue table with numbers in mono and
+   each role as a dotted tag with its role-colour square. */
+.roles-list .chart-state { min-height: 460px; }
+.roles-table .roles-rank,
+.roles-table .roles-number {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+.roles-table .roles-rank { color: var(--muted); width: 3ch; }
+.roles-tags { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.role-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0 var(--space-1);
+  border: 1px dotted var(--border-strong);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-chart);
+  white-space: nowrap;
+}
+.role-tag-swatch { width: 8px; height: 8px; flex: none; }
+
+/* In a narrow view each name becomes a block: rank and name on one line,
+   role and work counts under it, then the tags, so nothing scrolls
+   sideways. The column heads stay for screen readers only. */
+@container (max-width: 560px) {
+  .roles-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .roles-table,
+  .roles-table tbody { display: block; }
+  .roles-table tr.catalogue-row {
+    display: grid;
+    grid-template-columns: 3ch 1fr auto auto;
+    column-gap: var(--space-2);
+    row-gap: var(--space-1);
+    padding: var(--space-2_5) var(--space-2);
+  }
+  .roles-table tr.catalogue-row td { padding: 0; }
+  .roles-table .roles-rank { grid-row: 1; grid-column: 1; }
+  .roles-table td:nth-child(2) { grid-row: 1; grid-column: 2; min-width: 0; }
+  .roles-table td:nth-child(3) { grid-row: 1; grid-column: 3; }
+  .roles-table td:nth-child(4) { grid-row: 1; grid-column: 4; }
+  .roles-table td:nth-child(3)::after { content: " roles"; color: var(--muted); }
+  .roles-table td:nth-child(4)::after { content: " works"; color: var(--muted); }
+  .roles-table td:nth-child(5) { grid-row: 2; grid-column: 2 / -1; }
+}
 .chart-geography {
   min-height: 480px;
   overflow-x: auto;
@@ -1463,6 +1548,17 @@ main {
 .map-country.is-empty {
   fill: var(--map-empty);
 }
+/* In a time mode a country's colour arrives fast and leaves slowly. CSS
+   takes the transition of the state being entered, so only the fade to
+   empty is long: sparse years swing between dark and mid-tone instead of
+   flashing between dark and empty, and every country settles to its true
+   colour within the afterglow once the map stops. */
+.map-layer.is-timed .map-country.has-data {
+  transition: fill var(--duration-fast) cubic-bezier(0.16, 1, 0.3, 1), stroke var(--duration-fast) var(--ease-standard);
+}
+.map-layer.is-timed .map-country.is-empty {
+  transition: fill var(--duration-afterglow) cubic-bezier(0.33, 0, 0.67, 1), stroke var(--duration-fast) var(--ease-standard);
+}
 .map-offmap-title {
   fill: var(--muted);
   font-family: var(--font-mono);
@@ -1487,19 +1583,30 @@ main {
   outline: none;
 }
 .map-country.is-empty.has-works { fill: var(--map-has-works, var(--surface-2)); }
-.map-circle {
+/* Spikes after the d3 spike map: a translucent fill with a solid edge, so
+   overlapping spikes stay readable. */
+.map-spike {
   fill: var(--accent);
-  fill-opacity: 0.55;
-  stroke: var(--surface);
-  stroke-width: 0.8;
+  fill-opacity: 0.3;
+  stroke: var(--accent);
+  stroke-width: 1;
+  stroke-linejoin: miter;
   vector-effect: non-scaling-stroke;
   cursor: pointer;
 }
-.map-circle:hover, .map-circle:focus-visible { fill-opacity: 0.85; stroke: var(--text); outline: none; }
-.map-circle-legend { cursor: default; }
+.map-spike:hover { fill-opacity: 0.7; stroke: var(--text); }
+/* A spike is 5–8px wide, so a 1px edge is too faint a focus mark: the
+   focused spike goes solid with a 2px ink edge. */
+.map-spike:focus-visible {
+  fill-opacity: 0.9;
+  stroke: var(--text);
+  stroke-width: 2px;
+  outline: none;
+}
+.map-spike-legend { cursor: default; }
 .map-legend-box { fill: var(--surface); fill-opacity: 0.88; stroke: var(--border); }
 
-/* Player under the map: time mode, play and marks, then the decade track. */
+/* Player under the map: time mode, play and marks, then the year track. */
 .map-player {
   display: flex;
   flex-direction: column;
@@ -1514,10 +1621,11 @@ main {
 }
 .map-marks { margin-left: auto; }
 .map-track-wrap { width: 100%; }
-.map-track { display: block; width: 100%; height: auto; cursor: ew-resize; touch-action: none; border-radius: var(--radius); }
+/* pan-y: a vertical swipe across the track still scrolls the page; a
+   sideways drag scrubs. */
+.map-track { display: block; width: 100%; height: auto; cursor: ew-resize; touch-action: pan-y; border-radius: var(--radius); }
 .map-track:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
 .map-track-axis text { fill: var(--muted); font-size: var(--font-size-chart); pointer-events: none; }
-.map-track-axis text.is-minor { display: none; }
 .map-track-bar { fill: var(--border-strong); }
 .map-track-bar.is-before { fill: var(--muted); fill-opacity: 0.55; }
 .map-track-bar.is-current { fill: var(--accent); }

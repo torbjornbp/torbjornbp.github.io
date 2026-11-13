@@ -1,14 +1,32 @@
-// Role sunburst: roles by works, outer ring = busiest loaded names per role.
+// People › Roles, in three modes:
 //
-// The outer ring is built from the shared agent page (agents.rq) instead of a
-// separate role/agent query. A single global LIMIT on that query could not give
-// every role its busiest names (popular roles consumed the whole budget), and
-// the agent page is already loaded and cached for the name-based views.
+// - Sunburst: roles by works, outer ring = busiest loaded names per role.
+//   The outer ring is built from the shared agent page (agents.rq) instead of
+//   a separate role/agent query. A single global LIMIT on that query could
+//   not give every role its busiest names (popular roles consumed the whole
+//   budget), and the agent page is already loaded and cached for the
+//   name-based views.
+// - Combinations: a chord of the roles the same name holds, from
+//   role-pairs.rq, which counts every credited name, not only loaded ones.
+// - Most roles: the names credited in the most distinct roles.
+//
+// The combination and list queries load the first time their mode is shown
+// and are kept per dataset selection.
 
 import { roleLabel } from "./labels.js";
+import { drawChord } from "./chord.js";
+import { OTHER, chordColours, mostRoles, roleChord, roleSets } from "./role-combinations.js";
+import { runQuery, sparqlIri } from "./sparql.js";
 import * as ui from "./ui.js";
 
 const NAMES_PER_ROLE = 8;
+const LIST_NAMES = 50;
+const MODES = ["sunburst", "chord", "list"];
+const DESCRIPTIONS = {
+  sunburst: "Roles sized by works; outer ring shows the busiest names per role. Click a role to filter the cloud.",
+  chord: "Roles held by the same name. A ribbon is as wide as the names credited in both roles; hover for counts.",
+  list: "The names credited in the most different roles. Click a name to open it."
+};
 
 function isLightColour(value) {
   const match = /^#([0-9a-f]{6})$/i.exec(String(value || ""));
@@ -25,6 +43,13 @@ export function create(ctx, root, statsElement) {
   let lastSelection = null;
   let arcs = null;
   let hasRendered = false;
+  let mode = "sunburst";
+  // Per dataset selection: { scope, sets } and { scope, entries }.
+  let combos = null;
+  let listed = null;
+  let modeToken = 0;
+  let chordView = null;
+  let chordModel = null;
   const svg = d3
     .select(root)
     .append("svg")
@@ -32,6 +57,55 @@ export function create(ctx, root, statsElement) {
     .attr("aria-label", "Sunburst of credit roles and names");
 
   svg.on("click", () => ui.closeDrawer());
+
+  const modeButtons = [...document.querySelectorAll("[data-roles-mode]")];
+  const listRoot = document.getElementById("roles-list");
+  const descriptionElement = document.getElementById("roles-description");
+  const exportButton = document.querySelector('[data-export="roles"]');
+
+  function syncControls() {
+    for (const button of modeButtons) {
+      const active = button.dataset.rolesMode === mode;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    }
+    if (descriptionElement) descriptionElement.textContent = DESCRIPTIONS[mode];
+    // The list is HTML; there is no chart to download.
+    if (exportButton) exportButton.disabled = mode === "list";
+    root.hidden = mode === "list";
+    if (listRoot) listRoot.hidden = mode !== "list";
+  }
+
+  for (const button of modeButtons) {
+    button.addEventListener("click", () => {
+      const next = button.dataset.rolesMode;
+      // Pressing the current mode again retries a load that failed.
+      if (!MODES.includes(next) || (next === mode && modeLoaded())) return;
+      mode = next;
+      ui.hideTooltip();
+      syncControls();
+      loadMode().catch(showModeError);
+    });
+  }
+  syncControls();
+
+  function modeLoaded() {
+    const scope = ctx.scopeFilter();
+    if (mode === "chord") return Boolean(combos && combos.scope === scope);
+    if (mode === "list") return Boolean(listed && listed.scope === scope);
+    return true;
+  }
+
+  function showModeError(error) {
+    if (error.name === "AbortError") return;
+    const label = mode === "list" ? "Most roles" : "Combinations";
+    ui.setStatus(`${label} could not be loaded: ${error.message}`, "error");
+    ui.error(
+      mode === "list" && listRoot ? listRoot : root,
+      error,
+      `Press ${label} again to retry.`
+    );
+  }
 
   async function load({ signal } = {}) {
     if (!hasRendered) {
@@ -44,9 +118,46 @@ export function create(ctx, root, statsElement) {
     ]);
     if (signal && signal.aborted) return;
     data = build(roles, agentData);
-    draw();
     hasRendered = true;
     ui.setStatus("");
+    await loadMode({ signal });
+  }
+
+  // Load what the current mode needs, then draw it.
+  async function loadMode({ signal } = {}) {
+    const token = ++modeToken;
+    const scope = ctx.scopeFilter();
+    if (mode === "chord" && (!combos || combos.scope !== scope)) {
+      ui.message(root, "Counting role combinations…");
+      ui.setStatus("Counting the roles each name holds…");
+      const rows = await runQuery("role-pairs", { SCOPE_FILTER: scope }, { signal });
+      if (token !== modeToken) return;
+      combos = { scope, sets: roleSets(rows) };
+    }
+    if (mode === "list" && (!listed || listed.scope !== scope)) {
+      if (listRoot) ui.message(listRoot, "Finding the names with the most roles…");
+      ui.setStatus("Finding the names with the most roles…");
+      const rows = await runQuery(
+        "agents-most-roles",
+        { SCOPE_FILTER: scope, LIMIT: String(LIST_NAMES) },
+        { signal }
+      );
+      if (token !== modeToken) return;
+      const works = rows.length
+        ? await runQuery(
+            "agent-role-works",
+            { SCOPE_FILTER: scope, AGENT_IRIS: rows.map((row) => sparqlIri(row.agent)).join(" ") },
+            { signal }
+          )
+        : [];
+      if (token !== modeToken) return;
+      listed = { scope, entries: mostRoles(rows, works) };
+    }
+    if (token !== modeToken) return;
+    // Also clears a loading message left by a mode the visitor switched away
+    // from before its query answered.
+    ui.setStatus("");
+    draw();
   }
 
   function build(roles, agentData) {
@@ -98,11 +209,193 @@ export function create(ctx, root, statsElement) {
   const containerSize = () => `${root.clientWidth}x${root.clientHeight}`;
 
   function draw() {
-    render();
+    if (mode === "chord") {
+      if (combos) renderChord();
+    } else if (mode === "list") {
+      if (listed) renderList();
+    } else {
+      render();
+    }
     drawnSize = containerSize();
   }
 
+  // The roles in the Roles filter; all of them while the filter is unused.
+  function roleIncluded(role) {
+    return !ctx.state.roles.length || ctx.state.selectedRoles.has(role);
+  }
+
+  function roleName(role) {
+    return role === OTHER ? "Other roles" : roleLabel(role);
+  }
+
+  function renderChord() {
+    arcs = null;
+    chordModel = roleChord(combos.sets, roleIncluded);
+    const { roles, matrix } = chordModel;
+    if (roles.length < 2) {
+      chordView = null;
+      ui.empty(root, "No name holds two of the selected roles.");
+      statsElement.textContent = "";
+      return;
+    }
+    ui.clear(root);
+    // A group, not an image, so each focusable arc and ribbon keeps its label.
+    svg.attr("role", "group").attr("aria-label", "Chord diagram of the roles held by the same name");
+    // On a phone the labels get less room and fewer characters, so the
+    // chord and its labels fit the column instead of being cut at the sides;
+    // tooltips and aria labels keep the full names.
+    const width = Math.max(280, root.clientWidth || 900);
+    const height = Math.max(420, root.clientHeight || 640);
+    const tiny = width < 480;
+    const compact = width < 720;
+    const labelRoom = tiny ? 66 : compact ? 86 : 118;
+    const labelChars = tiny ? 10 : compact ? 14 : 22;
+    const outer = Math.max(70, Math.min(width, height) / 2 - labelRoom);
+    svg.attr("viewBox", `0 0 ${width} ${height}`);
+    svg.attr("width", width).attr("height", height);
+    svg.selectAll("*").remove();
+
+    const pairText = (chord) =>
+      `${ui.formatNumber(chord.source.value)} ${chord.source.value === 1 ? "name" : "names"} credited in both`;
+    chordView = drawChord(svg, {
+      matrix,
+      centre: [width / 2, height / 2],
+      outer,
+      fills: chordColours(roles, ctx.colorFor),
+      // The merged Other roles arc is outlined as the remainder.
+      arcStroke: (index) => (roles[index] === OTHER ? "var(--muted)" : "var(--surface)"),
+      labels: roles.map(roleName),
+      labelChars,
+      fontSize: compact ? 10 : 11,
+      arcTitle: (index) => roleName(roles[index]),
+      arcBody: arcText,
+      ribbonTitle: (chord) =>
+        `${roleName(roles[chord.source.index])} · ${roleName(roles[chord.target.index])}`,
+      ribbonBody: pairText,
+      // Leaving a mark restores the selected name's highlight, if any.
+      onRest: () => paintChord()
+    });
+
+    const { names, multi, otherRoles } = chordModel;
+    const selectedRoles = ctx.state.selectedRoles.size;
+    const totalRoles = ctx.state.roles.length;
+    statsElement.textContent =
+      `${ui.formatNumber(multi)} of ${ui.formatNumber(names)} credited names hold two or more ` +
+      (selectedRoles < totalRoles ? "of the selected roles" : "roles") +
+      ` · ${ui.formatNumber(roles.length)} arcs` +
+      (otherRoles.length ? `, ${ui.formatNumber(otherRoles.length)} smaller roles under Other roles` : "") +
+      " · ribbon width = names credited in both roles";
+    paintChord();
+  }
+
+  function arcText(index) {
+    const { roles, matrix, named, combining, otherRoles } = chordModel;
+    const partners = matrix[index].filter(Boolean).length;
+    if (roles[index] === OTHER) {
+      return (
+        `${ui.formatNumber(otherRoles.length)} smaller roles combined, such as ` +
+        `${otherRoles.slice(0, 3).map(roleLabel).join(", ")}`
+      );
+    }
+    return (
+      `${ui.formatNumber(combining[index])} of ${ui.formatNumber(named[index])} names in this role ` +
+      `also hold another, across ${ui.formatNumber(partners)} of the roles shown`
+    );
+  }
+
+  // With a name selected, only the ribbons between two of its roles stay.
+  function paintChord() {
+    if (!chordView || !chordModel) return;
+    const roles = lastSelection && lastSelection.kind === "agent" ? lastSelection.roles || [] : [];
+    if (roles.length < 2) {
+      chordView.rest();
+      return;
+    }
+    const held = new Set(roles);
+    const otherHeld = roles.some((role) => chordModel.otherRoles.includes(role));
+    const holds = (index) =>
+      chordModel.roles[index] === OTHER ? otherHeld : held.has(chordModel.roles[index]);
+    chordView.fade((chord) => holds(chord.source.index) && holds(chord.target.index));
+  }
+
+  function renderList() {
+    arcs = null;
+    chordView = null;
+    if (!listRoot) return;
+    const entries = listed.entries;
+    if (!entries.length) {
+      ui.empty(listRoot, "No name holds more than one role in this selection.");
+      statsElement.textContent = "";
+      return;
+    }
+    ui.clear(listRoot);
+    const table = ui.node("table", "catalogue-table roles-table");
+    const head = ui.node("thead", "");
+    const headRow = ui.node("tr", "");
+    for (const [label, className] of [["#", "roles-rank"], ["Name", ""], ["Roles", "roles-number"], ["Works", "roles-number"], ["Credited as", ""]]) {
+      headRow.append(ui.node("th", className, label));
+    }
+    head.append(headRow);
+    const body = ui.node("tbody", "");
+    entries.forEach((entry, index) => {
+      const row = ui.node("tr", "catalogue-row");
+      row.tabIndex = 0;
+      // As in the catalogue: the whole row opens the name.
+      row.setAttribute("role", "button");
+      row.dataset.agent = entry.agent;
+      row.setAttribute(
+        "aria-label",
+        `${entry.name}: ${entry.roles} roles` +
+          (entry.works === null ? "" : `, ${entry.works} ${entry.works === 1 ? "work" : "works"}`) +
+          ". Activate to open."
+      );
+      const open = () => ctx.openAgent(entry.agent, entry.name);
+      row.addEventListener("click", open);
+      row.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          open();
+        }
+      });
+      row.append(ui.node("td", "roles-rank", String(index + 1)));
+      const nameCell = ui.node("td", "");
+      nameCell.append(ui.node("span", "catalogue-title", entry.name));
+      row.append(nameCell);
+      row.append(ui.node("td", "roles-number", ui.formatNumber(entry.roles)));
+      row.append(ui.node("td", "roles-number", entry.works === null ? "—" : ui.formatNumber(entry.works)));
+      const cell = ui.node("td", "");
+      const tags = ui.node("div", "roles-tags");
+      cell.append(tags);
+      for (const { role, works } of entry.byRole) {
+        const tag = ui.node("span", "role-tag");
+        const swatch = ui.node("span", "role-tag-swatch");
+        swatch.style.background = ctx.colorFor(role);
+        tag.append(swatch, `${roleLabel(role)} ${ui.formatNumber(works)}`);
+        tags.append(tag);
+      }
+      row.append(cell);
+      body.append(row);
+    });
+    table.append(head, body);
+    listRoot.append(table);
+    paintList();
+    statsElement.textContent =
+      `The ${ui.formatNumber(entries.length)} names credited in the most distinct roles` +
+      " · every role counts, whatever the Roles filter" +
+      " · the number after a role is that name's works in it";
+  }
+
+  function paintList() {
+    if (!listRoot) return;
+    const agent = lastSelection && lastSelection.kind === "agent" ? lastSelection.id : null;
+    for (const row of listRoot.querySelectorAll("tr[data-agent]")) {
+      row.classList.toggle("is-selected", row.dataset.agent === agent);
+    }
+  }
+
   function render() {
+    svg.attr("role", "img").attr("aria-label", "Sunburst of credit roles and names");
+    chordView = null;
     if (!data || !data.children.length) {
       ui.empty(root, "No credited roles for the current filter.");
       statsElement.textContent = "";
@@ -263,8 +556,12 @@ export function create(ctx, root, statsElement) {
       return;
     }
     lastSelection = selection;
-    paint();
-    updateStats();
+    if (mode === "chord") paintChord();
+    else if (mode === "list") paintList();
+    else {
+      paint();
+      updateStats();
+    }
   }
 
   function labelAngle(entry) {
@@ -277,7 +574,22 @@ export function create(ctx, root, statsElement) {
     select,
     kinds: new Set(["agent"]),
     hasNode(id) {
+      // The chord counts every credited name, so every name is in it.
+      if (mode === "chord") return true;
+      if (mode === "list") return Boolean(listed && listed.entries.some((entry) => entry.agent === id));
       return Boolean(data && data.ringAgents.has(id));
+    },
+    // Why a selected name is not shown, for the drawer's context note.
+    outsideNote() {
+      return mode === "list"
+        ? {
+            text: `This name is not among the ${LIST_NAMES} names credited in the most roles.`,
+            short: "selected name is not in the most-roles list"
+          }
+        : null;
+    },
+    currentQuery() {
+      return mode === "chord" ? "role-pairs" : mode === "list" ? "agents-most-roles" : "roles";
     },
     resize() {
       if (data && containerSize() !== drawnSize) draw();

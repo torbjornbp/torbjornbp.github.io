@@ -500,6 +500,8 @@ function selectionStatus() {
       };
     }
     if (!view.hasNode(selection.id)) {
+      const note = view.outsideNote && view.outsideNote();
+      if (note) return { shown: false, tone: "warning", text: `Outside the loaded view · ${note.text}`, short: note.short };
       return {
         shown: false,
         tone: "warning",

@@ -1,0 +1,23 @@
+# Works for one country in one production year (the world map's drawer).
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?work (SAMPLE(?candidateTitle) AS ?title)
+WHERE {
+  VALUES ?country { {{COUNTRY}} }
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasCountry ?country ;
+        fiaf:hasEvent ?event .
+  {{SCOPE_FILTER}}
+  OPTIONAL { ?work rdfs:label ?label }
+  OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+  BIND(COALESCE(?label, ?titleValue) AS ?candidateTitle)
+  ?event a fiaf:ProductionEvent ;
+         fiaf:hasDate ?date .
+  FILTER(SUBSTR(STR(?date), 1, 4) = {{YEAR}})
+}
+GROUP BY ?work
+ORDER BY ?title ?work
+LIMIT {{LIMIT}}

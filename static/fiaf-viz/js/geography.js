@@ -8,6 +8,7 @@ import {
   heatPercentScale,
   heatScale
 } from "./heat.js";
+import { drawChord as drawChordDiagram } from "./chord.js";
 import * as ui from "./ui.js";
 
 const FIAF = "https://dev.fiafcore.org/";
@@ -681,6 +682,9 @@ export function create(
     if (descriptionElement) descriptionElement.textContent = spec.description;
     const chord = chordActive(spec);
     const mosaic = mosaicActive(spec);
+    // The chord's arcs and ribbons carry their own labels, which an image
+    // role would hide.
+    svg.attr("role", chord ? "group" : "img");
     svg.attr(
       "aria-label",
       chord
@@ -1091,7 +1095,6 @@ export function create(
     const labelRoom = compact ? 90 : 120;
     const size = Math.min(width, 900);
     const outer = Math.max(120, size / 2 - labelRoom);
-    const inner = outer - 14;
     const height = 2 * (outer + labelRoom) + 16;
     root.style.height = `${height}px`;
     svg.attr("viewBox", `0 0 ${width} ${height}`);
@@ -1103,125 +1106,36 @@ export function create(
     const other = token("--role-other", "#b8b8b8");
     const colour = (index) => (index < palette.length ? palette[index] : other);
 
-    const chords = d3
-      .chord()
-      .padAngle(Math.min(0.04, 10 / inner))
-      .sortSubgroups(d3.descending)
-      .sortChords(d3.descending)(matrix);
-    const arc = d3.arc().innerRadius(inner).outerRadius(outer);
-    const ribbon = d3.ribbon().radius(inner - 1).padAngle(0.002);
-    const chart = svg
-      .append("g")
-      .attr("transform", `translate(${width / 2},${outer + labelRoom + 8})`);
-
-    const ribbons = chart
-      .append("g")
-      .attr("class", "chord-ribbons")
-      .selectAll("path")
-      .data(chords)
-      .join("path")
-      .attr("class", "chord-ribbon")
-      .attr("d", ribbon)
-      .attr("fill", (chord) => colour(chord.source.index))
-      .attr("fill-opacity", 0.72)
-      .attr("stroke", (chord) => colour(chord.source.index))
-      .attr("stroke-opacity", 0.9)
-      .attr("stroke-width", 0.5)
-      .attr("tabindex", 0)
-      .attr("role", "button")
-      .attr("aria-label", (chord) => {
-        const a = list[chord.source.index];
-        const b = list[chord.target.index];
-        return `${rowLabel(spec, a)} and ${rowLabel(spec, b)}: ${chord.source.value} works. Activate to list works.`;
-      });
-
-    const fade = (keep) => {
-      ribbons.attr("fill-opacity", (chord) => (keep(chord) ? 0.85 : 0.06));
-      ribbons.attr("stroke-opacity", (chord) => (keep(chord) ? 0.9 : 0.1));
-    };
-    const unfade = () => {
-      ribbons.attr("fill-opacity", 0.72).attr("stroke-opacity", 0.9);
-    };
-    const openPair = (chord) => {
-      const cell = pair(list[chord.source.index], list[chord.target.index]);
-      if (cell) openCell(spec, cell);
-    };
-
-    ribbons
-      .on("mouseenter", (event, chord) => {
-        fade((other) => other === chord);
-        const a = list[chord.source.index];
-        const b = list[chord.target.index];
-        const cell = pair(a, b);
-        ui.showTooltip(
-          event,
-          `${rowLabel(spec, a)} · ${rowLabel(spec, b)}`,
-          cell ? `${rawCellCountText(spec, cell)} · activate for titles` : "No data"
+    const labels = list.map((value) => rowLabel(spec, value));
+    const cellFor = (chord) => pair(list[chord.source.index], list[chord.target.index]);
+    drawChordDiagram(svg, {
+      matrix,
+      centre: [width / 2, outer + labelRoom + 8],
+      outer,
+      fills: list.map((_, index) => colour(index)),
+      arcStroke: () => token("--surface", "#ffffff"),
+      labels,
+      labelChars: compact ? 14 : 20,
+      fontSize: compact ? 10 : 11,
+      arcTitle: (index) => labels[index],
+      arcBody: (index) => {
+        const partners = matrix[index].filter(Boolean).length;
+        const shared = d3.sum(matrix[index]);
+        return (
+          `${ui.formatNumber(shared)} shared works with ${ui.formatNumber(partners)} ` +
+          "of the countries shown · a work with several partners counts once per pair"
         );
-      })
-      .on("mousemove", ui.moveTooltip)
-      .on("mouseleave", () => {
-        unfade();
-        ui.hideTooltip();
-      })
-      .on("click", (_event, chord) => openPair(chord))
-      .on("keydown", (event, chord) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          openPair(chord);
-        }
-      });
-
-    const groups = chart
-      .append("g")
-      .attr("class", "chord-groups")
-      .selectAll("g")
-      .data(chords.groups)
-      .join("g");
-    groups
-      .append("path")
-      .attr("class", "chord-arc")
-      .attr("d", arc)
-      .attr("fill", (group) => colour(group.index))
-      .attr("stroke", token("--surface", "#ffffff"))
-      .attr("stroke-width", 1)
-      .on("mouseenter", (event, group) => {
-        fade((chord) => chord.source.index === group.index || chord.target.index === group.index);
-        const partners = matrix[group.index].filter(Boolean).length;
-        ui.showTooltip(
-          event,
-          rowLabel(spec, list[group.index]),
-          `${ui.formatNumber(group.value)} shared works with ${ui.formatNumber(partners)} ` +
-            `of the countries shown · a work with several partners counts once per pair`
-        );
-      })
-      .on("mousemove", ui.moveTooltip)
-      .on("mouseleave", () => {
-        unfade();
-        ui.hideTooltip();
-      });
-
-    // Labels run outwards from their arc and flip on the left half so they
-    // never read upside down. Arcs too thin for a label stay unlabelled.
-    const fontSize = compact ? 10 : 11;
-    groups
-      .filter((group) => (group.endAngle - group.startAngle) * outer >= fontSize * 0.9)
-      .append("text")
-      .attr("class", "heat-label chord-label")
-      .each((group) => {
-        group.angle = (group.startAngle + group.endAngle) / 2;
-      })
-      .attr("dy", "0.35em")
-      .attr(
-        "transform",
-        (group) =>
-          `rotate(${(group.angle * 180) / Math.PI - 90})` +
-          `translate(${outer + 6})` +
-          (group.angle > Math.PI ? "rotate(180)" : "")
-      )
-      .attr("text-anchor", (group) => (group.angle > Math.PI ? "end" : null))
-      .style("font-size", `${fontSize}px`)
-      .text((group) => ui.truncate(rowLabel(spec, list[group.index]), compact ? 14 : 20));
+      },
+      ribbonTitle: (chord) => `${labels[chord.source.index]} · ${labels[chord.target.index]}`,
+      ribbonBody: (chord) => {
+        const cell = cellFor(chord);
+        return cell ? `${rawCellCountText(spec, cell)} · activate for titles` : "No data";
+      },
+      onActivate: (chord) => {
+        const cell = cellFor(chord);
+        if (cell) openCell(spec, cell);
+      }
+    });
 
     const capped = rowLimit === null || rowLimit > CHORD_MAX;
     statsElement.textContent =

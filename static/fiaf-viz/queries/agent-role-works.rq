@@ -1,0 +1,21 @@
+# Distinct works per role for a short list of names (the most-roles list),
+# and ?role = "" for their works in any role.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?agent ?role (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?agent { {{AGENT_IRIS}} }
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?activity fiaf:hasAgent ?agent ;
+            a ?activityRole .
+  FILTER(STRSTARTS(STR(?activityRole), "https://dev.fiafcore.org/") && ?activityRole != fiaf:Activity)
+  ?event fiaf:hasActivity ?activity .
+  ?work fiaf:hasEvent ?event ;
+        a ?workType .
+  {{SCOPE_FILTER}}
+  # Each credit counts once under its role and once under "" (any role).
+  VALUES ?total { false true }
+  BIND(IF(?total, "", ?activityRole) AS ?role)
+}
+GROUP BY ?agent ?role

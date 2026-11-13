@@ -1,4 +1,4 @@
-// Works per production year (or decade).
+// Works per production year, or streams of a split per decade.
 
 import { limit, runQuery, sparqlIri, sparqlLiteral } from "./sparql.js";
 import {
@@ -164,9 +164,8 @@ export function create(ctx, root, statsElement, granularityButtons, descriptionE
       ui.message(root, "Loading production dates…");
     }
     ui.setStatus("Counting works per year…");
-    const [rows, decadeRows, totalRows] = await Promise.all([
+    const [rows, totalRows] = await Promise.all([
       runQuery("timeline", { SCOPE_FILTER: ctx.scopeFilter() }, { signal }),
-      runQuery("timeline-decades", { SCOPE_FILTER: ctx.scopeFilter() }, { signal }),
       runQuery("works-total", { SCOPE_FILTER: ctx.scopeFilter() }, { signal })
     ]);
     if (signal && signal.aborted) return;
@@ -176,7 +175,6 @@ export function create(ctx, root, statsElement, granularityButtons, descriptionE
     }
     data = {
       rows: normaliseTimelineRows(rows),
-      decades: normaliseTimelineRows(decadeRows),
       dated: totalRows.length ? Number(totalRows[0].datedWorks) || 0 : 0,
       total: totalRows.length ? Number(totalRows[0].works) : 0
     };
@@ -315,7 +313,7 @@ export function create(ctx, root, statsElement, granularityButtons, descriptionE
       return;
     }
     svg.attr("aria-label", ARIA_LABEL);
-    const rows = granularity === "decade" ? data.decades : data.rows;
+    const rows = data.rows;
     if (!rows.length) {
       ui.empty(root, "No dated works found.");
       statsElement.textContent = "";
@@ -332,12 +330,7 @@ export function create(ctx, root, statsElement, granularityButtons, descriptionE
     svg.attr("width", width).attr("height", height);
     svg.selectAll("*").remove();
 
-    const step = granularity === "decade" ? 10 : 1;
-    const domain = d3.range(
-      rows[0].year,
-      rows[rows.length - 1].year + step,
-      step
-    );
+    const domain = d3.range(rows[0].year, rows[rows.length - 1].year + 1);
     const x = d3.scaleBand().domain(domain).range([0, innerWidth]).paddingInner(0.18);
     const y = d3
       .scaleLinear()
@@ -361,9 +354,7 @@ export function create(ctx, root, statsElement, granularityButtons, descriptionE
             rows[rows.length - 1].year,
             Math.max(3, Math.floor(innerWidth / 65))
           )
-        : granularity === "year"
-          ? domain.filter((year) => year % 10 === 0)
-          : domain;
+        : domain.filter((year) => year % 10 === 0);
 
     chart
       .append("g")
@@ -373,7 +364,7 @@ export function create(ctx, root, statsElement, granularityButtons, descriptionE
         d3
           .axisBottom(x)
           .tickValues(tickValues)
-          .tickFormat((year) => (granularity === "decade" ? `${year}s` : String(year)))
+          .tickFormat((year) => String(year))
       );
 
     chart.append("g").attr("class", "axis").call(d3.axisLeft(y).ticks(6).tickFormat(ui.formatNumber));
@@ -392,15 +383,11 @@ export function create(ctx, root, statsElement, granularityButtons, descriptionE
       .attr("fill-opacity", 0.8)
       .attr("tabindex", 0)
       .attr("role", "button")
-      .attr("aria-label", (row) => {
-        const period = granularity === "decade" ? `${row.year}s` : String(row.year);
-        return `${period}: ${ui.formatNumber(row.works)} works. Activate to list works.`;
-      })
+      .attr("aria-label", (row) => `${row.year}: ${ui.formatNumber(row.works)} works. Activate to list works.`)
       .on("mouseenter", (event, row) => {
-        const period = granularity === "decade" ? `${row.year}s` : String(row.year);
         ui.showTooltip(
           event,
-          period,
+          String(row.year),
           `${ui.formatNumber(row.works)} works · activate for titles`
         );
       })
@@ -431,13 +418,10 @@ export function create(ctx, root, statsElement, granularityButtons, descriptionE
     const controller = new AbortController();
     drawerController = controller;
     const workLimit = limit("heatmapWorkRows", 200);
-    const mode = granularity;
-    const period = mode === "decade" ? `${row.year}s` : String(row.year);
-    const year = String(row.year).padStart(4, "0");
-    const prefix = mode === "decade" ? year.slice(0, 3) : year;
+    const period = String(row.year);
+    const prefix = period.padStart(4, "0");
     const subtitle =
-      `${ui.formatNumber(row.works)} ${row.works === 1 ? "work" : "works"} ` +
-      (mode === "decade" ? "dated in this decade." : "dated in this year.");
+      `${ui.formatNumber(row.works)} ${row.works === 1 ? "work" : "works"} dated in this year.`;
     ui.openDrawer(period, subtitle);
     ui.drawerMessage("Loading works…");
     try {
@@ -480,7 +464,7 @@ export function create(ctx, root, statsElement, granularityButtons, descriptionE
     load,
     currentQuery() {
       if (granularity === "streams") return SPLITS[split].query;
-      return granularity === "decade" ? "timeline-decades" : "timeline";
+      return "timeline";
     },
     invalidate() {
       data = null;

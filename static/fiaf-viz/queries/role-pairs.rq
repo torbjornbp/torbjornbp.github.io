@@ -1,0 +1,32 @@
+# Combinations of credited roles held by the same name: one row per set of
+# roles, with the number of names credited in exactly that set on works in
+# the selection. ?roleSet is "LocalName|LocalName"; GROUP_CONCAT does not
+# promise an order, so the client sorts each set and merges equal ones. The
+# chord under People › Roles turns the sets into pairs.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?roleSet (COUNT(*) AS ?names)
+WHERE {
+  {
+    SELECT ?agent (GROUP_CONCAT(?roleName; separator="|") AS ?roleSet)
+    WHERE {
+      {
+        SELECT DISTINCT ?agent ?role
+        WHERE {
+          VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+          ?work a ?workType .
+          {{SCOPE_FILTER}}
+          ?work fiaf:hasEvent/fiaf:hasActivity ?activity .
+          ?activity a ?role ;
+                    fiaf:hasAgent ?agent .
+          FILTER(STRSTARTS(STR(?role), "https://dev.fiafcore.org/") && ?role != fiaf:Activity)
+        }
+      }
+      BIND(STRAFTER(STR(?role), "https://dev.fiafcore.org/") AS ?roleName)
+    }
+    GROUP BY ?agent
+  }
+}
+GROUP BY ?roleSet
+ORDER BY DESC(?names)

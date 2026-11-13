@@ -255,7 +255,6 @@
         <div class="view-actions">
           <div class="segmented" role="group" aria-label="Granularity">
             <button type="button" data-granularity="year" class="active" aria-pressed="true">Year</button>
-            <button type="button" data-granularity="decade" aria-pressed="false">Decade</button>
             <button type="button" data-granularity="streams" aria-pressed="false">Streams</button>
           </div>
           <label class="inline-control" data-stream-control hidden>
@@ -285,7 +284,7 @@
       <p id="timeline-stats" class="stats"></p>
       <details class="view-details">
         <summary>How is this counted?</summary>
-        <p>Works per production year: the first four digits of each production event date. A work dated in several years counts once in each year, and once per decade in the decade view. Works with no four-digit production date are left out; the dated share above says how many.</p>
+        <p>Works per production year: the first four digits of each production event date. A work dated in several years counts once in each year. Works with no four-digit production date are left out; the dated share above says how many.</p>
         <p>Streams split the decade counts by genre, form, credited role, production country or language usage. Each stream is the number of dated works with that value in each decade; a work with several values counts under each, so the streams can add up to more than the decade's works. Colour, base material, element type and item format count items instead, as in the heatmaps: the items of works produced in that decade, whether the value is recorded on the item or on its manifestation. Item formats are grouped by their format class in the FIAFcore ontology (35mm film is a film format, MXF a digital format): each class has one hue, its formats are shades of it, and beyond four formats a class's smallest are combined.The largest seven values have their own stream and the rest are combined under Other. Volume centres the streams around a moving baseline; Share stacks each decade to 100%.</p>
         <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
       </details>
@@ -301,7 +300,7 @@
           <h2 data-in-group="overview">Overview</h2>
           <h2 data-in-group="works">World map</h2>
           <p data-in-group="overview">Records contributed by film archives, described with the FIAFcore ontology and published as linked data. Every figure and chart on this site is a live SPARQL query against the public endpoint. Start with a question below, or choose a kind of data from the tabs.</p>
-          <p id="worldmap-description" data-in-group="works">Works by production country. Colour intensity follows the heat ramp; click a country for titles. Co-productions count once for each country. Play the decades to watch the collections fill the map.</p>
+          <p id="worldmap-description" data-in-group="works">Works by production country. Colour intensity follows the heat ramp; click a country for titles. Co-productions count once for each country. Play the years to watch the collections fill the map.</p>
         </div>
         <div class="view-actions">
           <button type="button" class="fit" data-fit="worldmap">Fit view</button>
@@ -359,26 +358,28 @@
         <p>Each country shows the distinct works that list it as a production country. A co-production counts once under each of its countries, so the country totals add up to more than the number of works, and works with no production country are in the Works total but not on the map.</p>
         <p>Credited names are names with a non-empty label credited on a work in any role. Production years are the first four digits of production event dates; dates without a four-digit year are left out.</p>
         <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
-        <p data-in-group="works">Per decade shows the works with a production date in that decade; Cumulative adds up every decade so far, so a country keeps its colour once it has works. Only dated works take part, and the line above the map says how many of the works that is. A work dated in two decades counts in both. The colour scale and circle sizes are fixed for the whole run, so a colour means the same number in every decade. The bars under the map show the dated works per decade; click or drag along them, or focus them and use the arrow keys, to pick a decade.</p>
-        <p>Circles size each country by its works at the centre of its largest landmass, so a large country does not look busier just because it covers more of the map.</p>
+        <p data-in-group="works">Per year shows the works with a production date in that year; Cumulative adds up every year so far, so a country keeps its colour once it has works. Only dated works take part, and the line above the map says how many of the works that is. A work dated in two years counts in both. The colour scale and spike heights are fixed for the whole run, so a colour or a height means the same number in every year. The bars under the map show the dated works per year; click or drag along them, or focus them and use the arrow keys (Page Up and Page Down jump ten years), to pick a year; Back and Next step one year at a time.</p>
+        <p>Spikes rise from the centre of each country's largest landmass, so a large country does not look busier just because it covers more of the map. Their height is on a log scale: each step in the legend is ten times the works of the one before, so a country with a tenth of the works is not ten times shorter. Countries with no works in the frame have no spike.</p>
       </details>
       <div id="worldmap-chart" class="chart chart-worldmap"></div>
       <div class="map-player" id="worldmap-player">
         <div class="map-player-row">
           <div class="segmented" id="worldmap-time-mode" role="group" aria-label="Time">
             <button type="button" data-map-time="all" class="active" aria-pressed="true">All years</button>
-            <button type="button" data-map-time="decade" aria-pressed="false">Per decade</button>
+            <button type="button" data-map-time="year" aria-pressed="false">Per year</button>
             <button type="button" data-map-time="cumulative" aria-pressed="false">Cumulative</button>
           </div>
           <div class="inline-control time-control" id="worldmap-time" hidden>
-            <span>Decade: <output id="worldmap-time-value" for="worldmap-track" aria-live="polite"></output></span>
+            <span>Year: <output id="worldmap-time-value" for="worldmap-track" aria-live="polite"></output></span>
             <div class="time-control-row">
+              <button type="button" class="fit time-step" id="worldmap-time-back" aria-label="Previous year">Back</button>
               <button type="button" class="fit time-play" id="worldmap-time-play" aria-pressed="false">Play</button>
+              <button type="button" class="fit time-step" id="worldmap-time-next" aria-label="Next year">Next</button>
             </div>
           </div>
           <div class="segmented map-marks" id="worldmap-marks" role="group" aria-label="Map marks">
             <button type="button" data-map-marks="shade" class="active" aria-pressed="true">Shade</button>
-            <button type="button" data-map-marks="circles" aria-pressed="false">Circles</button>
+            <button type="button" data-map-marks="spikes" aria-pressed="false">Spikes</button>
           </div>
         </div>
         <div id="worldmap-track" class="map-track-wrap" hidden></div>
@@ -660,9 +661,14 @@
       <div class="view-head">
         <div>
           <h2>Roles</h2>
-          <p>Roles sized by works; outer ring shows the busiest names per role. Click a role to filter the cloud.</p>
+          <p id="roles-description">Roles sized by works; outer ring shows the busiest names per role. Click a role to filter the cloud.</p>
         </div>
         <div class="view-actions">
+          <div class="segmented" id="roles-mode" role="group" aria-label="Roles view">
+            <button type="button" data-roles-mode="sunburst" class="active" aria-pressed="true">Sunburst</button>
+            <button type="button" data-roles-mode="chord" aria-pressed="false">Combinations</button>
+            <button type="button" data-roles-mode="list" aria-pressed="false">Most roles</button>
+          </div>
           <button type="button" class="fit" data-query="roles">See the query</button>
           <button type="button" class="export" data-export="roles">Download SVG</button>
         </div>
@@ -672,9 +678,12 @@
         <summary>How is this counted?</summary>
         <p>The inner ring has one arc per credited role, sized by the distinct works with at least one credit in that role. The outer ring shows the 8 busiest loaded names in each role, sized by their works in that role; a name with several roles appears under each.</p>
         <p>The outer ring only draws from the names loaded with Names, so a larger slice can change who appears there; the inner ring always counts every credit.</p>
+        <p>Combinations counts every credited name, not only the loaded ones. Each arc is a role and each ribbon a pair of roles, as wide as the names credited in both, on any works. A name in three roles counts once in each of its three pairs, so an arc adds up to more than its names. Only the roles chosen in the Roles filter take part. Beyond 14 roles, the ones with fewest combining names share an Other roles arc.</p>
+        <p>Most roles lists the 50 names credited in the most distinct roles, whatever the Roles filter, with each name's distinct works in each role; names tied at the end of the list are cut by identifier. Unlabelled names are left out.</p>
         <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
       </details>
       <div id="roles-chart" class="chart chart-roles"></div>
+      <div id="roles-list" class="catalogue-table-wrap roles-list" hidden></div>
     </section>
 
     <section id="view-ontology" class="view" data-view="ontology" hidden>

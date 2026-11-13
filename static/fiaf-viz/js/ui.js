@@ -66,6 +66,13 @@ export function showTooltip(event, title, body) {
   positionTooltip(event);
 }
 
+// Where a tooltip goes for keyboard focus, which has no pointer: the
+// centre of the focused element's box, in the shape showTooltip expects.
+export function elementPoint(element) {
+  const box = element.getBoundingClientRect();
+  return { clientX: box.left + box.width / 2, clientY: box.top + box.height / 2 };
+}
+
 export function moveTooltip(event) {
   const element = tooltip();
   if (!element || element.hidden) return;
@@ -712,7 +719,7 @@ const EXPORT_STYLE = `
   .map-offmap-title { fill: var(--muted); font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.02em; text-transform: uppercase; }
   .map-offmap-item text { fill: var(--text); font-family: var(--font); font-size: 11px; }
   .map-legend-box { fill: var(--surface); fill-opacity: .88; stroke: var(--border); }
-  .map-circle { fill: var(--accent); fill-opacity: .55; stroke: var(--surface); stroke-width: .8; }
+  .map-spike { fill: var(--accent); fill-opacity: .3; stroke: var(--accent); stroke-width: 1; }
   .work-graph-link, .ontology-edge, .ontology-edge-hit { fill: none; }
   .work-graph-link { stroke: var(--border-strong); stroke-width: 1; }
   .work-graph-link-credit { stroke-width: 1; stroke-dasharray: 3 2; stroke-opacity: .7; }
@@ -764,7 +771,8 @@ const EXPORT_VARS = [
   "--accent", "--accent-strong", "--accent-soft", "--name-colour",
   "--work-colour", "--error", "--role-1", "--role-2", "--role-3",
   "--role-4", "--role-5", "--role-6", "--role-7", "--role-8",
-  "--role-other", "--heat-1", "--heat-2", "--heat-3", "--heat-4",
+  "--role-other", "--role-neutral-1", "--role-neutral-2", "--role-neutral-3",
+  "--heat-1", "--heat-2", "--heat-3", "--heat-4",
   "--heat-5", "--map-empty", "--font", "--border-strong", "--role-other",
   ...Array.from({ length: 10 }, (_, index) => `--map-heat-${index + 1}`)
 ];
