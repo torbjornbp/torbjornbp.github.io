@@ -685,7 +685,7 @@ export function create(ctx, root, statsElement, detailsElement) {
       actions.append(action("List records in the catalogue", () => ctx.openCatalogueQuery(classQuery(node.id))));
     }
     if (node !== tree.root && (node.id === ACTIVITY || path.some((step) => step.id === ACTIVITY))) {
-      actions.append(action("Open the Roles view", () => { location.hash = "#roles"; }));
+      actions.append(action("Open the Roles view", () => { location.hash = "#people/roles"; }));
     }
     if (mode === "schema" && node !== tree.root) {
       actions.append(action("Show in the class tree", () => showClass(node.id)));

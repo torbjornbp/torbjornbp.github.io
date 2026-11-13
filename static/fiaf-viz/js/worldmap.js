@@ -826,8 +826,30 @@ export function create(ctx, root, statsElement, overviewElement) {
 
   syncControls();
 
+  // The decade player belongs to Works › Map; the Overview shows all years.
+  // Leaving Works remembers its time mode and restores it on the way back.
+  const timeModeControl = document.getElementById("worldmap-time-mode");
+  let datingEnabled = true;
+  let savedTimeMode = "all";
+
+  function setGroup(group) {
+    const enabled = group !== "overview";
+    if (enabled === datingEnabled) return;
+    datingEnabled = enabled;
+    if (timeModeControl) timeModeControl.hidden = !enabled;
+    if (enabled) {
+      setTimeMode(savedTimeMode);
+    } else {
+      savedTimeMode = timeMode;
+      setTimeMode("all");
+      if (trackRoot) trackRoot.hidden = true;
+    }
+  }
+
   return {
     load,
+    setGroup,
+    currentQuery: () => (timeMode === "all" ? "country-works" : "country-decades"),
     pause: stopPlaying,
     resize() {
       if (entries && root.clientWidth && root.clientWidth !== previousWidth) draw();

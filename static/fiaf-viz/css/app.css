@@ -561,7 +561,7 @@ button:active:not(:disabled) { transform: translateY(1px); }
 
 .tabs a {
   display: inline-flex;
-  flex: 1 1 auto;
+  flex: 1 1 0;
   align-items: center;
   justify-content: center;
   height: 2.25rem;
@@ -1042,7 +1042,10 @@ main {
 .view-head p {
   margin: var(--space-2_5) 0 0;
   color: var(--muted);
-  max-width: 68ch;
+  /* Schibsted's average glyph is narrower than "0": 56ch sets about 75
+     characters a line. */
+  max-width: 56ch;
+  text-wrap: pretty;
   font-size: var(--font-size-small);
   line-height: var(--leading-body);
 }
@@ -1139,6 +1142,37 @@ main {
 
 .segmented button.active:hover { background: var(--text); color: var(--bg); }
 
+/* A segmented row of links (the view switch) looks exactly like the keys. */
+.segmented a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-3);
+  height: calc(var(--control-height) - 2px);
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-medium);
+  transition: background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
+}
+
+.segmented a + a { border-left: 1px solid var(--text); }
+.segmented a:hover { background: var(--tonal); }
+.segmented a.active,
+.segmented a.active:hover {
+  background: var(--text);
+  color: var(--bg);
+  font-weight: var(--font-bold);
+}
+.segmented a:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+
+/* View switch: the ways of drawing the active group's data, one segmented
+   row above the view head. Groups with one view have no row. */
+.view-switch { padding: var(--space-2) 0 var(--space-3); }
+.view-switch:not(:has(> :not([hidden]))) { display: none; }
+.view-switch .segmented { display: inline-flex; max-width: 100%; }
+
 .legend {
   display: flex;
   flex-wrap: wrap;
@@ -1216,6 +1250,47 @@ main {
   line-height: var(--leading-tight);
   letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
+}
+
+/* Starting points (Overview): questions that open a view, set as a sheet like
+   the headline figures. Mono capital destination above a sans question; the
+   whole cell is the link. Six cells: 3 x 2, then 2 x 3, then one column. */
+.start-points {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  margin: var(--space-4) 0 0;
+  background: var(--border-strong);
+  border: 1px solid var(--text);
+  box-shadow: var(--shadow);
+}
+
+.start-points a {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+
+.start-points a:hover { background: var(--tonal); }
+.start-points a:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+
+.start-point-question {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-semibold);
+  line-height: var(--leading-tight);
+}
+
+@container (max-width: 760px) {
+  .start-points { grid-template-columns: repeat(2, 1fr); }
+}
+
+@container (max-width: 480px) {
+  .start-points { grid-template-columns: 1fr; }
 }
 
 .stats {
@@ -1311,7 +1386,7 @@ main {
 .work-graph-swatch-item { background: var(--role-5); }
 .work-graph-swatch-carrier { background: var(--role-3); }
 .work-graph-swatch-institution { background: var(--surface-2); border: 1.2px solid var(--text); }
-.work-graph-swatch-role { width: 14px; height: 3px; border-radius: 1px; }
+.work-graph-swatch-role { width: 14px; height: 3px; }
 
 /* Co-credit matrix: sized by its cells, scrolls sideways on narrow screens. */
 .chart-matrix { overflow-x: auto; }
@@ -1390,8 +1465,11 @@ main {
 }
 .map-offmap-title {
   fill: var(--muted);
+  font-family: var(--font-mono);
   font-size: var(--font-size-chart);
-  font-weight: var(--font-semibold);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 .map-offmap-item {
   cursor: pointer;
@@ -1446,7 +1524,7 @@ main {
 
 /* Countries without a map polygon, listed under the player. */
 .map-offmap { margin-top: var(--space-3); }
-.map-offmap .map-offmap-title { margin: 0 0 var(--space-1); color: var(--muted); font-size: var(--font-size-chart); font-weight: var(--font-semibold); }
+.map-offmap .map-offmap-title { margin: 0 0 var(--space-1); color: var(--muted); font-family: var(--font-mono); font-size: var(--font-size-chart); font-weight: var(--font-medium); letter-spacing: 0.02em; text-transform: uppercase; }
 .map-offmap-list { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); margin: 0; padding: 0; list-style: none; }
 .map-offmap-list .map-offmap-item {
   padding: 0;
@@ -1532,6 +1610,21 @@ main {
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
+
+/* "See the query" in a panel note: a link in the note's own mono capitals. */
+.panel-query {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.panel-query:hover { text-decoration: underline; }
+.panel-query:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .breakdown-panel svg { width: 100%; height: auto; display: block; }
 
@@ -1620,7 +1713,6 @@ main {
   width: 0.625rem;
   height: 0.625rem;
   flex: none;
-  border-radius: 2px;
 }
 .preservation-bar { stroke: var(--surface); stroke-width: 0.5; }
 
@@ -2477,7 +2569,6 @@ main {
   margin-left: auto;
   padding: var(--space-0_5) var(--space-1_5);
   border: 1px solid var(--border);
-  border-radius: 999px;
   color: var(--muted);
   font-size: var(--font-size-chart);
   font-variant-numeric: tabular-nums;
@@ -2657,7 +2748,6 @@ body[data-active-view="catalogue"] {
   left: calc(50% - 2px);
   width: 4px;
   height: 48px;
-  border-radius: 999px;
   background: var(--border-strong);
   opacity: 0.35;
   transform: translateY(-50%);
@@ -2674,19 +2764,21 @@ body[data-active-view="catalogue"] {
   opacity: 1;
 }
 
+/* Why the open record is or is not highlighted: a note between hairline
+   rules on the page ground. A warning takes ink rules and heavier type; red
+   stays for actions, links, focus and charts. */
 .drawer-context {
   margin: 0 0 var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  background: var(--surface-2);
-  border-left: 3px solid var(--border-strong);
+  padding: var(--space-2) 0;
+  border-block: 1px solid var(--border);
   color: var(--text);
   font-size: var(--font-size-small);
   line-height: var(--leading-body);
 }
 
 .drawer-context[data-kind="warning"] {
-  background: var(--accent-soft);
-  border-left-color: var(--accent);
+  border-color: var(--text);
+  font-weight: var(--font-medium);
 }
 
 .drawer-resizer:focus-visible { outline: none; }
@@ -3032,7 +3124,7 @@ body.drawer-resizing * {
     min-height: calc(3 * 1.6em + 2 * var(--space-2));
   }
   .tabs a,
-  button:not(.catalogue-link):not(.drawer-entity-link),
+  button:not(.catalogue-link):not(.drawer-entity-link):not(.panel-query),
   select,
   summary,
   input:not([type="checkbox"]):not([type="range"]) {
@@ -3050,7 +3142,8 @@ body.drawer-resizing * {
     width: var(--control-height-touch);
     height: var(--control-height-touch);
   }
-  .segmented button {
+  .segmented button,
+  .segmented a {
     height: var(--control-height-touch);
   }
   .theme-toggle {
@@ -3061,10 +3154,10 @@ body.drawer-resizing * {
 }
 
 /* Queried on the shell, not the viewport: a docked drawer narrows it. */
-/* The twelve views fit one row only at the full 1100px column. Below that,
-   an even 6 x 2 grid, so every cell is filled and the 1px rules stay intact.
-   (Phones get 2 x 6 further down.) Change the column count if the number of
-   views changes so the grid still divides evenly. */
+/* The six group tabs share one row as equal cells below the full column.
+   (Phones get 3 x 2 further down.) Change the column counts if the number of
+   groups changes so the grid still divides evenly and the 1px rules stay
+   intact. */
 @container shell (max-width: 1100px) {
   .tabs {
     display: grid;
@@ -3101,8 +3194,19 @@ body.drawer-resizing * {
   .view-head h2 { font-size: 1.75rem; }
   .stat-card { padding: var(--space-2) var(--space-3) var(--space-3); }
   .stat-value { font-size: 1.5rem; }
-  .tabs { grid-template-columns: repeat(2, 1fr); }
+  .tabs { grid-template-columns: repeat(3, 1fr); }
   .tabs a { padding: 0 var(--space-1_5); }
+  /* Four view names do not fit one row on a phone: an even 2 x 2 grid of
+     keys, divided like the tab strip (a 1px gap over ink). */
+  .view-switch .segmented {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    width: 100%;
+    background: var(--text);
+  }
+  .view-switch .segmented a { background: var(--surface); border-left: 0; }
+  .view-switch .segmented a.active { background: var(--text); }
   /* One-column legend: the loaded overview is about 257px tall. */
   .preservation-overview { --preservation-overview-height: 16.125rem; }
   .filters {
@@ -3224,7 +3328,7 @@ body.drawer-resizing * {
 .ontology-edge-hit { fill: none; stroke: transparent; stroke-width: 12; cursor: pointer; }
 .ontology-edge-hit:focus-visible { stroke: var(--accent); stroke-opacity: 0.3; outline: none; }
 .ontology-arrow { fill: var(--muted); }
-.ontology-edge-label { font-size: 10px; fill: var(--muted); paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; transition: opacity var(--duration-fast) var(--ease-standard); }
+.ontology-edge-label { font-size: var(--font-size-chart); fill: var(--muted); paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; transition: opacity var(--duration-fast) var(--ease-standard); }
 .ontology-node circle { fill: var(--accent); fill-opacity: 0.85; stroke: var(--surface); stroke-width: 1.5; cursor: pointer; }
 .ontology-node rect { fill: var(--surface-2); stroke: var(--muted); stroke-dasharray: 2 2; }
 .ontology-node:hover circle, .ontology-node:focus-visible circle { stroke: var(--text); stroke-width: 2; }
@@ -3290,5 +3394,5 @@ body.drawer-resizing * {
 .length-group:focus-visible .length-cell { stroke: var(--text); stroke-width: 2; }
 .length-tile:hover { stroke: var(--text); stroke-width: 1.5; }
 .length-label { font-size: var(--font-size-chart); font-weight: var(--font-semibold); fill: var(--text); pointer-events: none; }
-.length-tile-label { font-size: 10.5px; fill: #fff; pointer-events: none; paint-order: stroke; stroke: rgb(0 0 0 / 35%); stroke-width: 2px; stroke-linejoin: round; }
+.length-tile-label { font-size: var(--font-size-chart); fill: #fff; pointer-events: none; paint-order: stroke; stroke: rgb(0 0 0 / 35%); stroke-width: 2px; stroke-linejoin: round; }
 .length-tile-value { fill-opacity: 0.85; }

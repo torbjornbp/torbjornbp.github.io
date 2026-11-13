@@ -698,7 +698,7 @@ const EXPORT_STYLE = `
   .node-reference { fill: var(--muted); }
   .node-label, .bubble-label, .bar-label, .bar-value, .arc-label { font-family: var(--font); fill: var(--text); }
   .bubble-label { fill: #fff; }
-  .axis text { fill: var(--muted); font-family: var(--font); font-size: 10px; }
+  .axis text { fill: var(--muted); font-family: var(--font); font-size: 11px; }
   .axis path, .axis line { stroke: var(--border); }
   .grid line { stroke: var(--border); stroke-dasharray: 2 3; }
   .grid path { display: none; }
@@ -709,7 +709,7 @@ const EXPORT_STYLE = `
   .map-ocean { fill: var(--bg); }
   .map-country { stroke: var(--border); stroke-width: .6; }
   .map-country.is-empty { fill: var(--map-empty); }
-  .map-offmap-title { fill: var(--muted); font-family: var(--font); font-size: 11px; font-weight: 600; }
+  .map-offmap-title { fill: var(--muted); font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.02em; text-transform: uppercase; }
   .map-offmap-item text { fill: var(--text); font-family: var(--font); font-size: 11px; }
   .map-legend-box { fill: var(--surface); fill-opacity: .88; stroke: var(--border); }
   .map-circle { fill: var(--accent); fill-opacity: .55; stroke: var(--surface); stroke-width: .8; }
@@ -742,7 +742,7 @@ const EXPORT_STYLE = `
   .ontology-edge.is-literal { stroke: var(--border-strong); }
   .ontology-edge-hit { stroke: none; }
   .ontology-arrow { fill: var(--muted); }
-  .ontology-edge-label { font-size: 10px; fill: var(--muted); }
+  .ontology-edge-label { font-size: 11px; fill: var(--muted); }
   .ontology-node circle { fill: var(--accent); fill-opacity: .85; stroke: var(--surface); stroke-width: 1.5; }
   .ontology-node rect { fill: var(--surface-2); stroke: var(--muted); stroke-dasharray: 2 2; }
   .ontology-node-label { font-size: 11px; font-weight: 600; fill: var(--text); }

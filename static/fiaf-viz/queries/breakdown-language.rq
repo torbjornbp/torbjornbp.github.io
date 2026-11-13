@@ -1,0 +1,33 @@
+# Works per spoken language. As in the language matrices, a spoken usage can
+# sit on the work, its manifestation or one of its items; a work counts once
+# per language whichever level carries it.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?value (COUNT(DISTINCT ?work) AS ?n)
+WHERE {
+  {
+    SELECT DISTINCT ?work ?value
+    WHERE {
+      ?usage a fiaf:SpokenLanguage ;
+             fiaf:hasLanguage ?value .
+      {
+        ?work fiaf:hasLanguageUsage ?usage .
+      }
+      UNION
+      {
+        ?work fiaf:hasManifestation/fiaf:hasLanguageUsage ?usage .
+      }
+      UNION
+      {
+        ?work fiaf:hasManifestation/fiaf:hasItem/fiaf:hasLanguageUsage ?usage .
+      }
+    }
+  }
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType .
+  {{SCOPE_FILTER}}
+}
+GROUP BY ?value
+ORDER BY DESC(?n)
+LIMIT {{LIMIT}}

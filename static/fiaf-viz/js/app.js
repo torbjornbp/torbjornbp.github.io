@@ -4,6 +4,7 @@ import {
   datasetFilter,
   findAgentScopeFilter,
   getConfig,
+  lastQueryText,
   limit,
   loadConfig,
   onBusy,
@@ -18,6 +19,7 @@ import { humanize, localName, roleLabel } from "./labels.js";
 import { initTheme } from "./theme.js";
 import { agentHistory, workAgentModel } from "./records.js";
 import * as ui from "./ui.js";
+import { GROUPS, groupHasView, hashFor, homeGroup, parseHash, unitFor } from "./groups.js";
 import * as cloud from "./cloud.js";
 import * as network from "./network.js";
 import * as coCredits from "./co-credits.js";
@@ -128,6 +130,9 @@ function scopeLabel(count) {
 let agentCache = null;
 let cloudAgentCache = null;
 let activeView = null;
+let activeGroup = null;
+// The last view shown in each group, so its tab returns there.
+const lastViewInGroup = new Map();
 let views = null;
 let drawerToken = 0;
 let drawerController = null;
@@ -340,11 +345,15 @@ const ctx = {
   selectionStatus,
   refreshSelectionStatus: updateDrawerContext,
   refreshDrawerOutside,
+  // Show the query a chart last ran with in the catalogue (see showNamedQuery).
+  openNamedQuery(name, detail) {
+    showNamedQuery(name, detail);
+  },
   // Put a query in the catalogue's SPARQL box and switch to the catalogue.
   openCatalogueQuery(text) {
     if (!views || !views.catalogue || !views.catalogue.openQuery) return;
     views.catalogue.openQuery(text);
-    location.hash = "#catalogue";
+    goToView("catalogue");
   },
   // Refetch one view, for a control that lives inside that view.
   reload(name) {
@@ -1275,9 +1284,93 @@ function isViewAvailable(name) {
   return !available || available.has(name);
 }
 
+function canShow(name) {
+  return Boolean(views && views[name] && isViewAvailable(name));
+}
+
+// The hash as { view, group }; an unknown hash falls back to the default view
+// in its home group.
 function route() {
-  const name = (location.hash || "").replace(/^#/, "");
-  return views && views[name] && isViewAvailable(name) ? name : defaultView();
+  const resolved = views ? parseHash(location.hash, canShow) : null;
+  if (resolved) return resolved;
+  const view = defaultView();
+  return { view, group: homeGroup(view, canShow) };
+}
+
+// "See the query": the query behind a chart, exactly as it last ran (with
+// the Datasets filter filled in), opened in Catalogue › SPARQL to read, run
+// or edit. Views name their current query with currentQuery(); views with a
+// single query are listed here.
+const VIEW_QUERY = {
+  cloud: "agents",
+  roles: "roles",
+  network: "network",
+  "co-credits": "co-credits",
+  length: "film-length"
+};
+
+function placeLabel(groupId, view) {
+  const group = GROUPS.find((candidate) => candidate.id === groupId);
+  if (!group) return "";
+  const entry = group.views.find((candidate) => candidate.view === view);
+  return group.views.length > 1 && entry ? `${group.label} › ${entry.label}` : group.label;
+}
+
+function showNamedQuery(name, detail = "") {
+  const text = name ? lastQueryText(name) : null;
+  if (!text || !views || !views.catalogue || !views.catalogue.openQuery) {
+    ui.setStatus("This chart's query has not run yet. Wait for the chart to load, then try again.");
+    return;
+  }
+  const where = placeLabel(activeGroup, activeView);
+  const header =
+    `# The query behind ${where}${detail ? `: ${detail}` : ""}, exactly as it ran.\n` +
+    "# Press Run query to see its rows, or edit it first.\n\n";
+  views.catalogue.openQuery(header + text);
+  goToView("catalogue");
+}
+
+function wireQueryKeys() {
+  for (const button of document.querySelectorAll("[data-query]")) {
+    button.addEventListener("click", () => {
+      const view = views && views[button.dataset.query];
+      const name = (view && view.currentQuery && view.currentQuery()) || VIEW_QUERY[button.dataset.query];
+      showNamedQuery(name, view && view.currentQueryLabel ? view.currentQueryLabel() : "");
+    });
+  }
+}
+
+// Show a view, staying in the current group when it has that view.
+function goToView(name) {
+  const group = activeGroup && groupHasView(activeGroup, name, canShow)
+    ? activeGroup
+    : homeGroup(name, canShow);
+  const hash = hashFor(group, name, canShow);
+  if (location.hash === hash) showView(name, group);
+  else location.hash = hash;
+}
+
+// The group tabs and the active group's switch row.
+function syncGroupNavigation() {
+  for (const tab of document.querySelectorAll(".tabs a")) {
+    const id = tab.dataset.group;
+    const active = id === activeGroup;
+    tab.classList.toggle("active", active);
+    if (active) tab.setAttribute("aria-current", "page");
+    else tab.removeAttribute("aria-current");
+    const last = lastViewInGroup.get(id);
+    if (last) tab.setAttribute("href", hashFor(id, last, canShow));
+  }
+  for (const row of document.querySelectorAll("#view-switch [data-group]")) {
+    const links = [...row.querySelectorAll("a")].filter((link) => !link.hidden);
+    row.hidden = row.dataset.group !== activeGroup || links.length < 2;
+    for (const link of links) {
+      const active = row.dataset.group === activeGroup && link.dataset.view === activeView;
+      link.classList.toggle("active", active);
+      if (active) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    }
+  }
 }
 
 function cancelLoad(name) {
@@ -1329,11 +1422,17 @@ function syncNameOptions() {
   else if (largest) select.value = largest.value;
 }
 
-function showView(name) {
-  if (!views[name] || !isViewAvailable(name)) {
-    name = defaultView();
-    if (location.hash) history.replaceState(null, "", `#${name}`);
+function showView(name, group) {
+  if (!canShow(name)) name = defaultView();
+  if (!group || !groupHasView(group, name, canShow)) {
+    group = activeGroup && groupHasView(activeGroup, name, canShow)
+      ? activeGroup
+      : homeGroup(name, canShow);
   }
+  // Old single-view links (#cloud) and bare groups (#people) settle on the
+  // full "#group/view" form without adding a history entry.
+  const hash = hashFor(group, name, canShow);
+  if (hash && location.hash !== hash) history.replaceState(null, "", hash);
   const previousView = activeView;
   if (previousView && previousView !== name) {
     cancelLoad(previousView);
@@ -1342,11 +1441,21 @@ function showView(name) {
   for (const section of document.querySelectorAll(".view")) {
     section.hidden = section.dataset.view !== name;
   }
-  for (const tab of document.querySelectorAll(".tabs a")) {
-    const active = tab.dataset.view === name;
-    tab.classList.toggle("active", active);
-    if (active) tab.setAttribute("aria-current", "page");
-    else tab.removeAttribute("aria-current");
+  // A view shared by Works and Holdings shows one side of its data in each:
+  // the view filters its panels, and [data-unit] text follows the group.
+  const unit = unitFor(group, name);
+  if (views[name].setUnit && views[name].setUnit(unit) && loaded.has(name)) stale.add(name);
+  // A view that changes with its group in other ways (the world map hides its
+  // decade player on the Overview) takes the group itself.
+  if (views[name].setGroup) views[name].setGroup(group);
+  const section = document.querySelector(`.view[data-view="${name}"]`);
+  for (const element of section ? section.querySelectorAll("[data-unit]") : []) {
+    element.hidden = Boolean(unit) && element.dataset.unit !== unit;
+  }
+  // A view in two groups can also carry parts for one group only (the world
+  // map's title, figures and starting points on the Overview).
+  for (const element of section ? section.querySelectorAll("[data-in-group]") : []) {
+    element.hidden = element.dataset.inGroup !== group;
   }
   const agentView = AGENT_VIEWS.has(name);
   for (const element of document.querySelectorAll('[data-filter="agents"]')) {
@@ -1363,7 +1472,11 @@ function showView(name) {
     element.hidden = agentView;
   }
   activeView = name;
+  activeGroup = group;
+  lastViewInGroup.set(group, name);
   document.body.dataset.activeView = name;
+  document.body.dataset.activeGroup = group;
+  syncGroupNavigation();
   syncNameOptions();
   hideSearchResults();
   ui.hideTooltip();
@@ -1431,8 +1544,10 @@ async function loadView(name) {
 }
 
 function wireNavigation() {
-  window.addEventListener("hashchange", () => showView(route()));
-  if (!location.hash) history.replaceState(null, "", `#${defaultView()}`);
+  window.addEventListener("hashchange", () => {
+    const { view, group } = route();
+    showView(view, group);
+  });
 }
 
 function wireExport() {
@@ -1644,8 +1759,7 @@ function renderAgentWorks(panel, agent, name, state, tabs) {
           if (views && views.catalogue) {
             views.catalogue.filterByAgent(agent, name);
           }
-          if (location.hash === "#catalogue") showView("catalogue");
-          else location.hash = "#catalogue";
+          goToView("catalogue");
         }
       }
     ],
@@ -3233,8 +3347,7 @@ function onlyRole(iri) {
   syncRoleChecks();
   updateRoleSummary();
   invalidateAgentViews(true);
-  if (location.hash === "#cloud") showView("cloud");
-  else location.hash = "#cloud";
+  goToView("cloud");
 }
 
 // -- boot -------------------------------------------------------------------
@@ -3255,8 +3368,16 @@ function applyBrand() {
 
 function applyViewVisibility() {
   const available = availableViews();
+  const shown = (name) => !available || available.has(name);
+  for (const link of document.querySelectorAll("#view-switch a[data-view]")) {
+    link.hidden = !shown(link.dataset.view);
+  }
   for (const tab of document.querySelectorAll(".tabs a")) {
-    tab.hidden = Boolean(available && !available.has(tab.dataset.view));
+    const row = document.querySelector(`#view-switch [data-group="${tab.dataset.group}"]`);
+    const groupViews = row
+      ? [...row.querySelectorAll("a[data-view]")].map((link) => link.dataset.view)
+      : [tab.dataset.view];
+    tab.hidden = !groupViews.some(shown);
   }
 }
 
@@ -3363,9 +3484,11 @@ async function init() {
     wireSearch();
     wireNavigation();
     wireExport();
+    wireQueryKeys();
     wireFit();
     wireResize();
-    showView(route());
+    const { view, group } = route();
+    showView(view, group);
     // The dataset list and role metadata are not needed before the first map
     // query. Load them after the landing view so a slow public endpoint cannot
     // delay first paint.

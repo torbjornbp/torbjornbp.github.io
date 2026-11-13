@@ -746,11 +746,20 @@ function bundledQuery(query, name, options) {
   });
 }
 
+// The text each bundled query last ran with, placeholders filled in, so a
+// view can show the exact query behind its chart ("See the query").
+const lastQueries = new Map();
+
+export function lastQueryText(name) {
+  return lastQueries.get(name) || null;
+}
+
 // Run queries/NAME.rq with {{PLACEHOLDER}} substitutions. An optional caller
 // signal cancels superseded UI requests without changing the timeout behaviour.
 export function runQuery(name, substitutions = {}, options = {}) {
   return loadQuery(name).then((text) => {
     const query = substitute(text, substitutions);
+    lastQueries.set(name, query);
     return bundledQuery(query, name, options).then((payload) => {
       const vars = (payload.head && payload.head.vars) || [];
       return ((payload.results && payload.results.bindings) || []).map((row) => {

@@ -506,6 +506,18 @@ const SPECS = [
 ];
 
 const SPEC_BY_KEY = new Map(SPECS.map((spec) => [spec.key, spec]));
+
+// Which group a matrix belongs to is its subject, not what it counts: the
+// items-per-work matrices count works but describe holdings.
+const WORK_MATRICES = new Set([
+  "countries", "co-productions", "subtitles", "language-usages", "language-decades"
+]);
+
+// The matrices for one unit ("works" or "items"); null keeps them all.
+export function specsFor(unit) {
+  if (!unit) return SPECS;
+  return SPECS.filter((spec) => WORK_MATRICES.has(spec.key) === (unit === "works"));
+}
 // Beyond this many countries the chord's arcs are slivers too thin to label.
 const CHORD_MAX = 40;
 // A mosaic draws at most this many rows as columns, and this many segment
@@ -523,6 +535,9 @@ export function create(
   modeButtons
 ) {
   let activeKey = SPECS[0].key;
+  let unit = null;
+  // The matrix last chosen in each unit, so returning to a group keeps it.
+  const keyByUnit = new Map();
   let activeMode = "count";
   let previousWidth = null;
   let requestToken = 0;
@@ -566,18 +581,26 @@ export function create(
     .attr("role", "img")
     .attr("aria-label", "Heatmap of works and items");
 
-  if (kindSelect) {
-    for (const spec of SPECS) {
+  function fillKindOptions() {
+    if (!kindSelect) return;
+    kindSelect.replaceChildren();
+    for (const spec of specsFor(unit)) {
       const option = document.createElement("option");
       option.value = spec.key;
       option.textContent = spec.label;
       kindSelect.append(option);
     }
     kindSelect.value = activeKey;
+  }
+
+  if (kindSelect) {
+    fillKindOptions();
     kindSelect.addEventListener("change", () => {
-      activeKey = SPEC_BY_KEY.has(kindSelect.value)
+      const shown = specsFor(unit);
+      activeKey = shown.some((spec) => spec.key === kindSelect.value)
         ? kindSelect.value
-        : SPECS[0].key;
+        : shown[0].key;
+      keyByUnit.set(unit, activeKey);
       drawerToken += 1;
       if (drawerController) drawerController.abort();
       drawerController = null;
@@ -1522,6 +1545,8 @@ export function create(
 
   return {
     load,
+    currentQuery: () => SPEC_BY_KEY.get(activeKey).query,
+    currentQueryLabel: () => SPEC_BY_KEY.get(activeKey).label,
     invalidate() {
       cancelRequest();
       dataByKind.clear();
@@ -1533,6 +1558,22 @@ export function create(
           ui.error(root, error, "Choose another matrix or reload the page.");
         }
       });
+    },
+    // Show the matrices for "works" or "items". True when the active matrix
+    // changes, so the caller reloads.
+    setUnit(next) {
+      const value = next || null;
+      if (value === unit) return false;
+      unit = value;
+      const shown = specsFor(unit);
+      const remembered = keyByUnit.get(unit);
+      const previousKey = activeKey;
+      activeKey = shown.some((spec) => spec.key === remembered)
+        ? remembered
+        : shown.some((spec) => spec.key === activeKey) ? activeKey : shown[0].key;
+      fillKindOptions();
+      updateChrome();
+      return activeKey !== previousKey;
     },
     resetMode() {
       setMode("count");

@@ -1,4 +1,6 @@
-// Dataset-wide item breakdowns: format, element, base, colour, sound and stock.
+// Dataset-wide breakdowns. Under Works: production country, spoken language,
+// genre and form (distinct works). Under Holdings: format, element, base,
+// colour, sound, stock and institution (distinct items), plus the flow.
 
 import { limit, runQuery } from "./sparql.js";
 import { humanize } from "./labels.js";
@@ -12,19 +14,33 @@ const SPECS = [
   { key: "colour", query: "breakdown-colour", title: "Colour", unit: "items", colour: "var(--role-4)" },
   { key: "sound", query: "breakdown-sound-standard", title: "Sound", unit: "items", colour: "var(--role-5)" },
   { key: "stock", query: "breakdown-stock", title: "Film stock", unit: "items", colour: "var(--role-6)" },
+  { key: "country", query: "breakdown-country", title: "Production country", unit: "works", colour: "var(--role-1)" },
+  { key: "language", query: "breakdown-language", title: "Spoken language", unit: "works", colour: "var(--role-2)" },
   { key: "genre", query: "breakdown-genre", title: "Genre", unit: "works", colour: "var(--role-7)" },
   { key: "form", query: "breakdown-form", title: "Form", unit: "works", colour: "var(--role-8)" },
   { key: "institution", query: "breakdown-institution", title: "Holding institution", unit: "items", colour: "var(--role-1)" }
 ];
 
+// The panels for one unit ("works" or "items"); null shows every panel.
+export function specsFor(unit) {
+  return unit ? SPECS.filter((spec) => spec.unit === unit) : SPECS;
+}
+
 export function create(ctx, root) {
+  // Loaded panels per unit, so moving between Works and Holdings is instant.
+  const panelsByUnit = new Map();
+  let unit = null;
   let panels = null;
   let hasRendered = false;
+  let renderedUnit;
   // "bars" (the panels) or "flow" (parallel sets across the item facets).
+  // The flow follows items, so works always show the bars.
+  let chosenLayout = "bars";
   let layout = "bars";
   const layoutButtons = [...document.querySelectorAll("[data-breakdown-layout]")];
   const flowSection = document.getElementById("breakdown-flow");
   const exportButton = document.querySelector('[data-export="breakdowns"]');
+  const queryButton = document.querySelector('[data-query="breakdowns"]');
   const flow = flowSection
     ? materialFlow.create(
         ctx,
@@ -43,12 +59,15 @@ export function create(ctx, root) {
     root.hidden = layout !== "bars";
     if (flowSection) flowSection.hidden = layout !== "flow";
     if (exportButton) exportButton.hidden = layout !== "flow";
+    // The bars carry a query link per panel instead.
+    if (queryButton) queryButton.hidden = layout !== "flow";
   }
 
   for (const button of layoutButtons) {
     button.addEventListener("click", () => {
       if (button.dataset.breakdownLayout === layout) return;
-      layout = button.dataset.breakdownLayout;
+      chosenLayout = button.dataset.breakdownLayout;
+      layout = unit === "works" ? "bars" : chosenLayout;
       syncLayout();
       load().catch((error) => {
         if (error.name !== "AbortError") ui.setStatus(error.message, "error");
@@ -62,16 +81,21 @@ export function create(ctx, root) {
       await flow.load({ signal });
       return;
     }
-    if (panels) {
-      if (root.clientWidth !== renderedWidth) render();
+    const cached = panelsByUnit.get(unit || "all");
+    if (cached) {
+      if (cached !== panels || root.clientWidth !== renderedWidth) {
+        panels = cached;
+        render();
+        renderedUnit = unit;
+      }
       return;
     }
-    if (!hasRendered) {
+    if (!hasRendered || renderedUnit !== unit) {
       ui.message(root, "Loading distributions…");
     }
     ui.setStatus("Loading breakdowns…");
     const results = await Promise.all(
-      SPECS.map(async (spec) => {
+      specsFor(unit).map(async (spec) => {
         try {
           const rows = await runQuery(
             spec.query,
@@ -93,8 +117,10 @@ export function create(ctx, root) {
       })
     );
     if (signal && signal.aborted) return;
+    panelsByUnit.set(unit || "all", results);
     panels = results;
     render();
+    renderedUnit = unit;
     hasRendered = true;
     ui.setStatus("");
   }
@@ -110,13 +136,20 @@ export function create(ctx, root) {
     for (const panel of panels) {
       const card = ui.node("section", "breakdown-panel");
       card.append(ui.node("h3", "", panel.spec.title));
-      card.append(
-        ui.node(
-          "p",
-          "panel-note",
-          panel.error ? "query failed" : `${panel.spec.unit} · top ${panel.rows.length}`
-        )
+      const note = ui.node(
+        "p",
+        "panel-note",
+        panel.error ? "query failed" : `${panel.spec.unit} · top ${panel.rows.length} · `
       );
+      if (!panel.error && ctx.openNamedQuery) {
+        const link = ui.node("button", "panel-query", "See the query");
+        link.type = "button";
+        // Seven panels share the visible text; the name says which one.
+        link.setAttribute("aria-label", `See the query for ${panel.spec.title}`);
+        link.addEventListener("click", () => ctx.openNamedQuery(panel.spec.query, panel.spec.title));
+        note.append(link);
+      }
+      card.append(note);
       const chart = ui.node("div", "breakdown-chart");
       card.append(chart);
       root.append(card);
@@ -201,8 +234,20 @@ export function create(ctx, root) {
 
   return {
     load,
+    currentQuery: () => (layout === "flow" ? "material-flow" : null),
     invalidate() {
+      panelsByUnit.clear();
       panels = null;
+    },
+    // Show the panels for "works" or "items". True when that changes what is
+    // shown, so the caller reloads.
+    setUnit(next) {
+      const value = next || null;
+      if (value === unit) return false;
+      unit = value;
+      layout = unit === "works" ? "bars" : chosenLayout;
+      syncLayout();
+      return true;
     },
     resize() {
       if (layout === "flow" && flow) flow.resize();

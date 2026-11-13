@@ -478,6 +478,10 @@ export function create(ctx, root, statsElement, granularityButtons, descriptionE
 
   return {
     load,
+    currentQuery() {
+      if (granularity === "streams") return SPLITS[split].query;
+      return granularity === "decade" ? "timeline-decades" : "timeline";
+    },
     invalidate() {
       data = null;
       streamCache.clear();

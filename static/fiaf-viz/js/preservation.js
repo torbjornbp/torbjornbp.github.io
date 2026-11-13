@@ -805,6 +805,7 @@ export function create(ctx, root, statsElement, overviewElement, controls = {}) 
 
   const view = {
     load,
+    currentQuery: () => (group === "country" ? "preservation-countries" : "preservation-decades"),
     invalidate() {
       cancelRequest();
       drawerToken += 1;

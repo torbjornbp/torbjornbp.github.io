@@ -37,19 +37,15 @@
         </svg>
       </button>
     </div>
-    <nav class="tabs" aria-label="Views">
-      <a href="#worldmap" data-view="worldmap">World map</a>
-      <a href="#catalogue" data-view="catalogue">Catalogue</a>
-      <a href="#cloud" data-view="cloud">Name cloud</a>
-      <a href="#network" data-view="network">Names &amp; works</a>
-      <a href="#co-credits" data-view="co-credits">Co-credits</a>
-      <a href="#timeline" data-view="timeline">Timeline</a>
-      <a href="#geography" data-view="geography">Heatmaps</a>
-      <a href="#breakdowns" data-view="breakdowns">Breakdowns</a>
-      <a href="#preservation" data-view="preservation">Preservation</a>
-      <a href="#length" data-view="length">Length</a>
-      <a href="#roles" data-view="roles">Roles</a>
-      <a href="#ontology" data-view="ontology">Ontology</a>
+    <!-- Groups name the kind of data; the views inside a group are listed in
+         #view-switch. js/groups.js is the source of truth for both. -->
+    <nav class="tabs" aria-label="Sections">
+      <a href="#overview" data-group="overview" data-view="worldmap">Overview</a>
+      <a href="#works" data-group="works" data-view="timeline">Works</a>
+      <a href="#people" data-group="people" data-view="cloud">People</a>
+      <a href="#holdings" data-group="holdings" data-view="breakdowns">Holdings</a>
+      <a href="#catalogue" data-group="catalogue" data-view="catalogue">Catalogue</a>
+      <a href="#ontology" data-group="ontology" data-view="ontology">Ontology</a>
     </nav>
   </header>
 
@@ -119,6 +115,29 @@
   <main>
     <p id="status" role="status" aria-live="polite"></p>
 
+    <!-- One row per group with more than one view: the ways of drawing that
+         group's data. Only the active group's row is shown. -->
+    <div id="view-switch" class="view-switch">
+      <nav class="segmented" data-group="works" aria-label="Works views" hidden>
+        <a href="#works/timeline" data-view="timeline">Timeline</a>
+        <a href="#works/worldmap" data-view="worldmap">Map</a>
+        <a href="#works/breakdowns" data-view="breakdowns">Breakdowns</a>
+        <a href="#works/geography" data-view="geography">Heatmaps</a>
+      </nav>
+      <nav class="segmented" data-group="people" aria-label="People views" hidden>
+        <a href="#people/cloud" data-view="cloud">Name cloud</a>
+        <a href="#people/roles" data-view="roles">Roles</a>
+        <a href="#people/network" data-view="network">Names &amp; works</a>
+        <a href="#people/co-credits" data-view="co-credits">Co-credits</a>
+      </nav>
+      <nav class="segmented" data-group="holdings" aria-label="Holdings views" hidden>
+        <a href="#holdings/breakdowns" data-view="breakdowns">Breakdowns</a>
+        <a href="#holdings/geography" data-view="geography">Heatmaps</a>
+        <a href="#holdings/length" data-view="length">Kilometres</a>
+        <a href="#holdings/preservation" data-view="preservation">Preservation</a>
+      </nav>
+    </div>
+
     <section id="view-cloud" class="view" data-view="cloud" hidden>
       <div class="view-head">
         <div>
@@ -127,6 +146,7 @@
         </div>
         <div class="view-actions">
           <button type="button" class="fit" data-fit="cloud">Fit view</button>
+          <button type="button" class="fit" data-query="cloud">See the query</button>
           <button type="button" class="export" data-export="cloud">Download PNG</button>
         </div>
       </div>
@@ -161,6 +181,7 @@
             <button type="button" data-link-scope="selected" aria-pressed="false">Selected only</button>
           </div>
           <button type="button" class="fit" data-fit="network">Fit view</button>
+          <button type="button" class="fit" data-query="network">See the query</button>
           <button type="button" class="export" data-export="network">Download PNG</button>
         </div>
       </div>
@@ -211,6 +232,7 @@
           </div>
           <button type="button" id="co-credits-ego" class="fit" hidden>Isolate selected name</button>
           <button type="button" class="fit" data-fit="co-credits">Fit view</button>
+          <button type="button" class="fit" data-query="co-credits">See the query</button>
           <button type="button" class="export" data-export="co-credits">Download PNG</button>
         </div>
       </div>
@@ -256,6 +278,7 @@
             <button type="button" data-stream-mode="streams" class="active" aria-pressed="true">Volume</button>
             <button type="button" data-stream-mode="share" aria-pressed="false">Share</button>
           </div>
+          <button type="button" class="fit" data-query="timeline">See the query</button>
           <button type="button" class="export" data-export="timeline">Download SVG</button>
         </div>
       </div>
@@ -273,15 +296,20 @@
     <section id="view-worldmap" class="view" data-view="worldmap" hidden>
       <div class="view-head">
         <div>
-          <h2>World map</h2>
-          <p id="worldmap-description">Works by production country. Colour intensity follows the heat ramp; click a country for titles. Co-productions count once for each country. Play the decades to watch the collections fill the map.</p>
+          <!-- The same view is the Overview and Works › Map; [data-in-group]
+               parts show only in their group. -->
+          <h2 data-in-group="overview">Overview</h2>
+          <h2 data-in-group="works">World map</h2>
+          <p data-in-group="overview">Records contributed by film archives, described with the FIAFcore ontology and published as linked data. Every figure and chart on this site is a live SPARQL query against the public endpoint. Start with a question below, or choose a kind of data from the tabs.</p>
+          <p id="worldmap-description" data-in-group="works">Works by production country. Colour intensity follows the heat ramp; click a country for titles. Co-productions count once for each country. Play the decades to watch the collections fill the map.</p>
         </div>
         <div class="view-actions">
           <button type="button" class="fit" data-fit="worldmap">Fit view</button>
+          <button type="button" class="fit" data-query="worldmap">See the query</button>
           <button type="button" class="export" data-export="worldmap">Download SVG</button>
         </div>
       </div>
-      <dl id="worldmap-overview" class="stat-grid" aria-label="Dataset overview">
+      <dl id="worldmap-overview" class="stat-grid" aria-label="Dataset overview" data-in-group="overview">
         <div class="stat-card">
           <dt class="stat-label">Works</dt>
           <dd class="stat-value" data-stat="works">—</dd>
@@ -299,13 +327,39 @@
           <dd class="stat-value" data-stat="years">—</dd>
         </div>
       </dl>
+      <nav class="start-points" aria-label="Starting points" data-in-group="overview">
+        <a href="#works/timeline">
+          <span class="stat-label">Works <span aria-hidden="true">›</span> Timeline</span>
+          <span class="start-point-question">When were the works made?</span>
+        </a>
+        <a href="#people/cloud">
+          <span class="stat-label">People <span aria-hidden="true">›</span> Name cloud</span>
+          <span class="start-point-question">Who appears most often in the credits?</span>
+        </a>
+        <a href="#people/co-credits">
+          <span class="stat-label">People <span aria-hidden="true">›</span> Co-credits</span>
+          <span class="start-point-question">Who worked with whom?</span>
+        </a>
+        <a href="#holdings/breakdowns">
+          <span class="stat-label">Holdings <span aria-hidden="true">›</span> Breakdowns</span>
+          <span class="start-point-question">What are the archives' copies made of?</span>
+        </a>
+        <a href="#holdings/preservation">
+          <span class="stat-label">Holdings <span aria-hidden="true">›</span> Preservation</span>
+          <span class="start-point-question">How many works have preservation copies recorded?</span>
+        </a>
+        <a href="#ontology">
+          <span class="stat-label">Ontology</span>
+          <span class="start-point-question">How is the data described?</span>
+        </a>
+      </nav>
       <p id="worldmap-stats" class="stats"></p>
       <details class="view-details">
         <summary>How is this counted?</summary>
         <p>Each country shows the distinct works that list it as a production country. A co-production counts once under each of its countries, so the country totals add up to more than the number of works, and works with no production country are in the Works total but not on the map.</p>
         <p>Credited names are names with a non-empty label credited on a work in any role. Production years are the first four digits of production event dates; dates without a four-digit year are left out.</p>
         <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
-        <p>Per decade shows the works with a production date in that decade; Cumulative adds up every decade so far, so a country keeps its colour once it has works. Only dated works take part, and the line under the overview says how many of the works that is. A work dated in two decades counts in both. The colour scale and circle sizes are fixed for the whole run, so a colour means the same number in every decade. The bars under the map show the dated works per decade; click or drag along them, or focus them and use the arrow keys, to pick a decade.</p>
+        <p data-in-group="works">Per decade shows the works with a production date in that decade; Cumulative adds up every decade so far, so a country keeps its colour once it has works. Only dated works take part, and the line above the map says how many of the works that is. A work dated in two decades counts in both. The colour scale and circle sizes are fixed for the whole run, so a colour means the same number in every decade. The bars under the map show the dated works per decade; click or drag along them, or focus them and use the arrow keys, to pick a decade.</p>
         <p>Circles size each country by its works at the centre of its largest landmass, so a large country does not look busier just because it covers more of the map.</p>
       </details>
       <div id="worldmap-chart" class="chart chart-worldmap"></div>
@@ -464,15 +518,17 @@
             <button type="button" data-heatmap-mode="column" aria-pressed="false">% of column</button>
             <button type="button" data-heatmap-mode="row" aria-pressed="false">% of row</button>
           </div>
+          <button type="button" class="fit" data-query="geography">See the query</button>
           <button type="button" class="export" data-export="geography">Download SVG</button>
         </div>
       </div>
       <p id="geography-stats" class="stats"></p>
       <details class="view-details">
         <summary>How is this counted?</summary>
-        <p>Each matrix counts works or items, as its description says. Colour, sound, base, element and format can be recorded on an item or on its manifestation; both count as items. Decades are four-digit production years, and a co-production counts under each production country.</p>
+        <p data-unit="works">Each matrix counts distinct works. Decades are four-digit production years, and a co-production counts under each production country. A spoken language can be recorded on the work, its manifestation or an item, and subtitles on the manifestation or an item; the work counts whichever level carries it.</p>
+        <p data-unit="items">Each matrix counts items, except Items per work, which counts works by how many items they hold. Colour, sound, base, element and format can be recorded on an item or on its manifestation; both count as items. Decades are four-digit production years, and a co-production counts under each production country.</p>
         <p>A work or item with several values counts once under each, so row and column totals can be larger than the distinct works or items. % of column and % of row divide each cell by its column or row total. Categories are ranked by their total, and Max categories keeps the top ones.</p>
-        <p>Co-production countries can also be drawn as a chord: each arc is a country, sized by the works it shares with the other countries shown, and each ribbon is a pair, as wide as the works the two share. A work made by three countries counts once in each of its three pairs. The chord shows at most 40 countries.</p>
+        <p data-unit="works">Co-production countries can also be drawn as a chord: each arc is a country, sized by the works it shares with the other countries shown, and each ribbon is a pair, as wide as the works the two share. A work made by three countries counts once in each of its three pairs. The chord shows at most 40 countries.</p>
         <p>The other matrices can be drawn as a mosaic: each row category becomes a column as wide as its total, split by height into its share of each column category. The mosaic shows at most 20 columns and eight colours; decades keep their order and are shaded from early to late, other categories beyond the seventh are combined under Other.</p>
         <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
       </details>
@@ -483,20 +539,23 @@
       <div class="view-head">
         <div>
           <h2>Breakdowns</h2>
-          <p>Work and item distributions for format, element type, base material, colour, sound, film stock, genre, form and holding institution. Flow follows the items across several of these at once.</p>
+          <p data-unit="works">How works are distributed by production country, spoken language, genre and form.</p>
+          <p data-unit="items">Item distributions for format, element type, base material, colour, sound, film stock and holding institution. Flow follows the items across several of these at once.</p>
         </div>
         <div class="view-actions">
-          <div class="segmented" id="breakdown-layout" role="group" aria-label="Breakdown layout">
+          <div class="segmented" id="breakdown-layout" role="group" aria-label="Breakdown layout" data-unit="items">
             <button type="button" data-breakdown-layout="bars" class="active" aria-pressed="true">Bars</button>
             <button type="button" data-breakdown-layout="flow" aria-pressed="false">Flow</button>
           </div>
+          <button type="button" class="fit" data-query="breakdowns" hidden>See the query</button>
           <button type="button" class="export" data-export="breakdowns" hidden>Download SVG</button>
         </div>
       </div>
       <details class="view-details">
         <summary>How is this counted?</summary>
-        <p>Flow counts the same items across holding institution, format, element, base, colour and status at once. Each column shows its eight most common values, then Other and Not recorded; ribbons between two columns carry the items that share both values and are coloured by the first column. Hover or click a block to follow its items through every column. Format, element and colour fall back to the manifestation when the item has none. An item with two values on one column (two formats, say) counts under both, so the total can be slightly above the number of items.</p>
-        <p>Item panels count distinct items per value, whether the value is recorded on the item or on its manifestation. Genre and Form count distinct works. An item or work with several values counts once under each, so a panel's bars can add up to more than its items or works. Each panel lists its most common values.</p>
+        <p data-unit="works">Each panel counts distinct works per value. A co-production counts under each of its countries, and a work with several spoken languages, genres or forms counts once under each, so a panel's bars can add up to more than its works. A spoken language can be recorded on the work, its manifestation or an item. Each panel lists its most common values.</p>
+        <p data-unit="items">Flow counts the same items across holding institution, format, element, base, colour and status at once. Each column shows its eight most common values, then Other and Not recorded; ribbons between two columns carry the items that share both values and are coloured by the first column. Hover or click a block to follow its items through every column. Format, element and colour fall back to the manifestation when the item has none. An item with two values on one column (two formats, say) counts under both, so the total can be slightly above the number of items.</p>
+        <p data-unit="items">Each panel counts distinct items per value, whether the value is recorded on the item or on its manifestation. An item with several values counts once under each, so a panel's bars can add up to more than its items. Each panel lists its most common values.</p>
         <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
       </details>
       <div id="breakdown-chart" class="breakdown-grid"></div>
@@ -551,6 +610,7 @@
               <option value="all">All</option>
             </select>
           </label>
+          <button type="button" class="fit" data-query="preservation">See the query</button>
           <button type="button" class="export" data-export="preservation">Download SVG</button>
         </div>
       </div>
@@ -580,6 +640,7 @@
             <button type="button" data-length-order="element" aria-pressed="false">Element first</button>
           </div>
           <button type="button" class="fit" data-fit="length">Reset</button>
+          <button type="button" class="fit" data-query="length">See the query</button>
           <button type="button" class="export" data-export="length">Download SVG</button>
         </div>
       </div>
@@ -602,6 +663,7 @@
           <p>Roles sized by works; outer ring shows the busiest names per role. Click a role to filter the cloud.</p>
         </div>
         <div class="view-actions">
+          <button type="button" class="fit" data-query="roles">See the query</button>
           <button type="button" class="export" data-export="roles">Download SVG</button>
         </div>
       </div>
@@ -683,7 +745,42 @@
 
   <script>
     (() => {
-      const view = (location.hash || "").slice(1);
+      // Resolve the hash the way js/groups.js does ("#group/view", "#group"
+      // or an old "#view"), from the tabs and switch rows above, so the
+      // filter bar, tab and switch row are right before the app loads.
+      const [first = "", second = ""] = (location.hash || "#overview").slice(1).split("/");
+      const tabs = [...document.querySelectorAll(".tabs a")];
+      const rows = [...document.querySelectorAll("#view-switch [data-group]")];
+      const rowFor = (id) => rows.find((row) => row.dataset.group === id);
+      const linksOf = (row) => (row ? [...row.querySelectorAll("a")] : []);
+      let group = "";
+      let view = first;
+      const tab = tabs.find((candidate) => candidate.dataset.group === first);
+      if (tab) {
+        group = first;
+        const links = linksOf(rowFor(group));
+        const link = links.find((candidate) => candidate.dataset.view === second) || links[0];
+        view = link ? link.dataset.view : tab.dataset.view;
+      } else {
+        const home = tabs.find((candidate) => candidate.dataset.view === first) ||
+          rows.find((row) => linksOf(row).some((link) => link.dataset.view === first));
+        group = home ? home.dataset.group : "";
+      }
+      for (const candidate of tabs) {
+        if (candidate.dataset.group === group) {
+          candidate.classList.add("active");
+          candidate.setAttribute("aria-current", "page");
+        }
+      }
+      for (const row of rows) {
+        row.hidden = row.dataset.group !== group;
+        for (const link of linksOf(row)) {
+          if (row.dataset.group === group && link.dataset.view === view) {
+            link.classList.add("active");
+            link.setAttribute("aria-current", "page");
+          }
+        }
+      }
       const agentViews = new Set(["cloud", "network", "co-credits", "roles"]);
       const searchViews = agentViews;
       for (const element of document.querySelectorAll('[data-filter="agents"]')) {
