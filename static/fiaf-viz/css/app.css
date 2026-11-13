@@ -564,7 +564,11 @@ button:active:not(:disabled) { transform: translateY(1px); }
    shows the ink background through); labels are mono capitals. The current
    view is set in reverse, ink with white type, the same selection the
    segmented controls use. */
+/* Lifted above the filter bar it sits flush on, so the raised shadow shows
+   on the bottom edge as well as the right. */
 .tabs {
+  position: relative;
+  z-index: 1;
   grid-column: 1 / -1;
   display: flex;
   gap: 1px;
