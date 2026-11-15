@@ -750,7 +750,8 @@ const EXPORT_STYLE = `
   .ontology-edge-hit { stroke: none; }
   .ontology-arrow { fill: var(--muted); }
   .ontology-edge-label { font-size: 11px; fill: var(--muted); }
-  .ontology-node circle { fill: var(--accent); fill-opacity: .85; stroke: var(--surface); stroke-width: 1.5; }
+  .ontology-node-core { fill: var(--accent); fill-opacity: .85; stroke: var(--surface); stroke-width: 1.5; }
+  .ontology-node-ring { fill: var(--accent); fill-opacity: .25; stroke: var(--accent); stroke-width: 1; stroke-dasharray: 3 2; }
   .ontology-node rect { fill: var(--surface-2); stroke: var(--muted); stroke-dasharray: 2 2; }
   .ontology-node-label { font-size: 11px; font-weight: 600; fill: var(--text); }
   .flow-link { fill-opacity: .38; stroke: none; }

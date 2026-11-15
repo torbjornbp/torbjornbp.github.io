@@ -3441,9 +3441,12 @@ body.drawer-resizing * {
 .ontology-edge-hit:focus-visible { stroke: var(--accent); stroke-opacity: 0.3; outline: none; }
 .ontology-arrow { fill: var(--muted); }
 .ontology-edge-label { font-size: var(--font-size-chart); fill: var(--muted); paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; transition: opacity var(--duration-fast) var(--ease-standard); }
-.ontology-node circle { fill: var(--accent); fill-opacity: 0.85; stroke: var(--surface); stroke-width: 1.5; cursor: pointer; }
+.ontology-node circle { cursor: pointer; }
+.ontology-node-core { fill: var(--accent); fill-opacity: 0.85; stroke: var(--surface); stroke-width: 1.5; }
+/* Uses as a value: dashed like the class-value arrows that feed them. */
+.ontology-node-ring { fill: var(--accent); fill-opacity: 0.25; stroke: var(--accent); stroke-width: 1; stroke-dasharray: 3 2; }
 .ontology-node rect { fill: var(--surface-2); stroke: var(--muted); stroke-dasharray: 2 2; }
-.ontology-node:hover circle, .ontology-node:focus-visible circle { stroke: var(--text); stroke-width: 2; }
+.ontology-node:hover circle:first-of-type, .ontology-node:focus-visible circle:first-of-type { stroke: var(--text); stroke-width: 2; stroke-dasharray: none; }
 .ontology-node:focus-visible { outline: none; }
 .ontology-node-label { font-size: var(--font-size-chart); font-weight: var(--font-semibold); fill: var(--text); paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
 .ontology-node.is-dim, .ontology-edge.is-dim, .ontology-edge-label.is-dim { opacity: 0.12; }

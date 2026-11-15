@@ -350,11 +350,20 @@ export function create(ctx, root, statsElement, detailsElement) {
     const linked = new Set(edges.flatMap((edge) => [edge.source, edge.target]));
     const nodes = graph.nodes.filter((node) => linked.has(node.id)).map((node) => ({ ...node }));
     const byId = new Map(nodes.map((node) => [node.id, node]));
+    // A class node is sized by its records plus its uses as a value. The solid
+    // core is the records' share of the area, the lighter ring the value uses:
+    // Country or Genre has few records but is named by most works.
     const radius = d3
       .scaleSqrt()
-      .domain([0, d3.max(nodes, (node) => node.instances) || 1])
+      .domain([0, d3.max(nodes, (node) => node.uses) || 1])
       .range([7, Math.max(22, Math.min(width, height) / 18)]);
-    const nodeRadius = (node) => (node.kind === "class" ? radius(node.instances) : 9);
+    const nodeRadius = (node) => (node.kind === "class" ? radius(node.uses) : 9);
+    const coreRadius = (node) => (node.uses ? nodeRadius(node) * Math.sqrt(node.instances / node.uses) : 0);
+    const nodeCounts = (node) =>
+      [
+        countText(node.instances, "record", "records"),
+        node.values ? countText(node.values, "use as a value", "uses as a value") : null
+      ].filter(Boolean).join(" · ");
     const strokeWidth = d3
       .scaleLog()
       .domain([1, d3.max(edges, (edge) => edge.estimate) || 10])
@@ -514,7 +523,7 @@ export function create(ctx, root, statsElement, detailsElement) {
       .attr("transform", (node) => `translate(${node.x},${node.y})`)
       .attr("tabindex", (node) => (node.kind === "class" ? 0 : null))
       .attr("role", (node) => (node.kind === "class" ? "button" : null))
-      .attr("aria-label", (node) => `${node.label}: ${countText(node.instances, "record", "records")}.`)
+      .attr("aria-label", (node) => `${node.label}: ${nodeCounts(node)}.`)
       .on("mouseenter", (event, node) => {
         highlight({ node });
         const out = edges.filter((edge) => edge.source === node.id).length;
@@ -523,7 +532,7 @@ export function create(ctx, root, statsElement, detailsElement) {
           event,
           node.label,
           [
-            node.kind === "class" ? countText(node.instances, "record", "records") : null,
+            node.kind === "class" ? nodeCounts(node) : null,
             `${out} outgoing, ${incoming} incoming`
           ].filter(Boolean).join(" · ")
         );
@@ -542,15 +551,18 @@ export function create(ctx, root, statsElement, detailsElement) {
           select({ kind: "class", id: node.id });
         }
       });
-    nodeGroups
-      .append((node) =>
-        document.createElementNS("http://www.w3.org/2000/svg", node.kind === "class" ? "circle" : "rect")
-      )
-      .each(function (node) {
-        const shape = d3.select(this);
-        if (node.kind === "class") shape.attr("r", nodeRadius(node));
-        else shape.attr("x", -9).attr("y", -9).attr("width", 18).attr("height", 18);
-      });
+    nodeGroups.each(function (node) {
+      const group = d3.select(this);
+      if (node.kind !== "class") {
+        group.append("rect").attr("x", -9).attr("y", -9).attr("width", 18).attr("height", 18);
+        return;
+      }
+      if (node.values) group.append("circle").attr("class", "ontology-node-ring").attr("r", nodeRadius(node));
+      // A linked class with no counts at all still gets a minimum-size core.
+      if (node.instances || !node.values) {
+        group.append("circle").attr("class", "ontology-node-core").attr("r", node.uses ? coreRadius(node) : nodeRadius(node));
+      }
+    });
     nodeGroups
       .append("text")
       .attr("class", "ontology-node-label")

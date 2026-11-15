@@ -138,6 +138,11 @@ export function schemaGraph(tree, properties, samples) {
         id,
         label: cls ? cls.label : id === LITERAL ? "Literal value" : "Untyped",
         instances: cls ? cls.total : 0,
+        // Uses as a value across the subtree (works naming fiaf:Germany).
+        // Country, Language, Genre and Form are mostly used this way, so the
+        // graph draws them as a ring round their (small) typed core.
+        values: cls ? cls.valueTotal : 0,
+        uses: cls ? cls.uses : 0,
         kind: cls ? "class" : id,
         ...extra
       });
