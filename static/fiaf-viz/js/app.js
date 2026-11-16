@@ -17,7 +17,7 @@ import {
 } from "./sparql.js";
 import { humanize, localName, roleLabel } from "./labels.js";
 import { initTheme } from "./theme.js";
-import { agentHistory, workAgentModel } from "./records.js";
+import { agentHistory, groupByRole, workAgentModel } from "./records.js";
 import * as ui from "./ui.js";
 import { GROUPS, groupHasView, hashFor, homeGroup, parseHash, unitFor } from "./groups.js";
 import * as cloud from "./cloud.js";
@@ -44,7 +44,7 @@ const SELECTION_VIEWS = {
   agent: new Set(AGENT_VIEWS),
   entity: new Set(["catalogue"])
 };
-const AGENT_TABS = new Set(["works", "co-credits", "overview"]);
+const AGENT_TABS = new Set(["overview", "co-credits"]);
 const VIEW_LABELS = {
   cloud: "Name cloud",
   network: "Names & works",
@@ -340,6 +340,7 @@ const ctx = {
 
   openAgent,
   openWork,
+  workDrawerTab,
   openEntity,
   onlyRole,
   selectionStatus,
@@ -368,7 +369,7 @@ function selectionSupportedByView(name, selected = selection) {
 }
 
 function agentTabForView(name) {
-  return name === "co-credits" ? "co-credits" : "works";
+  return name === "co-credits" ? "co-credits" : "overview";
 }
 
 function selectedScopeNames() {
@@ -452,8 +453,8 @@ function selectionStatus() {
         shown: false,
         tone: "note",
         text:
-          "Catalogue does not highlight names. Open Works and use " +
-          "“Show works in catalogue” to pivot the table."
+          "Catalogue does not highlight names. Use “Show works in " +
+          "catalogue” below to pivot the table."
       };
     }
     if (!AGENT_VIEWS.has(activeView)) return null;
@@ -639,6 +640,14 @@ function syncWorkNav() {
   });
 }
 
+// The tab a newly picked work opens on: the tab already showing when a work
+// drawer is open, so stepping through works keeps your place; Overview when not.
+function workDrawerTab() {
+  return selection && selection.kind === "work" && selection.tab && ui.drawerIsOpen()
+    ? selection.tab
+    : "overview";
+}
+
 function stepWork(delta) {
   if (!selection || selection.kind !== "work" || !selection.nav) return;
   const nav = selection.nav;
@@ -646,7 +655,7 @@ function stepWork(delta) {
   if (index < 0 || index >= nav.items.length) return;
   const item = nav.items[index];
   openWork(item.work, item.title || localName(item.work) || item.work, {
-    tab: selection.tab || "holdings",
+    tab: workDrawerTab(),
     nav: { items: nav.items, index }
   });
 }
@@ -1488,7 +1497,7 @@ function showView(name, group) {
         openAgent(selection.id, selection.label, { tab: agentTabForView(name) });
       } else if (selection.kind === "work") {
         openWork(selection.id, selection.label, {
-          tab: AGENT_VIEWS.has(name) ? "credits" : selection.tab,
+          tab: AGENT_VIEWS.has(name) ? "overview" : selection.tab,
           nav: selection.nav
         });
       } else if (selection.kind === "entity") {
@@ -1615,6 +1624,10 @@ function inActiveView(id, kind) {
 function refreshDrawerOutside() {
   if (!lastDrawerList) return;
   if (lastDrawerList.isActive && !lastDrawerList.isActive()) return;
+  if (lastDrawerList.redraw) {
+    lastDrawerList.redraw();
+    return;
+  }
   ui.drawerListInto(
     lastDrawerList.container || ui.drawerContent(),
     lastDrawerList.items,
@@ -1751,7 +1764,15 @@ function renderAgentWorks(panel, agent, name, state, tabs) {
     ui.panelMessage(panel, `No works found for this name${scopePhrase()}.`);
     return;
   }
-  const describe = {
+  // Grouped by role in the order of the Activity roles (busiest first); works
+  // by year inside a role, undated ones last.
+  const groups = groupByRole(items, {
+    roleOrder: state.roleTotals.map((entry) => entry.role),
+    compare: (a, b) =>
+      (a.year ?? Infinity) - (b.year ?? Infinity) || a.title.localeCompare(b.title)
+  });
+  const datedWorks = items.some((item) => item.year);
+  const redraw = () => ui.drawerLinkGroups(panel, {
     heading: "Credited works",
     actions: [
       {
@@ -1773,23 +1794,33 @@ function renderAgentWorks(panel, agent, name, state, tabs) {
           ? ` · showing ${ui.formatNumber(items.length)} of ${ui.formatNumber(state.works)} credited works; history is capped`
           : "") +
         (visible < items.length
-          ? ` · ${ui.formatNumber(visible)} in this view; dimmed rows are outside it`
+          ? ` · ${ui.formatNumber(visible)} in this view; the rest are grey and not underlined`
           : "")
       );
     },
-    title: (item) => item.title,
-    meta: (item) => `${[...item.roles].map(roleLabel).join(", ")} · ${item.work}`,
-    id: (item) => item.work,
-    inView: (item) => inActiveView(item.work, "work"),
-    onSelect: (item) => openWork(item.work, item.title)
-  };
+    noun: "works",
+    expanded: state.expandedRoles,
+    groups: groups.map((group) => ({
+      label: group.role ? roleLabel(group.role) : "No role",
+      // A count only when the role has more than one; same rule as the
+      // work drawer's credited names.
+      count: group.items.length > 1 ? `${ui.formatNumber(group.items.length)} works` : "",
+      links: group.items.map((item) => ({
+        text: item.title,
+        // A year column only when some work has a year; otherwise it would
+        // be an empty track pushing every title out of line.
+        meta: datedWorks ? (item.year ? String(item.year) : "") : undefined,
+        title: item.work,
+        outside: !inActiveView(item.work, "work"),
+        onSelect: () => openWork(item.work, item.title)
+      }))
+    }))
+  });
   lastDrawerList = {
-    items,
-    describe,
-    container: panel,
-    isActive: () => Boolean(tabs && tabs.active() === "works")
+    redraw,
+    isActive: () => Boolean(tabs && tabs.active() === "overview")
   };
-  ui.drawerListInto(panel, items, describe);
+  redraw();
 }
 
 function renderAgentCoCredits(panel, agent, name, state, tabs) {
@@ -1849,20 +1880,6 @@ function renderAgentCoCredits(panel, agent, name, state, tabs) {
   ui.drawerListInto(panel, rows, describe);
 }
 
-function ensureAgentRecord(state, agent, tabs) {
-  if (state.record || state.recordPromise || state.recordError) return;
-  const token = state.token;
-  state.recordPromise = loadEntityRecord(agent).then((record) => {
-    if (state.token !== token) return;
-    state.record = record;
-    if (tabs && tabs.active() === "overview") tabs.refresh();
-  }).catch((error) => {
-    if (error.name === "AbortError" || state.token !== token) return;
-    state.recordError = error;
-    if (tabs && tabs.active() === "overview") tabs.refresh();
-  });
-}
-
 function renderAgentOverview(panel, agent, name, state, tabs) {
   const roles = state.roleTotals;
   const viewStatus = selectionStatus();
@@ -1909,33 +1926,36 @@ function renderAgentOverview(panel, agent, name, state, tabs) {
     });
   }
 
-  ui.drawerMeta(panel, groups);
-
-  // Career strip above the facts: works by year, one lane per role.
+  // Facts first (career strip, activity, identification), then the credited
+  // works. Each part has its own container: the works list is redrawn on its
+  // own when the view changes (refreshDrawerOutside).
+  panel.replaceChildren();
   if (state.workItems && state.workItems.length) {
     const strip = ui.node("div", "career-wrapper");
-    panel.prepend(strip);
+    panel.append(strip);
     renderCareer(strip, state.workItems, {
       colorFor: ctx.colorFor,
       capped: state.works > state.workItems.length,
       onSelect: (dot) => openWork(dot.work, dot.title)
     });
   }
-
-  if (!state.record) {
-    if (state.recordError) {
-      panel.append(
-        ui.node(
-          "p",
-          "drawer-section-note",
-          `Identification unavailable: ${state.recordError.message}`
-        )
-      );
-      return;
-    }
-    panel.append(ui.node("p", "drawer-section-note", "Loading identification…"));
-    ensureAgentRecord(state, agent, tabs);
+  const facts = ui.node("div", "drawer-overview-facts");
+  panel.append(facts);
+  ui.drawerMeta(facts, groups);
+  // The record loads with the works (refreshAgentDrawer), so it is either
+  // here or failed; there is no loading state to show.
+  if (!state.record && state.recordError) {
+    facts.append(
+      ui.node(
+        "p",
+        "drawer-section-note",
+        `Identification unavailable: ${state.recordError.message}`
+      )
+    );
   }
+  const works = ui.node("div", "drawer-overview-list");
+  panel.append(works);
+  renderAgentWorks(works, agent, name, state, tabs);
 }
 
 function renderAgentDrawerTabs(agent, name, state) {
@@ -1946,19 +1966,14 @@ function renderAgentDrawerTabs(agent, name, state) {
   tabs = ui.drawerTabs(
     [
       {
-        id: "works",
-        label: "Works",
-        render: (panel) => renderAgentWorks(panel, agent, name, state, tabs)
+        id: "overview",
+        label: "Overview",
+        render: (panel) => renderAgentOverview(panel, agent, name, state, tabs)
       },
       {
         id: "co-credits",
         label: "Co-credits",
         render: (panel) => renderAgentCoCredits(panel, agent, name, state, tabs)
-      },
-      {
-        id: "overview",
-        label: "Overview",
-        render: (panel) => renderAgentOverview(panel, agent, name, state, tabs)
       }
     ],
     {
@@ -2000,18 +2015,19 @@ async function refreshAgentDrawer() {
   lastDrawerList = null;
   ui.drawerMessage("Loading name…");
   try {
-    const [history, lookedUpRecord] = await Promise.all([
+    // The record loads with the works: Identification sits above the works
+    // list, so arriving later would push the list down.
+    let recordError = null;
+    const [history, record] = await Promise.all([
       loadAgentWorks(agent),
-      labelNeedsLookup(name, agent)
-        ? loadEntityRecord(agent).catch((error) => {
-            if (error.name === "AbortError") throw error;
-            return null;
-          })
-        : Promise.resolve(null)
+      loadEntityRecord(agent).catch((error) => {
+        if (error.name === "AbortError") throw error;
+        recordError = error;
+        return null;
+      })
     ]);
     if (token !== drawerToken || !selection || selection.id !== agent) return;
-    let record = lookedUpRecord;
-    if (record) {
+    if (record && labelNeedsLookup(name, agent)) {
       const resolved = recordTitle(record, name);
       if (resolved && resolved !== name) {
         name = resolved;
@@ -2030,11 +2046,11 @@ async function refreshAgentDrawer() {
       workItems: agentWorkItems(rows),
       roleTotals: history.roleTotals,
       record,
-      recordPromise: record ? Promise.resolve(record) : null,
-      recordError: null,
+      recordError,
       coCreditRows: null,
       coCreditPromise: null,
-      coCreditError: null
+      coCreditError: null,
+      expandedRoles: new Set()
     };
     renderAgentDrawerTabs(agent, name, state);
   } catch (error) {
@@ -2469,11 +2485,6 @@ function metadataLanguages(value) {
   return parts.length ? parts.join(", ") : null;
 }
 
-function metadataCount(value) {
-  if (value === undefined || value === null || value === "") return null;
-  return ui.formatNumber(Number(value) || 0);
-}
-
 function workOverviewGroups(row) {
   const data = row || {};
   return [
@@ -2501,27 +2512,41 @@ function workOverviewGroups(row) {
         {
           label: "Identifiers",
           value: metadataList(data.identifiers, (value) => value)
-        }
-      ]
-    },
-    {
-      heading: "Holdings",
-      rows: [
-        { label: "Manifestations", value: metadataCount(data.manifestations) },
-        { label: "Items", value: metadataCount(data.items) },
-        { label: "Carriers", value: metadataCount(data.carriers) },
-        { label: "Digital items", value: metadataCount(data.digitalItems) }
+        },
+        { label: "Holdings", value: holdingsSummary(data) }
       ]
     }
   ];
 }
 
-function renderWorkOverview(panel, state) {
+// "2 manifestations · 3 items · 3 carriers · 1 digital item" on one line;
+// counts of zero are left out (the Holdings tab has the detail).
+function holdingsSummary(data) {
+  const parts = [
+    [data.manifestations, "manifestation", "manifestations"],
+    [data.items, "item", "items"],
+    [data.carriers, "carrier", "carriers"],
+    [data.digitalItems, "digital item", "digital items"]
+  ]
+    .map(([value, one, many]) => [Number(value) || 0, one, many])
+    .filter(([count]) => count > 0)
+    .map(([count, one, many]) => `${ui.formatNumber(count)} ${count === 1 ? one : many}`);
+  return parts.length ? parts.join(" · ") : null;
+}
+
+// Facts first, then the credited names. The names list has its own container
+// because refreshDrawerOutside redraws it on its own when the view changes.
+function renderWorkOverview(panel, state, tabs) {
   if (!state.metadata) {
-    ui.panelMessage(panel, "Loading work metadata…");
+    ui.panelMessage(panel, "Loading work…");
     return;
   }
-  ui.drawerMeta(panel, workOverviewGroups(state.metadata));
+  panel.replaceChildren();
+  const facts = ui.node("div", "drawer-overview-facts");
+  const names = ui.node("div", "drawer-overview-list");
+  panel.append(facts, names);
+  ui.drawerMeta(facts, workOverviewGroups(state.metadata));
+  renderWorkCredits(names, state, tabs);
 }
 
 function renderWorkCredits(panel, state, tabs) {
@@ -2535,7 +2560,10 @@ function renderWorkCredits(panel, state, tabs) {
     ui.panelMessage(panel, "No credited names found for this work.");
     return;
   }
-  const describe = {
+  // Grouped by role, smallest group first (director before cast); names
+  // alphabetical inside a role (workAgentModel already sorts them).
+  const groups = groupByRole(items);
+  const redraw = () => ui.drawerLinkGroups(panel, {
     heading: "Credited names",
     note: () => {
       const visible = items.filter((item) => inActiveView(item.agent, "agent")).length;
@@ -2544,24 +2572,28 @@ function renderWorkCredits(panel, state, tabs) {
           ? `Showing ${ui.formatNumber(items.length)} names · credit row limit reached; names and roles may be incomplete`
           : `${ui.formatNumber(items.length)} names in the catalogue`) +
         (visible < items.length
-          ? ` · ${ui.formatNumber(visible)} in this view; dimmed rows are outside it`
+          ? ` · ${ui.formatNumber(visible)} in this view; the rest are grey and not underlined`
           : "")
       );
     },
-    title: (item) => item.name,
-    meta: (item) =>
-      `${[...item.roles].map(roleLabel).join(", ")} · ${item.agent}`,
-    id: (item) => item.agent,
-    inView: (item) => inActiveView(item.agent, "agent"),
-    onSelect: (item) => openAgent(item.agent, item.name)
-  };
+    noun: "names",
+    expanded: state.expandedRoles,
+    groups: groups.map((group) => ({
+      label: group.role ? roleLabel(group.role) : "No role",
+      count: group.items.length > 1 ? `${ui.formatNumber(group.items.length)} names` : "",
+      links: group.items.map((item) => ({
+        text: item.name,
+        title: item.agent,
+        outside: !inActiveView(item.agent, "agent"),
+        onSelect: () => openAgent(item.agent, item.name)
+      }))
+    }))
+  });
   lastDrawerList = {
-    items,
-    describe,
-    container: panel,
-    isActive: () => tabs.active() === "credits"
+    redraw,
+    isActive: () => tabs.active() === "overview"
   };
-  ui.drawerListInto(panel, items, describe);
+  redraw();
 }
 
 // -- work holdings tree -----------------------------------------------------
@@ -3147,6 +3179,17 @@ function renderWorkHoldings(panel, state, tabs) {
   }
 }
 
+// The graph's "+N more" node: open that role's credits in full on the
+// Overview tab (long roles are folded there) and scroll to them.
+function showCreditRole(state, tabs, role) {
+  const label = role ? roleLabel(role) : "No role";
+  state.expandedRoles.add(label);
+  tabs.activate("overview");
+  const target = [...document.querySelectorAll(".drawer-link-groups dt[data-group]")]
+    .find((element) => element.dataset.group === label);
+  if (target) ui.scrollWithinDrawer(target);
+}
+
 // The work's credits, variants, holdings and related works as one graph.
 function renderWorkGraphTab(panel, state, tabs) {
   if (state.holdingsError) {
@@ -3199,7 +3242,7 @@ function renderWorkGraphTab(panel, state, tabs) {
         if (node.kind === "agent") openAgent(node.iri, node.label);
         else if (node.kind === "related") openWork(node.iri, node.label);
         else if (node.kind === "variant") openRecord(node.iri, node.label);
-        else if (node.kind === "more") tabs.activate("credits");
+        else if (node.kind === "more") showCreditRole(state, tabs, node.role);
         else if (HOLDINGS_KINDS[node.kind]) {
           // Show the record in the tree, where the inspector lists its fields.
           holdingsSelection = { work: state.work, kind: node.kind, id: node.data.id };
@@ -3230,9 +3273,9 @@ async function openWork(work, title, options = {}) {
     holdingsSelection = null;
   }
 
-  const requestedTab = options.tab || "credits";
-  const validTabs = ["credits", "holdings", "graph", "overview"];
-  const defaultTab = validTabs.includes(requestedTab) ? requestedTab : "credits";
+  const requestedTab = options.tab || "overview";
+  const validTabs = ["overview", "holdings", "graph"];
+  const defaultTab = validTabs.includes(requestedTab) ? requestedTab : "overview";
   const nav = options.nav || null;
   selection = {
     kind: "work",
@@ -3256,7 +3299,8 @@ async function openWork(work, title, options = {}) {
     relations: null,
     relationsError: null,
     variants: null,
-    variantsError: null
+    variantsError: null,
+    expandedRoles: new Set()
   };
   workDrawerState = { work, token, controller, state: drawerState };
 
@@ -3264,9 +3308,9 @@ async function openWork(work, title, options = {}) {
   tabs = ui.drawerTabs(
     [
       {
-        id: "credits",
-        label: "Credits",
-        render: (panel) => renderWorkCredits(panel, drawerState, tabs)
+        id: "overview",
+        label: "Overview",
+        render: (panel) => renderWorkOverview(panel, drawerState, tabs)
       },
       {
         id: "holdings",
@@ -3277,11 +3321,6 @@ async function openWork(work, title, options = {}) {
         id: "graph",
         label: "Graph",
         render: (panel) => renderWorkGraphTab(panel, drawerState, tabs)
-      },
-      {
-        id: "overview",
-        label: "Overview",
-        render: (panel) => renderWorkOverview(panel, drawerState)
       }
     ],
     {

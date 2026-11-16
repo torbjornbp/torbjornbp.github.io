@@ -2824,7 +2824,11 @@ body[data-active-view="catalogue"] {
   background: var(--surface);
   border-left: 1px solid var(--text);
   box-shadow: var(--shadow);
-  padding: var(--space-5) var(--space-6) var(--space-8);
+  /* No top padding on the scroll container: sticky children (the tab strip,
+     or the header in an untabbed drawer) pin at its padding edge, and a top
+     padding would leave a band of scrolled content showing above them. The
+     header carries that space instead. */
+  padding: 0 var(--space-6) var(--space-8);
   overflow: auto;
   /* Reaching the end of the drawer must not start scrolling the page under
      it (the overlay covers most of a phone screen). */
@@ -2916,6 +2920,7 @@ body.drawer-resizing * {
   align-items: flex-start;
   gap: var(--space-4);
   border-bottom: 1px solid var(--border);
+  padding-top: var(--space-5);
   padding-bottom: var(--space-3);
   margin-bottom: var(--space-3);
 }
@@ -3080,6 +3085,14 @@ body.drawer-resizing * {
 .drawer-meta-section { margin: 0 0 var(--space-4); }
 .drawer-meta-section:last-child { margin-bottom: 0; }
 
+/* Overview tab: the facts, then the credited names or works under a
+   hairline rule. */
+.drawer-overview-list {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
 .drawer-section-title {
   margin: 0 0 var(--space-1_5);
   font-size: var(--font-size-ui);
@@ -3148,6 +3161,127 @@ body.drawer-resizing * {
 .drawer-entity-link:hover,
 .drawer-entity-link:focus-visible {
   color: var(--accent-strong);
+}
+
+/* A record the active view does not draw: still a link, in the muted ink and
+   without its underline, so the state does not rest on colour alone (the two
+   inks are close, and forced-colors mode makes them identical). The underline
+   returns on hover and focus to show it is still a link. */
+.drawer-entity-link.is-outside {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.drawer-entity-link.is-outside:hover,
+.drawer-entity-link.is-outside:focus-visible {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+/* Text for screen readers only, such as "(not in this view)" on a muted link. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Overview lists (credited names, credited works): a drawer-meta grid with
+   the role and its count on the left and its records as links, one per line,
+   each role between hairline rules.
+
+   The label track is the facts grid's 9rem minimum plus its column gap, so the
+   links line up with the values above; a long role name wraps instead of
+   widening it. The gap moves into the label's padding so the rules run
+   unbroken across both columns. */
+.drawer-link-groups {
+  grid-template-columns: calc(9rem + var(--space-3)) minmax(0, 1fr);
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.drawer-link-groups > dt,
+.drawer-link-groups > dd {
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--border);
+}
+
+/* scroll-margin clears the sticky tab strip when the graph's "+N more" node
+   scrolls a role into view. */
+.drawer-link-groups > dt {
+  padding-right: var(--space-3);
+  scroll-margin-top: 4rem;
+  overflow-wrap: anywhere;
+}
+
+.drawer-link-count {
+  display: block;
+  margin-top: var(--space-0_5);
+  text-transform: none;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.drawer-link-list {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A link with a year: the year in its own mono column, so a long run of works
+   reads down the years instead of blending into one block. */
+.drawer-link-list > li.has-meta {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  align-items: baseline;
+}
+
+.drawer-link-meta {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-chart);
+  font-variant-numeric: tabular-nums;
+}
+
+/* In these lists the underline is quiet at rest and red on hover, so a column
+   of links does not turn into a block of rules. */
+.drawer-link-list .drawer-entity-link {
+  text-decoration-color: var(--border-strong);
+}
+
+.drawer-link-list .drawer-entity-link:hover,
+.drawer-link-list .drawer-entity-link:focus-visible {
+  text-decoration-color: currentColor;
+}
+
+.drawer-link-more {
+  margin-top: var(--space-1_5);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-chart);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.drawer-link-more:hover { color: var(--accent); }
+
+@media (pointer: coarse) {
+  .drawer-link-list { gap: var(--space-2); }
+  .drawer-entity-link,
+  .drawer-link-more { min-height: 32px; }
 }
 
 /* -- tooltip --------------------------------------------------------------- */
@@ -3347,8 +3481,9 @@ body.drawer-resizing * {
   /* Drawer header: the record controls take their own row above the title,
      so a long title gets the full width instead of a narrow column. */
   .drawer header { flex-direction: column-reverse; gap: var(--space-2); }
-  /* Clear the busy bar on the top edge, which sits above the drawer. */
-  .drawer { padding-top: var(--space-10); }
+  /* Clear the busy bar on the top edge, which sits above the drawer. The
+     space is the header's, not the scroll container's (see .drawer). */
+  .drawer header { padding-top: var(--space-10); }
   .drawer-header-actions { align-self: stretch; justify-content: flex-end; }
 
   /* Work in progress shows as a thin bar on the top edge, where it covers

@@ -946,7 +946,7 @@ export function create(ctx, controls) {
       title: entry.title || localName(entry.work) || entry.work
     }));
     ctx.openWork(row.work, row.title || localName(row.work) || row.work, {
-      tab: "holdings",
+      tab: ctx.workDrawerTab ? ctx.workDrawerTab() : "overview",
       nav: { items: navItems, index }
     });
   }

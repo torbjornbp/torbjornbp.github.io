@@ -331,6 +331,18 @@ export function setDrawerTitle(title, subtitle) {
   }
 }
 
+// Brings an element inside the drawer to the top of the drawer's own scroll
+// area, below the sticky tab strip, without scrolling the page behind it
+// (element.scrollIntoView would scroll every ancestor, the window included).
+export function scrollWithinDrawer(element) {
+  const scroller = element && element.closest(".drawer");
+  if (!scroller) return;
+  const margin = parseFloat(getComputedStyle(element).scrollMarginTop) || 0;
+  const offset =
+    element.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
+  scroller.scrollTop += offset - margin;
+}
+
 export function drawerContent() {
   drawer();
   return drawerBody;
@@ -393,27 +405,7 @@ export function drawerMessage(text, kind) {
 
 export function drawerListInto(container, items, describe) {
   if (!container) return;
-  container.replaceChildren();
-  if (Array.isArray(describe.actions) && describe.actions.length) {
-    const actions = node("div", "drawer-actions");
-    for (const action of describe.actions) {
-      const button = node("button", "drawer-action", action.label);
-      button.type = "button";
-      button.addEventListener("click", action.onClick);
-      actions.append(button);
-    }
-    container.append(actions);
-  }
-  if (describe.heading) {
-    const header = node("div", "drawer-section-head");
-    header.append(node("h3", "drawer-section-title", describe.heading));
-    const note =
-      typeof describe.note === "function" ? describe.note() : describe.note;
-    if (note) {
-      header.append(node("p", "drawer-section-note", note));
-    }
-    container.append(header);
-  }
+  drawerListHead(container, describe);
   const list = node("ul", "drawer-list");
   const inView = describe.inView || (() => true);
   for (const item of items) {
@@ -444,6 +436,138 @@ export function drawerListInto(container, items, describe) {
     list.append(entry);
   }
   container.append(list);
+}
+
+// Clears the container and draws a list's action keys, heading and note.
+function drawerListHead(container, describe) {
+  container.replaceChildren();
+  if (Array.isArray(describe.actions) && describe.actions.length) {
+    const actions = node("div", "drawer-actions");
+    for (const action of describe.actions) {
+      const button = node("button", "drawer-action", action.label);
+      button.type = "button";
+      button.addEventListener("click", action.onClick);
+      actions.append(button);
+    }
+    container.append(actions);
+  }
+  if (describe.heading) {
+    const header = node("div", "drawer-section-head");
+    header.append(node("h3", "drawer-section-title", describe.heading));
+    const note =
+      typeof describe.note === "function" ? describe.note() : describe.note;
+    if (note) {
+      header.append(node("p", "drawer-section-note", note));
+    }
+    container.append(header);
+  }
+}
+
+// Groups longer than this show their first LINK_GROUP_PREVIEW links and a
+// "Show all" key.
+const LINK_GROUP_LIMIT = 10;
+const LINK_GROUP_PREVIEW = 8;
+
+// A list laid out like drawerMeta: one row per group (a role) between hairline
+// rules, the label and its count in the left column and the group's records as
+// links, one per line, on the right. A link can lead with a short mono `meta`
+// (a year) in its own column. Links for records the active view does not draw
+// are muted, not removed.
+//
+// `spec` takes the same actions, heading and note as drawerListInto, plus
+// groups: [{ label, count, links: [{ text, meta, title, outside, onSelect }] }],
+// `noun` ("works", "names") for the Show all keys' accessible names, and
+// `expanded`, a Set of group labels opened with "Show all" that the caller
+// keeps so a redraw does not fold them again.
+//
+// The list is redrawn whenever the active view changes; a keyboard user's
+// focus returns to the same link or key instead of falling to the page.
+let linkGroupSeq = 0;
+
+export function drawerLinkGroups(container, spec) {
+  if (!container) return;
+  const focusKey = container.contains(document.activeElement)
+    ? document.activeElement.dataset.focusKey
+    : null;
+  drawerListHead(container, spec);
+  const expanded = spec.expanded || new Set();
+  const noun = spec.noun || "records";
+  const list = node("dl", "drawer-meta drawer-link-groups");
+  for (const group of spec.groups || []) {
+    const label = node("dt", "drawer-meta-label", group.label);
+    label.dataset.group = group.label;
+    if (group.count) label.append(node("span", "drawer-link-count", group.count));
+    const value = node("dd", "drawer-meta-value");
+    const listId = `drawer-links-${++linkGroupSeq}`;
+    const draw = () => {
+      const long = group.links.length > LINK_GROUP_LIMIT;
+      const open = !long || expanded.has(group.label);
+      const links = node("ul", "drawer-link-list");
+      links.id = listId;
+      for (const link of open ? group.links : group.links.slice(0, LINK_GROUP_PREVIEW)) {
+        links.append(drawerLinkEntry(link, group.label));
+      }
+      value.replaceChildren(links);
+      if (!long) return;
+      const toggle = node(
+        "button",
+        "drawer-link-more",
+        open ? "Show fewer" : `Show all ${group.links.length}`
+      );
+      toggle.type = "button";
+      toggle.dataset.focusKey = `more|${group.label}`;
+      // The visible text is short; the name says which role it opens, since
+      // several roles can each have a "Show all" key.
+      toggle.setAttribute(
+        "aria-label",
+        open
+          ? `Show fewer ${group.label} ${noun}`
+          : `Show all ${group.links.length} ${group.label} ${noun}`
+      );
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-controls", listId);
+      toggle.addEventListener("click", () => {
+        if (open) expanded.delete(group.label);
+        else expanded.add(group.label);
+        draw();
+        value.querySelector(".drawer-link-more")?.focus();
+      });
+      value.append(toggle);
+    };
+    draw();
+    list.append(label, value);
+  }
+  container.append(list);
+  if (focusKey) {
+    const target = [...container.querySelectorAll("[data-focus-key]")].find(
+      (element) => element.dataset.focusKey === focusKey
+    );
+    target?.focus({ preventScroll: true });
+  }
+}
+
+// One link. A record the active view does not draw is muted and loses its
+// underline (so the state does not rest on colour alone, which forced-colors
+// mode flattens anyway), and says so to screen readers.
+function drawerLinkEntry(link, groupLabel) {
+  const entry = node("li", link.meta !== undefined ? "has-meta" : "");
+  if (link.meta !== undefined) {
+    entry.append(node("span", "drawer-link-meta", link.meta || ""));
+  }
+  const button = node(
+    "button",
+    link.outside ? "drawer-entity-link is-outside" : "drawer-entity-link",
+    link.text
+  );
+  button.type = "button";
+  button.dataset.focusKey = `${groupLabel}|${link.title || link.text}`;
+  if (link.title) button.title = link.title;
+  if (link.outside) {
+    button.append(node("span", "visually-hidden", " (not in this view)"));
+  }
+  button.addEventListener("click", link.onSelect);
+  entry.append(button);
+  return entry;
 }
 
 export function drawerList(items, describe) {

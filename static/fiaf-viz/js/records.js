@@ -30,3 +30,36 @@ export function workAgentModel(rows) {
   // Selection consumers require an array (and test its length), not a Set.
   return { agentIds: items.map((item) => item.agent), items, limited: rows.length >= 1000 };
 }
+
+// Items (credited names or works, each with a `roles` Set) grouped by role for
+// the drawer's Overview lists. An item with several roles appears under each;
+// one with none goes under a null role at the end.
+//
+// Roles follow `roleOrder` when given (a name's roles, busiest first); any
+// others, and every role when no order is given, come smallest group first,
+// the way film credits list the director before the cast. `compare` sorts the
+// items inside a role.
+export function groupByRole(items, { roleOrder = [], compare } = {}) {
+  const groups = new Map();
+  for (const item of items) {
+    const roles = item.roles && item.roles.size ? [...item.roles] : [null];
+    for (const role of roles) {
+      if (!groups.has(role)) groups.set(role, []);
+      groups.get(role).push(item);
+    }
+  }
+  const rank = new Map(roleOrder.map((role, index) => [role, index]));
+  const label = (role) => (role ? roleLabel(role) : "");
+  return [...groups.entries()]
+    .map(([role, members]) => ({
+      role,
+      items: compare ? [...members].sort(compare) : members
+    }))
+    .sort((a, b) => {
+      if ((a.role === null) !== (b.role === null)) return a.role === null ? 1 : -1;
+      const ra = rank.has(a.role) ? rank.get(a.role) : Infinity;
+      const rb = rank.has(b.role) ? rank.get(b.role) : Infinity;
+      if (ra !== rb) return ra - rb;
+      return a.items.length - b.items.length || label(a.role).localeCompare(label(b.role));
+    });
+}
