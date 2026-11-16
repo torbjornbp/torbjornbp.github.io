@@ -1975,6 +1975,18 @@ main {
   font-size: var(--font-size-chart);
   fill: var(--text);
 }
+.arc-label-group { font-weight: var(--font-semibold); }
+
+/* The Roles sunburst's centre: a count, or the key back out of a zoom. */
+.sunburst-centre { cursor: pointer; outline: none; }
+.sunburst-centre circle { fill: var(--surface); stroke: var(--border-strong); stroke-width: 1; }
+.sunburst-centre:hover circle,
+.sunburst-centre:focus-visible circle { stroke: var(--accent); stroke-width: 2; }
+.sunburst-centre text,
+.sunburst-centre-static text { pointer-events: none; font-family: var(--font-mono); font-size: var(--font-size-chart); }
+.sunburst-centre-title { fill: var(--text); font-weight: var(--font-semibold); }
+.sunburst-centre-count { fill: var(--muted); }
+.sunburst-centre-back { fill: var(--accent); }
 
 .bar { cursor: default; }
 .bar:hover { filter: brightness(1.1); }

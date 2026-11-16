@@ -1,0 +1,18 @@
+# The activity group of each credit role, read from the FIAFcore class
+# hierarchy: fiaf:Director is a fiaf:DirectingActivity, which is a
+# fiaf:Activity. The Roles sunburst nests roles under these groups. A role
+# with no group here (or a group class used as a credit itself) stands as its
+# own group.
+#
+# The ontology is not dataset-specific, so there is no scope filter.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?role ?group
+WHERE {
+  ?role rdfs:subClassOf ?group .
+  ?group rdfs:subClassOf fiaf:Activity .
+  FILTER(isIRI(?role) && ?role != ?group)
+}
+ORDER BY ?role ?group

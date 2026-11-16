@@ -661,7 +661,7 @@
       <div class="view-head">
         <div>
           <h2>Roles</h2>
-          <p id="roles-description">Roles sized by works; outer ring shows the busiest names per role. Click a role to filter the cloud.</p>
+          <p id="roles-description">Roles grouped by activity and sized by works; outer ring shows the busiest names per role. Click a group or role to look closer.</p>
         </div>
         <div class="view-actions">
           <div class="segmented" id="roles-mode" role="group" aria-label="Roles view">
@@ -669,6 +669,7 @@
             <button type="button" data-roles-mode="chord" aria-pressed="false">Combinations</button>
             <button type="button" data-roles-mode="list" aria-pressed="false">Most roles</button>
           </div>
+          <button type="button" class="fit" id="roles-filter-role" disabled>Filter cloud</button>
           <button type="button" class="fit" data-query="roles">See the query</button>
           <button type="button" class="export" data-export="roles">Download SVG</button>
         </div>
@@ -676,7 +677,8 @@
       <p id="roles-stats" class="stats"></p>
       <details class="view-details">
         <summary>How is this counted?</summary>
-        <p>The inner ring has one arc per credited role, sized by the distinct works with at least one credit in that role. The outer ring shows the 8 busiest loaded names in each role, sized by their works in that role; a name with several roles appears under each.</p>
+        <p>The inner ring groups the roles by their activity class in FIAFcore: Director and Assistant director are both Directing, Cinematographer and Focus puller both Cinematography. The middle ring has one arc per credited role, sized by the distinct works with at least one credit in that role. A group's arc is the sum of its roles, so a work with two roles in the same group counts twice there. The outer ring shows the 8 busiest loaded names in each role, sized by their works in that role; a name with several roles appears under each.</p>
+        <p>Click a group or a role to zoom into it, and the centre to step back out. Zoomed into a role, its busiest names fill the ring, sized against each other rather than against all the role's works. Filter cloud keeps only the zoomed roles in the Roles filter and opens the name cloud.</p>
         <p>The outer ring only draws from the names loaded with Names, so a larger slice can change who appears there; the inner ring always counts every credit.</p>
         <p>Combinations counts every credited name, not only the loaded ones. Each arc is a role and each ribbon a pair of roles, as wide as the names credited in both, on any works. A name in three roles counts once in each of its three pairs, so an arc adds up to more than its names. Only the roles chosen in the Roles filter take part. Beyond 14 roles, the ones with fewest combining names share an Other roles arc.</p>
         <p>Most roles lists the 50 names credited in the most distinct roles, whatever the Roles filter, with each name's distinct works in each role; names tied at the end of the list are cut by identifier. Unlabelled names are left out.</p>

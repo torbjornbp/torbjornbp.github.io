@@ -1,7 +1,8 @@
 // People › Roles, in three modes:
 //
-// - Sunburst: roles by works, outer ring = busiest loaded names per role.
-//   The outer ring is built from the shared agent page (agents.rq) instead of
+// - Sunburst: activity group → role → busiest loaded names per role. The
+//   groups are the roles' FIAFcore superclasses (role-groups.rq); clicking a
+//   group or role zooms into it. The outer ring is built from the shared agent page (agents.rq) instead of
 //   a separate role/agent query. A single global LIMIT on that query could
 //   not give every role its busiest names (popular roles consumed the whole
 //   budget), and the agent page is already loaded and cached for the
@@ -23,20 +24,39 @@ const NAMES_PER_ROLE = 8;
 const LIST_NAMES = 50;
 const MODES = ["sunburst", "chord", "list"];
 const DESCRIPTIONS = {
-  sunburst: "Roles sized by works; outer ring shows the busiest names per role. Click a role to filter the cloud.",
+  sunburst: "Roles grouped by activity and sized by works; outer ring shows the busiest names per role. Click a group or role to look closer.",
   chord: "Roles held by the same name. A ribbon is as wide as the names credited in both roles; hover for counts.",
   list: "The names credited in the most different roles. Click a name to open it."
 };
 
-function isLightColour(value) {
+function hexChannels(value) {
   const match = /^#([0-9a-f]{6})$/i.exec(String(value || ""));
-  if (!match) return false;
+  if (!match) return null;
   const number = parseInt(match[1], 16);
-  const red = (number >> 16) & 255;
-  const green = (number >> 8) & 255;
-  const blue = number & 255;
+  return [(number >> 16) & 255, (number >> 8) & 255, number & 255];
+}
+
+// Whether a colour, laid over the backdrop at the given opacity, is light
+// enough to need dark type.
+function isLightColour(value, opacity = 1, backdrop = "#ffffff") {
+  const colour = hexChannels(value);
+  if (!colour) return false;
+  const base = hexChannels(backdrop) || [255, 255, 255];
+  const [red, green, blue] = colour.map(
+    (channel, index) => channel * opacity + base[index] * (1 - opacity)
+  );
   return (0.299 * red + 0.587 * green + 0.114 * blue) / 255 > 0.45;
 }
+
+// Cut a label to roughly fit a length in pixels at the chart type size.
+function fitLabel(text, pixels) {
+  const chars = Math.floor(pixels / 6.6);
+  if (chars < 4) return "";
+  return text.length > chars ? `${text.slice(0, chars - 1).trimEnd()}…` : text;
+}
+
+const FULL_TURN = 2 * Math.PI - 1e-6;
+const OPACITY = { group: 0.95, role: 0.8, name: 0.55 };
 
 export function create(ctx, root, statsElement) {
   let data = null;
@@ -50,6 +70,8 @@ export function create(ctx, root, statsElement) {
   let modeToken = 0;
   let chordView = null;
   let chordModel = null;
+  // The sunburst's zoom: [] for every group, [group] or [group, role].
+  let focusPath = [];
   const svg = d3
     .select(root)
     .append("svg")
@@ -62,6 +84,41 @@ export function create(ctx, root, statsElement) {
   const listRoot = document.getElementById("roles-list");
   const descriptionElement = document.getElementById("roles-description");
   const exportButton = document.querySelector('[data-export="roles"]');
+  const filterButton = document.getElementById("roles-filter-role");
+
+  if (filterButton) {
+    filterButton.addEventListener("click", () => {
+      const focus = focusNode();
+      if (!focus) return;
+      const iris = focus.kind === "group" ? focus.children.map((role) => role.iri) : [focus.iri];
+      ctx.onlyRoles(iris);
+    });
+  }
+
+  // The group or role the sunburst is zoomed into, or null. A zoom whose
+  // group or role has been filtered out falls back to what is left of it.
+  function focusNode() {
+    if (mode !== "sunburst" || !data || !focusPath.length) return null;
+    const group = data.children.find((entry) => entry.iri === focusPath[0]);
+    if (!group) return null;
+    if (focusPath.length < 2) return group;
+    return group.children.find((entry) => entry.iri === focusPath[1]) || group;
+  }
+
+  function syncFilterButton() {
+    if (!filterButton) return;
+    const focus = focusNode();
+    filterButton.disabled = !focus;
+    filterButton.title = focus
+      ? `Keep only ${focus.kind === "group" ? `the ${focus.label} roles` : focus.label} in the Roles filter and open the name cloud`
+      : "Zoom into a group or role in the sunburst first";
+  }
+
+  function zoom(path) {
+    focusPath = path;
+    ui.hideTooltip();
+    render();
+  }
 
   function syncControls() {
     for (const button of modeButtons) {
@@ -74,6 +131,7 @@ export function create(ctx, root, statsElement) {
     if (exportButton) exportButton.disabled = mode === "list";
     root.hidden = mode === "list";
     if (listRoot) listRoot.hidden = mode !== "list";
+    syncFilterButton();
   }
 
   for (const button of modeButtons) {
@@ -112,12 +170,13 @@ export function create(ctx, root, statsElement) {
       ui.message(root, "Loading roles…");
     }
     ui.setStatus("Loading role distribution…");
-    const [roles, agentData] = await Promise.all([
+    const [roles, agentData, groups] = await Promise.all([
       ctx.filteredRoles(),
-      ctx.agentData()
+      ctx.agentData(),
+      ctx.roleGroups()
     ]);
     if (signal && signal.aborted) return;
-    data = build(roles, agentData);
+    data = build(roles, agentData, groups);
     hasRendered = true;
     ui.setStatus("");
     await loadMode({ signal });
@@ -160,7 +219,7 @@ export function create(ctx, root, statsElement) {
     draw();
   }
 
-  function build(roles, agentData) {
+  function build(roles, agentData, groups) {
     const byRole = new Map();
     for (const row of agentData.rows) {
       if (Number(row.works) < ctx.state.minWorks) continue;
@@ -173,7 +232,7 @@ export function create(ctx, root, statsElement) {
         });
       }
     }
-    const children = roles
+    const roleNodes = roles
       .filter((role) => Number(role.works) > 0)
       .map((role) => {
         const total = Number(role.works) || 0;
@@ -183,24 +242,51 @@ export function create(ctx, root, statsElement) {
         const topSum = d3.sum(top, (entry) => entry.works);
         const scale = topSum > total && topSum > 0 ? total / topSum : 1;
         const names = top.map((entry) => ({
+          kind: "name",
           name: entry.name,
           agent: entry.agent,
           works: entry.works,
           value: entry.works * scale
         }));
         return {
+          kind: "role",
           iri: role.iri,
+          group: groups.get(role.iri) || role.iri,
           label: roleLabel(role.iri),
           works: total,
           value: Math.max(0, total - d3.sum(names, (entry) => entry.value)),
           children: names
         };
       });
-    const ringAgents = new Set();
-    for (const child of children) {
-      for (const name of child.children) ringAgents.add(name.agent);
+
+    const byGroup = new Map();
+    for (const role of roleNodes) {
+      if (!byGroup.has(role.group)) byGroup.set(role.group, []);
+      byGroup.get(role.group).push(role);
     }
-    return { children, nameCount: agentData.rows.length, ringAgents };
+    const children = [...byGroup].map(([iri, members]) => {
+      members.sort((a, b) => b.works - a.works);
+      // A group class credited in its own right (fiaf:SoundActivity) sits
+      // beside its narrower roles; say so rather than repeat the group name.
+      for (const role of members) {
+        if (role.iri === iri && members.length > 1) role.label = `${role.label} (general)`;
+      }
+      return {
+        kind: "group",
+        iri,
+        label: roleLabel(iri),
+        works: d3.sum(members, (role) => role.works),
+        // Colour a group as its busiest role, so it matches the cloud.
+        colour: members[0].iri,
+        children: members
+      };
+    });
+
+    const ringAgents = new Set();
+    for (const role of roleNodes) {
+      for (const name of role.children) ringAgents.add(name.agent);
+    }
+    return { children, roleCount: roleNodes.length, nameCount: agentData.rows.length, ringAgents };
   }
 
   // Remember the container size of the last draw so a tab revisit or a drawer
@@ -399,6 +485,8 @@ export function create(ctx, root, statsElement) {
     if (!data || !data.children.length) {
       ui.empty(root, "No credited roles for the current filter.");
       statsElement.textContent = "";
+      arcs = null;
+      syncFilterButton();
       return;
     }
     ui.clear(root);
@@ -409,8 +497,22 @@ export function create(ctx, root, statsElement) {
     svg.attr("width", width).attr("height", height);
     svg.selectAll("*").remove();
 
+    const focus = focusNode();
+    focusPath = !focus ? [] : focus.kind === "group" ? [focus.iri] : [focus.group, focus.iri];
+    syncFilterButton();
+
+    // Zoomed into one role, its names share the whole ring between them;
+    // the rest of the role's works would leave them a sliver.
+    const shown = focus && focus.kind === "role" && focus.children.length
+      ? {
+          ...focus,
+          value: 0,
+          children: focus.children.map((name) => ({ ...name, value: name.works }))
+        }
+      : focus;
+
     const hierarchy = d3
-      .hierarchy({ children: data.children })
+      .hierarchy({ children: shown ? [shown] : data.children })
       .sum((entry) => Math.max(0, entry.value || 0))
       .sort((a, b) => b.value - a.value);
 
@@ -432,16 +534,29 @@ export function create(ctx, root, statsElement) {
     const nodes = hierarchy.descendants().filter((entry) => entry.depth > 0);
 
     const styles = getComputedStyle(document.documentElement);
+    const surface = styles.getPropertyValue("--surface").trim();
+    const colourRole = (entry) =>
+      entry.data.kind === "group"
+        ? entry.data.colour
+        : entry.data.kind === "role"
+          ? entry.data.iri
+          : entry.parent.data.iri;
     const labelFills = new Map();
-    function labelFill(role) {
-      if (labelFills.has(role)) return labelFills.get(role);
+    function labelFill(entry) {
+      const role = colourRole(entry);
+      const opacity = OPACITY[entry.data.kind];
+      const key = `${role} ${opacity}`;
+      if (labelFills.has(key)) return labelFills.get(key);
       const value = String(ctx.colorFor(role) || "");
       const match = /^var\((--[a-z0-9-]+)\)$/i.exec(value);
       const colour = match ? styles.getPropertyValue(match[1]).trim() : value;
-      const fill = isLightColour(colour) ? "#111111" : "#ffffff";
-      labelFills.set(role, fill);
+      const fill = isLightColour(colour, opacity, surface) ? "#111111" : "#ffffff";
+      labelFills.set(key, fill);
       return fill;
     }
+
+    const hint = (entry) =>
+      focus && entry.depth === 1 ? "click to step back" : "click to look closer";
 
     arcs = rootGroup
       .append("g")
@@ -450,23 +565,31 @@ export function create(ctx, root, statsElement) {
       .join("path")
       .attr("class", "arc")
       .attr("d", arc)
-      .attr("fill", (entry) => {
-        const role = entry.depth === 1 ? entry.data.iri : entry.parent.data.iri;
-        return ctx.colorFor(role);
-      })
-      .attr("fill-opacity", (entry) => (entry.depth === 1 ? 0.9 : 0.62))
+      .attr("fill", (entry) => ctx.colorFor(colourRole(entry)))
+      .attr("fill-opacity", (entry) => OPACITY[entry.data.kind])
       .on("mouseenter", (event, entry) => {
-        if (entry.depth === 1) {
+        const item = entry.data;
+        if (item.kind === "group") {
           ui.showTooltip(
             event,
-            entry.data.label,
-            `${ui.formatNumber(entry.data.works)} works`
+            item.label,
+            `${ui.formatNumber(item.children.length)} ${item.children.length === 1 ? "role" : "roles"} · ` +
+              `${ui.formatNumber(item.works)} works summed over its roles · ${hint(entry)}`
+          );
+        } else if (item.kind === "role") {
+          const group = entry.parent.data.kind === "group" ? entry.parent.data.label : null;
+          ui.showTooltip(
+            event,
+            item.label,
+            `${ui.formatNumber(item.works)} works` +
+              (group && group !== item.label ? ` · ${group}` : "") +
+              ` · ${hint(entry)}`
           );
         } else {
           ui.showTooltip(
             event,
-            entry.data.name,
-            `${ui.formatNumber(entry.data.works)} works in ${entry.parent.data.label}`
+            item.name,
+            `${ui.formatNumber(item.works)} works in ${entry.parent.data.label}`
           );
         }
       })
@@ -474,30 +597,107 @@ export function create(ctx, root, statsElement) {
       .on("mouseleave", ui.hideTooltip)
       .on("click", (event, entry) => {
         event.stopPropagation();
-        if (entry.depth === 1) {
-          ctx.onlyRole(entry.data.iri);
-        } else {
-          ctx.openAgent(entry.data.agent, entry.data.name);
-        }
+        const item = entry.data;
+        if (item.kind === "name") ctx.openAgent(item.agent, item.name);
+        else if (focus && entry.depth === 1) zoom(focusPath.slice(0, -1));
+        else if (item.kind === "group") zoom([item.iri]);
+        else zoom([item.group, item.iri]);
       });
+
+    // Each arc's label runs along the arc where it fits whole, else across
+    // the ring (cut to its depth) where the arc is wide enough for a line.
+    const labels = [];
+    for (const entry of nodes) {
+      const text = entry.data.kind === "name" ? entry.data.name : entry.data.label;
+      const thickness = entry.y1 - entry.y0;
+      const middle = (entry.y0 + entry.y1) / 2;
+      const span = entry.x1 - entry.x0;
+      if (span >= FULL_TURN) {
+        labels.push({ entry, text: fitLabel(text, middle * 2), transform: `translate(0,${-middle})`, anchor: "middle" });
+        continue;
+      }
+      const along = span * middle;
+      if (entry.data.kind !== "name" && thickness >= 14 && fitLabel(text, along - 10) === text) {
+        const [x, y] = arc.centroid(entry);
+        labels.push({ entry, text, transform: `translate(${x},${y}) rotate(${labelAngle(entry)})`, anchor: "middle" });
+      } else if (along >= 12) {
+        const cut = fitLabel(text, thickness - 10);
+        if (!cut) continue;
+        const angle = ((entry.x0 + entry.x1) / 2) * (180 / Math.PI) - 90;
+        const flip = angle > 90;
+        labels.push({
+          entry,
+          text: cut,
+          transform: `rotate(${angle}) translate(${flip ? entry.y1 - 6 : entry.y0 + 5},0)${flip ? " rotate(180)" : ""}`,
+          anchor: "start"
+        });
+      }
+    }
 
     rootGroup
       .append("g")
       .selectAll("text")
-      .data(nodes.filter((entry) => entry.depth === 1))
+      .data(labels)
       .join("text")
-      .attr("class", "arc-label")
-      .attr("text-anchor", "middle")
-      .style("fill", (entry) => labelFill(entry.data.iri))
-      .attr("transform", (entry) => {
-        const [x, y] = arc.centroid(entry);
-        return `translate(${x},${y}) rotate(${labelAngle(entry)})`;
-      })
-      .attr("display", (entry) => (entry.x1 - entry.x0 > 0.16 ? null : "none"))
-      .text((entry) => entry.data.label);
+      .attr("class", (label) => `arc-label arc-label-${label.entry.data.kind}`)
+      .attr("dy", "0.35em")
+      .attr("text-anchor", (label) => label.anchor)
+      .style("fill", (label) => labelFill(label.entry))
+      .attr("transform", (label) => label.transform)
+      .text((label) => label.text);
+
+    renderCentre(rootGroup, hierarchy.children[0].y0, focus);
 
     updateStats();
     paint();
+  }
+
+  // The disc inside the rings: a count when every group shows, and the way
+  // back out (one level) when zoomed.
+  function renderCentre(group, outer, focus) {
+    const size = Math.max(0, outer - 4);
+    if (!focus) {
+      const centre = group.append("g").attr("class", "sunburst-centre-static");
+      const lines = [
+        ["sunburst-centre-title", `${ui.formatNumber(data.roleCount)} roles`, -0.6],
+        ["sunburst-centre-count", `${ui.formatNumber(data.children.length)} activity groups`, 0.8]
+      ];
+      for (const [className, text, offset] of lines) {
+        centre.append("text").attr("class", className).attr("text-anchor", "middle")
+          .attr("dy", `${offset + 0.35}em`).text(text);
+      }
+      return;
+    }
+    const parent = focus.kind === "role"
+      ? data.children.find((entry) => entry.iri === focus.group)
+      : null;
+    const back = parent ? `← ${parent.label}` : "← All groups";
+    const step = () => zoom(focusPath.slice(0, -1));
+    const centre = group
+      .append("g")
+      .attr("class", "sunburst-centre")
+      .attr("role", "button")
+      .attr("tabindex", 0)
+      .attr("aria-label", `${back.slice(2)}: step back from ${focus.label}`)
+      .on("click", (event) => {
+        event.stopPropagation();
+        step();
+      })
+      .on("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        step();
+      });
+    centre.append("circle").attr("r", size);
+    const lines = [
+      ["sunburst-centre-title", fitLabel(focus.label, size * 1.7), -1.1],
+      ["sunburst-centre-count", `${ui.formatNumber(focus.works)} works`, 0.25],
+      ["sunburst-centre-back", fitLabel(back, size * 1.7), 1.6]
+    ];
+    for (const [className, text, offset] of lines) {
+      centre.append("text").attr("class", className).attr("text-anchor", "middle")
+        .attr("dy", `${offset + 0.35}em`).text(text);
+    }
   }
 
   function updateStats() {
@@ -505,18 +705,34 @@ export function create(ctx, root, statsElement) {
       statsElement.textContent = "";
       return;
     }
-    const roleCount = data.children.length;
+    const selectionStatus = ctx.selectionStatus?.();
+    const tail = selectionStatus?.short ? ` · ${selectionStatus.short}` : "";
+    const focus = focusNode();
+    if (focus) {
+      statsElement.textContent =
+        (focus.kind === "group"
+          ? `${focus.label} · ${ui.formatNumber(focus.children.length)} roles · ` +
+            `${ui.formatNumber(focus.works)} works summed over its roles`
+          : `${focus.label} · ${ui.formatNumber(focus.works)} works · ` +
+            `its ${ui.formatNumber(focus.children.length)} busiest names`) +
+        (focus.kind === "group" ? ` · top ${NAMES_PER_ROLE} names per role` : "") +
+        ` among ${ui.formatNumber(data.nameCount)} loaded names` +
+        (focus.kind === "role" ? ", sized against each other" : "") +
+        " · click the centre to step back" +
+        tail;
+      return;
+    }
     const totalRoles = ctx.state.roles.length;
     const selectedRoles = ctx.state.selectedRoles.size;
-    const selectionStatus = ctx.selectionStatus?.();
     statsElement.textContent =
-      `${ui.formatNumber(roleCount)} roles` +
+      `${ui.formatNumber(data.roleCount)} roles in ` +
+      `${ui.formatNumber(data.children.length)} activity groups` +
       (selectedRoles < totalRoles
-        ? ` (${ui.formatNumber(selectedRoles)} of ${ui.formatNumber(totalRoles)} selected)`
+        ? ` (${ui.formatNumber(selectedRoles)} of ${ui.formatNumber(totalRoles)} roles selected)`
         : "") +
       ` · top ${NAMES_PER_ROLE} names per role among ` +
-      `${ui.formatNumber(data.nameCount)} loaded names · click a role to filter the cloud` +
-      (selectionStatus?.short ? ` · ${selectionStatus.short}` : "");
+      `${ui.formatNumber(data.nameCount)} loaded names · click a group or role to look closer` +
+      tail;
   }
 
   // Highlight the arcs for a selected name (and, for a work, every credited
@@ -536,9 +752,8 @@ export function create(ctx, root, statsElement) {
       return;
     }
     arcs.attr("opacity", (entry) => {
-      if (entry.depth === 2) return agents.has(entry.data.agent) ? 1 : 0.15;
-      const hit = (entry.children || []).some((child) =>
-        agents.has(child.data.agent)
+      const hit = entry.descendants().some(
+        (node) => node.data.kind === "name" && agents.has(node.data.agent)
       );
       return hit ? 1 : 0.15;
     });

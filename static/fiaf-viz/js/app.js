@@ -181,6 +181,8 @@ const CHART_ROOT = {
 
 // -- shared context ---------------------------------------------------------
 
+let roleGroupsRequest = null;
+
 const ctx = {
   state,
 
@@ -204,6 +206,28 @@ const ctx = {
 
   async filteredRoles() {
     return state.roles.filter((role) => state.selectedRoles.has(role.iri));
+  },
+
+  // Each credit role's activity group from the FIAFcore class hierarchy
+  // (role IRI → group IRI). It is ontology, not data, so one answer serves
+  // every dataset; a failed lookup is retried next time and, meanwhile,
+  // leaves every role as its own group.
+  roleGroups() {
+    if (!roleGroupsRequest) {
+      roleGroupsRequest = runQuery("role-groups", {})
+        .then((rows) => {
+          const groups = new Map();
+          for (const row of rows) {
+            if (!groups.has(row.role)) groups.set(row.role, row.group);
+          }
+          return groups;
+        })
+        .catch(() => {
+          roleGroupsRequest = null;
+          return new Map();
+        });
+    }
+    return roleGroupsRequest;
   },
 
   topRoles() {
@@ -343,6 +367,7 @@ const ctx = {
   workDrawerTab,
   openEntity,
   onlyRole,
+  onlyRoles,
   selectionStatus,
   refreshSelectionStatus: updateDrawerContext,
   refreshDrawerOutside,
@@ -3384,7 +3409,12 @@ async function openWork(work, title, options = {}) {
 }
 
 function onlyRole(iri) {
-  state.selectedRoles = new Set([iri]);
+  onlyRoles([iri]);
+}
+
+// Keep only these roles in the Roles filter and show the name cloud.
+function onlyRoles(iris) {
+  state.selectedRoles = new Set(iris);
   syncRoleChecks();
   updateRoleSummary();
   invalidateAgentViews(true);
