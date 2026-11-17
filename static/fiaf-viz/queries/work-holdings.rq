@@ -6,140 +6,173 @@
 # technical fields are aggregated into "|"-separated strings; the client groups
 # the rows back into a tree. Blank-node colour and sound characteristics are
 # resolved to their type (or nested sound standard), as in the facet queries.
+#
+# How this stays fast on QLever, which plans the right side of an OPTIONAL on
+# its own: only a single triple pattern there is joined cheaply to the rows
+# before it. A nested OPTIONAL, BIND, FILTER or UNION is evaluated for the
+# whole graph (about 1M identifier rows) before it meets this work.
+#
+# - Each level is a subquery that starts from VALUES ?work, in every UNION
+#   branch, with required patterns down to the manifestation or item.
+# - Every OPTIONAL is one triple pattern. Each costs about the same whatever
+#   it matches, so a record's own fields come from one `?record ?p ?o`
+#   lookup, one row per triple, and each field picks its predicate's rows.
+# - A lookup one step further (an identifier's value, a blank node's type) is
+#   a single-triple OPTIONAL on a key: the object when the row's predicate
+#   needs that lookup, otherwise <urn:fiaf-viz:none>, a node with no triples.
+#   An unbound key would match every triple in the graph instead.
+# - Computed values are bound after the OPTIONALs, never inside them.
+#
+# Aggregates take COALESCE(…, "") because on QLever one unbound value makes
+# SAMPLE or GROUP_CONCAT unbound for the whole group. A list therefore holds
+# one empty part for the rows of other predicates, which CLEAN removes:
+#   REPLACE(REPLACE(list, "^\\||\\|$", ""), "\\|\\|", "|")
+# rdflib (the tests) groups an empty match into one group with no key, so
+# each subquery keeps only groups whose key is bound.
 
 PREFIX fiaf: <https://dev.fiafcore.org/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT
-  ?manifestation
-  (SAMPLE(COALESCE(?manifestationTypeValue, "")) AS ?manifestationType)
-  (SAMPLE(COALESCE(?manifestationLabelValue, "")) AS ?manifestationLabel)
-  (GROUP_CONCAT(DISTINCT COALESCE(?manifestationIdentifierText, ""); separator="|") AS ?manifestationIdentifiers)
-  (GROUP_CONCAT(DISTINCT COALESCE(?manifestationLanguageText, ""); separator="|") AS ?manifestationLanguages)
-  (GROUP_CONCAT(DISTINCT COALESCE(?manifestationRatingValue, ""); separator="|") AS ?manifestationRatings)
+  ?manifestation ?manifestationType ?manifestationLabel
+  ?manifestationIdentifiers ?manifestationLanguages ?manifestationRatings
+  # A manifestation without items gets "" in the item and carrier fields.
   ?item
-  (SAMPLE(COALESCE(?itemLabelValue, "")) AS ?itemLabel)
-  (GROUP_CONCAT(DISTINCT COALESCE(?itemIdentifierText, ""); separator="|") AS ?itemIdentifiers)
-  (GROUP_CONCAT(DISTINCT COALESCE(?itemFormatValue, ""); separator="|") AS ?itemFormats)
-  (GROUP_CONCAT(DISTINCT COALESCE(?itemElementValue, ""); separator="|") AS ?itemElements)
-  (GROUP_CONCAT(DISTINCT COALESCE(?itemBaseValue, ""); separator="|") AS ?itemBases)
-  (GROUP_CONCAT(DISTINCT COALESCE(?itemColourValue, ""); separator="|") AS ?itemColours)
-  (GROUP_CONCAT(DISTINCT COALESCE(?itemSoundValue, ""); separator="|") AS ?itemSounds)
-  (GROUP_CONCAT(DISTINCT COALESCE(?itemStockValue, ""); separator="|") AS ?itemStocks)
-  (GROUP_CONCAT(DISTINCT COALESCE(?itemStatusValue, ""); separator="|") AS ?itemStatuses)
-  (GROUP_CONCAT(DISTINCT COALESCE(?itemInstitutionValue, ""); separator="|") AS ?itemInstitutions)
+  (COALESCE(?itemLabelValue, "") AS ?itemLabel)
+  (COALESCE(?itemIdentifiersValue, "") AS ?itemIdentifiers)
+  (COALESCE(?itemFormatsValue, "") AS ?itemFormats)
+  (COALESCE(?itemElementsValue, "") AS ?itemElements)
+  (COALESCE(?itemBasesValue, "") AS ?itemBases)
+  (COALESCE(?itemColoursValue, "") AS ?itemColours)
+  (COALESCE(?itemSoundsValue, "") AS ?itemSounds)
+  (COALESCE(?itemStocksValue, "") AS ?itemStocks)
+  (COALESCE(?itemStatusesValue, "") AS ?itemStatuses)
+  (COALESCE(?itemInstitutionsValue, "") AS ?itemInstitutions)
   ?carrier
-  (SAMPLE(COALESCE(?carrierLabelValue, "")) AS ?carrierLabel)
-  (GROUP_CONCAT(DISTINCT COALESCE(?carrierIdentifierText, ""); separator="|") AS ?carrierIdentifiers)
+  (COALESCE(?carrierLabelValue, "") AS ?carrierLabel)
+  (COALESCE(?carrierIdentifiersValue, "") AS ?carrierIdentifiers)
 WHERE {
-  VALUES ?work { {{WORK}} }
-  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
-  ?work a ?workType .
-  # A manifestation hangs off the work or off one of its Variants.
-  { ?work fiaf:hasManifestation ?manifestation }
-  UNION
-  { ?work fiaf:hasVariant/fiaf:hasManifestation ?manifestation }
-
-  # The OPTIONAL blocks hold triple patterns only. A BIND or FILTER inside an
-  # OPTIONAL makes QLever evaluate that block for every manifestation or item
-  # in the graph before joining it to this work (about 8 s instead of well
-  # under 1 s), so every computed value is bound after the blocks, below.
-  # Conditions that used to be FILTERs inside a block are IF guards there;
-  # ?unset is never bound, so a failed guard leaves the value unbound, as the
-  # FILTER did.
-
-  OPTIONAL { ?manifestation a ?manifestationTypeValue }
-  OPTIONAL { ?manifestation rdfs:label ?manifestationLabelValue }
-
-  OPTIONAL {
-    ?manifestation fiaf:hasIdentifier ?manifestationIdentifier .
-    OPTIONAL { ?manifestationIdentifier fiaf:hasIdentifierValue ?manifestationIdentifierValue }
-  }
-
-  OPTIONAL {
-    ?manifestation fiaf:hasLanguageUsage ?manifestationUsage .
-    ?manifestationUsage a ?manifestationUsageType ;
-                        fiaf:hasLanguage ?manifestationLanguage .
-  }
-
-  OPTIONAL {
-    ?manifestation fiaf:hasEvent ?manifestationRatingEvent .
-    ?manifestationRatingEvent a fiaf:RatingEvent ;
-                               fiaf:hasVerdict ?manifestationRatingValue .
-  }
-
-  OPTIONAL {
-    ?manifestation fiaf:hasItem ?item .
-    OPTIONAL { ?item rdfs:label ?itemLabelValue }
-
-    OPTIONAL {
-      ?item fiaf:hasIdentifier ?itemIdentifier .
-      OPTIONAL { ?itemIdentifier fiaf:hasIdentifierValue ?itemIdentifierValue }
-    }
-
-    OPTIONAL {
-      ?item fiaf:hasFormat ?itemFormat .
-      OPTIONAL { ?itemFormat a ?itemFormatType }
-    }
-
-    OPTIONAL { ?item fiaf:isElement ?itemElement }
-    OPTIONAL { ?item fiaf:hasBase ?itemBase }
-
-    OPTIONAL {
-      ?item fiaf:hasColourCharacteristic ?itemColourCharacteristic .
-      OPTIONAL { ?itemColourCharacteristic a ?itemColourType }
-    }
-
-    OPTIONAL {
-      ?item fiaf:hasSoundCharacteristic ?itemSoundCharacteristic .
-      OPTIONAL { ?itemSoundCharacteristic fiaf:hasSoundStandard ?itemSoundStandard }
-      OPTIONAL { ?itemSoundCharacteristic a ?itemSoundType }
-    }
-
-    OPTIONAL {
-      ?item fiaf:hasStock ?itemStock .
-      OPTIONAL { ?itemStock rdfs:label ?itemStockLabel }
-    }
-
-    OPTIONAL { ?item fiaf:hasStatus ?itemStatus }
-
-    OPTIONAL {
-      ?item fiaf:hasHoldingInstitution ?itemInstitution .
-      OPTIONAL { ?itemInstitution rdfs:label ?itemInstitutionLabel }
-    }
-
-    OPTIONAL {
-      ?item fiaf:hasCarrier ?carrier .
-      OPTIONAL { ?carrier rdfs:label ?carrierLabelValue }
-      OPTIONAL {
-        ?carrier fiaf:hasIdentifier ?carrierIdentifier .
-        OPTIONAL { ?carrierIdentifier fiaf:hasIdentifierValue ?carrierIdentifierValue }
+  # Manifestations and their fields, one row each. GROUP BY also merges a
+  # manifestation reached both directly and through a Variant.
+  {
+    SELECT ?manifestation
+           (COALESCE(SAMPLE(?type), "") AS ?manifestationType)
+           (COALESCE(SAMPLE(?label), "") AS ?manifestationLabel)
+           # CLEAN(list), see above.
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?identifierText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?manifestationIdentifiers)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?languageText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?manifestationLanguages)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?ratingText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?manifestationRatings)
+    WHERE {
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      {
+        VALUES ?work { {{WORK}} }
+        ?work a ?workType ;
+              fiaf:hasManifestation ?manifestation .
       }
+      UNION
+      {
+        VALUES ?work { {{WORK}} }
+        ?work a ?workType ;
+              fiaf:hasVariant ?variant .
+        ?variant fiaf:hasManifestation ?manifestation .
+      }
+
+      # Single values: their own lookups, so SAMPLE sees them on every row.
+      OPTIONAL { ?manifestation a ?type }
+      OPTIONAL { ?manifestation rdfs:label ?label }
+      # Every other triple of the manifestation.
+      OPTIONAL { ?manifestation ?p ?o }
+
+      BIND(COALESCE(IF(?p = fiaf:hasIdentifier, ?o, ?unset), <urn:fiaf-viz:none>) AS ?valueKey)
+      BIND(COALESCE(IF(?p IN (fiaf:hasLanguageUsage, fiaf:hasEvent), ?o, ?unset), <urn:fiaf-viz:none>) AS ?typeKey)
+      BIND(COALESCE(IF(?p = fiaf:hasLanguageUsage, ?o, ?unset), <urn:fiaf-viz:none>) AS ?languageKey)
+      BIND(COALESCE(IF(?p = fiaf:hasEvent, ?o, ?unset), <urn:fiaf-viz:none>) AS ?verdictKey)
+
+      OPTIONAL { ?valueKey fiaf:hasIdentifierValue ?identifierValue }
+      OPTIONAL { ?typeKey a ?objectType }
+      OPTIONAL { ?languageKey fiaf:hasLanguage ?language }
+      OPTIONAL { ?verdictKey fiaf:hasVerdict ?verdict }
+
+      BIND(IF(?p = fiaf:hasIdentifier, COALESCE(?identifierValue, STR(?o)), ?unset) AS ?identifierText)
+      # language~UsageType, as in work-metadata.rq; unbound unless both exist.
+      BIND(IF(?p = fiaf:hasLanguageUsage,
+              CONCAT(STR(?language), "~", STRAFTER(STR(?objectType), "https://dev.fiafcore.org/")),
+              ?unset) AS ?languageText)
+      BIND(IF(?p = fiaf:hasEvent && ?objectType = fiaf:RatingEvent, STR(?verdict), ?unset) AS ?ratingText)
     }
+    GROUP BY ?manifestation
+    HAVING (BOUND(?manifestation))
   }
 
-  BIND(COALESCE(?manifestationIdentifierValue, STR(?manifestationIdentifier)) AS ?manifestationIdentifierText)
-  BIND(CONCAT(
-    STR(?manifestationLanguage), "~",
-    STRAFTER(STR(?manifestationUsageType), "https://dev.fiafcore.org/")
-  ) AS ?manifestationLanguageText)
-  BIND(COALESCE(?itemIdentifierValue, STR(?itemIdentifier)) AS ?itemIdentifierText)
-  # A blank format or colour node is shown by its type; an IRI by itself.
-  BIND(IF(isBlank(?itemFormat), STR(?itemFormatType), STR(?itemFormat)) AS ?itemFormatValue)
-  BIND(STR(?itemElement) AS ?itemElementValue)
-  BIND(STR(?itemBase) AS ?itemBaseValue)
-  BIND(IF(isBlank(?itemColourCharacteristic), STR(?itemColourType), STR(?itemColourCharacteristic)) AS ?itemColourValue)
-  # Skip unresolved blank nodes; their internal id is not a label.
-  BIND(IF(!isBlank(?itemSoundCharacteristic) || BOUND(?itemSoundStandard) || BOUND(?itemSoundType),
-          COALESCE(STR(?itemSoundStandard), STR(?itemSoundType), STR(?itemSoundCharacteristic)),
-          ?unset) AS ?itemSoundValue)
-  # Unlabelled blank stock nodes have no display name.
-  BIND(IF(!isBlank(?itemStock) || BOUND(?itemStockLabel),
-          COALESCE(?itemStockLabel, STR(?itemStock)),
-          ?unset) AS ?itemStockValue)
-  BIND(STR(?itemStatus) AS ?itemStatusValue)
-  BIND(COALESCE(?itemInstitutionLabel, STR(?itemInstitution)) AS ?itemInstitutionValue)
-  BIND(COALESCE(?carrierIdentifierValue, STR(?carrierIdentifier)) AS ?carrierIdentifierText)
+  # Items, their carriers, and both levels' fields, one row per
+  # manifestation/item/carrier. Joined on the manifestation, which the rows
+  # above always bind; a manifestation without items keeps its one row. The
+  # work-type check keeps this empty for a non-work IRI, as the rows above are.
+  OPTIONAL {
+    SELECT ?manifestation ?item ?carrier
+           (COALESCE(SAMPLE(?itemLabelRaw), "") AS ?itemLabelValue)
+           # CLEAN(list), see above.
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?itemIdentifierText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemIdentifiersValue)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?formatText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemFormatsValue)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?elementText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemElementsValue)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?baseText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemBasesValue)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?colourText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemColoursValue)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?soundText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemSoundsValue)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?stockText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemStocksValue)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?statusText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemStatusesValue)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?institutionText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemInstitutionsValue)
+           (COALESCE(SAMPLE(?carrierLabelRaw), "") AS ?carrierLabelValue)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?carrierIdentifierText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?carrierIdentifiersValue)
+    WHERE {
+      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+      { VALUES ?work { {{WORK}} } ?work a ?workType ; fiaf:hasManifestation ?manifestation . }
+      UNION
+      { VALUES ?work { {{WORK}} } ?work a ?workType ; fiaf:hasVariant ?variant . ?variant fiaf:hasManifestation ?manifestation . }
+      ?manifestation fiaf:hasItem ?item .
+
+      # The carrier is a row key and the label a single value, so both have
+      # their own lookups; every other triple of the item comes from ?p ?o.
+      OPTIONAL { ?item fiaf:hasCarrier ?carrier }
+      OPTIONAL { ?item rdfs:label ?itemLabelRaw }
+      OPTIONAL { ?item ?p ?o }
+
+      BIND(COALESCE(IF(?p = fiaf:hasIdentifier, ?o, ?unset), <urn:fiaf-viz:none>) AS ?valueKey)
+      BIND(COALESCE(IF(?p IN (fiaf:hasFormat, fiaf:hasColourCharacteristic, fiaf:hasSoundCharacteristic), ?o, ?unset), <urn:fiaf-viz:none>) AS ?typeKey)
+      BIND(COALESCE(IF(?p = fiaf:hasSoundCharacteristic, ?o, ?unset), <urn:fiaf-viz:none>) AS ?standardKey)
+      BIND(COALESCE(IF(?p IN (fiaf:hasStock, fiaf:hasHoldingInstitution), ?o, ?unset), <urn:fiaf-viz:none>) AS ?labelKey)
+      BIND(COALESCE(?carrier, <urn:fiaf-viz:none>) AS ?carrierKey)
+
+      OPTIONAL { ?valueKey fiaf:hasIdentifierValue ?identifierValue }
+      OPTIONAL { ?typeKey a ?objectType }
+      OPTIONAL { ?standardKey fiaf:hasSoundStandard ?soundStandard }
+      OPTIONAL { ?labelKey rdfs:label ?objectLabel }
+      OPTIONAL { ?carrierKey rdfs:label ?carrierLabelRaw }
+      OPTIONAL { ?carrierKey fiaf:hasIdentifier ?carrierIdentifier }
+
+      # The carrier's identifier value is one step further: key it the same way.
+      BIND(COALESCE(?carrierIdentifier, <urn:fiaf-viz:none>) AS ?carrierValueKey)
+      OPTIONAL { ?carrierValueKey fiaf:hasIdentifierValue ?carrierIdentifierValue }
+
+      BIND(IF(?p = fiaf:hasIdentifier, COALESCE(?identifierValue, STR(?o)), ?unset) AS ?itemIdentifierText)
+      # A blank format or colour node is shown by its type; an IRI by itself.
+      BIND(IF(?p = fiaf:hasFormat, IF(isBlank(?o), STR(?objectType), STR(?o)), ?unset) AS ?formatText)
+      BIND(IF(?p = fiaf:isElement, STR(?o), ?unset) AS ?elementText)
+      BIND(IF(?p = fiaf:hasBase, STR(?o), ?unset) AS ?baseText)
+      BIND(IF(?p = fiaf:hasColourCharacteristic, IF(isBlank(?o), STR(?objectType), STR(?o)), ?unset) AS ?colourText)
+      # Skip unresolved blank sound nodes; their internal id is not a label.
+      BIND(IF(?p = fiaf:hasSoundCharacteristic && (!isBlank(?o) || BOUND(?soundStandard) || BOUND(?objectType)),
+              COALESCE(STR(?soundStandard), STR(?objectType), STR(?o)),
+              ?unset) AS ?soundText)
+      # Unlabelled blank stock nodes have no display name.
+      BIND(IF(?p = fiaf:hasStock && (!isBlank(?o) || BOUND(?objectLabel)),
+              COALESCE(?objectLabel, STR(?o)),
+              ?unset) AS ?stockText)
+      BIND(IF(?p = fiaf:hasStatus, STR(?o), ?unset) AS ?statusText)
+      BIND(IF(?p = fiaf:hasHoldingInstitution, COALESCE(?objectLabel, STR(?o)), ?unset) AS ?institutionText)
+      BIND(COALESCE(?carrierIdentifierValue, STR(?carrierIdentifier)) AS ?carrierIdentifierText)
+    }
+    GROUP BY ?manifestation ?item ?carrier
+    HAVING (BOUND(?manifestation))
+  }
 }
-GROUP BY ?manifestation ?item ?carrier
 ORDER BY ?manifestation ?item ?carrier

@@ -4,6 +4,15 @@
 # full work drawer), a name (open the agent drawer) or another resource (show a
 # generic property inspector). Parent work links let variants, manifestations,
 # items and carriers lead back to their work.
+#
+# QLever plans the right side of an OPTIONAL on its own, so only a single
+# triple pattern there is joined cheaply to the rows before it; a property
+# path, nested OPTIONAL, BIND or UNION is evaluated for the whole graph first.
+# So every OPTIONAL here is one triple pattern. A lookup one step further (a
+# title's value, an identifier's authority) is a single-triple OPTIONAL on a
+# key that falls back to <urn:fiaf-viz:none>, a node with no triples; an
+# unbound key would match every triple in the graph instead. Computed values
+# are bound after the OPTIONALs, never inside them.
 
 PREFIX fiaf: <https://dev.fiafcore.org/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -14,41 +23,45 @@ WHERE {
   VALUES ?entity { {{ENTITY}} }
 
   OPTIONAL { ?entity a ?type }
-
   OPTIONAL { ?entity rdfs:label ?entityLabel }
-  OPTIONAL { ?entity fiaf:hasTitle/fiaf:hasTitleValue ?entityTitle }
-  BIND(COALESCE(?entityLabel, ?entityTitle) AS ?label)
+  OPTIONAL { ?entity fiaf:hasTitle ?titleNode }
+  OPTIONAL { ?entity fiaf:hasIdentifier ?identifierNode }
 
-  OPTIONAL {
-    ?entity fiaf:hasIdentifier ?identifierNode .
-    OPTIONAL { ?identifierNode fiaf:hasIdentifierValue ?identifierValue }
-    OPTIONAL {
-      ?identifierNode fiaf:hasIdentifierAuthority ?authority .
-      OPTIONAL { ?authority rdfs:label ?authorityLabel }
-    }
-  }
-  # Computed values are bound outside the OPTIONAL blocks: a BIND inside one
-  # makes QLever evaluate the block for the whole graph before joining it to
-  # this entity.
+  BIND(COALESCE(?titleNode, <urn:fiaf-viz:none>) AS ?titleKey)
+  BIND(COALESCE(?identifierNode, <urn:fiaf-viz:none>) AS ?identifierKey)
+  OPTIONAL { ?titleKey fiaf:hasTitleValue ?entityTitle }
+  OPTIONAL { ?identifierKey fiaf:hasIdentifierValue ?identifierValue }
+  OPTIONAL { ?identifierKey fiaf:hasIdentifierAuthority ?authority }
+
+  BIND(COALESCE(?authority, <urn:fiaf-viz:none>) AS ?authorityKey)
+  OPTIONAL { ?authorityKey rdfs:label ?authorityLabel }
+
+  BIND(COALESCE(?entityLabel, ?entityTitle) AS ?label)
   BIND(COALESCE(?identifierValue, STR(?identifierNode)) AS ?identifier)
 
+  # A manifestation may hang off a Variant of the work, so each path has a
+  # variant twin. Every branch starts from VALUES so QLever starts from the
+  # entity; a work-type check (not FILTER NOT EXISTS) keeps out non-works.
   OPTIONAL {
-    # A manifestation may hang off a Variant of the work, so each path has a
-    # variant twin. Explicit branches (not an optional hasVariant? step) and a
-    # work-type check (not FILTER NOT EXISTS) keep this fast on QLever.
-    VALUES ?parentType { fiaf:MonographicWork fiaf:Work }
-    { ?parentWork fiaf:hasManifestation ?entity . }
-    UNION { ?parentWork fiaf:hasManifestation/fiaf:hasItem ?entity . }
-    UNION { ?parentWork fiaf:hasManifestation/fiaf:hasItem/fiaf:hasCarrier ?entity . }
-    UNION { ?parentWork fiaf:hasEvent ?entity . }
-    UNION { ?parentWork fiaf:hasVariant ?entity . }
-    UNION { ?parentWork fiaf:hasVariant/fiaf:hasManifestation ?entity . }
-    UNION { ?parentWork fiaf:hasVariant/fiaf:hasManifestation/fiaf:hasItem ?entity . }
-    UNION { ?parentWork fiaf:hasVariant/fiaf:hasManifestation/fiaf:hasItem/fiaf:hasCarrier ?entity . }
-    ?parentWork a ?parentType .
-    OPTIONAL { ?parentWork rdfs:label ?parentLabel }
-    OPTIONAL { ?parentWork fiaf:hasTitle/fiaf:hasTitleValue ?parentTitle }
+    SELECT ?entity ?parentWork ?parentWorkLabel
+    WHERE {
+      VALUES ?parentType { fiaf:MonographicWork fiaf:Work }
+      { VALUES ?entity { {{ENTITY}} } ?parentWork fiaf:hasManifestation ?entity . }
+      UNION { VALUES ?entity { {{ENTITY}} } ?parentWork fiaf:hasManifestation/fiaf:hasItem ?entity . }
+      UNION { VALUES ?entity { {{ENTITY}} } ?parentWork fiaf:hasManifestation/fiaf:hasItem/fiaf:hasCarrier ?entity . }
+      UNION { VALUES ?entity { {{ENTITY}} } ?parentWork fiaf:hasEvent ?entity . }
+      UNION { VALUES ?entity { {{ENTITY}} } ?parentWork fiaf:hasVariant ?entity . }
+      UNION { VALUES ?entity { {{ENTITY}} } ?parentWork fiaf:hasVariant/fiaf:hasManifestation ?entity . }
+      UNION { VALUES ?entity { {{ENTITY}} } ?parentWork fiaf:hasVariant/fiaf:hasManifestation/fiaf:hasItem ?entity . }
+      UNION { VALUES ?entity { {{ENTITY}} } ?parentWork fiaf:hasVariant/fiaf:hasManifestation/fiaf:hasItem/fiaf:hasCarrier ?entity . }
+      ?parentWork a ?parentType .
+
+      OPTIONAL { ?parentWork rdfs:label ?parentLabel }
+      OPTIONAL { ?parentWork fiaf:hasTitle ?parentTitleNode }
+      BIND(COALESCE(?parentTitleNode, <urn:fiaf-viz:none>) AS ?parentTitleKey)
+      OPTIONAL { ?parentTitleKey fiaf:hasTitleValue ?parentTitle }
+      BIND(COALESCE(?parentLabel, ?parentTitle) AS ?parentWorkLabel)
+    }
   }
-  BIND(COALESCE(?parentLabel, ?parentTitle) AS ?parentWorkLabel)
 }
 LIMIT 100
