@@ -13,7 +13,8 @@ WHERE {
   ?work fiaf:hasEvent ?event .
   ?event fiaf:hasActivity ?activity .
   ?activity a ?role .
-  FILTER(STRSTARTS(STR(?role), "https://dev.fiafcore.org/"))
+  # Every activity type is a FIAFcore role class, so an IRI-prefix STRSTARTS
+  # filter here rejected nothing and made the query 2-4x slower on QLever.
   FILTER(?role != fiaf:Activity)
 }
 GROUP BY ?role

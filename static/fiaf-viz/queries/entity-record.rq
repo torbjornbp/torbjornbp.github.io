@@ -26,8 +26,11 @@ WHERE {
       ?identifierNode fiaf:hasIdentifierAuthority ?authority .
       OPTIONAL { ?authority rdfs:label ?authorityLabel }
     }
-    BIND(COALESCE(?identifierValue, STR(?identifierNode)) AS ?identifier)
   }
+  # Computed values are bound outside the OPTIONAL blocks: a BIND inside one
+  # makes QLever evaluate the block for the whole graph before joining it to
+  # this entity.
+  BIND(COALESCE(?identifierValue, STR(?identifierNode)) AS ?identifier)
 
   OPTIONAL {
     # A manifestation may hang off a Variant of the work, so each path has a
@@ -45,7 +48,7 @@ WHERE {
     ?parentWork a ?parentType .
     OPTIONAL { ?parentWork rdfs:label ?parentLabel }
     OPTIONAL { ?parentWork fiaf:hasTitle/fiaf:hasTitleValue ?parentTitle }
-    BIND(COALESCE(?parentLabel, ?parentTitle) AS ?parentWorkLabel)
   }
+  BIND(COALESCE(?parentLabel, ?parentTitle) AS ?parentWorkLabel)
 }
 LIMIT 100

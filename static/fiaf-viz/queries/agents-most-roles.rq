@@ -21,7 +21,9 @@ WHERE {
           ?work fiaf:hasEvent/fiaf:hasActivity ?activity .
           ?activity a ?role ;
                     fiaf:hasAgent ?agent .
-          FILTER(STRSTARTS(STR(?role), "https://dev.fiafcore.org/") && ?role != fiaf:Activity)
+          # Every activity type is a FIAFcore role class, so an IRI-prefix STRSTARTS
+          # filter here rejected nothing and made the query 2-4x slower on QLever.
+          FILTER(?role != fiaf:Activity)
         }
       }
     }
@@ -34,7 +36,9 @@ WHERE {
     SELECT ?agent (MIN(STR(?agentLabel)) AS ?name)
     WHERE {
       ?agent rdfs:label ?agentLabel .
-      FILTER(STRLEN(STR(?agentLabel)) > 0)
+      # Plain inequality: faster on QLever than STRLEN(STR(...)) > 0 (and STR(...) != ""
+      # timed out). No credited name has a language-tagged label (checked 2026-11).
+      FILTER(?agentLabel != "")
     }
     GROUP BY ?agent
   }

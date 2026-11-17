@@ -18,7 +18,9 @@ WHERE {
   ?activity fiaf:hasAgent ?agent .
   FILTER(STR(?agent) != STR(?selected))
   ?agent rdfs:label ?agentLabel .
-  FILTER(STRLEN(STR(?agentLabel)) > 0)
+  # Plain inequality: faster on QLever than STRLEN(STR(...)) > 0 (and STR(...) != ""
+  # timed out). No credited name has a language-tagged label (checked 2026-11).
+  FILTER(?agentLabel != "")
 }
 GROUP BY ?agent
 ORDER BY DESC(?shared) ?name

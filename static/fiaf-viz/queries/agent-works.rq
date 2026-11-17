@@ -34,10 +34,14 @@ WHERE {
     ?work fiaf:hasEvent ?productionEvent .
     ?productionEvent a fiaf:ProductionEvent ;
                      fiaf:hasDate ?productionDate .
-    BIND(SUBSTR(STR(?productionDate), 1, 4) AS ?productionYearText)
-    FILTER(REGEX(?productionYearText, "^[0-9]{4}$"))
-    BIND(xsd:integer(?productionYearText) AS ?productionYear)
   }
+  # Bound outside the OPTIONAL: a BIND or FILTER inside it makes QLever
+  # evaluate the block for every production event before joining. The year
+  # check is an IF guard (?unset is never bound), so a date that is not a
+  # four-digit year leaves ?productionYear unbound, as the FILTER did.
+  BIND(SUBSTR(STR(?productionDate), 1, 4) AS ?productionYearText)
+  BIND(IF(REGEX(?productionYearText, "^[0-9]{4}$"), xsd:integer(?productionYearText), ?unset)
+       AS ?productionYear)
 }
 GROUP BY ?work ?role
 ORDER BY ?title

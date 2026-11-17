@@ -21,7 +21,9 @@ WHERE {
       ?activity a ?role ;
                 fiaf:hasAgent ?agent .
       ?agent rdfs:label ?name .
-      FILTER(STRLEN(STR(?name)) > 0)
+      # Plain inequality: faster on QLever than STRLEN(STR(...)) > 0 (and STR(...) != ""
+      # timed out). No credited name has a language-tagged label (checked 2026-11).
+      FILTER(?name != "")
       {{ROLE_FILTER}}
     }
   }

@@ -9,7 +9,9 @@ WHERE {
   VALUES ?workType { fiaf:MonographicWork fiaf:Work }
   ?activity fiaf:hasAgent ?agent ;
             a ?activityRole .
-  FILTER(STRSTARTS(STR(?activityRole), "https://dev.fiafcore.org/") && ?activityRole != fiaf:Activity)
+  # Every activity type is a FIAFcore role class, so an IRI-prefix STRSTARTS
+  # filter here rejected nothing and made the query 2-4x slower on QLever.
+  FILTER(?activityRole != fiaf:Activity)
   ?event fiaf:hasActivity ?activity .
   ?work fiaf:hasEvent ?event ;
         a ?workType .

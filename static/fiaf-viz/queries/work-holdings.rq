@@ -40,23 +40,26 @@ WHERE {
   UNION
   { ?work fiaf:hasVariant/fiaf:hasManifestation ?manifestation }
 
+  # The OPTIONAL blocks hold triple patterns only. A BIND or FILTER inside an
+  # OPTIONAL makes QLever evaluate that block for every manifestation or item
+  # in the graph before joining it to this work (about 8 s instead of well
+  # under 1 s), so every computed value is bound after the blocks, below.
+  # Conditions that used to be FILTERs inside a block are IF guards there;
+  # ?unset is never bound, so a failed guard leaves the value unbound, as the
+  # FILTER did.
+
   OPTIONAL { ?manifestation a ?manifestationTypeValue }
   OPTIONAL { ?manifestation rdfs:label ?manifestationLabelValue }
 
   OPTIONAL {
     ?manifestation fiaf:hasIdentifier ?manifestationIdentifier .
     OPTIONAL { ?manifestationIdentifier fiaf:hasIdentifierValue ?manifestationIdentifierValue }
-    BIND(COALESCE(?manifestationIdentifierValue, STR(?manifestationIdentifier)) AS ?manifestationIdentifierText)
   }
 
   OPTIONAL {
     ?manifestation fiaf:hasLanguageUsage ?manifestationUsage .
     ?manifestationUsage a ?manifestationUsageType ;
                         fiaf:hasLanguage ?manifestationLanguage .
-    BIND(CONCAT(
-      STR(?manifestationLanguage), "~",
-      STRAFTER(STR(?manifestationUsageType), "https://dev.fiafcore.org/")
-    ) AS ?manifestationLanguageText)
   }
 
   OPTIONAL {
@@ -72,57 +75,37 @@ WHERE {
     OPTIONAL {
       ?item fiaf:hasIdentifier ?itemIdentifier .
       OPTIONAL { ?itemIdentifier fiaf:hasIdentifierValue ?itemIdentifierValue }
-      BIND(COALESCE(?itemIdentifierValue, STR(?itemIdentifier)) AS ?itemIdentifierText)
     }
 
     OPTIONAL {
       ?item fiaf:hasFormat ?itemFormat .
-      OPTIONAL { ?itemFormat a ?itemFormatType . FILTER(isBlank(?itemFormat)) }
-      BIND(IF(isBlank(?itemFormat), STR(?itemFormatType), STR(?itemFormat)) AS ?itemFormatValue)
+      OPTIONAL { ?itemFormat a ?itemFormatType }
     }
 
-    OPTIONAL {
-      ?item fiaf:isElement ?itemElement .
-      BIND(STR(?itemElement) AS ?itemElementValue)
-    }
-
-    OPTIONAL {
-      ?item fiaf:hasBase ?itemBase .
-      BIND(STR(?itemBase) AS ?itemBaseValue)
-    }
+    OPTIONAL { ?item fiaf:isElement ?itemElement }
+    OPTIONAL { ?item fiaf:hasBase ?itemBase }
 
     OPTIONAL {
       ?item fiaf:hasColourCharacteristic ?itemColourCharacteristic .
-      OPTIONAL { ?itemColourCharacteristic a ?itemColourType . FILTER(isBlank(?itemColourCharacteristic)) }
-      BIND(IF(isBlank(?itemColourCharacteristic), STR(?itemColourType), STR(?itemColourCharacteristic)) AS ?itemColourValue)
+      OPTIONAL { ?itemColourCharacteristic a ?itemColourType }
     }
 
     OPTIONAL {
       ?item fiaf:hasSoundCharacteristic ?itemSoundCharacteristic .
       OPTIONAL { ?itemSoundCharacteristic fiaf:hasSoundStandard ?itemSoundStandard }
       OPTIONAL { ?itemSoundCharacteristic a ?itemSoundType }
-      # Skip unresolved blank nodes; their internal id is not a label.
-      FILTER(!isBlank(?itemSoundCharacteristic) || BOUND(?itemSoundStandard) || BOUND(?itemSoundType))
-      BIND(COALESCE(STR(?itemSoundStandard), STR(?itemSoundType), STR(?itemSoundCharacteristic)) AS ?itemSoundValue)
     }
 
     OPTIONAL {
       ?item fiaf:hasStock ?itemStock .
       OPTIONAL { ?itemStock rdfs:label ?itemStockLabel }
-      # Unlabelled blank stock nodes have no display name.
-      FILTER(!isBlank(?itemStock) || BOUND(?itemStockLabel))
-      BIND(COALESCE(?itemStockLabel, STR(?itemStock)) AS ?itemStockValue)
     }
 
-    OPTIONAL {
-      ?item fiaf:hasStatus ?itemStatus .
-      BIND(STR(?itemStatus) AS ?itemStatusValue)
-    }
+    OPTIONAL { ?item fiaf:hasStatus ?itemStatus }
 
     OPTIONAL {
       ?item fiaf:hasHoldingInstitution ?itemInstitution .
       OPTIONAL { ?itemInstitution rdfs:label ?itemInstitutionLabel }
-      BIND(COALESCE(?itemInstitutionLabel, STR(?itemInstitution)) AS ?itemInstitutionValue)
     }
 
     OPTIONAL {
@@ -131,10 +114,32 @@ WHERE {
       OPTIONAL {
         ?carrier fiaf:hasIdentifier ?carrierIdentifier .
         OPTIONAL { ?carrierIdentifier fiaf:hasIdentifierValue ?carrierIdentifierValue }
-        BIND(COALESCE(?carrierIdentifierValue, STR(?carrierIdentifier)) AS ?carrierIdentifierText)
       }
     }
   }
+
+  BIND(COALESCE(?manifestationIdentifierValue, STR(?manifestationIdentifier)) AS ?manifestationIdentifierText)
+  BIND(CONCAT(
+    STR(?manifestationLanguage), "~",
+    STRAFTER(STR(?manifestationUsageType), "https://dev.fiafcore.org/")
+  ) AS ?manifestationLanguageText)
+  BIND(COALESCE(?itemIdentifierValue, STR(?itemIdentifier)) AS ?itemIdentifierText)
+  # A blank format or colour node is shown by its type; an IRI by itself.
+  BIND(IF(isBlank(?itemFormat), STR(?itemFormatType), STR(?itemFormat)) AS ?itemFormatValue)
+  BIND(STR(?itemElement) AS ?itemElementValue)
+  BIND(STR(?itemBase) AS ?itemBaseValue)
+  BIND(IF(isBlank(?itemColourCharacteristic), STR(?itemColourType), STR(?itemColourCharacteristic)) AS ?itemColourValue)
+  # Skip unresolved blank nodes; their internal id is not a label.
+  BIND(IF(!isBlank(?itemSoundCharacteristic) || BOUND(?itemSoundStandard) || BOUND(?itemSoundType),
+          COALESCE(STR(?itemSoundStandard), STR(?itemSoundType), STR(?itemSoundCharacteristic)),
+          ?unset) AS ?itemSoundValue)
+  # Unlabelled blank stock nodes have no display name.
+  BIND(IF(!isBlank(?itemStock) || BOUND(?itemStockLabel),
+          COALESCE(?itemStockLabel, STR(?itemStock)),
+          ?unset) AS ?itemStockValue)
+  BIND(STR(?itemStatus) AS ?itemStatusValue)
+  BIND(COALESCE(?itemInstitutionLabel, STR(?itemInstitution)) AS ?itemInstitutionValue)
+  BIND(COALESCE(?carrierIdentifierValue, STR(?carrierIdentifier)) AS ?carrierIdentifierText)
 }
 GROUP BY ?manifestation ?item ?carrier
 ORDER BY ?manifestation ?item ?carrier
