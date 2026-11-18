@@ -1489,12 +1489,6 @@ export function create(
       updateChrome();
       return activeKey !== previousKey;
     },
-    resetMode() {
-      setMode("count");
-      rowLimit = defaultRowLimit;
-      if (limitSelect) limitSelect.value = String(rowLimit);
-      redrawIfLoaded();
-    },
     resize() {
       if (dataByKind.has(cacheKey(activeKey)) && root.clientWidth !== previousWidth) draw();
     },

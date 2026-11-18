@@ -564,7 +564,7 @@ button:active:not(:disabled) { transform: translateY(1px); }
    shows the ink background through); labels are mono capitals. The current
    view is set in reverse, ink with white type, the same selection the
    segmented controls use. */
-/* Lifted above the filter bar it sits flush on, so the raised shadow shows
+/* Lifted above the dataset row it sits flush on, so the raised shadow shows
    on the bottom edge as well as the right. */
 .tabs {
   position: relative;
@@ -613,27 +613,40 @@ button:active:not(:disabled) { transform: translateY(1px); }
 
 /* -- filters --------------------------------------------------------------- */
 
-/* Filters sit on the white page under the navigation, closed off by a
-   halftone band. */
-/* Every view's filter bar is one height: room for one label line and one
-   control row, controls on the bottom edge. Views with labelled filters and
-   views with only the dataset picker therefore start their content at the
-   same y, so switching tabs does not move the page. */
-.filters {
-  --filter-label: 1.375rem;
-  --filter-control: var(--control-height);
+/* Keep the dataset scope next to the navigation and close the shared
+   header with the halftone rule. The picker drops over the content. */
+.dataset-row {
   position: relative;
-  display: flex;
-  gap: var(--space-3) var(--space-4);
-  flex-wrap: wrap;
-  align-items: flex-end;
-  min-height: calc(var(--filter-label) + var(--filter-control) + 2 * var(--space-5));
-  padding: var(--space-5) var(--bleed) var(--space-5);
+  padding: var(--space-2) var(--bleed) var(--space-3);
   background: var(--toolbar);
 }
 
-/* Under 1000px the name views' extra filters fold behind this toggle. It is
-   a raised key like the dataset picker, with a triangle that turns over. */
+#dataset-control { align-items: flex-start; }
+
+#dataset-control .role-picker { max-width: min(100%, 24rem); }
+
+#dataset-control summary { max-width: 100%; }
+
+#scope-summary {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#dataset-control summary::after { flex: none; }
+
+.filters {
+  position: relative;
+  padding-block: var(--space-2) var(--space-3);
+}
+
+.people-filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3) var(--space-4);
+}
+
+/* On narrow shells, the People controls fold behind a raised key. */
 .filters-toggle {
   display: none;
   align-items: center;
@@ -668,7 +681,7 @@ button:active:not(:disabled) { transform: translateY(1px); }
 
 .filters-toggle:hover { background: var(--tonal); }
 
-.filters::after {
+.dataset-row::after {
   content: "";
   position: absolute;
   right: var(--bleed);
@@ -888,6 +901,7 @@ textarea::placeholder { color: var(--muted); opacity: 1; }
 
 .role-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-2);
   margin-bottom: var(--space-2);
 }
@@ -994,23 +1008,19 @@ textarea::placeholder { color: var(--muted); opacity: 1; }
   flex: none;
 }
 
-/* Centred on the control row it sits in, not on the (taller) filter bar. */
-.filter-note {
-  display: flex;
-  align-items: center;
-  min-height: var(--filter-control, var(--control-height));
-  margin: 0;
-  color: var(--muted);
-  font-size: var(--font-size-ui);
-}
-
 .scope-note {
   margin: var(--space-2) 0 0;
   color: var(--muted);
   font-size: var(--font-size-caption);
 }
 
-.reset { margin-left: auto; }
+.reset {
+  margin-left: auto;
+  max-width: 100%;
+  height: auto;
+  min-height: var(--control-height);
+  white-space: normal;
+}
 
 .reset:hover { background: var(--tonal); }
 
@@ -3408,7 +3418,6 @@ body.drawer-resizing * {
     width: var(--control-height-touch);
     height: var(--control-height-touch);
   }
-  .filters { --filter-control: var(--control-height-touch); }
 }
 
 /* Queried on the shell, not the viewport: a docked drawer narrows it. */
@@ -3425,16 +3434,9 @@ body.drawer-resizing * {
 
 @container shell (max-width: 1000px) {
 
-  /* The name views' filters no longer fit one row either. Fold them behind
-     a toggle so every view's filter bar keeps the same single row; opening
-     it is the visitor's own action, so the growth is expected. */
   .filters-toggle { display: inline-flex; }
-  .filters-toggle[hidden] { display: none; }
-  .filters:not(.is-expanded) > [data-filter="agents"]:not(.filters-toggle),
-  .filters:not(.is-expanded) > [data-filter="search"] {
-    display: none;
-  }
-  .filters.is-expanded .filter-search { flex-basis: 100%; max-width: none; }
+  .filters:not(.is-expanded) .people-filter-controls { display: none; }
+  .filters.is-expanded .people-filter-controls { margin-top: var(--space-3); }
 
   /* The legend wraps to more lines here; reserve its loaded height. */
   .preservation-overview { --preservation-overview-height: 11.25rem; }
@@ -3467,19 +3469,16 @@ body.drawer-resizing * {
   .view-switch .segmented a.active { background: var(--text); }
   /* One-column legend: the loaded overview is about 257px tall. */
   .preservation-overview { --preservation-overview-height: 16.125rem; }
-  .filters {
-    position: relative;
-    align-items: flex-end;
-  }
   .filter-search { max-width: none; flex-basis: 100%; }
-  .role-picker { position: static; }
-  .role-picker-body {
+  .dataset-row .role-picker { position: static; }
+  .dataset-row .role-picker-body {
     top: calc(100% + var(--space-1));
-    right: 0;
-    left: 0;
+    right: var(--bleed);
+    left: var(--bleed);
     width: auto;
     max-height: min(60vh, 360px);
   }
+  .people-filter-controls .role-picker-body { max-height: min(60vh, 360px); }
   .stats { min-height: 4.8em; }
   #cloud-stats { min-height: 6.4em; }
   #cloud-legend {
@@ -3511,9 +3510,6 @@ body.drawer-resizing * {
     box-shadow: none;
     font-size: var(--font-size-caption);
   }
-
-  /* One line in either font, so the font swap cannot rewrap it. */
-  .filter-note { font-size: var(--font-size-small); }
 }
 
 /* Touch screens: fields at 16px, the size below which iOS Safari zooms the

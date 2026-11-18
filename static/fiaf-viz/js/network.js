@@ -1088,12 +1088,6 @@ export function create(ctx, root, statsElement, linkButtons) {
       stopPlaying();
     },
     resume() {},
-    resetLinks() {
-      if (linkMode === "all") return;
-      linkMode = "all";
-      syncLinkButtons();
-      scheduleDraw();
-    },
     resize() {
       if (!data || !lastNodes.length) return;
       const { width, height } = dimensions();

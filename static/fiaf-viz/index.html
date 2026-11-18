@@ -49,68 +49,21 @@
     </nav>
   </header>
 
-  <section class="filters" aria-label="Filters">
-    <div class="filter" data-scope-control>
+  <div class="dataset-row">
+    <div class="filter" id="dataset-control">
       <details class="role-picker">
         <summary>Datasets: <span id="scope-summary">All works</span></summary>
         <div class="role-picker-body">
           <div class="role-actions">
-            <button type="button" id="scopes-all">All datasets</button>
-            <button type="button" id="scopes-clear">Clear</button>
+            <button type="button" id="scopes-all">Select all datasets</button>
+            <button type="button" id="scopes-clear">Show all works</button>
           </div>
           <div id="scope-list" class="role-list" role="group" aria-label="Datasets"></div>
-          <p class="scope-note">No selection shows all works.</p>
+          <p class="scope-note">Datasets are matched by identifiers on works. All works includes works without a dataset identifier.</p>
         </div>
       </details>
     </div>
-    <!-- Under 1000px the name filters fold behind this toggle (see css/app.css). -->
-    <button type="button" id="filters-toggle" class="filters-toggle" data-filter="agents"
-            aria-expanded="false" hidden>Name filters</button>
-    <div class="filter" data-filter="agents" hidden>
-      <details class="role-picker">
-        <summary>Roles: <span id="role-summary">all</span></summary>
-        <div class="role-picker-body">
-          <div class="role-actions">
-            <button type="button" id="roles-all">All</button>
-            <button type="button" id="roles-none">None</button>
-          </div>
-          <div id="role-list" class="role-list"></div>
-        </div>
-      </details>
-    </div>
-    <label class="filter" data-filter="agents" data-names-filter hidden>
-      <span>Names</span>
-      <select id="top-limit">
-        <option value="500">500</option>
-        <option value="1000" selected>1,000</option>
-        <option value="2000">2,000</option>
-        <option value="5000">5,000</option>
-        <option value="10000">10,000</option>
-        <option value="20000">20,000</option>
-        <option value="all">All</option>
-      </select>
-    </label>
-    <label class="filter" data-filter="agents" hidden>
-      <span>Min. works</span>
-      <select id="min-works">
-        <option value="0" selected>Any</option>
-        <option value="2">2+</option>
-        <option value="3">3+</option>
-        <option value="5">5+</option>
-        <option value="10">10+</option>
-      </select>
-    </label>
-    <div class="filter filter-search" data-filter="search" hidden>
-      <label for="search">Search names and works</label>
-      <input id="search" type="search" placeholder="e.g. Chaplin or Metropolis" autocomplete="off"
-             aria-controls="search-results" aria-expanded="false">
-      <div id="search-results" class="search-results" role="listbox" hidden></div>
-    </div>
-    <p class="filter-note" data-filter="dataset">
-      Role and name filters do not apply.
-    </p>
-    <button type="button" id="reset-filters" class="reset">Reset</button>
-  </section>
+  </div>
 
   <main>
     <p id="status" role="status" aria-live="polite"></p>
@@ -137,6 +90,54 @@
         <a href="#holdings/preservation" data-view="preservation">Preservation</a>
       </nav>
     </div>
+
+    <section class="filters" id="people-filters" aria-label="People filters" hidden>
+      <button type="button" id="filters-toggle" class="filters-toggle"
+              aria-expanded="false" aria-controls="people-filter-controls">Name filters</button>
+      <div class="people-filter-controls" id="people-filter-controls">
+        <div class="filter">
+          <details class="role-picker">
+            <summary>Roles: <span id="role-summary">all</span></summary>
+            <div class="role-picker-body">
+              <div class="role-actions">
+                <button type="button" id="roles-all">All</button>
+                <button type="button" id="roles-none">None</button>
+              </div>
+              <div id="role-list" class="role-list"></div>
+            </div>
+          </details>
+        </div>
+        <label class="filter" data-names-filter>
+          <span>Names</span>
+          <select id="top-limit">
+            <option value="500">500</option>
+            <option value="1000" selected>1,000</option>
+            <option value="2000">2,000</option>
+            <option value="5000">5,000</option>
+            <option value="10000">10,000</option>
+            <option value="20000">20,000</option>
+            <option value="all">All</option>
+          </select>
+        </label>
+        <label class="filter">
+          <span>Min. works</span>
+          <select id="min-works">
+            <option value="0" selected>Any</option>
+            <option value="2">2+</option>
+            <option value="3">3+</option>
+            <option value="5">5+</option>
+            <option value="10">10+</option>
+          </select>
+        </label>
+        <div class="filter filter-search">
+          <label for="search">Search names and works</label>
+          <input id="search" type="search" placeholder="e.g. Chaplin or Metropolis" autocomplete="off"
+                 aria-controls="search-results" aria-expanded="false">
+          <div id="search-results" class="search-results" role="listbox" hidden></div>
+        </div>
+        <button type="button" id="reset-filters" class="reset">Reset People filters</button>
+      </div>
+    </section>
 
     <section id="view-cloud" class="view" data-view="cloud" hidden>
       <div class="view-head">
@@ -758,7 +759,7 @@
     (() => {
       // Resolve the hash the way js/groups.js does ("#group/view", "#group"
       // or an old "#view"), from the tabs and switch rows above, so the
-      // filter bar, tab and switch row are right before the app loads.
+      // dataset control, People filters and navigation are right before the app loads.
       const [first = "", second = ""] = (location.hash || "#overview").slice(1).split("/");
       const tabs = [...document.querySelectorAll(".tabs a")];
       const rows = [...document.querySelectorAll("#view-switch [data-group]")];
@@ -792,21 +793,9 @@
           }
         }
       }
-      const agentViews = new Set(["cloud", "network", "co-credits", "roles"]);
-      const searchViews = agentViews;
-      for (const element of document.querySelectorAll('[data-filter="agents"]')) {
-        element.hidden = !agentViews.has(view);
-      }
-      // Co-credits has its own Names control.
-      for (const element of document.querySelectorAll("[data-names-filter]")) {
-        element.hidden = !agentViews.has(view) || view === "co-credits";
-      }
-      for (const element of document.querySelectorAll('[data-filter="search"]')) {
-        element.hidden = !searchViews.has(view);
-      }
-      for (const element of document.querySelectorAll('[data-filter="dataset"]')) {
-        element.hidden = agentViews.has(view);
-      }
+      document.getElementById("people-filters").hidden = group !== "people";
+      document.querySelector("[data-names-filter]").hidden = view === "co-credits";
+      document.getElementById("dataset-control").hidden = view === "ontology";
     })();
   </script>
 

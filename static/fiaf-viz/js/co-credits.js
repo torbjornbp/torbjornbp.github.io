@@ -1173,12 +1173,6 @@ export function create(ctx, root, statsElement, thresholdInput, linkButtons) {
       return mode === "matrix" && matrix ? matrix.has(id) : nodeIndex.has(id);
     },
     fit: fitGraph,
-    resetLinks() {
-      if (linkMode === "all") return;
-      linkMode = "all";
-      syncLinkButtons();
-      scheduleDraw();
-    },
     pause() {
       if (simulation) simulation.stop();
     },

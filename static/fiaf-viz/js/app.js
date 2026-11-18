@@ -38,7 +38,6 @@ import { renderWorkGraph } from "./work-graph.js";
 const PALETTE = ui.ROLE_PALETTE;
 const OTHER_COLOUR = "var(--role-other)";
 const AGENT_VIEWS = new Set(["cloud", "network", "co-credits", "roles"]);
-const SEARCH_VIEWS = new Set(["cloud", "network", "co-credits", "roles"]);
 const SELECTION_VIEWS = {
   work: new Set(["catalogue", ...AGENT_VIEWS]),
   agent: new Set(AGENT_VIEWS),
@@ -764,11 +763,12 @@ function loadRolesForScope(key, scopePattern) {
   return request;
 }
 
-async function refreshRolesForScope(selectAll) {
+async function refreshRolesForScope(forceAll = false) {
   const token = ++scopeToken;
   const roles = await loadRolesForScope(scopeKey(), ctx.scopeFilter());
   if (token !== scopeToken) return false;
   const available = new Set(roles.map((role) => role.iri));
+  const selectAll = forceAll || state.selectedRoles.size === state.roles.length;
   state.roles = roles;
   if (selectAll) {
     state.selectedRoles = available;
@@ -841,20 +841,16 @@ async function loadScopes() {
   renderScopeOptions();
 }
 
-async function applyScope(scopeIds, forceAllRoles = false) {
+async function applyScope(scopeIds) {
   clearTimeout(scopeTimer);
   const next = normalizeScopeIds(scopeIds);
   const key = scopeKeyFor(next);
   const previous = [...state.scopeIds];
-  const selectAll =
-    forceAllRoles ||
-    !state.roles.length ||
-    state.selectedRoles.size === state.roles.length;
   state.scopeIds = next;
   syncScopeChecks();
   hideSearchResults();
 
-  const rolesRequest = refreshRolesForScope(selectAll);
+  const rolesRequest = refreshRolesForScope();
   if (activeView && AGENT_VIEWS.has(activeView)) {
     // Name-based views need the new role list before they reload, otherwise
     // they would paint once with the old roles and immediately reload.
@@ -870,11 +866,11 @@ async function applyScope(scopeIds, forceAllRoles = false) {
       return;
     }
     if (!updated || scopeKey() !== key) return;
-    invalidateAllViews(true);
+    invalidateScopedViews();
   } else {
     // Dataset-wide views do not use the role filter. Reload them immediately
     // and let the role list catch up in the background.
-    invalidateAllViews(true);
+    invalidateScopedViews();
     rolesRequest
       .then((updated) => {
         if (
@@ -958,20 +954,18 @@ function invalidateAgentViews(refetch) {
   if (activeView && AGENT_VIEWS.has(activeView)) scheduleLoad(activeView);
 }
 
-// A dataset change affects every view, not just the name-based ones. Views with
-// their own result caches clear them; the loaded/stale flags force a refetch
-// when the user next opens a tab.
-function invalidateAllViews(refetch) {
-  if (refetch) {
-    agentCache = null;
-    cloudAgentCache = null;
-    agentTopSlices.clear();
-  }
+// A dataset change invalidates scoped views and their result caches. Ontology
+// counts the whole graph.
+function invalidateScopedViews() {
+  agentCache = null;
+  cloudAgentCache = null;
+  agentTopSlices.clear();
   for (const name of Object.keys(views || {})) {
+    if (name === "ontology") continue;
     stale.add(name);
     if (views[name] && views[name].invalidate) views[name].invalidate();
   }
-  if (activeView) scheduleLoad(activeView);
+  if (activeView && activeView !== "ontology") scheduleLoad(activeView);
 }
 
 function scheduleLoad(name) {
@@ -985,6 +979,19 @@ function scheduleLoad(name) {
 }
 
 function wireFilters() {
+  const datasetPicker = document.querySelector("#dataset-control details");
+  datasetPicker.addEventListener("focusout", (event) => {
+    if (event.relatedTarget && !datasetPicker.contains(event.relatedTarget)) {
+      datasetPicker.open = false;
+    }
+  });
+  datasetPicker.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !datasetPicker.open) return;
+    event.preventDefault();
+    event.stopPropagation();
+    datasetPicker.open = false;
+    datasetPicker.querySelector("summary").focus();
+  });
   const scopesAll = document.getElementById("scopes-all");
   if (scopesAll) {
     scopesAll.addEventListener("click", () => {
@@ -1033,20 +1040,10 @@ function wireFilters() {
     resetSearch();
     syncNameOptions();
     document.getElementById("min-works").value = "0";
-    const shared = document.getElementById("shared-threshold");
-    if (shared) {
-      shared.value = String(limit("coCreditMinShared", 2));
-      shared.dispatchEvent(new Event("input"));
-    }
-    for (const name of ["network", "co-credits"]) {
-      if (views && views[name] && views[name].resetLinks) {
-        views[name].resetLinks();
-      }
-    }
-    if (views && views.geography && views.geography.resetMode) {
-      views.geography.resetMode();
-    }
-    applyScope([], true);
+    state.selectedRoles = new Set(state.roles.map((role) => role.iri));
+    syncRoleChecks();
+    updateRoleSummary();
+    invalidateAgentViews(true);
   });
 }
 
@@ -1493,20 +1490,10 @@ function showView(name, group) {
   for (const element of section ? section.querySelectorAll("[data-in-group]") : []) {
     element.hidden = element.dataset.inGroup !== group;
   }
-  const agentView = AGENT_VIEWS.has(name);
-  for (const element of document.querySelectorAll('[data-filter="agents"]')) {
-    element.hidden = !agentView;
-  }
+  document.getElementById("people-filters").hidden = group !== "people";
   // Co-credits sets its name count with its own control.
-  for (const element of document.querySelectorAll("[data-names-filter]")) {
-    element.hidden = !agentView || name === "co-credits";
-  }
-  for (const element of document.querySelectorAll('[data-filter="search"]')) {
-    element.hidden = !SEARCH_VIEWS.has(name);
-  }
-  for (const element of document.querySelectorAll('[data-filter="dataset"]')) {
-    element.hidden = agentView;
-  }
+  document.querySelector("[data-names-filter]").hidden = name === "co-credits";
+  document.getElementById("dataset-control").hidden = name === "ontology";
   activeView = name;
   activeGroup = group;
   lastViewInGroup.set(group, name);
@@ -3462,10 +3449,8 @@ async function ping(endpoint) {
   }
 }
 
-// Under 1000px the name views fold their role, name and search filters
-// behind one toggle, so the filter bar is a single row in every view and
-// switching tabs does not move the page. CSS does the folding; this keeps
-// the state and the accessible name in step.
+// CSS folds the People controls on narrow shells. Keep the disclosure
+// state and label in step with the layout.
 function initFiltersToggle() {
   const toggle = document.getElementById("filters-toggle");
   const bar = toggle ? toggle.closest(".filters") : null;
