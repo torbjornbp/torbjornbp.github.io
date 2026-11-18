@@ -395,6 +395,7 @@ button:active:not(:disabled) { transform: translateY(1px); }
    the side padding that does it. */
 :root {
   --bleed: max(var(--gutter), calc((100% - var(--page)) / 2 + var(--gutter)));
+  --section-tab-height: 2.25rem;
   /* A halftone band of 1px dots: the rule that closes the filter area. */
   --halftone: radial-gradient(circle at 1px 1px, var(--dot) 0.6px, transparent 0.9px) 0 0 / 3px 3px;
 }
@@ -566,12 +567,18 @@ button:active:not(:disabled) { transform: translateY(1px); }
    segmented controls use. */
 /* Lifted above the dataset row it sits flush on, so the raised shadow shows
    on the bottom edge as well as the right. */
+.tabs,
+.dataset-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  column-gap: 1px;
+}
+
 .tabs {
   position: relative;
   z-index: 1;
   grid-column: 1 / -1;
-  display: flex;
-  gap: 1px;
+  row-gap: 1px;
   margin-top: var(--space-4);
   background: var(--on-masthead);
   border: 1px solid var(--on-masthead);
@@ -580,10 +587,9 @@ button:active:not(:disabled) { transform: translateY(1px); }
 
 .tabs a {
   display: inline-flex;
-  flex: 1 1 0;
   align-items: center;
   justify-content: center;
-  height: 2.25rem;
+  height: var(--section-tab-height);
   padding: 0 var(--space-1_5);
   background: var(--masthead);
   color: var(--on-masthead);
@@ -617,22 +623,24 @@ button:active:not(:disabled) { transform: translateY(1px); }
    header with the halftone rule. The picker drops over the content. */
 .dataset-row {
   position: relative;
-  padding: var(--space-2) var(--bleed) var(--space-3);
+  padding: var(--space-2) calc(var(--bleed) + 1px) var(--space-3);
   background: var(--toolbar);
 }
 
-#dataset-control { align-items: flex-start; }
-
-#dataset-control .role-picker { max-width: min(100%, 24rem); }
-
-#dataset-control summary { max-width: 100%; }
+#dataset-control summary {
+  display: flex;
+  height: var(--section-tab-height);
+}
 
 #scope-summary {
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-#dataset-control summary::after { flex: none; }
+#dataset-control summary::after {
+  flex: none;
+  margin-inline-start: auto;
+}
 
 .filters {
   position: relative;
@@ -3421,18 +3429,8 @@ body.drawer-resizing * {
 }
 
 /* Queried on the shell, not the viewport: a docked drawer narrows it. */
-/* The six group tabs share one row as equal cells below the full column.
-   (Phones get 3 x 2 further down.) Change the column counts if the number of
-   groups changes so the grid still divides evenly and the 1px rules stay
-   intact. */
-@container shell (max-width: 1100px) {
-  .tabs {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-  }
-}
-
 @container shell (max-width: 1000px) {
+  #dataset-control { grid-column: span 2; }
 
   .filters-toggle { display: inline-flex; }
   .filters:not(.is-expanded) .people-filter-controls { display: none; }
@@ -3454,7 +3452,8 @@ body.drawer-resizing * {
   .view-head h2 { font-size: 1.75rem; }
   .stat-card { padding: var(--space-2) var(--space-3) var(--space-3); }
   .stat-value { font-size: 1.5rem; }
-  .tabs { grid-template-columns: repeat(3, 1fr); }
+  .tabs,
+  .dataset-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .tabs a { padding: 0 var(--space-1_5); }
   /* Four view names do not fit one row on a phone: an even 2 x 2 grid of
      keys, divided like the tab strip (a 1px gap over ink). */
