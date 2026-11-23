@@ -40,7 +40,7 @@ const OTHER_COLOUR = "var(--role-other)";
 const AGENT_VIEWS = new Set(["cloud", "network", "co-credits", "roles"]);
 const SELECTION_VIEWS = {
   work: new Set(["catalogue", ...AGENT_VIEWS]),
-  agent: new Set(AGENT_VIEWS),
+  agent: new Set(["catalogue", ...AGENT_VIEWS]),
   entity: new Set(["catalogue"])
 };
 const AGENT_TABS = new Set(["overview", "co-credits"]);
@@ -197,6 +197,10 @@ const ctx = {
     if (!state.roles.length) return "";
     if (state.selectedRoles.size === state.roles.length) return "";
     return roleFilter([...state.selectedRoles].sort());
+  },
+
+  creditRoles() {
+    return loadRolesForScope(scopeKey(), ctx.scopeFilter());
   },
 
   async roles() {
@@ -472,15 +476,6 @@ function selectionStatus() {
   const view = views[activeView];
 
   if (selection.kind === "agent") {
-    if (activeView === "catalogue") {
-      return {
-        shown: false,
-        tone: "note",
-        text:
-          "Catalogue does not highlight names. Use “Show works in " +
-          "catalogue” below to pivot the table."
-      };
-    }
     if (!AGENT_VIEWS.has(activeView)) return null;
     if (selection.pending || !Array.isArray(selection.workIds)) return null;
 
@@ -1193,6 +1188,17 @@ function renderSearchResults(rows, needle) {
       results.append(button);
     }
   }
+  if (views.catalogue) {
+    const allPeople = ui.node("button", "search-result", "See all matching people in Catalogue");
+    allPeople.type = "button";
+    allPeople.setAttribute("role", "option");
+    allPeople.addEventListener("click", () => {
+      resetSearch();
+      views.catalogue.openPeople(needle);
+      goToView("catalogue");
+    });
+    results.append(allPeople);
+  }
   results.hidden = false;
   if (input) input.setAttribute("aria-expanded", "true");
 }
@@ -1244,6 +1250,8 @@ function createViews() {
       agentNameElement: document.getElementById("catalogue-agent-name"),
       agentClearButton: document.getElementById("catalogue-agent-clear"),
       filterPanel: document.getElementById("catalogue-filters"),
+      peoplePanel: document.getElementById("catalogue-people"),
+      resultsMeta: document.getElementById("catalogue-results-meta"),
       modeButtons: document.querySelectorAll(
         "#catalogue-mode [data-catalogue-mode]"
       ),

@@ -392,14 +392,15 @@
       <div class="view-head">
         <div>
           <h2>Catalogue</h2>
-          <p>Search titles, identifiers and credited names separately, then narrow by country, decade and holdings. Switch to SPARQL mode to run your own queries against the same endpoint.</p>
+          <p>Find works and people in the FIAF Knowledge Graph, or run your own SPARQL query.</p>
         </div>
         <div class="view-actions">
           <div class="segmented" id="catalogue-mode" role="group" aria-label="Catalogue mode">
-            <button type="button" class="active" data-catalogue-mode="faceted" aria-pressed="true">Faceted</button>
+            <button type="button" class="active" data-catalogue-mode="faceted" aria-pressed="true">Works</button>
+            <button type="button" data-catalogue-mode="people" aria-pressed="false">People</button>
             <button type="button" data-catalogue-mode="sparql" aria-pressed="false">SPARQL</button>
           </div>
-          <button type="button" class="export" id="catalogue-export">Download page CSV</button>
+          <button type="button" class="export" id="catalogue-export">Download results CSV</button>
         </div>
       </div>
       <div id="catalogue-filters" class="catalogue-filters" role="search" aria-label="Catalogue filters">
@@ -449,6 +450,39 @@
         </label>
         <button type="button" id="catalogue-reset" class="reset catalogue-reset">Clear filters</button>
       </div>
+      <div id="catalogue-people" hidden>
+        <form class="catalogue-filters" role="search" aria-label="Find people">
+          <label class="catalogue-field catalogue-field-search catalogue-field-name">
+            <span>Name</span>
+            <input name="name" type="search" placeholder="e.g. Marlene Dietrich" autocomplete="off">
+          </label>
+          <label class="catalogue-field">
+            <span>Credit role</span>
+            <select name="role"><option value="">Any role</option></select>
+          </label>
+          <label class="catalogue-field">
+            <span>Credited work title</span>
+            <input name="work-title" type="search" placeholder="Words in any order" autocomplete="off">
+          </label>
+          <label class="catalogue-field">
+            <span>Production decade</span>
+            <select name="decade"><option value="">All decades</option></select>
+          </label>
+          <label class="catalogue-field">
+            <span>Production country</span>
+            <select name="country"><option value="">All countries</option></select>
+          </label>
+          <button type="button" class="reset catalogue-reset" data-clear-filters>Clear filters</button>
+        </form>
+        <div class="catalogue-meta">
+          <p class="stats" role="status"></p>
+          <div class="catalogue-pager" aria-label="People result pages">
+            <button type="button" class="fit" data-previous disabled>‹ Previous</button>
+            <button type="button" class="fit" data-next disabled>Next ›</button>
+          </div>
+        </div>
+        <div class="catalogue-table-wrap"></div>
+      </div>
       <div id="catalogue-sparql-panel" class="catalogue-sparql" hidden>
         <div class="catalogue-sparql-editor">
           <label class="catalogue-field catalogue-field-query" for="catalogue-sparql">
@@ -484,7 +518,7 @@
         <p>Title search matches every word you type somewhere in the same title, in any order and ignoring case. Identifier and name searches match part of an identifier value or a credited name. The numbers in the filter pickers count works, across the selected datasets.</p>
         <p>A work is a record typed fiaf:MonographicWork or fiaf:Work; the Datasets filter keeps works with an identifier from the chosen identifier authorities.</p>
       </details>
-      <div class="catalogue-meta">
+      <div class="catalogue-meta" id="catalogue-results-meta">
         <p id="catalogue-stats" class="stats" role="status" aria-live="polite"></p>
         <div class="catalogue-pager" aria-label="Result pages">
           <button type="button" id="catalogue-prev" class="fit" disabled>‹ Previous</button>

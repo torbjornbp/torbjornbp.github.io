@@ -2182,6 +2182,17 @@ main {
   vertical-align: top;
 }
 
+.catalogue-people-table { table-layout: fixed; }
+
+.catalogue-people-table th {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.catalogue-people-table td { overflow-wrap: anywhere; }
+
+.catalogue-people-table .catalogue-row { cursor: auto; }
+
 .catalogue-title {
   display: block;
   font-weight: var(--font-bold);

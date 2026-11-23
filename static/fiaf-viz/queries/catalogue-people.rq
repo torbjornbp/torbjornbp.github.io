@@ -1,0 +1,31 @@
+# One result per credited Person, with a stable example work in the same scope.
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?person (SUBSTR(MIN(?matchLabel), 2) AS ?name) (MIN(?matchRank) AS ?rank)
+       (MIN(STR(?work)) AS ?example)
+WHERE {
+  {
+    SELECT DISTINCT ?person ?matchLabel ?matchRank
+    WHERE {
+      ?person a fiaf:Person ; rdfs:label ?label .
+      BIND(LCASE(STR(?label)) AS ?lower)
+      FILTER(REGEX(?lower, "\\S"))
+      BIND(LCASE({{TERM}}) AS ?term)
+      FILTER(CONTAINS(?lower, ?term))
+      BIND(IF(?lower = ?term, 0, IF(STRSTARTS(?lower, ?term), 1, 2)) AS ?matchRank)
+      # Sort by match quality before label, including when a person has aliases.
+      BIND(CONCAT(STR(?matchRank), STR(?label)) AS ?matchLabel)
+    }
+  }
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ; fiaf:hasEvent/fiaf:hasActivity ?activity .
+  ?activity fiaf:hasAgent ?person .
+  {{SCOPE_FILTER}}
+  {{ROLE_FILTER}}
+  {{CATALOGUE_FILTER}}
+}
+GROUP BY ?person
+ORDER BY ?rank LCASE(?name) ?person
+LIMIT {{LIMIT}}
+OFFSET {{OFFSET}}

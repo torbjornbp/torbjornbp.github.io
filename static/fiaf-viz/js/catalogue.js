@@ -19,6 +19,7 @@ import {
 } from "./sparql.js";
 import { FIAF_NS, humanize, localName } from "./labels.js";
 import * as ui from "./ui.js";
+import * as peopleSearch from "./catalogue-people.js";
 import { attachSparqlHighlight } from "./sparql-highlight.js";
 
 const SORT_ORDERS = {
@@ -236,6 +237,8 @@ export function create(ctx, controls) {
     agentNameElement,
     agentClearButton,
     filterPanel,
+    peoplePanel,
+    resultsMeta,
     modeButtons,
     sparqlPanel,
     sparqlInput,
@@ -249,6 +252,7 @@ export function create(ctx, controls) {
     nextButton,
     pageElement
   } = controls;
+  const people = peoplePanel && peopleSearch.create(ctx, peoplePanel);
   const refreshHighlight = attachSparqlHighlight(sparqlInput);
 
   let mode = "faceted";
@@ -265,6 +269,7 @@ export function create(ctx, controls) {
   let pageToken = 0;
   let activeController = null;
   let pendingReload = false;
+  let focusPeople = false;
   let filterTimer = null;
 
   function pageSize() {
@@ -544,6 +549,11 @@ export function create(ctx, controls) {
   }
 
   function refresh() {
+    if (mode === "people") {
+      if (isVisible()) loadPeople();
+      else pendingReload = true;
+      return;
+    }
     if (mode === "sparql") {
       render();
       return;
@@ -953,6 +963,7 @@ export function create(ctx, controls) {
 
   function select(selection) {
     currentSelection = selection || null;
+    if (people) people.select(selection);
     if (!tableElement) return;
     const id = selection && selection.kind === "work" ? selection.id : null;
     for (const row of tableElement.querySelectorAll("tr.catalogue-row")) {
@@ -962,7 +973,7 @@ export function create(ctx, controls) {
 
   function syncAgentChip() {
     if (!agentFilterElement) return;
-    agentFilterElement.hidden = mode === "sparql" || !agentFilter;
+    agentFilterElement.hidden = mode !== "faceted" || !agentFilter;
     if (agentNameElement) {
       agentNameElement.textContent = agentFilter ? agentFilter.name : "";
     }
@@ -1017,6 +1028,15 @@ export function create(ctx, controls) {
   function exportRows() {
     if (mode === "sparql") {
       exportQueryRows();
+      return;
+    }
+    if (mode === "people") {
+      const result = people.exportPage();
+      if (!result) {
+        ui.setStatus("There are no people results to export.", "error");
+        return;
+      }
+      downloadCsv(result.rows.map((row) => row.map(csvValue).join(",")), result.filename);
       return;
     }
     if (!items.length) {
@@ -1082,9 +1102,12 @@ export function create(ctx, controls) {
   }
 
   function setMode(next, options = {}) {
-    if (next !== "faceted" && next !== "sparql") return;
+    if (next === "people" && !people) return;
+    if (next !== "faceted" && next !== "sparql" && next !== "people") return;
     const changed = next !== mode;
     if (!changed) return;
+    if (people) people.cancel();
+    clearTimeout(filterTimer);
     mode = next;
     page = 0;
     pageToken += 1;
@@ -1106,18 +1129,20 @@ export function create(ctx, controls) {
       button.classList.toggle("active", active);
       button.setAttribute("aria-pressed", active ? "true" : "false");
     }
-    if (filterPanel) filterPanel.hidden = mode === "sparql";
+    if (filterPanel) filterPanel.hidden = mode !== "faceted";
+    if (peoplePanel) peoplePanel.hidden = mode !== "people";
+    if (resultsMeta) resultsMeta.hidden = mode === "people";
+    if (tableElement) tableElement.hidden = mode === "people";
     if (sparqlPanel) sparqlPanel.hidden = mode !== "sparql";
     // The counting note describes the faceted table, not a user's own query.
     const countingNote = document.getElementById("catalogue-counting");
-    if (countingNote) countingNote.hidden = mode === "sparql";
+    if (countingNote) countingNote.hidden = mode !== "faceted";
     syncAgentChip();
-    if (exportButton) {
-      exportButton.textContent =
-        mode === "sparql" ? "Download results CSV" : "Download page CSV";
-    }
 
-    if (mode === "sparql") {
+    if (mode === "people") {
+      ui.setStatus("");
+      if (options.run !== false) refresh();
+    } else if (mode === "sparql") {
       if (sparqlInput && !sparqlInput.value.trim()) {
         sparqlInput.value = queryTemplates().filters;
         sparqlResult = null;
@@ -1139,8 +1164,15 @@ export function create(ctx, controls) {
     }
   }
 
+  function loadPeople() {
+    if (focusPeople) people.focus();
+    focusPeople = false;
+    return people.load();
+  }
+
   async function load({ signal } = {}) {
     pendingReload = false;
+    if (mode === "people") return loadPeople();
     if (mode === "sparql") {
       render();
       return;
@@ -1294,6 +1326,7 @@ export function create(ctx, controls) {
   return {
     load,
     invalidate() {
+      if (people) people.cancel();
       facets = null;
       facetsKey = "";
       facetsError = null;
@@ -1316,6 +1349,19 @@ export function create(ctx, controls) {
       } else {
         refresh();
       }
+    },
+    pause() {
+      if (mode === "people") {
+        people.cancel();
+        pendingReload = true;
+      }
+    },
+    openPeople(name) {
+      if (!people) return;
+      people.setName(name);
+      focusPeople = true;
+      setMode("people", { run: false });
+      refresh();
     },
     select,
     // Load a ready-made query (from the ontology view) into the SPARQL box.

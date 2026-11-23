@@ -1,0 +1,32 @@
+# Describe only the example credits on the current results page.
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?person
+       (COALESCE(MIN(STR(?workLabel)), MIN(STR(?titleValue))) AS ?title)
+       (MIN(?productionYear) AS ?year)
+       (MIN(STR(?displayRole)) AS ?creditRole)
+       (GROUP_CONCAT(DISTINCT ?source; separator="|") AS ?sources)
+WHERE {
+  VALUES (?person ?work) { {{PEOPLE_EXAMPLES}} }
+  ?work fiaf:hasEvent/fiaf:hasActivity ?activity .
+  ?activity fiaf:hasAgent ?person .
+  {{ROLE_FILTER}}
+  OPTIONAL { ?activity a ?activityRole }
+  BIND(COALESCE(?role, ?activityRole) AS ?displayRole)
+  OPTIONAL { ?work rdfs:label ?workLabel }
+  OPTIONAL { ?work fiaf:hasTitle ?titleNode }
+  OPTIONAL { ?work fiaf:hasIdentifier ?identifier }
+  OPTIONAL { ?work fiaf:hasEvent ?event }
+  BIND(COALESCE(?titleNode, <urn:fiaf-viz:none>) AS ?titleKey)
+  BIND(COALESCE(?identifier, <urn:fiaf-viz:none>) AS ?identifierKey)
+  OPTIONAL { ?titleKey fiaf:hasTitleValue ?titleValue }
+  OPTIONAL { ?identifierKey fiaf:hasIdentifierAuthority ?authority }
+  BIND(COALESCE(?authority, <urn:fiaf-viz:none>) AS ?authorityKey)
+  OPTIONAL { ?authorityKey rdfs:label ?authorityLabel }
+  BIND(COALESCE(STR(?authorityLabel), STR(?authority), "") AS ?source)
+  OPTIONAL { ?event a fiaf:ProductionEvent ; fiaf:hasDate ?date }
+  BIND(SUBSTR(STR(?date), 1, 4) AS ?yearText)
+  BIND(IF(REGEX(?yearText, "^[0-9]{4}$"), ?yearText, ?unset) AS ?productionYear)
+}
+GROUP BY ?person
