@@ -707,14 +707,21 @@ export function drawerMeta(container, groups) {
     }
     const list = node("dl", "drawer-meta");
     for (const row of rows) {
-      const text = metadataText(row.value);
-      const empty = !text || text === "—";
+      const values = row.values?.map(metadataText).filter(Boolean) || [];
+      const text = values.length ? "" : metadataText(row.value);
+      const empty = !values.length && (!text || text === "—");
       const term = node("dt", "drawer-meta-label", row.label);
       const value = node(
         "dd",
         empty ? "drawer-meta-value is-empty" : "drawer-meta-value",
         empty ? "—" : text
       );
+      if (values.length) {
+        value.classList.add("drawer-property-values");
+        for (const entry of values) {
+          value.append(node("div", "drawer-property-value", entry));
+        }
+      }
       list.append(term, value);
     }
     section.append(list);

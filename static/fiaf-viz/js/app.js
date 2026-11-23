@@ -1902,11 +1902,7 @@ function renderAgentOverview(panel, agent, name, state, tabs) {
         { label: "Credited works", value: ui.formatNumber(state.works) },
         {
           label: "Roles",
-          value: roles.length
-            ? roles
-                .map((entry) => `${roleLabel(entry.role)} (${ui.formatNumber(entry.works)})`)
-                .join(", ")
-            : null
+          values: roles.map((entry) => `${roleLabel(entry.role)} (${ui.formatNumber(entry.works)})`)
         },
         {
           label: "Current view",
@@ -1923,15 +1919,15 @@ function renderAgentOverview(panel, agent, name, state, tabs) {
         { label: "Name", value: name },
         {
           label: "Type",
-          value: [...state.record.types].map((type) => humanize(type)).join(", ")
+          values: [...state.record.types].map(humanize)
         },
         {
           label: "Source dataset",
-          value: (state.record.sourceDatasets || []).join(", ")
+          values: state.record.sourceDatasets
         },
         {
           label: "Identifiers",
-          value: (state.record.identifiers || []).join(", ")
+          values: state.record.identifiers
         },
         { label: "Record", value: localName(agent) || agent }
       ]
@@ -2124,16 +2120,14 @@ function loadEntityRecord(iri, signal) {
   return runQuery("entity-record", { ENTITY: sparqlAnyIri(iri) }, { signal }).then(
     (rows) => {
       const types = new Set();
-      const identifiers = [];
+      const identifiers = new Set();
       const sourceDatasets = new Set();
       let label = null;
       let parentWork = null;
       let parentWorkLabel = null;
       for (const row of rows) {
         if (row.type) types.add(row.type);
-        if (row.identifier && !identifiers.includes(row.identifier)) {
-          identifiers.push(row.identifier);
-        }
+        if (row.identifier) identifiers.add(row.identifier);
         if (row.authority) {
           sourceDatasets.add(row.authorityLabel || humanize(row.authority));
         }
@@ -2146,7 +2140,7 @@ function loadEntityRecord(iri, signal) {
       const record = {
         entity: iri,
         types,
-        identifiers,
+        identifiers: [...identifiers],
         sourceDatasets: [...sourceDatasets],
         label,
         parentWork,
@@ -2266,9 +2260,9 @@ function entityDetailRows(properties) {
       const value = entityPropertyValue(row);
       if (value) values.add(value);
     }
-    if (values.size) found.set(label, [...values].join(", "));
+    if (values.size) found.set(label, [...values]);
   }
-  return [...found.entries()].map(([label, value]) => ({ label, value }));
+  return [...found.entries()].map(([label, values]) => ({ label, values }));
 }
 
 function holdingKindForRecord(record) {
@@ -2283,15 +2277,15 @@ function renderEntityOverview(panel, iri, record) {
     { label: "Label", value: record.label },
     {
       label: "Identifier",
-      value: (record.identifiers || []).join(", ")
+      values: record.identifiers
     },
     {
       label: "Type",
-      value: [...record.types].map((type) => humanize(type)).join(", ")
+      values: [...record.types].map(humanize)
     },
     {
       label: "Source dataset",
-      value: (record.sourceDatasets || []).join(", ")
+      values: record.sourceDatasets
     },
     { label: "Record", value: localName(iri) || iri }
   ];
@@ -2481,20 +2475,14 @@ function splitMetadata(value) {
     .filter(Boolean);
 }
 
-function metadataList(value, format = humanize) {
-  const parts = splitMetadata(value).map((part) => format(part));
-  return parts.length ? parts.join(", ") : null;
-}
-
 function metadataLanguages(value) {
-  const parts = splitMetadata(value).map((part) => {
+  return splitMetadata(value).map((part) => {
     const cut = part.indexOf("~");
     const language = cut >= 0 ? part.slice(0, cut) : part;
     const usage = cut >= 0 ? part.slice(cut + 1) : "";
     const label = humanize(language);
     return usage ? `${label} (${humanize(usage)})` : label;
   });
-  return parts.length ? parts.join(", ") : null;
 }
 
 function workOverviewGroups(row) {
@@ -2506,24 +2494,24 @@ function workOverviewGroups(row) {
         { label: "Title", value: data.label },
         {
           label: "Title variants",
-          value: metadataList(data.titles, (value) => value)
+          values: splitMetadata(data.titles)
         },
         { label: "Production year", value: data.year },
-        { label: "Countries", value: metadataList(data.countries) },
-        { label: "Forms", value: metadataList(data.forms) },
-        { label: "Genres", value: metadataList(data.genres) },
-        { label: "Languages", value: metadataLanguages(data.languages) },
+        { label: "Countries", values: splitMetadata(data.countries).map(humanize) },
+        { label: "Forms", values: splitMetadata(data.forms).map(humanize) },
+        { label: "Genres", values: splitMetadata(data.genres).map(humanize) },
+        { label: "Languages", values: metadataLanguages(data.languages) },
         {
           label: "Ratings",
-          value: metadataList(data.ratings, (value) => value)
+          values: splitMetadata(data.ratings)
         },
         {
           label: "Source dataset",
-          value: metadataList(data.sourceDatasets, (value) => value)
+          values: splitMetadata(data.sourceDatasets)
         },
         {
           label: "Identifiers",
-          value: metadataList(data.identifiers, (value) => value)
+          values: splitMetadata(data.identifiers)
         },
         { label: "Holdings", value: holdingsSummary(data) }
       ]
@@ -2784,6 +2772,7 @@ function carrierTitle(carrier) {
 
 function compactRows(rows) {
   return rows.filter((row) => {
+    if (row.values) return row.values.length > 0;
     const value = row.value;
     return value !== undefined && value !== null && String(value).trim();
   });
@@ -2796,12 +2785,12 @@ function holdingsInspectorGroups(kind, data) {
         rows: compactRows([
           { label: "Label", value: data.label },
           { label: "Type", value: data.type ? humanize(data.type) : null },
-          { label: "Identifiers", value: data.identifiers.join(", ") },
+          { label: "Identifiers", values: data.identifiers },
           {
             label: "Languages",
-            value: data.languages.map(languageText).join(", ")
+            values: data.languages.map(languageText)
           },
-          { label: "Ratings", value: data.ratings.join(", ") },
+          { label: "Ratings", values: data.ratings },
           { label: "Items", value: ui.formatNumber(data.items.size) },
           { label: "Record", value: localName(data.id) || data.id }
         ])
@@ -2813,17 +2802,17 @@ function holdingsInspectorGroups(kind, data) {
       {
         rows: compactRows([
           { label: "Label", value: data.label },
-          { label: "Identifiers", value: data.identifiers.join(", ") },
-          { label: "Format", value: formatHumanized(data.formats) },
-          { label: "Element", value: formatHumanized(data.elements) },
-          { label: "Base", value: formatHumanized(data.bases) },
-          { label: "Colour", value: formatHumanized(data.colours) },
-          { label: "Sound", value: formatHumanized(data.sounds) },
-          { label: "Film stock", value: data.stocks.join(", ") },
-          { label: "Status", value: formatHumanized(data.statuses) },
+          { label: "Identifiers", values: data.identifiers },
+          { label: "Format", values: data.formats.map(humanize) },
+          { label: "Element", values: data.elements.map(humanize) },
+          { label: "Base", values: data.bases.map(humanize) },
+          { label: "Colour", values: data.colours.map(humanize) },
+          { label: "Sound", values: data.sounds.map(humanize) },
+          { label: "Film stock", values: data.stocks },
+          { label: "Status", values: data.statuses.map(humanize) },
           {
             label: "Holding institution",
-            value: data.institutions.join(", ")
+            values: data.institutions
           },
           { label: "Carriers", value: ui.formatNumber(data.carriers.size) },
           { label: "Record", value: localName(data.id) || data.id }
@@ -2835,7 +2824,7 @@ function holdingsInspectorGroups(kind, data) {
     {
       rows: compactRows([
         { label: "Label", value: data.label },
-        { label: "Identifiers", value: data.identifiers.join(", ") },
+        { label: "Identifiers", values: data.identifiers },
         { label: "Record", value: localName(data.id) || data.id }
       ])
     }
