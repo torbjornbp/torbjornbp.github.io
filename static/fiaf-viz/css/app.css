@@ -2479,8 +2479,7 @@ button.catalogue-example:active:not(:disabled) { transform: none; }
   color: var(--bg);
 }
 
-.catalogue-example[aria-pressed="true"] .catalogue-example-question,
-.catalogue-example[aria-pressed="true"] .catalogue-example-dataset {
+.catalogue-example[aria-pressed="true"] .catalogue-example-question {
   color: var(--bg);
 }
 
@@ -2495,13 +2494,6 @@ button.catalogue-example:active:not(:disabled) { transform: none; }
   font-size: var(--font-size-small);
   line-height: var(--leading-label);
   text-wrap: pretty;
-}
-
-.catalogue-example-dataset {
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: var(--font-size-caption);
-  line-height: var(--leading-label);
 }
 
 .catalogue-row-query { cursor: default; }

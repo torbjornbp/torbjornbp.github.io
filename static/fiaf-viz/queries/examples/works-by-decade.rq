@@ -1,6 +1,6 @@
 # Works per production decade. The year is the first four digits of the
-# production event's date. Only Bundesarchiv works carry dates; BFI works
-# have none, so they are not counted here.
+# production event's date. Works without a dated production event are not
+# counted.
 
 PREFIX fiaf: <https://dev.fiafcore.org/>
 

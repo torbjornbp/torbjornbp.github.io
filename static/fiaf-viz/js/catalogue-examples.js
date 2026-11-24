@@ -1,14 +1,14 @@
 // Example queries for Catalogue › SPARQL.
 //
 // The examples are data: queries/examples/index.json lists them in groups
-// (each with a title, a one-line question and the dataset it covers) and each
+// (each with a title and a one-line question) and each
 // query is queries/examples/<id>.rq. Adding an example is one .rq file and one
 // entry in the index; scripts/time-examples.py checks it on the live endpoint.
 // Picking an example only loads it into the editor; the reader runs it.
 
 const BASE = "queries/examples";
 const ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const FIELDS = ["id", "title", "question", "dataset"];
+const FIELDS = ["id", "title", "question"];
 
 // Validate the index and return its groups. Anything malformed is an error,
 // not silently dropped, so a bad entry shows up in the tests.
@@ -38,8 +38,7 @@ export function parseExampleIndex(data) {
         return {
           id: example.id,
           title: example.title,
-          question: example.question,
-          dataset: example.dataset
+          question: example.question
         };
       })
     };
@@ -106,10 +105,7 @@ export function renderExamples(container, groups, onPick) {
       const question = document.createElement("span");
       question.className = "catalogue-example-question";
       question.textContent = example.question;
-      const dataset = document.createElement("span");
-      dataset.className = "catalogue-example-dataset";
-      dataset.textContent = example.dataset;
-      button.append(title, question, dataset);
+      button.append(title, question);
       button.addEventListener("click", () => onPick(example, button));
       item.append(button);
       list.append(item);

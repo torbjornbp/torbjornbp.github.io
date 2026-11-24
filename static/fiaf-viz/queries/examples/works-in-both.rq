@@ -1,8 +1,6 @@
 # Works in the BFI and Bundesarchiv data with the same exact title. A shared
-# title does not prove the same film: open both records to compare. The
-# datasets share almost no identifiers, BFI works carry no dates, and names
-# are written differently ("Lang, Fritz" against "Fritz Lang"), so the title
-# is the nearest thing to a link, and spelling differences are missed.
+# title does not prove the same film: open both records to compare. Only
+# exact matches count, so spelling differences are missed.
 
 PREFIX fiaf: <https://dev.fiafcore.org/>
 
