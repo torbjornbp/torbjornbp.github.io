@@ -15,7 +15,15 @@ import {
   sparqlIri,
   sparqlLiteral
 } from "./sparql.js";
-import { humanize, localName, roleLabel, titleGroups } from "./labels.js";
+import {
+  entityTitleGroups,
+  extentText,
+  humanize,
+  localName,
+  manifestationHeading,
+  roleLabel,
+  titleGroups
+} from "./labels.js";
 import { initTheme } from "./theme.js";
 import { agentHistory, groupByRole, workAgentModel } from "./records.js";
 import * as ui from "./ui.js";
@@ -2640,6 +2648,12 @@ function groupHoldings(rows) {
         type: row.manifestationType,
         label: row.manifestationLabel,
         identifiers: splitMetadata(row.manifestationIdentifiers),
+        formats: splitMetadata(row.manifestationFormats),
+        extents: splitMetadata(row.manifestationExtents),
+        colours: splitMetadata(row.manifestationColours),
+        colourStandards: splitMetadata(row.manifestationColourStandards),
+        sounds: splitMetadata(row.manifestationSounds),
+        soundStandards: splitMetadata(row.manifestationSoundStandards),
         languages: splitMetadata(row.manifestationLanguages),
         ratings: splitMetadata(row.manifestationRatings),
         items: new Map()
@@ -2658,6 +2672,10 @@ function groupHoldings(rows) {
         bases: splitMetadata(row.itemBases),
         colours: splitMetadata(row.itemColours),
         sounds: splitMetadata(row.itemSounds),
+        colourStandards: splitMetadata(row.itemColourStandards),
+        soundStandards: splitMetadata(row.itemSoundStandards),
+        languages: splitMetadata(row.itemLanguages),
+        broadcastStandards: splitMetadata(row.itemBroadcastStandards),
         stocks: splitMetadata(row.itemStocks),
         statuses: splitMetadata(row.itemStatuses),
         institutions: splitMetadata(row.itemInstitutions),
@@ -2745,6 +2763,11 @@ const RDFS_LABEL = "http://www.w3.org/2000/01/rdf-schema#label";
 const HOLDINGS_DETAIL_SKIP = {
   manifestation: new Set([
     `${ROLE_NS}hasIdentifier`,
+    `${ROLE_NS}hasTitle`,
+    `${ROLE_NS}hasFormat`,
+    `${ROLE_NS}hasExtent`,
+    `${ROLE_NS}hasColourCharacteristic`,
+    `${ROLE_NS}hasSoundCharacteristic`,
     `${ROLE_NS}hasLanguageUsage`,
     `${ROLE_NS}hasEvent`,
     `${ROLE_NS}hasItem`
@@ -2756,6 +2779,8 @@ const HOLDINGS_DETAIL_SKIP = {
     `${ROLE_NS}hasBase`,
     `${ROLE_NS}hasColourCharacteristic`,
     `${ROLE_NS}hasSoundCharacteristic`,
+    `${ROLE_NS}hasLanguageUsage`,
+    `${ROLE_NS}hasBroadcastStandard`,
     `${ROLE_NS}hasStock`,
     `${ROLE_NS}hasStatus`,
     `${ROLE_NS}hasHoldingInstitution`,
@@ -2765,12 +2790,7 @@ const HOLDINGS_DETAIL_SKIP = {
 };
 
 function manifestationTitle(manifestation) {
-  const recordTitle = firstIdentifier(manifestation.identifiers);
-  return (
-    manifestation.label ||
-    recordTitle ||
-    (manifestation.type ? humanize(manifestation.type) : "Manifestation")
-  );
+  return manifestationHeading(manifestation.type, manifestation.formats);
 }
 
 function itemTitle(item) {
@@ -2802,6 +2822,18 @@ function holdingsInspectorGroups(kind, data) {
           { label: "Label", value: data.label },
           { label: "Type", value: data.type ? humanize(data.type) : null },
           { label: "Identifiers", values: data.identifiers },
+          { label: "Format", values: data.formats.map(humanize) },
+          { label: "Extent", values: data.extents.map(extentText) },
+          { label: "Colour", values: data.colours.map(humanize) },
+          {
+            label: "Colour standard",
+            values: data.colourStandards.map(humanize)
+          },
+          { label: "Sound", values: data.sounds.map(humanize) },
+          {
+            label: "Sound standard",
+            values: data.soundStandards.map(humanize)
+          },
           {
             label: "Languages",
             values: data.languages.map(languageText)
@@ -2823,7 +2855,23 @@ function holdingsInspectorGroups(kind, data) {
           { label: "Element", values: data.elements.map(humanize) },
           { label: "Base", values: data.bases.map(humanize) },
           { label: "Colour", values: data.colours.map(humanize) },
+          {
+            label: "Colour standard",
+            values: data.colourStandards.map(humanize)
+          },
           { label: "Sound", values: data.sounds.map(humanize) },
+          {
+            label: "Sound standard",
+            values: data.soundStandards.map(humanize)
+          },
+          {
+            label: "Broadcast standard",
+            values: data.broadcastStandards.map(humanize)
+          },
+          {
+            label: "Languages",
+            values: data.languages.map(languageText)
+          },
           { label: "Film stock", values: data.stocks },
           { label: "Status", values: data.statuses.map(humanize) },
           {
@@ -2854,32 +2902,50 @@ function holdingsExtraProperties(kind, properties) {
   );
 }
 
-async function renderHoldingsExtra(container, kind, iri, token) {
-  container.replaceChildren(
-    ui.node("p", "drawer-section-note", "Loading additional properties…")
-  );
+// Titles (manifestations only) and any property the fields above do not
+// cover. Every predicate in the public data is covered today, so this is
+// usually empty: the section is added only once there is something to show,
+// with no loading note, so selecting a record does not flash an empty box.
+async function renderHoldingsExtra(parent, kind, iri, token) {
+  const container = ui.node("section", "wmic-inspector-extra");
   try {
     const properties = await loadEntityProperties(iri);
     if (token !== holdingsInspectorToken) return;
     const extra = holdingsExtraProperties(kind, properties);
-    container.replaceChildren();
-    if (!extra.length) {
-      container.remove();
-      return;
+    // Manifestation titles come from this lookup rather than work-holdings.rq,
+    // where a long title list would repeat on every item row.
+    const titles =
+      kind === "manifestation" ? entityTitleGroups(properties) : [];
+    if (!extra.length && !titles.length) return;
+    parent.append(container);
+    if (titles.length) {
+      ui.drawerMeta(container, [
+        {
+          heading: "Titles",
+          rows: titles.map((group) => ({
+            label: group.label,
+            values: group.values
+          }))
+        }
+      ]);
     }
+    if (!extra.length) return;
     container.append(
       ui.node("h3", "drawer-section-title", "Additional properties")
     );
     container.append(...entityPropertySections(extra));
   } catch (error) {
     if (token !== holdingsInspectorToken || error.name === "AbortError") return;
-    container.replaceChildren(
+    // Only a manifestation is missing something users expect (its titles).
+    if (kind !== "manifestation") return;
+    container.append(
       ui.node(
         "p",
         "drawer-section-note",
-        `Additional properties unavailable: ${error.message}`
+        `Titles unavailable: ${error.message}`
       )
     );
+    parent.append(container);
   }
 }
 
@@ -2924,9 +2990,7 @@ function renderHoldingsInspector(container, kind, data, onClear) {
   ui.drawerMeta(body, holdingsInspectorGroups(kind, data));
   container.append(body);
 
-  const extra = ui.node("section", "wmic-inspector-extra");
-  container.append(extra);
-  renderHoldingsExtra(extra, kind, data.id, token);
+  renderHoldingsExtra(container, kind, data.id, token);
 }
 
 function renderCarrier(carrier, holdings) {
@@ -2963,7 +3027,8 @@ function renderItem(item, holdings) {
     title !== elements ? elements : "",
     formatHumanized(item.bases),
     formatHumanized(item.colours),
-    formatHumanized(item.sounds),
+    // The standard says more than "Sound" on this one-line summary.
+    formatHumanized(item.soundStandards.length ? item.soundStandards : item.sounds),
     item.institutions.join(", "),
     title !== recordTitle && item.identifiers.length
       ? `ID ${item.identifiers.map(shortText).join(", ")}`
@@ -3000,14 +3065,14 @@ function renderManifestation(manifestation, holdings) {
   details.className = "wmic-branch wmic-manifestation";
   details.open = true;
   const count = manifestation.items.size;
-  const recordTitle = firstIdentifier(manifestation.identifiers);
   const title = manifestationTitle(manifestation);
   const meta = joined([
-    manifestation.languages.map(languageText).join(", "),
-    manifestation.ratings.join(", "),
-    title !== recordTitle && manifestation.identifiers.length
+    manifestation.identifiers.length
       ? `ID ${manifestation.identifiers.map(shortText).join(", ")}`
-      : ""
+      : "",
+    manifestation.extents.map(extentText).join(", "),
+    manifestation.languages.map(languageText).join(", "),
+    manifestation.ratings.join(", ")
   ]);
   const summary = wmicSummary(
     "manifestation",

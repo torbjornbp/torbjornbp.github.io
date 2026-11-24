@@ -310,3 +310,48 @@ export function titleGroups(value) {
     .sort((a, b) =>
       titleTypeRank(a.type) - titleTypeRank(b.type) || a.label.localeCompare(b.label));
 }
+
+// Heading for a manifestation in the holdings tree, info box and record graph:
+// its type, then its formats. Manifestations carry no rdfs:label in the
+// public graph, and titles exist only for some datasets, so type and format
+// are what most records have. The identifier goes in the meta line instead.
+// ("…/TheatricalManifestation", ["…/35mmFilm"]) -> "Theatrical Manifestation · 35mm film"
+export function manifestationHeading(type, formats = []) {
+  const parts = [type ? humanize(type) : "Manifestation"];
+  const formatText = formats.filter(Boolean).map(humanize).join(", ");
+  if (formatText) parts.push(formatText);
+  return parts.join(" · ");
+}
+
+const EXTENT_UNITS = { Metre: "m", Minute: "min", Foot: "ft", Second: "s" };
+
+// "Metre~1991" (from work-holdings.rq) -> "1,991 m"; "Minute~92" -> "92 min".
+// An unknown unit is humanized; a non-numeric amount is shown as given.
+export function extentText(value) {
+  const text = String(value || "");
+  const cut = text.indexOf("~");
+  const unit = cut >= 0 ? text.slice(0, cut) : "";
+  const amount = (cut >= 0 ? text.slice(cut + 1) : text).trim();
+  if (!amount) return "";
+  const number = Number(amount);
+  const shown = amount !== "" && Number.isFinite(number)
+    ? number.toLocaleString("en-GB", { maximumFractionDigits: 2 })
+    : amount;
+  if (!unit) return shown;
+  return `${shown} ${EXTENT_UNITS[unit] || humanize(unit).toLowerCase()}`;
+}
+
+// Title rows from entity-properties.rq (property, valueTitle, valueType; a
+// title with two classes comes back once per class) -> titleGroups(). A class
+// outside FIAF counts as untyped, as in work-metadata.rq.
+export function entityTitleGroups(properties) {
+  const parts = [];
+  for (const row of properties || []) {
+    if (row.property !== `${FIAF_NS}hasTitle` || !row.valueTitle) continue;
+    const type = String(row.valueType || "").startsWith(FIAF_NS)
+      ? localName(row.valueType)
+      : "Title";
+    parts.push(`${type}~${String(row.valueTitle).replace(/\|/g, "/")}`);
+  }
+  return titleGroups(parts.join("|"));
+}

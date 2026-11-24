@@ -35,7 +35,10 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT
   ?manifestation ?manifestationType ?manifestationLabel
-  ?manifestationIdentifiers ?manifestationLanguages ?manifestationRatings
+  ?manifestationIdentifiers ?manifestationExtents
+  ?manifestationFormats ?manifestationColours ?manifestationColourStandards
+  ?manifestationSounds ?manifestationSoundStandards ?manifestationLanguages
+  ?manifestationRatings
   # A manifestation without items gets "" in the item and carrier fields.
   ?item
   (COALESCE(?itemLabelValue, "") AS ?itemLabel)
@@ -45,6 +48,10 @@ SELECT
   (COALESCE(?itemBasesValue, "") AS ?itemBases)
   (COALESCE(?itemColoursValue, "") AS ?itemColours)
   (COALESCE(?itemSoundsValue, "") AS ?itemSounds)
+  (COALESCE(?itemColourStandardsValue, "") AS ?itemColourStandards)
+  (COALESCE(?itemSoundStandardsValue, "") AS ?itemSoundStandards)
+  (COALESCE(?itemLanguagesValue, "") AS ?itemLanguages)
+  (COALESCE(?itemBroadcastStandardsValue, "") AS ?itemBroadcastStandards)
   (COALESCE(?itemStocksValue, "") AS ?itemStocks)
   (COALESCE(?itemStatusesValue, "") AS ?itemStatuses)
   (COALESCE(?itemInstitutionsValue, "") AS ?itemInstitutions)
@@ -60,6 +67,12 @@ WHERE {
            (COALESCE(SAMPLE(?label), "") AS ?manifestationLabel)
            # CLEAN(list), see above.
            (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?identifierText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?manifestationIdentifiers)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?extentText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?manifestationExtents)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?manifestationFormatText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?manifestationFormats)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?colourText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?manifestationColours)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?colourStandardText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?manifestationColourStandards)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?soundText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?manifestationSounds)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?soundStandardText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?manifestationSoundStandards)
            (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?languageText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?manifestationLanguages)
            (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?ratingText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?manifestationRatings)
     WHERE {
@@ -84,7 +97,16 @@ WHERE {
       OPTIONAL { ?manifestation ?p ?o }
 
       BIND(COALESCE(IF(?p = fiaf:hasIdentifier, ?o, ?unset), <urn:fiaf-viz:none>) AS ?valueKey)
-      BIND(COALESCE(IF(?p IN (fiaf:hasLanguageUsage, fiaf:hasEvent), ?o, ?unset), <urn:fiaf-viz:none>) AS ?typeKey)
+      BIND(COALESCE(IF(?p IN (fiaf:hasLanguageUsage, fiaf:hasEvent, fiaf:hasFormat, fiaf:hasExtent, fiaf:hasColourCharacteristic, fiaf:hasSoundCharacteristic), ?o, ?unset), <urn:fiaf-viz:none>) AS ?typeKey)
+      # An extent's value and a colour or sound standard sit one step further,
+      # each read by its own lookup.
+      # Titles are left out on purpose: a manifestation's fields repeat on
+      # every item row, and one Bundesarchiv manifestation with hundreds of
+      # acquisition titles and 525 items made the response 23 MB (15 s).
+      # The info box reads them from entity-properties.rq on selection.
+      BIND(COALESCE(IF(?p = fiaf:hasExtent, ?o, ?unset), <urn:fiaf-viz:none>) AS ?extentKey)
+      BIND(COALESCE(IF(?p = fiaf:hasColourCharacteristic, ?o, ?unset), <urn:fiaf-viz:none>) AS ?colourKey)
+      BIND(COALESCE(IF(?p = fiaf:hasSoundCharacteristic, ?o, ?unset), <urn:fiaf-viz:none>) AS ?soundKey)
       BIND(COALESCE(IF(?p = fiaf:hasLanguageUsage, ?o, ?unset), <urn:fiaf-viz:none>) AS ?languageKey)
       BIND(COALESCE(IF(?p = fiaf:hasEvent, ?o, ?unset), <urn:fiaf-viz:none>) AS ?verdictKey)
 
@@ -92,8 +114,22 @@ WHERE {
       OPTIONAL { ?typeKey a ?objectType }
       OPTIONAL { ?languageKey fiaf:hasLanguage ?language }
       OPTIONAL { ?verdictKey fiaf:hasVerdict ?verdict }
+      OPTIONAL { ?extentKey fiaf:hasExtentValue ?extentValue }
+      OPTIONAL { ?colourKey fiaf:hasColourStandard ?colourStandard }
+      OPTIONAL { ?soundKey fiaf:hasSoundStandard ?soundStandard }
 
       BIND(IF(?p = fiaf:hasIdentifier, COALESCE(?identifierValue, STR(?o)), ?unset) AS ?identifierText)
+      # A blank format node is shown by its type; an IRI by itself, as on items.
+      BIND(IF(?p = fiaf:hasFormat, IF(isBlank(?o), STR(?objectType), STR(?o)), ?unset) AS ?manifestationFormatText)
+      # Unit~amount: the extent's class is its unit (Metre, Minute).
+      BIND(IF(?p = fiaf:hasExtent && BOUND(?extentValue),
+              CONCAT(STRAFTER(STR(?objectType), "https://dev.fiafcore.org/"), "~", STR(?extentValue)),
+              ?unset) AS ?extentText)
+      # A blank colour or sound node by its type, an IRI by itself; standards apart.
+      BIND(IF(?p = fiaf:hasColourCharacteristic, IF(isBlank(?o), STR(?objectType), STR(?o)), ?unset) AS ?colourText)
+      BIND(IF(?p = fiaf:hasColourCharacteristic, STR(?colourStandard), ?unset) AS ?colourStandardText)
+      BIND(IF(?p = fiaf:hasSoundCharacteristic, IF(isBlank(?o), STR(?objectType), STR(?o)), ?unset) AS ?soundText)
+      BIND(IF(?p = fiaf:hasSoundCharacteristic, STR(?soundStandard), ?unset) AS ?soundStandardText)
       # language~UsageType, as in work-metadata.rq; unbound unless both exist.
       BIND(IF(?p = fiaf:hasLanguageUsage,
               CONCAT(STR(?language), "~", STRAFTER(STR(?objectType), "https://dev.fiafcore.org/")),
@@ -118,6 +154,10 @@ WHERE {
            (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?baseText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemBasesValue)
            (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?colourText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemColoursValue)
            (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?soundText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemSoundsValue)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?itemColourStandardText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemColourStandardsValue)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?itemSoundStandardText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemSoundStandardsValue)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?itemLanguageText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemLanguagesValue)
+           (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?broadcastText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemBroadcastStandardsValue)
            (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?stockText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemStocksValue)
            (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?statusText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemStatusesValue)
            (REPLACE(REPLACE(GROUP_CONCAT(DISTINCT COALESCE(?institutionText, ""); separator="|"), "^\\||\\|$", ""), "\\|\\|", "|") AS ?itemInstitutionsValue)
@@ -137,14 +177,18 @@ WHERE {
       OPTIONAL { ?item ?p ?o }
 
       BIND(COALESCE(IF(?p = fiaf:hasIdentifier, ?o, ?unset), <urn:fiaf-viz:none>) AS ?valueKey)
-      BIND(COALESCE(IF(?p IN (fiaf:hasFormat, fiaf:hasColourCharacteristic, fiaf:hasSoundCharacteristic), ?o, ?unset), <urn:fiaf-viz:none>) AS ?typeKey)
+      BIND(COALESCE(IF(?p IN (fiaf:hasFormat, fiaf:hasColourCharacteristic, fiaf:hasSoundCharacteristic, fiaf:hasLanguageUsage), ?o, ?unset), <urn:fiaf-viz:none>) AS ?typeKey)
       BIND(COALESCE(IF(?p = fiaf:hasSoundCharacteristic, ?o, ?unset), <urn:fiaf-viz:none>) AS ?standardKey)
+      BIND(COALESCE(IF(?p = fiaf:hasColourCharacteristic, ?o, ?unset), <urn:fiaf-viz:none>) AS ?colourStandardKey)
+      BIND(COALESCE(IF(?p = fiaf:hasLanguageUsage, ?o, ?unset), <urn:fiaf-viz:none>) AS ?languageKey)
       BIND(COALESCE(IF(?p IN (fiaf:hasStock, fiaf:hasHoldingInstitution), ?o, ?unset), <urn:fiaf-viz:none>) AS ?labelKey)
       BIND(COALESCE(?carrier, <urn:fiaf-viz:none>) AS ?carrierKey)
 
       OPTIONAL { ?valueKey fiaf:hasIdentifierValue ?identifierValue }
       OPTIONAL { ?typeKey a ?objectType }
       OPTIONAL { ?standardKey fiaf:hasSoundStandard ?soundStandard }
+      OPTIONAL { ?colourStandardKey fiaf:hasColourStandard ?colourStandard }
+      OPTIONAL { ?languageKey fiaf:hasLanguage ?language }
       OPTIONAL { ?labelKey rdfs:label ?objectLabel }
       OPTIONAL { ?carrierKey rdfs:label ?carrierLabelRaw }
       OPTIONAL { ?carrierKey fiaf:hasIdentifier ?carrierIdentifier }
@@ -159,10 +203,16 @@ WHERE {
       BIND(IF(?p = fiaf:isElement, STR(?o), ?unset) AS ?elementText)
       BIND(IF(?p = fiaf:hasBase, STR(?o), ?unset) AS ?baseText)
       BIND(IF(?p = fiaf:hasColourCharacteristic, IF(isBlank(?o), STR(?objectType), STR(?o)), ?unset) AS ?colourText)
-      # Skip unresolved blank sound nodes; their internal id is not a label.
-      BIND(IF(?p = fiaf:hasSoundCharacteristic && (!isBlank(?o) || BOUND(?soundStandard) || BOUND(?objectType)),
-              COALESCE(STR(?soundStandard), STR(?objectType), STR(?o)),
-              ?unset) AS ?soundText)
+      # Sound by its type and the standard apart, as on the manifestation. An
+      # untyped blank sound node has no type to show (its id is not a label).
+      BIND(IF(?p = fiaf:hasSoundCharacteristic, IF(isBlank(?o), STR(?objectType), STR(?o)), ?unset) AS ?soundText)
+      BIND(IF(?p = fiaf:hasSoundCharacteristic, STR(?soundStandard), ?unset) AS ?itemSoundStandardText)
+      BIND(IF(?p = fiaf:hasColourCharacteristic, STR(?colourStandard), ?unset) AS ?itemColourStandardText)
+      # language~UsageType, as on the manifestation; unbound unless both exist.
+      BIND(IF(?p = fiaf:hasLanguageUsage,
+              CONCAT(STR(?language), "~", STRAFTER(STR(?objectType), "https://dev.fiafcore.org/")),
+              ?unset) AS ?itemLanguageText)
+      BIND(IF(?p = fiaf:hasBroadcastStandard, STR(?o), ?unset) AS ?broadcastText)
       # Unlabelled blank stock nodes have no display name.
       BIND(IF(?p = fiaf:hasStock && (!isBlank(?o) || BOUND(?objectLabel)),
               COALESCE(?objectLabel, STR(?o)),
