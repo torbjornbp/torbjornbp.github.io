@@ -15,7 +15,7 @@ import {
   sparqlIri,
   sparqlLiteral
 } from "./sparql.js";
-import { humanize, localName, roleLabel } from "./labels.js";
+import { humanize, localName, roleLabel, titleGroups } from "./labels.js";
 import { initTheme } from "./theme.js";
 import { agentHistory, groupByRole, workAgentModel } from "./records.js";
 import * as ui from "./ui.js";
@@ -2493,17 +2493,24 @@ function metadataLanguages(value) {
   });
 }
 
+// Titles get their own section, one row per title type (identifying title,
+// title proper, ...). The drawer header already shows the display title, so
+// Identification does not repeat it; a work with no titles keeps its label.
+function workTitleRows(data) {
+  const rows = titleGroups(data.titles).map((group) => ({
+    label: group.label,
+    values: group.values
+  }));
+  return rows.length ? rows : [{ label: "Title", value: data.label }];
+}
+
 function workOverviewGroups(row) {
   const data = row || {};
   return [
+    { heading: "Titles", rows: workTitleRows(data) },
     {
       heading: "Identification",
       rows: [
-        { label: "Title", value: data.label },
-        {
-          label: "Title variants",
-          values: splitMetadata(data.titles)
-        },
         { label: "Production year", value: data.year },
         { label: "Countries", values: splitMetadata(data.countries).map(humanize) },
         { label: "Forms", values: splitMetadata(data.forms).map(humanize) },

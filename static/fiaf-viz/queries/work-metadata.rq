@@ -66,11 +66,26 @@ WHERE {
     GROUP BY ?work
   }
 
+  # Titles as TitleType~value so the client can group them by type. Every
+  # title in the public graph has exactly one FIAF title class (fiaf:Title
+  # itself for an untyped one); a title with no FIAF class becomes Title.
+  # Keep the namespace test in the BIND, not as a FILTER inside the OPTIONAL:
+  # the endpoint evaluates a filtered OPTIONAL over every rdf:type triple
+  # before joining, which took 11-13 s per work instead of under 0.2 s.
   OPTIONAL {
-    SELECT ?work (GROUP_CONCAT(DISTINCT ?titleText; separator="|") AS ?titles)
+    SELECT ?work (GROUP_CONCAT(DISTINCT CONCAT(
+             ?titleType, "~", STR(?titleText)
+           ); separator="|") AS ?titles)
     WHERE {
       VALUES ?work { {{WORK}} }
-      ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleText .
+      ?work fiaf:hasTitle ?title .
+      ?title fiaf:hasTitleValue ?titleText .
+      OPTIONAL { ?title a ?titleClass }
+      BIND(COALESCE(
+             IF(STRSTARTS(STR(?titleClass), "https://dev.fiafcore.org/"),
+                STRAFTER(STR(?titleClass), "https://dev.fiafcore.org/"),
+                "Title"),
+             "Title") AS ?titleType)
     }
     GROUP BY ?work
   }

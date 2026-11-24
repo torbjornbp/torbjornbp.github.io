@@ -124,6 +124,24 @@ const LABELS = {
   SouthernSami: "Southern Sami",
   NoDialogue: "No dialogue",
 
+  // title types (fiaf:Title subclasses). The ontology spells one class
+  // "IdentifiyingTitle"; the IRI stays as the data has it, the label does not.
+  IdentifiyingTitle: "Identifying title",
+  TitleProper: "Title proper",
+  PreferredTitle: "Preferred title",
+  ParallelTitle: "Parallel title",
+  AlternativeTitle: "Alternative title",
+  TranslatedTitle: "Translated title",
+  TransliteratedTitle: "Transliterated title",
+  AbbreviatedTitle: "Abbreviated title",
+  CorrectedTitle: "Corrected title",
+  WorkingTitle: "Working title",
+  "Pre-ReleaseTitle": "Pre-release title",
+  AcquisitionTitle: "Acquisition title",
+  SuppliedDevisedTitle: "Supplied/devised title",
+  SeriesTitle: "Series title",
+  SearchTitle: "Search title",
+
   // item status
   Access: "Access copy",
   Preservation: "Preservation copy",
@@ -240,4 +258,55 @@ export function roleLabel(iri) {
 export function agentLabel(iri) {
   const name = localName(iri);
   return name || String(iri || "");
+}
+
+// Display order for title types in the work drawer: the titles that name the
+// work first, then variants, then the cataloguing aids. A class not listed
+// here (new upstream) sorts after the listed ones; untyped fiaf:Title is last.
+const TITLE_TYPE_ORDER = [
+  "IdentifiyingTitle", "TitleProper", "PreferredTitle", "ParallelTitle",
+  "AlternativeTitle", "TranslatedTitle", "TransliteratedTitle",
+  "AbbreviatedTitle", "CorrectedTitle", "WorkingTitle", "Pre-ReleaseTitle",
+  "AcquisitionTitle", "SuppliedDevisedTitle", "SeriesTitle", "SearchTitle"
+];
+
+function titleTypeRank(type) {
+  if (type === "Title") return TITLE_TYPE_ORDER.length + 1;
+  const index = TITLE_TYPE_ORDER.indexOf(type);
+  return index >= 0 ? index : TITLE_TYPE_ORDER.length;
+}
+
+// "IdentifiyingTitle~Metropolis|AlternativeTitle~Metropol" (from
+// work-metadata.rq) -> [{ type, label, values }], one group per title type in
+// TITLE_TYPE_ORDER, values alphabetical. A part without "~" counts as untyped.
+// An untyped value that also has a real type (a title carrying a non-FIAF
+// class as well) is shown only under that type.
+export function titleGroups(value) {
+  if (value === undefined || value === null || value === "") return [];
+  const groups = new Map();
+  for (const raw of String(value).split("|")) {
+    const part = raw.trim();
+    if (!part) continue;
+    const cut = part.indexOf("~");
+    const type = (cut >= 0 ? part.slice(0, cut) : "") || "Title";
+    const text = (cut >= 0 ? part.slice(cut + 1) : part).trim();
+    if (!text) continue;
+    if (!groups.has(type)) groups.set(type, new Set());
+    groups.get(type).add(text);
+  }
+  const untyped = groups.get("Title");
+  if (untyped) {
+    for (const [type, values] of groups) {
+      if (type !== "Title") for (const text of values) untyped.delete(text);
+    }
+    if (!untyped.size) groups.delete("Title");
+  }
+  return [...groups]
+    .map(([type, values]) => ({
+      type,
+      label: type === "Title" ? "Untyped title" : humanize(type),
+      values: [...values].sort((a, b) => a.localeCompare(b))
+    }))
+    .sort((a, b) =>
+      titleTypeRank(a.type) - titleTypeRank(b.type) || a.label.localeCompare(b.label));
 }
