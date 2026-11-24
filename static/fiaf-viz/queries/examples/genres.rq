@@ -1,0 +1,14 @@
+# Genres are FIAFcore classes with a label; count the works in each.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?genre ?label (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasGenre ?genre .
+  ?genre rdfs:label ?label .
+}
+GROUP BY ?genre ?label
+ORDER BY DESC(?works)

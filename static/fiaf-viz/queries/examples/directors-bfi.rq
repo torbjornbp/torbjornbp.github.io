@@ -1,0 +1,20 @@
+# Directors by number of works in one dataset. The dataset is a work's
+# identifier authority: swap the IRI for the Bundesarchiv,
+# <https://dev.fiafcore.org/50e69e05-9f8d-412a-838d-97396e1cd9b4>.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?agent ?name (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasIdentifier/fiaf:hasIdentifierAuthority <https://dev.fiafcore.org/cc50ab6d-cb71-47d6-9e52-702ec03151e6> ;
+        fiaf:hasEvent/fiaf:hasActivity ?activity .
+  ?activity a fiaf:Director ;
+            fiaf:hasAgent ?agent .
+  ?agent rdfs:label ?name .
+}
+GROUP BY ?agent ?name
+ORDER BY DESC(?works) ?name
+LIMIT 100

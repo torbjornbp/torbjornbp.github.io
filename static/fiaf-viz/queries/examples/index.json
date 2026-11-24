@@ -1,0 +1,70 @@
+{
+  "groups": [
+    {
+      "title": "Works and titles",
+      "examples": [
+        { "id": "works", "title": "Works", "question": "Which works are there, with their title and year?", "dataset": "All datasets" },
+        { "id": "title-types", "title": "Title types", "question": "What kinds of title do works carry?", "dataset": "All datasets" },
+        { "id": "works-most-titles", "title": "Most titles", "question": "Which works are known by the most titles?", "dataset": "All datasets" },
+        { "id": "title-search", "title": "Word in a title", "question": "Which works have “Berlin” in one of their titles?", "dataset": "All datasets" },
+        { "id": "genres", "title": "Genres", "question": "Which genres have the most works?", "dataset": "All datasets" },
+        { "id": "works-by-decade", "title": "Works per decade", "question": "How many works were made in each decade?", "dataset": "Bundesarchiv (only dated works)" }
+      ]
+    },
+    {
+      "title": "People and credits",
+      "examples": [
+        { "id": "names", "title": "Names", "question": "Who is credited on the most works?", "dataset": "All datasets" },
+        { "id": "roles", "title": "Roles", "question": "How many credits and names does each role have?", "dataset": "All datasets" },
+        { "id": "directors-bfi", "title": "Directors in one dataset", "question": "Who directed the most works in the BFI data?", "dataset": "British Film Institute" },
+        { "id": "directed-and-shot", "title": "Directed and shot", "question": "Who directed and shot the same film?", "dataset": "All datasets" },
+        { "id": "director-cinematographer-pairs", "title": "Director and cinematographer", "question": "Which directors and cinematographers worked together most often?", "dataset": "All datasets" },
+        { "id": "directors-in-cast", "title": "Directors in the cast", "question": "Which directors appear in the cast of their own films?", "dataset": "All datasets" },
+        { "id": "most-roles", "title": "Most roles", "question": "Who is credited in the most different roles?", "dataset": "All datasets" }
+      ]
+    },
+    {
+      "title": "Places and languages",
+      "examples": [
+        { "id": "countries", "title": "Countries", "question": "Which countries produced the most works?", "dataset": "All datasets" },
+        { "id": "co-productions", "title": "Co-productions", "question": "Which countries are credited together most often?", "dataset": "All datasets" },
+        { "id": "languages", "title": "Languages", "question": "Which languages are spoken, subtitled or used in intertitles?", "dataset": "All datasets" }
+      ]
+    },
+    {
+      "title": "Holdings and formats",
+      "examples": [
+        { "id": "holdings", "title": "Manifestations and items", "question": "How do works break down into manifestations and items?", "dataset": "All datasets" },
+        { "id": "carriers", "title": "Carriers", "question": "Which carriers are the items on?", "dataset": "All datasets" },
+        { "id": "formats-by-institution", "title": "Formats by archive", "question": "Which film formats does each archive hold?", "dataset": "All datasets" },
+        { "id": "status-by-institution", "title": "Preservation and access", "question": "How many items in each archive are preservation or access copies?", "dataset": "All datasets" },
+        { "id": "elements", "title": "Elements", "question": "How many negatives, duplicates and prints are there?", "dataset": "All datasets" },
+        { "id": "base-by-decade", "title": "Film base by decade", "question": "On which film base are the films of each decade held?", "dataset": "Bundesarchiv (only dated works)" },
+        { "id": "colour-by-decade", "title": "Colour by decade", "question": "How many items from each decade are in colour or black and white?", "dataset": "Bundesarchiv (only dated works)" },
+        { "id": "sound", "title": "Sound", "question": "How many items are silent or have sound?", "dataset": "All datasets" },
+        { "id": "stock-makers", "title": "Film stock", "question": "Whose film stock are the items on?", "dataset": "All datasets" }
+      ]
+    },
+    {
+      "title": "Length",
+      "examples": [
+        { "id": "longest-films", "title": "Longest films", "question": "Which films are the longest, in metres?", "dataset": "All datasets" },
+        { "id": "length-by-decade", "title": "Length by decade", "question": "How long were films in each decade?", "dataset": "Bundesarchiv (only dated works)" }
+      ]
+    },
+    {
+      "title": "Across the datasets",
+      "examples": [
+        { "id": "datasets", "title": "Dataset sizes", "question": "How many works and items does each dataset have?", "dataset": "All datasets" },
+        { "id": "works-in-both", "title": "Same title in both", "question": "Which titles appear in both the BFI and the Bundesarchiv data?", "dataset": "BFI and Bundesarchiv" }
+      ]
+    },
+    {
+      "title": "The data model",
+      "examples": [
+        { "id": "predicates", "title": "Predicates", "question": "Which predicates are used, and how often?", "dataset": "Whole graph" },
+        { "id": "classes", "title": "Classes", "question": "Which classes have the most instances?", "dataset": "Whole graph" }
+      ]
+    }
+  ]
+}

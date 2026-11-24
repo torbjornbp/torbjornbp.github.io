@@ -1,0 +1,10 @@
+# ql: is a QLever built-in prefix; do not redeclare it.
+# ql:has-predicate lists predicates without scanning every triple.
+
+SELECT ?predicate (COUNT(*) AS ?uses)
+WHERE {
+  ?subject ql:has-predicate ?predicate .
+}
+GROUP BY ?predicate
+ORDER BY DESC(?uses)
+LIMIT 200

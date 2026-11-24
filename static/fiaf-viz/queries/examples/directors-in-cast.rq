@@ -1,0 +1,17 @@
+# Directors who are also in the cast of a work they directed.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?agent ?name (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  ?work fiaf:hasEvent/fiaf:hasActivity ?directing, ?acting .
+  ?directing a fiaf:Director ;
+             fiaf:hasAgent ?agent .
+  ?acting a fiaf:CastMember ;
+          fiaf:hasAgent ?agent .
+  ?agent rdfs:label ?name .
+}
+GROUP BY ?agent ?name
+ORDER BY DESC(?works) ?name
+LIMIT 100

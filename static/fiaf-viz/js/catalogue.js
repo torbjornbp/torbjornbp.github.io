@@ -21,6 +21,7 @@ import { FIAF_NS, humanize, localName } from "./labels.js";
 import * as ui from "./ui.js";
 import * as peopleSearch from "./catalogue-people.js";
 import { attachSparqlHighlight } from "./sparql-highlight.js";
+import { createExampleLoader, fetchText, renderExamples } from "./catalogue-examples.js";
 
 const SORT_ORDERS = {
   title: "?title ?work",
@@ -107,118 +108,6 @@ function rowLabel(row, variable) {
   return "";
 }
 
-const WORK_QUERY = `SELECT ?work (SAMPLE(?candidateTitle) AS ?title) (MIN(?rawYear) AS ?year)
-WHERE {
-  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
-  ?work a ?workType .
-  OPTIONAL { ?work rdfs:label ?workLabel }
-  OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
-  BIND(COALESCE(?workLabel, ?titleValue) AS ?candidateTitle)
-  OPTIONAL {
-    ?work fiaf:hasEvent ?event .
-    ?event a fiaf:ProductionEvent ;
-           fiaf:hasDate ?date .
-    BIND(SUBSTR(STR(?date), 1, 4) AS ?rawYear)
-    FILTER(REGEX(?rawYear, "^[0-9]{4}$"))
-  }
-}
-GROUP BY ?work
-ORDER BY ?title ?work
-LIMIT 500`;
-
-const NAMES_QUERY = `SELECT ?agent ?name (COUNT(DISTINCT ?work) AS ?works)
-WHERE {
-  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
-  ?work a ?workType ;
-        fiaf:hasEvent/fiaf:hasActivity/fiaf:hasAgent ?agent .
-  ?agent rdfs:label ?name .
-}
-GROUP BY ?agent ?name
-ORDER BY DESC(?works) ?name
-LIMIT 500`;
-
-const HOLDINGS_QUERY = `SELECT ?work ?title ?manifestation ?manifestationLabel ?item ?itemLabel ?itemIdentifier ?format ?institution ?institutionLabel
-WHERE {
-  {
-    SELECT ?work (SAMPLE(?candidateTitle) AS ?title)
-    WHERE {
-      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
-      ?work a ?workType .
-      OPTIONAL { ?work rdfs:label ?workLabel }
-      OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
-      BIND(COALESCE(?workLabel, ?titleValue) AS ?candidateTitle)
-    }
-    GROUP BY ?work
-    ORDER BY ?title
-    LIMIT 25
-  }
-  ?work fiaf:hasManifestation ?manifestation .
-  OPTIONAL { ?manifestation rdfs:label ?manifestationLabel }
-  OPTIONAL {
-    ?manifestation fiaf:hasItem ?item .
-    OPTIONAL { ?item rdfs:label ?itemLabel }
-    OPTIONAL {
-      ?item fiaf:hasIdentifier ?itemIdentifierNode .
-      OPTIONAL { ?itemIdentifierNode fiaf:hasIdentifierValue ?itemIdentifierValue }
-      BIND(COALESCE(?itemIdentifierValue, STR(?itemIdentifierNode)) AS ?itemIdentifier)
-    }
-    OPTIONAL { ?item fiaf:hasFormat ?format }
-    OPTIONAL {
-      ?item fiaf:hasHoldingInstitution ?institution .
-      OPTIONAL { ?institution rdfs:label ?institutionLabel }
-    }
-  }
-}
-ORDER BY ?title ?manifestation ?item
-LIMIT 500`;
-
-const CARRIERS_QUERY = `SELECT ?work ?title ?item ?itemLabel ?itemIdentifier ?carrier ?carrierLabel ?carrierIdentifier
-WHERE {
-  {
-    SELECT ?work (SAMPLE(?candidateTitle) AS ?title)
-    WHERE {
-      VALUES ?workType { fiaf:MonographicWork fiaf:Work }
-      ?work a ?workType .
-      OPTIONAL { ?work rdfs:label ?workLabel }
-      OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
-      BIND(COALESCE(?workLabel, ?titleValue) AS ?candidateTitle)
-    }
-    GROUP BY ?work
-    ORDER BY ?title
-    LIMIT 25
-  }
-  ?work fiaf:hasManifestation/fiaf:hasItem ?item .
-  OPTIONAL { ?item rdfs:label ?itemLabel }
-  OPTIONAL {
-    ?item fiaf:hasIdentifier ?itemIdentifierNode .
-    OPTIONAL { ?itemIdentifierNode fiaf:hasIdentifierValue ?itemIdentifierValue }
-    BIND(COALESCE(?itemIdentifierValue, STR(?itemIdentifierNode)) AS ?itemIdentifier)
-  }
-  OPTIONAL {
-    ?item fiaf:hasCarrier ?carrier .
-    OPTIONAL { ?carrier rdfs:label ?carrierLabel }
-    OPTIONAL {
-      ?carrier fiaf:hasIdentifier ?carrierIdentifierNode .
-      OPTIONAL { ?carrierIdentifierNode fiaf:hasIdentifierValue ?carrierIdentifierValue }
-      BIND(COALESCE(?carrierIdentifierValue, STR(?carrierIdentifierNode)) AS ?carrierIdentifier)
-    }
-  }
-}
-ORDER BY ?title ?item ?carrier
-LIMIT 500`;
-
-// ql:has-predicate is a QLever built-in with its own predeclared prefix. Do not
-// add a PREFIX declaration for it: that would shadow the built-in and return
-// nothing. This is the fast way to list predicates without scanning ?s ?p ?o.
-const PREDICATES_QUERY = `# ql: is a QLever built-in prefix; do not redeclare it.
-SELECT ?predicate (COUNT(*) AS ?uses)
-WHERE {
-  ?subject ql:has-predicate ?predicate .
-}
-GROUP BY ?predicate
-ORDER BY DESC(?uses)
-LIMIT 200`;
-
 export function create(ctx, controls) {
   const {
     titleInput,
@@ -245,6 +134,7 @@ export function create(ctx, controls) {
     runButton,
     clearButton,
     templateButtons,
+    examplesElement,
     queryStatusElement,
     statsElement,
     tableElement,
@@ -393,13 +283,70 @@ export function create(ctx, controls) {
           agent: agentFilter ? agentFilter.id : ""
         }),
         order: sortOrder()
-      }),
-      works: WORK_QUERY,
-      names: NAMES_QUERY,
-      holdings: HOLDINGS_QUERY,
-      carriers: CARRIERS_QUERY,
-      predicates: PREDICATES_QUERY
+      })
     };
+  }
+
+  // Show which example is in the editor (ink reverse, aria-pressed). Any
+  // other text in the editor, typed or loaded, clears it.
+  function markExample(id) {
+    if (!examplesElement) return;
+    for (const button of examplesElement.querySelectorAll("[data-catalogue-example]")) {
+      button.setAttribute("aria-pressed", String(button.dataset.catalogueExample === id));
+    }
+  }
+
+  // Put a ready-made query in the editor without running it.
+  function loadIntoEditor(text, status, exampleId = null) {
+    if (!sparqlInput) return;
+    cancelExpert();
+    sparqlInput.value = text;
+    refreshHighlight();
+    markExample(exampleId);
+    sparqlResult = null;
+    expertError = null;
+    items = [];
+    total = 0;
+    page = 0;
+    if (queryStatusElement) queryStatusElement.textContent = status;
+    render();
+  }
+
+  // The example gallery is drawn the first time SPARQL mode opens. Its
+  // column takes the editor's height, so drawing it moves nothing.
+  const examples = createExampleLoader(fetchText);
+  let examplesDrawn = false;
+  let exampleToken = 0;
+
+  function drawExamples() {
+    if (!examplesElement || examplesDrawn) return;
+    examplesDrawn = true;
+    examples.groups().then(
+      (groups) => renderExamples(examplesElement, groups, pickExample),
+      (error) => {
+        examplesDrawn = false;
+        examplesElement.textContent = "";
+        const note = document.createElement("p");
+        note.className = "catalogue-hint";
+        note.textContent = `Examples could not be loaded: ${error.message}`;
+        examplesElement.append(note);
+      }
+    );
+  }
+
+  function pickExample(example, button) {
+    const token = ++exampleToken;
+    examples.query(example.id).then(
+      (text) => {
+        if (token !== exampleToken) return;
+        loadIntoEditor(text, `Example loaded: ${example.title}. Press Run query to execute.`, example.id);
+        if (button) button.focus();
+      },
+      (error) => {
+        if (token !== exampleToken || !queryStatusElement) return;
+        queryStatusElement.textContent = `The example could not be loaded: ${error.message}`;
+      }
+    );
   }
 
   async function loadPage(externalSignal) {
@@ -1143,6 +1090,7 @@ export function create(ctx, controls) {
       ui.setStatus("");
       if (options.run !== false) refresh();
     } else if (mode === "sparql") {
+      drawExamples();
       if (sparqlInput && !sparqlInput.value.trim()) {
         sparqlInput.value = queryTemplates().filters;
         sparqlResult = null;
@@ -1247,6 +1195,7 @@ export function create(ctx, controls) {
       }
     });
     sparqlInput.addEventListener("input", () => {
+      markExample(null);
       if (!queryStatusElement) return;
       if (sparqlResult || expertError) {
         queryStatusElement.textContent =
@@ -1262,6 +1211,7 @@ export function create(ctx, controls) {
     clearButton.addEventListener("click", () => {
       if (!sparqlInput) return;
       cancelExpert();
+      markExample(null);
       sparqlInput.value = "";
       sparqlResult = null;
       expertError = null;
@@ -1279,18 +1229,7 @@ export function create(ctx, controls) {
       const name = button.dataset.catalogueTemplate;
       const text = queryTemplates()[name];
       if (!text || !sparqlInput) return;
-      cancelExpert();
-      sparqlInput.value = text;
-      sparqlResult = null;
-      expertError = null;
-      items = [];
-      total = 0;
-      page = 0;
-      if (queryStatusElement) {
-        queryStatusElement.textContent =
-          "Template loaded. Press Run query to execute.";
-      }
-      render();
+      loadIntoEditor(text, "Template loaded. Press Run query to execute.");
       sparqlInput.focus();
     });
   }
@@ -1375,6 +1314,7 @@ export function create(ctx, controls) {
         sparqlInput.value = text;
         refreshHighlight();
       }
+      markExample(null);
       sparqlResult = null;
       expertError = null;
       items = [];

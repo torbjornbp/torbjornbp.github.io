@@ -1,0 +1,16 @@
+# Each dataset's size: works with an identifier from its authority, and the
+# items it holds.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?dataset (COUNT(DISTINCT ?work) AS ?works) (COUNT(DISTINCT ?item) AS ?items)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasIdentifier/fiaf:hasIdentifierAuthority ?authority .
+  ?authority rdfs:label ?dataset .
+  OPTIONAL { ?work fiaf:hasManifestation/fiaf:hasItem ?item }
+}
+GROUP BY ?dataset
+ORDER BY DESC(?works)

@@ -1,0 +1,13 @@
+# Items by element: original negative, duplicate negative, print…
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?element (COUNT(DISTINCT ?item) AS ?items)
+WHERE {
+  ?item a fiaf:Item ;
+        fiaf:isElement ?elementClass .
+  ?elementClass rdfs:label ?element .
+}
+GROUP BY ?element
+ORDER BY DESC(?items)

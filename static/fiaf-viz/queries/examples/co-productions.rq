@@ -1,0 +1,17 @@
+# Pairs of countries credited on the same work. ?a < ?b keeps each pair once.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?countryA ?countryB (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasCountry ?a, ?b .
+  FILTER(?a < ?b)
+  ?a rdfs:label ?countryA .
+  ?b rdfs:label ?countryB .
+}
+GROUP BY ?countryA ?countryB
+ORDER BY DESC(?works)
+LIMIT 100

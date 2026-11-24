@@ -1,0 +1,23 @@
+# Average and longest manifestation length in metres, by production decade.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?decade (COUNT(DISTINCT ?manifestation) AS ?manifestations)
+       (ROUND(AVG(?metres)) AS ?averageMetres) (MAX(?metres) AS ?longestMetres)
+WHERE {
+  ?manifestation fiaf:hasExtent ?extent .
+  ?extent a fiaf:Metre ;
+          fiaf:hasExtentValue ?value .
+  BIND(xsd:decimal(?value) AS ?metres)
+  FILTER(?metres > 0 && ?metres <= 50000)
+  ?work fiaf:hasManifestation ?manifestation ;
+        fiaf:hasEvent ?event .
+  ?event a fiaf:ProductionEvent ;
+         fiaf:hasDate ?date .
+  BIND(SUBSTR(STR(?date), 1, 4) AS ?year)
+  FILTER(REGEX(?year, "^[0-9]{4}$"))
+  BIND(CONCAT(SUBSTR(?year, 1, 3), "0s") AS ?decade)
+}
+GROUP BY ?decade
+ORDER BY ?decade

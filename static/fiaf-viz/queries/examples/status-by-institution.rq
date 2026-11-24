@@ -1,0 +1,14 @@
+# Items by status (preservation, access…) and holding institution.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?institution ?status (COUNT(DISTINCT ?item) AS ?items)
+WHERE {
+  ?item a fiaf:Item ;
+        fiaf:hasStatus ?statusClass ;
+        fiaf:hasHoldingInstitution/rdfs:label ?institution .
+  ?statusClass rdfs:label ?status .
+}
+GROUP BY ?institution ?status
+ORDER BY ?institution DESC(?items)

@@ -1,0 +1,14 @@
+# Items by format and holding institution.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?institution ?format (COUNT(DISTINCT ?item) AS ?items)
+WHERE {
+  ?item a fiaf:Item ;
+        fiaf:hasFormat ?formatClass ;
+        fiaf:hasHoldingInstitution/rdfs:label ?institution .
+  ?formatClass rdfs:label ?format .
+}
+GROUP BY ?institution ?format
+ORDER BY ?institution DESC(?items)

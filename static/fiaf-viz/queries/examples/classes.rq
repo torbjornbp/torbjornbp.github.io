@@ -1,0 +1,10 @@
+# Classes by number of instances. Counts direct types only; rolling up
+# through rdfs:subClassOf* is slow on this endpoint.
+
+SELECT ?class (COUNT(?instance) AS ?instances)
+WHERE {
+  ?instance a ?class .
+}
+GROUP BY ?class
+ORDER BY DESC(?instances)
+LIMIT 200

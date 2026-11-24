@@ -1,0 +1,14 @@
+# Items by sound: the sound characteristic is a blank node typed by kind
+# (Mute, Sound…).
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?sound (COUNT(DISTINCT ?item) AS ?items)
+WHERE {
+  ?item a fiaf:Item ;
+        fiaf:hasSoundCharacteristic ?characteristic .
+  ?characteristic a ?kind .
+  BIND(STRAFTER(STR(?kind), "https://dev.fiafcore.org/") AS ?sound)
+}
+GROUP BY ?sound
+ORDER BY DESC(?items)

@@ -1,0 +1,31 @@
+# Pairs of a director and a different cinematographer, by shared works.
+# Each side is deduplicated before the pair is formed.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?directorName ?cinematographerName (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  {
+    SELECT DISTINCT ?work ?director
+    WHERE {
+      ?work fiaf:hasEvent/fiaf:hasActivity ?activity .
+      ?activity a fiaf:Director ;
+                fiaf:hasAgent ?director .
+    }
+  }
+  {
+    SELECT DISTINCT ?work ?cinematographer
+    WHERE {
+      ?work fiaf:hasEvent/fiaf:hasActivity ?activity .
+      ?activity a fiaf:Cinematographer ;
+                fiaf:hasAgent ?cinematographer .
+    }
+  }
+  FILTER(?director != ?cinematographer)
+  ?director rdfs:label ?directorName .
+  ?cinematographer rdfs:label ?cinematographerName .
+}
+GROUP BY ?directorName ?cinematographerName
+ORDER BY DESC(?works)
+LIMIT 100

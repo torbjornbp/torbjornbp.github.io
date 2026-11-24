@@ -1,0 +1,14 @@
+# Every title is typed by kind: title proper, working title, translated title…
+# (The data spells one class IdentifiyingTitle.)
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?titleType (COUNT(DISTINCT ?title) AS ?titles) (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasTitle ?title .
+  ?title a ?titleType .
+}
+GROUP BY ?titleType
+ORDER BY DESC(?titles)

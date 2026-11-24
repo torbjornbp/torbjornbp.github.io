@@ -1,0 +1,13 @@
+# Each credit is an activity typed by its role (Director, CastMember…).
+# fiaf:Activity is the generic class every activity also has, so leave it out.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?role (COUNT(*) AS ?credits) (COUNT(DISTINCT ?agent) AS ?names)
+WHERE {
+  ?activity a ?role ;
+            fiaf:hasAgent ?agent .
+  FILTER(?role != fiaf:Activity)
+}
+GROUP BY ?role
+ORDER BY DESC(?credits)

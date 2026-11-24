@@ -2239,7 +2239,7 @@ main {
 
 .catalogue-sparql {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 220px;
+  grid-template-columns: minmax(0, 1fr) 300px;
   gap: var(--space-4);
   margin-top: var(--space-5);
   padding: var(--space-4) var(--space-4);
@@ -2375,14 +2375,21 @@ main {
   overflow-wrap: anywhere;
 }
 
+/* The examples column never sets the panel's height: size containment lets
+   the editor decide it, and the gallery scrolls inside. So the gallery,
+   which loads late, moves nothing. */
 .catalogue-sparql-templates {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  contain: size;
   padding-left: var(--space-4);
   border-left: 1px solid var(--border);
 }
 
 .catalogue-templates-label {
   display: block;
-  margin-bottom: var(--space-2);
+  margin: 0 0 var(--space-2);
   color: var(--muted);
   font-family: var(--font-mono);
   font-size: var(--font-size-chart);
@@ -2420,6 +2427,81 @@ main {
 .catalogue-templates button:active {
   transform: translate(2px, 2px);
   box-shadow: none;
+}
+
+/* Example gallery: grouped rows under mono labels, divided by hairlines.
+   A row loads its query into the editor; it is not a key, so no shadow. */
+.catalogue-examples {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: var(--space-3);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-top: 1px solid var(--border);
+}
+
+.catalogue-example-group .catalogue-templates-label {
+  margin: var(--space-4) 0 var(--space-1);
+}
+
+.catalogue-example-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.catalogue-example-list li + li { border-top: 1px solid var(--border); }
+
+.catalogue-example {
+  display: grid;
+  gap: var(--space-0_5);
+  width: 100%;
+  padding: var(--space-2) var(--space-2);
+  background: none;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+
+.catalogue-example:hover,
+.catalogue-example:focus-visible {
+  background: var(--tonal);
+}
+
+button.catalogue-example:active:not(:disabled) { transform: none; }
+
+/* The example in the editor: the one selection state, ink reverse. */
+.catalogue-example[aria-pressed="true"] {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.catalogue-example[aria-pressed="true"] .catalogue-example-question,
+.catalogue-example[aria-pressed="true"] .catalogue-example-dataset {
+  color: var(--bg);
+}
+
+.catalogue-example-title {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-semibold);
+  line-height: var(--leading-tight);
+}
+
+.catalogue-example-question {
+  color: var(--text);
+  font-size: var(--font-size-small);
+  line-height: var(--leading-label);
+  text-wrap: pretty;
+}
+
+.catalogue-example-dataset {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-caption);
+  line-height: var(--leading-label);
 }
 
 .catalogue-row-query { cursor: default; }
@@ -2512,9 +2594,13 @@ main {
   gap: var(--space-2);
 }
 
-@media (max-width: 760px) {
+/* On the view container: a docked drawer narrows the column. Stacked, the
+   examples get a fixed height of their own. */
+@container (max-width: 760px) {
   .catalogue-sparql { grid-template-columns: 1fr; }
   .catalogue-sparql-templates {
+    contain: none;
+    height: 26rem;
     padding-top: var(--space-3);
     padding-left: 0;
     border-top: 1px solid var(--border);

@@ -1,0 +1,23 @@
+# Names credited in the most different roles, with the roles listed.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?agent ?name (COUNT(?role) AS ?roles)
+       (GROUP_CONCAT(?roleName; separator=", ") AS ?roleList)
+WHERE {
+  {
+    SELECT DISTINCT ?agent ?role
+    WHERE {
+      ?activity a ?role ;
+                fiaf:hasAgent ?agent .
+      FILTER(?role != fiaf:Activity)
+    }
+  }
+  ?agent rdfs:label ?name .
+  FILTER(?name != "")
+  BIND(STRAFTER(STR(?role), "https://dev.fiafcore.org/") AS ?roleName)
+}
+GROUP BY ?agent ?name
+ORDER BY DESC(?roles) ?name
+LIMIT 50

@@ -1,0 +1,15 @@
+# Works with a word in any of their titles. Change "Berlin" to search for
+# another word; the match ignores case.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?work (SAMPLE(?value) AS ?title) (COUNT(DISTINCT ?value) AS ?matchingTitles)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasTitle/fiaf:hasTitleValue ?value .
+  FILTER(CONTAINS(LCASE(?value), "berlin"))
+}
+GROUP BY ?work
+ORDER BY ?title
+LIMIT 200

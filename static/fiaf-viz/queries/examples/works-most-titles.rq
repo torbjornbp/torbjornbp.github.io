@@ -1,0 +1,14 @@
+# Count each work's distinct title values and list the works with the most.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT ?work (COUNT(DISTINCT ?value) AS ?titles)
+       (GROUP_CONCAT(DISTINCT ?value; separator=" | ") AS ?allTitles)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasTitle/fiaf:hasTitleValue ?value .
+}
+GROUP BY ?work
+ORDER BY DESC(?titles)
+LIMIT 50

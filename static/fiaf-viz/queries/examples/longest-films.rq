@@ -1,0 +1,28 @@
+# The longest manifestations in metres, with their work. Extents are typed
+# by unit; values over 50 km are left out as likely errors, and round values
+# such as 9999 may be placeholders. The titles are looked up only for the
+# 50 works kept.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?work ?longest (SAMPLE(COALESCE(?titleValue, "")) AS ?title)
+WHERE {
+  {
+    SELECT ?work (MAX(?metres) AS ?longest)
+    WHERE {
+      ?manifestation fiaf:hasExtent ?extent .
+      ?extent a fiaf:Metre ;
+              fiaf:hasExtentValue ?value .
+      BIND(xsd:decimal(?value) AS ?metres)
+      FILTER(?metres <= 50000)
+      ?work fiaf:hasManifestation ?manifestation .
+    }
+    GROUP BY ?work
+    ORDER BY DESC(?longest)
+    LIMIT 50
+  }
+  OPTIONAL { ?work fiaf:hasTitle/fiaf:hasTitleValue ?titleValue }
+}
+GROUP BY ?work ?longest
+ORDER BY DESC(?longest)

@@ -1260,6 +1260,7 @@ function createViews() {
       runButton: document.getElementById("catalogue-run"),
       clearButton: document.getElementById("catalogue-clear"),
       templateButtons: document.querySelectorAll("[data-catalogue-template]"),
+      examplesElement: document.getElementById("catalogue-examples"),
       queryStatusElement: document.getElementById("catalogue-query-status"),
       statsElement: document.getElementById("catalogue-stats"),
       tableElement: document.getElementById("catalogue-table"),

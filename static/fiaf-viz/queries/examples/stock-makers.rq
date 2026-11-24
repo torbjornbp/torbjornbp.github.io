@@ -1,0 +1,15 @@
+# Film stock is mostly a blank node typed by its maker (Kodak, Agfa…),
+# sometimes the maker's class itself. Count items per maker either way.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?maker (COUNT(DISTINCT ?item) AS ?items)
+WHERE {
+  ?item fiaf:hasStock ?stock .
+  ?stock a ?stockType .
+  BIND(IF(isBlank(?stock), ?stockType, ?stock) AS ?makerClass)
+  ?makerClass rdfs:label ?maker .
+}
+GROUP BY ?maker
+ORDER BY DESC(?items)

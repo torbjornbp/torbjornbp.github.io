@@ -1,0 +1,16 @@
+# Credited names by number of works, in any role. Credits run
+# work → event → activity → agent; the activity's class is the role.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?agent ?name (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasEvent/fiaf:hasActivity/fiaf:hasAgent ?agent .
+  ?agent rdfs:label ?name .
+}
+GROUP BY ?agent ?name
+ORDER BY DESC(?works) ?name
+LIMIT 500

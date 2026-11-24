@@ -1,0 +1,17 @@
+# Works in the BFI and Bundesarchiv data with the same exact title. A shared
+# title does not prove the same film: open both records to compare. The
+# datasets share almost no identifiers, BFI works carry no dates, and names
+# are written differently ("Lang, Fritz" against "Fritz Lang"), so the title
+# is the nearest thing to a link, and spelling differences are missed.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+
+SELECT DISTINCT ?title ?bfiWork ?bundesarchivWork
+WHERE {
+  ?bfiWork fiaf:hasIdentifier/fiaf:hasIdentifierAuthority <https://dev.fiafcore.org/cc50ab6d-cb71-47d6-9e52-702ec03151e6> ;
+           fiaf:hasTitle/fiaf:hasTitleValue ?title .
+  ?bundesarchivWork fiaf:hasIdentifier/fiaf:hasIdentifierAuthority <https://dev.fiafcore.org/50e69e05-9f8d-412a-838d-97396e1cd9b4> ;
+                    fiaf:hasTitle/fiaf:hasTitleValue ?title .
+}
+ORDER BY ?title
+LIMIT 500

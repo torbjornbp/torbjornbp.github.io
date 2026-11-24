@@ -1,0 +1,30 @@
+# A language usage says how a language is used: spoken, subtitles,
+# intertitles… It hangs off the work, a manifestation or an item.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?language ?usage (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType .
+  {
+    ?work fiaf:hasLanguageUsage ?usageNode .
+  }
+  UNION
+  {
+    ?work fiaf:hasManifestation/fiaf:hasLanguageUsage ?usageNode .
+  }
+  UNION
+  {
+    ?work fiaf:hasManifestation/fiaf:hasItem/fiaf:hasLanguageUsage ?usageNode .
+  }
+  ?usageNode a ?usageType ;
+             fiaf:hasLanguage ?languageClass .
+  FILTER(?usageType != fiaf:LanguageUsage)
+  ?languageClass rdfs:label ?language .
+  BIND(STRAFTER(STR(?usageType), "https://dev.fiafcore.org/") AS ?usage)
+}
+GROUP BY ?language ?usage
+ORDER BY DESC(?works)
+LIMIT 200

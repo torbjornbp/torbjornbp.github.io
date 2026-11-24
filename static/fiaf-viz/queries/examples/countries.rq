@@ -1,0 +1,14 @@
+# Countries of production by number of works.
+
+PREFIX fiaf: <https://dev.fiafcore.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?country ?label (COUNT(DISTINCT ?work) AS ?works)
+WHERE {
+  VALUES ?workType { fiaf:MonographicWork fiaf:Work }
+  ?work a ?workType ;
+        fiaf:hasCountry ?country .
+  ?country rdfs:label ?label .
+}
+GROUP BY ?country ?label
+ORDER BY DESC(?works)
