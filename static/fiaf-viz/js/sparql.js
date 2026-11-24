@@ -169,6 +169,14 @@ export function catalogueFilter(options = {}) {
   if (options.genre) {
     parts.push(`?work fiaf:hasGenre ${sparqlIri(options.genre)} .`);
   }
+  if (options.language) {
+    parts.push(
+      "{ ?work fiaf:hasLanguageUsage ?catalogueLanguageUsage }\n" +
+      "  UNION { ?work fiaf:hasManifestation/fiaf:hasLanguageUsage ?catalogueLanguageUsage }\n" +
+      "  UNION { ?work fiaf:hasManifestation/fiaf:hasItem/fiaf:hasLanguageUsage ?catalogueLanguageUsage }\n" +
+      `  ?catalogueLanguageUsage fiaf:hasLanguage ${sparqlIri(options.language)} .`
+    );
+  }
   if (options.decade) {
     const prefix = String(options.decade).slice(0, 3);
     parts.push("?work fiaf:hasEvent ?catalogueEvent .");

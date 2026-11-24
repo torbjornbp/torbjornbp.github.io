@@ -52,6 +52,29 @@ WHERE {
   }
   UNION
   {
+    # Any language usage (spoken, subtitle, intertitle, ...) on the work, one
+    # of its manifestations or one of their items. Keep in step with the
+    # language branch of catalogueFilter in js/sparql.js.
+    BIND("language" AS ?facet)
+    ?work a ?workType .
+    {{SCOPE_FILTER}}
+    {
+      ?work fiaf:hasLanguageUsage ?languageUsage .
+    }
+    UNION
+    {
+      ?work fiaf:hasManifestation/fiaf:hasLanguageUsage ?languageUsage .
+    }
+    UNION
+    {
+      ?work fiaf:hasManifestation/fiaf:hasItem/fiaf:hasLanguageUsage ?languageUsage .
+    }
+    ?languageUsage fiaf:hasLanguage ?language .
+    BIND(STR(?language) AS ?value)
+    BIND(?value AS ?label)
+  }
+  UNION
+  {
     BIND("format" AS ?facet)
     ?work a ?workType .
     {{SCOPE_FILTER}}

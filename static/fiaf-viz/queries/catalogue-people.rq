@@ -1,4 +1,5 @@
-# One result per credited Person, with a stable example work in the same scope.
+# One result per credited agent of one type (fiaf:Person or fiaf:Organisation),
+# with a stable example work in the same scope.
 PREFIX fiaf: <https://dev.fiafcore.org/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -8,7 +9,7 @@ WHERE {
   {
     SELECT DISTINCT ?person ?matchLabel ?matchRank
     WHERE {
-      ?person a fiaf:Person ; rdfs:label ?label .
+      ?person a {{AGENT_TYPE}} ; rdfs:label ?label .
       BIND(LCASE(STR(?label)) AS ?lower)
       FILTER(REGEX(?lower, "\\S"))
       BIND(LCASE({{TERM}}) AS ?term)

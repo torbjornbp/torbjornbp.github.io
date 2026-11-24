@@ -685,7 +685,14 @@ export function drawerTabs(tabs, options = {}) {
 
 // -- drawer metadata --------------------------------------------------------
 
+// A value is text, or { text, title, onSelect } for one that acts on click
+// (a link to a filtered catalogue, say).
+function isActionValue(value) {
+  return Boolean(value) && typeof value === "object" && typeof value.onSelect === "function";
+}
+
 function metadataText(value) {
+  if (isActionValue(value)) value = value.text;
   if (Array.isArray(value)) value = value.join(", ");
   if (value === undefined || value === null) return "";
   return String(value).trim();
@@ -707,20 +714,31 @@ export function drawerMeta(container, groups) {
     }
     const list = node("dl", "drawer-meta");
     for (const row of rows) {
-      const values = row.values?.map(metadataText).filter(Boolean) || [];
-      const text = values.length ? "" : metadataText(row.value);
-      const empty = !values.length && (!text || text === "—");
+      const entries = (row.values || []).filter((entry) => metadataText(entry));
+      const single = entries.length ? null : row.value;
+      const text = entries.length ? "" : metadataText(single);
+      const empty = !entries.length && (!text || text === "—");
       const term = node("dt", "drawer-meta-label", row.label);
       const value = node(
         "dd",
         empty ? "drawer-meta-value is-empty" : "drawer-meta-value",
-        empty ? "—" : text
+        empty || isActionValue(single) ? "—" : text
       );
-      if (values.length) {
-        value.classList.add("drawer-property-values");
-        for (const entry of values) {
-          value.append(node("div", "drawer-property-value", entry));
+      const entryNode = (entry) => {
+        if (!isActionValue(entry)) {
+          return node("div", "drawer-property-value", metadataText(entry));
         }
+        const button = node("button", "drawer-entity-link", entry.text);
+        button.type = "button";
+        if (entry.title) button.title = entry.title;
+        button.addEventListener("click", entry.onSelect);
+        return button;
+      };
+      if (entries.length) {
+        value.classList.add("drawer-property-values");
+        for (const entry of entries) value.append(entryNode(entry));
+      } else if (isActionValue(single)) {
+        value.replaceChildren(entryNode(single));
       }
       list.append(term, value);
     }

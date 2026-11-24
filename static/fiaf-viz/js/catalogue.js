@@ -30,7 +30,7 @@ const SORT_ORDERS = {
 };
 const SORT_DEFAULT = "title";
 const FACET_KEYS = [
-  "decade", "country", "form", "genre", "format", "institution"
+  "decade", "country", "form", "genre", "language", "format", "institution"
 ];
 
 function splitValues(value) {
@@ -117,6 +117,7 @@ export function create(ctx, controls) {
     decadeSelect,
     formSelect,
     genreSelect,
+    languageSelect,
     formatSelect,
     institutionSelect,
     sortSelect,
@@ -218,6 +219,7 @@ export function create(ctx, controls) {
     fillSelect(decadeSelect, data.decade, "All decades");
     fillSelect(formSelect, data.form, "All forms");
     fillSelect(genreSelect, data.genre, "All genres");
+    fillSelect(languageSelect, data.language, "All languages");
     fillSelect(formatSelect, data.format, "All item formats");
     fillSelect(institutionSelect, data.institution, "All institutions");
   }
@@ -264,6 +266,7 @@ export function create(ctx, controls) {
       decade: decadeSelect ? decadeSelect.value : "",
       form: formSelect ? formSelect.value : "",
       genre: genreSelect ? genreSelect.value : "",
+      language: languageSelect ? languageSelect.value : "",
       format: formatSelect ? formatSelect.value : "",
       institution: institutionSelect ? institutionSelect.value : ""
     };
@@ -935,6 +938,7 @@ export function create(ctx, controls) {
       decadeSelect,
       formSelect,
       genreSelect,
+      languageSelect,
       formatSelect,
       institutionSelect
     ]) {
@@ -1157,6 +1161,7 @@ export function create(ctx, controls) {
     decadeSelect,
     formSelect,
     genreSelect,
+    languageSelect,
     formatSelect,
     institutionSelect
   ]) {
@@ -1295,9 +1300,11 @@ export function create(ctx, controls) {
         pendingReload = true;
       }
     },
-    openPeople(name) {
+    // Browse names of one type ("Person" or "Organisation"), optionally by name.
+    openPeople(name, type) {
       if (!people) return;
       people.setName(name);
+      if (type) people.setType(type);
       focusPeople = true;
       setMode("people", { run: false });
       refresh();
@@ -1321,6 +1328,37 @@ export function create(ctx, controls) {
       total = 0;
       if (queryStatusElement) queryStatusElement.textContent = "Press Run query to execute.";
       render();
+    },
+    // Start a fresh search from facet values chosen elsewhere (the record
+    // drawer): { country, form, genre, language, decade }, the first four as IRIs
+    // and decade as "1930". Other filters are cleared so the results are
+    // exactly what the link named.
+    filterByFacets(wanted) {
+      clearFilterControls();
+      const targets = {
+        country: countrySelect,
+        form: formSelect,
+        genre: genreSelect,
+        language: languageSelect,
+        decade: decadeSelect
+      };
+      for (const [key, select] of Object.entries(targets)) {
+        const value = wanted && wanted[key];
+        if (!select || !value) continue;
+        // The facet lists may not have loaded yet: hold the value in a
+        // placeholder option that renderFacets keeps and relabels.
+        if (![...select.options].some((option) => option.value === value)) {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = key === "decade" ? `${value}s` : humanize(value);
+          select.append(option);
+        }
+        select.value = value;
+      }
+      if (mode !== "faceted") setMode("faceted", { run: false });
+      page = 0;
+      if (isVisible()) refresh();
+      else pendingReload = true;
     },
     filterByAgent(agent, name) {
       agentFilter = agent

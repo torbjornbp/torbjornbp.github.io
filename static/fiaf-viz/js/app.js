@@ -1249,6 +1249,7 @@ function createViews() {
       decadeSelect: document.getElementById("catalogue-decade"),
       formSelect: document.getElementById("catalogue-form"),
       genreSelect: document.getElementById("catalogue-genre"),
+      languageSelect: document.getElementById("catalogue-language"),
       formatSelect: document.getElementById("catalogue-format"),
       institutionSelect: document.getElementById("catalogue-institution"),
       sortSelect: document.getElementById("catalogue-sort"),
@@ -1936,7 +1937,7 @@ function renderAgentOverview(panel, agent, name, state, tabs) {
         { label: "Name", value: name },
         {
           label: "Type",
-          values: [...state.record.types].map(humanize)
+          values: agentTypeValues(state.record.types)
         },
         {
           label: "Source dataset",
@@ -2492,13 +2493,20 @@ function splitMetadata(value) {
     .filter(Boolean);
 }
 
+// "German (Spoken language)", each opening the catalogue filtered to that
+// language whatever its usage.
 function metadataLanguages(value) {
   return splitMetadata(value).map((part) => {
     const cut = part.indexOf("~");
     const language = cut >= 0 ? part.slice(0, cut) : part;
     const usage = cut >= 0 ? part.slice(cut + 1) : "";
     const label = humanize(language);
-    return usage ? `${label} (${humanize(usage)})` : label;
+    return catalogueLink(
+      usage ? `${label} (${humanize(usage)})` : label,
+      "language",
+      language,
+      `Show works in ${label} in the catalogue`
+    );
   });
 }
 
@@ -2513,6 +2521,59 @@ function workTitleRows(data) {
   return rows.length ? rows : [{ label: "Title", value: data.label }];
 }
 
+// A work fact that opens the catalogue filtered to it. `facet` is the
+// catalogue filter (country, form, genre, decade); `value` is what the filter
+// takes (an IRI, or "1930" for a decade).
+function catalogueLink(text, facet, value, title) {
+  return {
+    text,
+    title,
+    onSelect: () => {
+      leaveDrawerForCatalogue();
+      if (views && views.catalogue) views.catalogue.filterByFacets({ [facet]: value });
+      goToView("catalogue");
+    }
+  };
+}
+
+// Docked beside the page (1100px and up) the drawer can stay and the
+// catalogue changes next to it; as an overlay it would hide the result.
+function leaveDrawerForCatalogue() {
+  if (!window.matchMedia("(min-width: 1100px)").matches) ui.closeDrawer();
+}
+
+// A name's type (Person, Organisation) opens the catalogue's people search
+// for that type; other types stay plain text.
+function agentTypeValues(types) {
+  return [...types].map((type) => {
+    const name = localName(type);
+    const label = humanize(type);
+    if (name !== "Person" && name !== "Organisation") return label;
+    return {
+      text: label,
+      title: `Browse ${name === "Person" ? "people" : "organisations"} in the catalogue`,
+      onSelect: () => {
+        leaveDrawerForCatalogue();
+        if (views && views.catalogue) views.catalogue.openPeople("", name);
+        goToView("catalogue");
+      }
+    };
+  });
+}
+
+function facetLinks(value, facet, label = humanize) {
+  return splitMetadata(value).map((iri) =>
+    catalogueLink(label(iri), facet, iri, `Show ${label(iri)} works in the catalogue`)
+  );
+}
+
+function yearLink(year) {
+  const decade = /^\d{4}$/.test(String(year || "")) ? `${String(year).slice(0, 3)}0` : "";
+  return decade
+    ? catalogueLink(String(year), "decade", decade, `Show works from the ${decade}s in the catalogue`)
+    : year;
+}
+
 function workOverviewGroups(row) {
   const data = row || {};
   return [
@@ -2520,10 +2581,10 @@ function workOverviewGroups(row) {
     {
       heading: "Identification",
       rows: [
-        { label: "Production year", value: data.year },
-        { label: "Countries", values: splitMetadata(data.countries).map(humanize) },
-        { label: "Forms", values: splitMetadata(data.forms).map(humanize) },
-        { label: "Genres", values: splitMetadata(data.genres).map(humanize) },
+        { label: "Production year", value: yearLink(data.year) },
+        { label: "Countries", values: facetLinks(data.countries, "country") },
+        { label: "Forms", values: facetLinks(data.forms, "form") },
+        { label: "Genres", values: facetLinks(data.genres, "genre") },
         { label: "Languages", values: metadataLanguages(data.languages) },
         {
           label: "Ratings",

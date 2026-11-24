@@ -11,6 +11,7 @@ export function create(ctx, panel) {
   const decadeSelect = form.elements.namedItem("decade");
   const countrySelect = form.elements.namedItem("country");
   const roleSelect = form.elements.namedItem("role");
+  const typeSelect = form.elements.namedItem("type");
   const status = panel.querySelector(".stats");
   const results = panel.querySelector(".catalogue-table-wrap");
   const previous = panel.querySelector("[data-previous]");
@@ -21,6 +22,10 @@ export function create(ctx, panel) {
   let selected = null;
   let scope = null;
   let pageRows = [];
+
+  function noun() {
+    return typeSelect.value === "Organisation" ? "organisations" : "people";
+  }
 
   function select(selection) {
     selected = selection && selection.kind === "agent" ? selection.id : null;
@@ -80,7 +85,7 @@ export function create(ctx, panel) {
     const controller = new AbortController();
     request = controller;
     const { signal } = controller;
-    status.textContent = "Searching for people…";
+    status.textContent = `Searching for ${noun()}…`;
     const role = roleSelect.value
       ? `?activity a ?role . ${roleFilter([roleSelect.value])}`
       : "";
@@ -88,6 +93,7 @@ export function create(ctx, panel) {
       const offset = page * PAGE_SIZE;
       const rows = await runQuery("catalogue-people", {
         TERM: sparqlLiteral(nameInput.value.trim()),
+        AGENT_TYPE: typeSelect.value === "Organisation" ? "fiaf:Organisation" : "fiaf:Person",
         SCOPE_FILTER: ctx.scopeFilter(),
         ROLE_FILTER: role,
         CATALOGUE_FILTER: catalogueFilter({
@@ -118,15 +124,15 @@ export function create(ctx, panel) {
         if (signal.aborted) return;
         render(visible, new Map(details.map((row) => [row.person, row])));
         const range = `${ui.formatNumber(offset + 1)}–${ui.formatNumber(offset + visible.length)}`;
-        status.textContent = `Showing people ${range}.` +
+        status.textContent = `Showing ${noun()} ${range}.` +
           (creditError ? " Example credits could not be loaded." : "");
       } else {
-        status.textContent = "No people match this search.";
+        status.textContent = `No ${noun()} match this search.`;
       }
       next.disabled = rows.length <= PAGE_SIZE;
     } catch (error) {
       if (signal.aborted || error.name === "AbortError") return;
-      status.textContent = `People search failed: ${error.message}`;
+      status.textContent = `${typeSelect.value === "Organisation" ? "Organisation" : "People"} search failed: ${error.message}`;
     } finally {
       if (request === controller) {
         request = null;
@@ -149,7 +155,7 @@ export function create(ctx, panel) {
       filterTimer = setTimeout(load, 250);
     });
   }
-  for (const select of [roleSelect, decadeSelect, countrySelect]) {
+  for (const select of [typeSelect, roleSelect, decadeSelect, countrySelect]) {
     select.addEventListener("change", filter);
   }
   form.addEventListener("submit", (event) => {
@@ -217,6 +223,9 @@ export function create(ctx, panel) {
       form.reset();
       nameInput.value = name;
       page = 0;
+    },
+    setType(type) {
+      typeSelect.value = type === "Organisation" ? "Organisation" : "Person";
     },
     focus() {
       nameInput.focus();
