@@ -75,6 +75,9 @@ sections:
         org: University of Amsterdam
         from: Aug 2011
         to: Jul 2014
+        summary: >-
+          Thesis: [Collecting the immaterial: A theoretical assessment of collection in a virtual
+          environment](/post/2025/03/13/collecting-the-immaterial/).
         tags:
           - Moving image preservation
           - moving image curation
@@ -90,4 +93,7 @@ sections:
       - title: FIAF CDC corresponding member
         from: "2022"
         to: Present
+        summary: >-
+          Part of three task forces: Linked Open Data, Manual, and
+          [Preservation/Restoration Documentation](https://github.com/FIAF/preservation-restoration-events/).
 ---
