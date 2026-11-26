@@ -75,6 +75,16 @@ sections:
         summary: Part time cataloging and identification of a collection of scanned photographies.
         tags:
           - photo cataloging
+  - heading: Selected film preservation projects
+    entries:
+      - title: Trondheimsreisen
+        summary: >-
+          Coordinated the National Library of Norway's contribution, including identification,
+          research and selection of material.
+      - title: Bergen i all beskjedenhet
+        summary: >-
+          Coordinated the National Library of Norway's contribution, including identification,
+          research and selection of material.
   - heading: Education
     entries:
       - title: MA Preservation and presentation of the moving image
