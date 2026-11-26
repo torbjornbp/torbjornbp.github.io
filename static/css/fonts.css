@@ -76,8 +76,13 @@ body.comic-sans code, body.comic-sans .posts-list {
 
 .font-change-smiley {
     font-family: "Helvetica", "Arial", sans-serif;
-    font-size: 1.4em;
+    font-size: 1.65em;
     line-height: 1;
+}
+
+/* The clown replaces the smiley span: scale it by the same step (1.65 / 1.4) */
+body.comic-sans .font-change-button {
+    font-size: 1.18em;
 }
 
 /* For small screen devices */
