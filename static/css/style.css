@@ -73,8 +73,20 @@ h2, h3, h4, h5, h6 { margin: 1.5em auto 0.5em; }
 .heading-link:hover::after { opacity: 1; }
 
 /* Post lists */
-.posts-list .post-item { margin: 0; }
-.posts-list .date { margin-right: 0.5em; }
+.posts-list .post-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  margin: 0;
+}
+.posts-list .post-item a {
+  justify-self: start;
+  overflow-wrap: break-word;
+}
+.posts-list .date {
+  margin-right: 0.5em;
+  white-space: nowrap;
+}
 .post-label {
   display: inline-block;
   min-width: 12ch;
@@ -540,8 +552,6 @@ thead, tfoot, tr:nth-child(even) { background: #eee; }
 /* Media queries */
 @media (max-width: 500px) { 
   .posts-list {
-    white-space: nowrap;
-    overflow-x: auto;
     font-size: var(--font-size-small);
   }
 }
