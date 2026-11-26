@@ -28,8 +28,9 @@ sections:
         from: Jan 2024
         to: Present
         summary: >-
-          Extensive work on setting up new data model for moving image metadata and standardization.
-          Responsibility for moving images in major collection management system migration project.
+          Extensive work on a new data model for moving image metadata, and on standardization.
+          Responsible for moving images in a major migration project from Mavis to Axiell
+          Collections, including specifying requirements for the new system.
         tags:
           - metadata management
           - standards
@@ -53,8 +54,11 @@ sections:
         from: Sep 2014
         to: Nov 2022
         summary: >-
-          Jack of all trades working on film and video collections. Mainly cataloguing, research and
-          running preservation projects of varying sizes.
+          Broad work with the film and video collections, mainly cataloging, research and
+          preservation projects of varying sizes. In 2019, oversaw an inspection of the library's
+          complete nitrate holdings (around 16,000 reels). Later wrote up
+          [nitrate fume exposure during inspections](/post/2024/08/19/nitrate-film-inspection-and-fume-exposure/),
+          based on measurements made at the library in 2021.
         tags:
           - cataloging
           - film preservation
