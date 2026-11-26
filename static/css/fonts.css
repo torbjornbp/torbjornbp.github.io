@@ -8,7 +8,7 @@
 
 @font-face {
     font-family: 'Iosevka Aile';
-    src: url('/fonts/IosevkaCustomAile-Regular-reducedmore.woff2') format('woff2');
+    src: url('/fonts/IosevkaAile-Regular-34.9.1-subset.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
     font-display: fallback;
@@ -16,9 +16,17 @@
 
 @font-face {
     font-family: 'Iosevka Aile';
-    src: url('/fonts/IosevkaCustomAile-Bold-reducedmore.woff2') format('woff2');
+    src: url('/fonts/IosevkaAile-Bold-34.9.1-subset.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
+    font-display: fallback;
+}
+
+@font-face {
+    font-family: 'Iosevka Aile';
+    src: url('/fonts/IosevkaAile-Italic-34.9.1-subset.woff2') format('woff2');
+    font-weight: normal;
+    font-style: italic;
     font-display: fallback;
 }
 
