@@ -94,6 +94,6 @@ sections:
         from: "2022"
         to: Present
         summary: >-
-          Part of three task forces: Linked Open Data, Manual, and
-          [Preservation/Restoration Documentation](https://github.com/FIAF/preservation-restoration-events/).
+          Part of the Linked Open Data and Manual task forces, and a working group on
+          preservation/restoration documentation.
 ---
