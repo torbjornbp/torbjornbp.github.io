@@ -100,6 +100,7 @@ sections:
         from: "2022"
         to: Present
         summary: >-
-          Part of the Linked Open Data and Manual task forces, and a working group on
+          In the [Cataloguing and Documentation Commission](https://www.fiafnet.org/pages/Community/Cataloguing-Documentation-Commission.html),
+          part of the Linked Open Data and Manual task forces, and a working group on
           preservation/restoration documentation.
 ---
