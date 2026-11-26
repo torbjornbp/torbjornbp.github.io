@@ -40,8 +40,8 @@
         <h1 class="site-title"><a href="{{ .Site.Home.RelPermalink }}">Torbjørn Bakken Pedersen's page</a></h1>
       </div>
       <p class="site-contact">
-        {{ range $i, $item := .Site.Params.contact }}{{ if $i }}<span class="sep">·</span>{{ end }}<a href="{{ $item.url }}">{{ $item.label }}</a>{{ end }}
-        {{ if .Site.Params.contact }}<span class="sep">·</span>{{ end }}<a href="{{ "index.xml" | relURL }}">RSS</a>
+        {{- range .Site.Params.contact }}<a href="{{ .url }}">{{ .label }}</a><span class="sep">·</span><wbr>{{ end -}}
+        <a href="{{ "index.xml" | relURL }}">RSS</a>
       </p>
     </header>
     {{/* Keep the home page intro on every page so content aligns across navigation. */}}
