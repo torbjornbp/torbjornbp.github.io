@@ -85,6 +85,10 @@ sections:
         summary: >-
           Coordinated the National Library of Norway's contribution, including identification,
           research and selection of material.
+      - title: Der Friedensreiter
+        summary: Discovered the film and oversaw work on it.
+      - title: The Net (1916)
+        summary: Discovered the film and oversaw work on it.
   - heading: Education
     entries:
       - title: MA Preservation and presentation of the moving image
