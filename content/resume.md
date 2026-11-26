@@ -17,7 +17,9 @@ sections:
         org: National Library of Norway
         from: Nov 2023
         to: Present
-        summary: Working on product design for digital preservation services.
+        summary: >-
+          Working on product design for [digital preservation](https://digitalpreservation.no/)
+          services.
         tags:
           - preservation metadata
           - digital preservation
@@ -38,9 +40,9 @@ sections:
         from: Sep 2020
         to: Jun 2023
         summary: >-
-          Coordinating the preservation efforts of our moving image archivists, conservationists and
-          analog/digital lab technicians. Delegating and prioritizing tasks. Organizing larger
-          concerted projects with external clients.
+          Coordinated the preservation work of moving image archivists, conservators and analog and
+          digital lab technicians. Delegated and prioritized tasks, and organized larger joint
+          projects with external clients.
         tags:
           - management
           - workflows
