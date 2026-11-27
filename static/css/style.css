@@ -619,15 +619,16 @@ thead, tfoot, tr:nth-child(even) { background: #eee; }
 
 .sidenote-content.sidenote-right {
   right: 0;
-  margin-right: -250px;
+  /* clear the folder panel and body frame (~34px) plus a 10px gap */
+  margin-right: -285px;
 }
 
 .sidenote-content.sidenote-left {
   left: 0;
-  margin-left: -250px;
+  margin-left: -285px;
 }
 
-@media screen and (max-width: 1320px) {
+@media screen and (max-width: 1400px) {
   .sidenote-content {
     position: static;
     margin-top: 10px;
